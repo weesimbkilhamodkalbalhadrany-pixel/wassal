@@ -8,6 +8,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    
+    <!-- Firebase SDK v8 -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-messaging.js"></script>
+    
     <style>
         /* ========== الأنماط الكاملة (دمج وصال الأصلي + المطاعم) ========== */
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Cairo', sans-serif; -webkit-tap-highlight-color: transparent; }
@@ -137,6 +142,8 @@
         .modal-card { background: var(--card-light); border-radius: 48px; padding: 28px; width: 85%; max-width: 320px; text-align: center; }
         .setting-row { display: flex; justify-content: space-between; align-items: center; padding: 14px; background: var(--bg-light); border-radius: 30px; margin-bottom: 12px; cursor: pointer; touch-action: manipulation; }
         .admin-section { margin-top: 20px; padding-top: 20px; border-top: 2px solid var(--border-light); }
+        /* زر الإشعارات الجديد */
+        .notif-btn { background: var(--primary-dark); color: white; border: none; border-radius: 30px; padding: 8px 16px; font-size: 0.8rem; margin-top: 10px; cursor: pointer; touch-action: manipulation; }
     </style>
 </head>
 <body>
@@ -150,6 +157,8 @@
     <div id="homePage" class="page active-page">
         <div class="services-grid" id="servicesGrid"></div>
         <button id="trackOrderBtnHome" class="btn-send ripple" style="display: none;" onclick="window.showMyTracking()">📍 تتبع طلبي الحالي</button>
+        <!-- زر لطلب الإذن يدوياً (اختياري) -->
+        <button id="enableNotifBtn" class="btn-send ripple" style="background-color: #4a90e2; margin-top: 10px;">🔔 تفعيل الإشعارات</button>
     </div>
     <div id="ordersPage" class="page">
         <div class="order-card" id="myOrdersContainer"><p style="text-align:center;">لا توجد طلبات</p></div>
@@ -273,6 +282,113 @@
         let pendingAction = null;
         let trackingInterval = null;
 
+        // ------------------- إعدادات Firebase وإشعارات الدفع -------------------
+        // TODO: استبدل بيانات مشروعك الفعلية من Firebase Console
+        const firebaseConfig = {
+            apiKey: "AIzaSyB...",            // ضع apiKey الخاص بك
+            authDomain: "your-project.firebaseapp.com",
+            projectId: "your-project-id",
+            storageBucket: "your-project.appspot.com",
+            messagingSenderId: "123456789",
+            appId: "1:123456789:web:abcdef",
+            measurementId: "G-XXXXXX"
+        };
+        
+        // تطهير مفتاح VAPID من المسافات
+        const rawVapidKey = "BAHInQ5MJA bnb4kcjmq J s1gAOFoas2d nWO-Ohu-wv ValiQNrQxNL 2EgveP-UrU- vuUhuv_3il26 T8N5KOVI73Q";
+        const VAPID_KEY = rawVapidKey.replace(/\s+/g, '');
+        
+        let messaging = null;
+        let currentToken = null;
+        
+        // تهيئة Firebase
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+        messaging = firebase.messaging();
+        
+        // تسجيل Service Worker
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/firebase-messaging-sw.js')
+                .then((registration) => {
+                    console.log('Service Worker registered successfully:', registration);
+                    messaging.useServiceWorker(registration);
+                })
+                .catch((err) => console.error('Service Worker registration failed:', err));
+        }
+        
+        // طلب الإذن والحصول على التوكن
+        async function requestNotificationPermission() {
+            if (!currentUser) {
+                showToast("يرجى تسجيل الدخول أولاً");
+                return;
+            }
+            try {
+                const permission = await Notification.requestPermission();
+                if (permission === 'granted') {
+                    showToast("✅ تم تفعيل الإشعارات");
+                    const token = await messaging.getToken({ vapidKey: VAPID_KEY });
+                    if (token) {
+                        currentToken = token;
+                        console.log("FCM Token:", token);
+                        // حفظ التوكن في قاعدة البيانات للمستخدم الحالي
+                        await fetch(`${FIREBASE_URL}/users/${currentUser.phone}/fcmToken.json`, {
+                            method: 'PUT',
+                            body: JSON.stringify(token)
+                        });
+                        showToast("تم ربط جهازك بالإشعارات");
+                    } else {
+                        console.warn('No registration token available.');
+                        showToast("تعذر الحصول على رمز الإشعارات");
+                    }
+                } else {
+                    showToast("❌ تم رفض الإشعارات");
+                }
+            } catch (err) {
+                console.error("Error getting notification permission:", err);
+                showToast("حدث خطأ في طلب الإشعارات");
+            }
+        }
+        
+        // استلام الإشعارات أثناء فتح التطبيق (foreground)
+        if (messaging) {
+            messaging.onMessage((payload) => {
+                console.log('Message received. ', payload);
+                const { title, body } = payload.notification;
+                // عرض إشعار مخصص داخل التطبيق (toast)
+                showToast(`🔔 ${title}: ${body}`);
+                // يمكن أيضاً إضافة تحديث واجهة حسب الحاجة
+            });
+        }
+        
+        // دالة لطلب الإذن تلقائياً بعد تسجيل الدخول (إذا لم يعطِ الإذن سابقاً)
+        async function autoEnableNotifications() {
+            if (Notification.permission === 'granted') {
+                // سبق منح الإذن، نأخذ التوكن ونحدثه
+                try {
+                    const token = await messaging.getToken({ vapidKey: VAPID_KEY });
+                    if (token && currentUser) {
+                        currentToken = token;
+                        await fetch(`${FIREBASE_URL}/users/${currentUser.phone}/fcmToken.json`, {
+                            method: 'PUT',
+                            body: JSON.stringify(token)
+                        });
+                    }
+                } catch(e) { console.warn(e); }
+            } else if (Notification.permission !== 'denied') {
+                // لم يتم اتخاذ قرار بعد، نطلب الإذن تلقائياً بعد 3 ثوانٍ
+                setTimeout(() => {
+                    if (Notification.permission === 'default') {
+                        requestNotificationPermission();
+                    }
+                }, 3000);
+            }
+        }
+        
+        // ربط زر تفعيل الإشعارات
+        document.getElementById('enableNotifBtn')?.addEventListener('click', requestNotificationPermission);
+        
+        // ---------- باقي الكود الأصلي (بدون أي حذف) ----------
         // قائمة المطاعم الكاملة (18 مطعم مع 15 صنف)
         const restaurants = [
             { id: 1, name: "رويال بروستر", cat: "بروست وجبات", img: "https://images.unsplash.com/photo-1626645738196-c2a7c8d08f58?w=400", items: [{n:"بروست 4 قطع",p:3500},{n:"بروست 8 قطع",p:6800},{n:"وجبة حراق",p:3700},{n:"ساندوتش زنجر",p:1800},{n:"فيليه دجاج",p:3200},{n:"مسحب دجاج",p:3000},{n:"ثومية إضافية",p:200},{n:"كول سلو",p:500},{n:"بطاطس عائلي",p:1200},{n:"برجر رويال",p:2000},{n:"فطيرة دجاج",p:1500},{n:"حمص",p:800},{n:"مياه معدنية",p:200},{n:"بيبسي",p:400},{n:"عصير طازج",p:1000}] },
@@ -577,9 +693,11 @@
                 document.getElementById('loginOverlay').style.display = 'none';
                 if (currentUser.role === 'driver') { showPage('driverPage'); refreshDriverPanel(); setInterval(refreshDriverPanel, 5000); }
                 else { showPage('homePage'); setActiveNav('homePage'); renderServices(); }
+                // بعد تسجيل الدخول، نحاول تفعيل الإشعارات تلقائياً
+                autoEnableNotifications();
             };
-            let saved = localStorage.getItem('waselny_user'); if (saved) { currentUser = JSON.parse(saved); document.getElementById('loginOverlay').style.display = 'none'; if (currentUser.role === 'driver') { showPage('driverPage'); refreshDriverPanel(); setInterval(refreshDriverPanel, 5000); } else { showPage('homePage'); setActiveNav('homePage'); renderServices(); } }
-            // إصلاح دالة الوضع الليلي (الخطأ السابق)
+            let saved = localStorage.getItem('waselny_user'); if (saved) { currentUser = JSON.parse(saved); document.getElementById('loginOverlay').style.display = 'none'; if (currentUser.role === 'driver') { showPage('driverPage'); refreshDriverPanel(); setInterval(refreshDriverPanel, 5000); } else { showPage('homePage'); setActiveNav('homePage'); renderServices(); } autoEnableNotifications(); }
+            // إصلاح دالة الوضع الليلي
             document.getElementById('darkModeToggle').onclick = () => {
                 document.body.classList.toggle('dark-mode'); 
                 let icon = document.getElementById('darkModeIcon'); 

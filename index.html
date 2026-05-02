@@ -14,7 +14,7 @@
         :root { --primary-dark: #0a2b3e; --primary-light: #2dd4bf; --bg-light: #f8fafc; --card-light: #ffffff; --text-light: #1e293b; --text-muted: #64748b; --border-light: #e2e8f0; --bg-dark: #0f172a; --card-dark: #1e293b; --text-dark: #f1f5f9; --border-dark: #334155; --danger: #ef4444; --success: #10b981; --warning: #f59e0b; --restaurant-accent: #f97316; }
         body { background: var(--bg-light); color: var(--text-light); transition: background 0.3s, color 0.3s; min-height: 100vh; }
         body.dark-mode { background: var(--bg-dark); color: var(--text-dark); }
-        .ripple { position: relative; overflow: hidden; cursor: pointer; transition: transform 0.1s; }
+        .ripple { position: relative; overflow: hidden; cursor: pointer; transition: transform 0.1s; touch-action: manipulation; }
         .ripple:active { transform: scale(0.98); }
         .app-header { background: linear-gradient(135deg, var(--primary-dark), #1a4f6e); color: white; padding: 20px 24px 32px; border-radius: 0 0 48px 48px; text-align: center; }
         .logo-area h1 { font-size: 2.2rem; font-weight: 900; background: linear-gradient(135deg, #fff, var(--primary-light)); -webkit-background-clip: text; background-clip: text; color: transparent; }
@@ -27,7 +27,7 @@
 
         /* الخدمات العامة */
         .services-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; margin: 10px 0; }
-        .service-card { background: var(--card-light); border-radius: 28px; padding: 24px 12px 20px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 1px solid var(--border-light); }
+        .service-card { background: var(--card-light); border-radius: 28px; padding: 24px 12px 20px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 1px solid var(--border-light); touch-action: manipulation; }
         body.dark-mode .service-card { background: var(--card-dark); border-color: var(--border-dark); }
         .service-icon { font-size: 3rem; margin-bottom: 10px; display: inline-block; animation: subtlePulse 2s infinite ease-in-out; }
         @keyframes subtlePulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
@@ -37,23 +37,23 @@
         .order-card, .driver-panel, .admin-panel { background: var(--card-light); border-radius: 32px; padding: 24px; margin-bottom: 20px; border: 1px solid var(--border-light); }
         body.dark-mode .order-card, body.dark-mode .driver-panel, body.dark-mode .admin-panel { background: var(--card-dark); border-color: var(--border-dark); }
         .input-box label { font-weight: 800; margin-bottom: 8px; display: block; }
-        .geo-btn { background: var(--bg-light); border: 1px solid var(--border-light); border-radius: 28px; padding: 14px 18px; display: flex; justify-content: space-between; font-weight: 600; width: 100%; cursor: pointer; margin-bottom: 10px; }
+        .geo-btn { background: var(--bg-light); border: 1px solid var(--border-light); border-radius: 28px; padding: 14px 18px; display: flex; justify-content: space-between; font-weight: 600; width: 100%; cursor: pointer; margin-bottom: 10px; touch-action: manipulation; }
         .field-input { width: 100%; padding: 14px 18px; border-radius: 28px; border: 1px solid var(--border-light); background: var(--bg-light); font-size: 1rem; margin-bottom: 12px; }
         .price-tag { background: var(--bg-light); border-radius: 28px; padding: 16px; display: flex; justify-content: space-between; margin: 15px 0; font-weight: 800; }
         .price-val { color: var(--primary-light); font-size: 1.6rem; font-weight: 900; }
         .payment-options { display: flex; gap: 10px; margin: 15px 0; flex-wrap: wrap; }
-        .payment-btn { flex: 1; padding: 12px; border-radius: 30px; background: var(--bg-light); text-align: center; font-weight: 600; cursor: pointer; }
+        .payment-btn { flex: 1; padding: 12px; border-radius: 30px; background: var(--bg-light); text-align: center; font-weight: 600; cursor: pointer; touch-action: manipulation; }
         .payment-btn.active { background: var(--primary-light); color: white; }
-        .btn-send { width: 100%; padding: 16px; background: var(--primary-light); border: none; border-radius: 44px; font-weight: 900; font-size: 1.1rem; color: var(--primary-dark); margin-top: 16px; cursor: pointer; }
+        .btn-send { width: 100%; padding: 16px; background: var(--primary-light); border: none; border-radius: 44px; font-weight: 900; font-size: 1.1rem; color: var(--primary-dark); margin-top: 16px; cursor: pointer; touch-action: manipulation; }
 
         /* المطاعم */
         .categories-scroll { display: flex; gap: 12px; overflow-x: auto; padding: 15px 20px; scrollbar-width: none; margin-top: -30px; position: relative; z-index: 20; }
         .categories-scroll::-webkit-scrollbar { display: none; }
-        .cat-chip { background: var(--card-light); padding: 12px 25px; border-radius: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); white-space: nowrap; font-weight: 700; display: flex; align-items: center; gap: 8px; cursor: pointer; border: 2px solid transparent; transition: 0.3s; }
+        .cat-chip { background: var(--card-light); padding: 12px 25px; border-radius: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); white-space: nowrap; font-weight: 700; display: flex; align-items: center; gap: 8px; cursor: pointer; border: 2px solid transparent; transition: 0.3s; touch-action: manipulation; }
         body.dark-mode .cat-chip { background: var(--card-dark); }
         .cat-chip.active { border-color: var(--restaurant-accent); color: var(--restaurant-accent); }
         .restaurants-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin: 10px 0; }
-        .res-card { background: var(--card-light); border-radius: 25px; overflow: hidden; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1); cursor: pointer; transition: 0.3s; }
+        .res-card { background: var(--card-light); border-radius: 25px; overflow: hidden; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1); cursor: pointer; transition: 0.3s; touch-action: manipulation; }
         body.dark-mode .res-card { background: var(--card-dark); }
         .res-card:active { transform: scale(0.95); }
         .res-image { height: 120px; background-size: cover; background-position: center; position: relative; }
@@ -62,16 +62,16 @@
         .res-info h3 { font-size: 1rem; font-weight: 800; }
         .res-info p { font-size: 0.75rem; color: var(--text-muted); }
         .menu-grid { display: grid; gap: 15px; margin-top: 20px; }
-        .item-card { background: var(--card-light); border-radius: 20px; display: flex; align-items: center; padding: 12px; gap: 15px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
+        .item-card { background: var(--card-light); border-radius: 20px; display: flex; align-items: center; padding: 12px; gap: 15px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); touch-action: manipulation; }
         body.dark-mode .item-card { background: var(--card-dark); }
         .item-img { width: 80px; height: 80px; border-radius: 15px; object-fit: cover; }
         .item-details { flex: 1; }
         .item-details h4 { font-weight: 700; font-size: 1rem; }
         .item-details .price { color: var(--restaurant-accent); font-weight: 900; font-size: 1.1rem; }
-        .add-btn-circle { background: var(--restaurant-accent); color: white; width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; cursor: pointer; border: none; font-size: 1.2rem; }
-        .float-cart { position: fixed; bottom: 85px; left: 20px; right: 20px; background: var(--primary-dark); color: white; padding: 15px 25px; border-radius: 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.3); z-index: 1000; display: none; cursor: pointer; }
+        .add-btn-circle { background: var(--restaurant-accent); color: white; width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; cursor: pointer; border: none; font-size: 1.2rem; touch-action: manipulation; }
+        .float-cart { position: fixed; bottom: 85px; left: 20px; right: 20px; background: var(--primary-dark); color: white; padding: 15px 25px; border-radius: 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.3); z-index: 1000; display: none; cursor: pointer; touch-action: manipulation; }
         .location-section { background: var(--bg-light); border-radius: 20px; padding: 15px; margin: 20px 0; }
-        .btn-primary { background: var(--restaurant-accent); color: white; border: none; padding: 16px; border-radius: 44px; width: 100%; font-weight: 900; font-size: 1.1rem; margin-top: 20px; cursor: pointer; }
+        .btn-primary { background: var(--restaurant-accent); color: white; border: none; padding: 16px; border-radius: 44px; width: 100%; font-weight: 900; font-size: 1.1rem; margin-top: 20px; cursor: pointer; touch-action: manipulation; }
 
         /* تتبع الطلب */
         .tracking-fullscreen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(145deg, var(--bg-light), #eef2f6); z-index: 15000; overflow-y: auto; padding: 20px; }
@@ -97,7 +97,7 @@
         .stat-card i { font-size: 1.8rem; opacity: 0.8; }
         .stat-card .number { font-size: 1.8rem; font-weight: 900; }
         .modern-tabs { display: flex; gap: 10px; margin-bottom: 20px; background: var(--bg-light); padding: 5px; border-radius: 50px; }
-        .modern-tab { flex: 1; padding: 12px; border-radius: 40px; text-align: center; font-weight: 700; cursor: pointer; transition: 0.3s; }
+        .modern-tab { flex: 1; padding: 12px; border-radius: 40px; text-align: center; font-weight: 700; cursor: pointer; transition: 0.3s; touch-action: manipulation; }
         .modern-tab.active { background: var(--primary-light); color: var(--primary-dark); box-shadow: 0 4px 10px rgba(45,212,191,0.3); }
         .order-card-modern { background: var(--card-light); border-radius: 24px; padding: 16px; margin-bottom: 15px; border: 1px solid var(--border-light); }
         body.dark-mode .order-card-modern { background: var(--card-dark); border-color: var(--border-dark); }
@@ -108,7 +108,7 @@
         .order-details-row i { width: 20px; color: var(--primary-light); }
         .items-list { background: var(--bg-light); border-radius: 16px; padding: 10px; margin: 10px 0; }
         .action-buttons { display: flex; gap: 8px; margin-top: 15px; }
-        .action-btn { flex: 1; padding: 12px 8px; border-radius: 40px; border: none; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; font-size: 0.9rem; }
+        .action-btn { flex: 1; padding: 12px 8px; border-radius: 40px; border: none; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; font-size: 0.9rem; touch-action: manipulation; }
         .action-btn.primary { background: var(--primary-light); color: var(--primary-dark); }
         .action-btn.secondary { background: var(--bg-light); color: var(--text-light); border: 1px solid var(--border-light); }
         .action-btn.success { background: var(--success); color: white; }
@@ -117,13 +117,13 @@
         /* عناصر مشتركة */
         .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: var(--card-light); backdrop-filter: blur(20px); border-top: 1px solid var(--border-light); display: flex; justify-content: space-around; padding: 10px 0 calc(12px + env(safe-area-inset-bottom)); z-index: 2000; }
         body.dark-mode .bottom-nav { background: var(--card-dark); border-color: var(--border-dark); }
-        .nav-item { text-align: center; flex: 1; color: var(--text-muted); font-size: 0.75rem; font-weight: 600; cursor: pointer; }
+        .nav-item { text-align: center; flex: 1; color: var(--text-muted); font-size: 0.75rem; font-weight: 600; cursor: pointer; touch-action: manipulation; }
         .nav-item i { font-size: 1.6rem; display: block; margin-bottom: 4px; }
         .nav-item.active { color: var(--primary-light); }
         #map-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 10000; display: none; flex-direction: column; }
-        #map { flex-grow: 1; width: 100%; height: 100%; z-index: 10001; }
+        #map { flex-grow: 1; width: 100%; height: 100%; z-index: 10001; touch-action: pan-x pan-y pinch-zoom; }
         .map-controls { display: flex; background: var(--primary-dark); z-index: 10002; }
-        .map-confirm, .map-back { flex: 1; color: white; padding: 20px; text-align: center; font-weight: 900; cursor: pointer; }
+        .map-confirm, .map-back { flex: 1; color: white; padding: 20px; text-align: center; font-weight: 900; cursor: pointer; touch-action: manipulation; }
         .map-confirm { background: var(--primary-light); color: var(--primary-dark); }
         .toast { position: fixed; top: -100px; left: 20px; right: 20px; background: var(--success); color: white; padding: 16px 20px; border-radius: 30px; text-align: center; z-index: 999999; opacity: 0; transition: 0.4s; pointer-events: none; font-weight: 600; }
         .toast.show { top: 20px; opacity: 1; }
@@ -131,11 +131,11 @@
         .login-card { background: white; border-radius: 48px; padding: 32px; width: 90%; max-width: 380px; text-align: center; }
         body.dark-mode .login-card { background: #1e293b; color: white; }
         .login-card input { width: 100%; padding: 14px; margin: 10px 0; border-radius: 30px; border: 1px solid #ddd; background: white; color: black; }
-        .login-card button { width: 100%; padding: 14px; background: var(--primary-light); border: none; border-radius: 44px; font-weight: 900; font-size: 1.1rem; color: var(--primary-dark); cursor: pointer; }
+        .login-card button { width: 100%; padding: 14px; background: var(--primary-light); border: none; border-radius: 44px; font-weight: 900; font-size: 1.1rem; color: var(--primary-dark); cursor: pointer; touch-action: manipulation; }
         .confirmation-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(8px); z-index: 40000; display: flex; align-items: center; justify-content: center; visibility: hidden; opacity: 0; transition: 0.2s; }
         .confirmation-modal.open { visibility: visible; opacity: 1; }
         .modal-card { background: var(--card-light); border-radius: 48px; padding: 28px; width: 85%; max-width: 320px; text-align: center; }
-        .setting-row { display: flex; justify-content: space-between; align-items: center; padding: 14px; background: var(--bg-light); border-radius: 30px; margin-bottom: 12px; cursor: pointer; }
+        .setting-row { display: flex; justify-content: space-between; align-items: center; padding: 14px; background: var(--bg-light); border-radius: 30px; margin-bottom: 12px; cursor: pointer; touch-action: manipulation; }
         .admin-section { margin-top: 20px; padding-top: 20px; border-top: 2px solid var(--border-light); }
     </style>
 </head>
@@ -161,7 +161,7 @@
             <div class="setting-row ripple" id="darkModeToggle"><span><i class="fas fa-moon"></i> الوضع الليلي</span><i class="fas fa-toggle-off" id="darkModeIcon"></i></div>
             <div class="setting-row ripple" id="whatsappSupport"><span><i class="fab fa-whatsapp"></i> خدمة العملاء</span><i class="fas fa-chevron-left"></i></div>
             <div class="setting-row ripple" id="shareApp"><span><i class="fas fa-share-alt"></i> مشاركة التطبيق</span><i class="fas fa-chevron-left"></i></div>
-            <div class="setting-row"><span><i class="fas fa-code-branch"></i> الإصدار</span><span>v6.3.0</span></div>
+            <div class="setting-row"><span><i class="fas fa-code-branch"></i> الإصدار</span><span>v6.3.1</span></div>
             <button class="btn-send logout-btn ripple" id="settingsLogoutBtn">تسجيل الخروج</button>
         </div>
     </div>
@@ -307,7 +307,7 @@
         }
         function setActiveNav(pageId) { document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active')); document.querySelector(`.nav-item[data-page="${pageId}"]`)?.classList.add('active'); }
         function calculateDeliveryCost() { if(!customerLocationLatLng) return MIN_DELIVERY_PRICE; const d = L.latLng(customerLocationLatLng.lat, customerLocationLatLng.lng).distanceTo(L.latLng(RESTAURANT_LOCATION.lat, RESTAURANT_LOCATION.lng)) / 1000; return Math.max(Math.round(d * DELIVERY_PRICE_PER_KM), MIN_DELIVERY_PRICE); }
-        async function loadOrders() { try { let r = await fetch(`${FIREBASE_URL}/orders.json`); let d = await r.json(); allOrders = d ? Object.values(d).sort((a,b)=>b.id-a.id) : []; } catch(e) {} }
+        async function loadOrders() { try { let r = await fetch(`${FIREBASE_URL}/orders.json`); let d = await r.json(); allOrders = d ? Object.values(d).sort((a,b)=>b.id-a.id) : []; } catch(e) { console.warn(e); } }
         async function updateOrder(id, updates) { await fetch(`${FIREBASE_URL}/orders/${id}.json`, { method: 'PATCH', body: JSON.stringify(updates) }); await loadOrders(); }
         async function saveUser(user) { await fetch(`${FIREBASE_URL}/users/${user.phone}.json`, { method: 'PUT', body: JSON.stringify(user) }); }
         async function updateUserBusy(phone, isBusy) { await fetch(`${FIREBASE_URL}/users/${phone}.json`, { method: 'PATCH', body: JSON.stringify({ isBusy }) }); }
@@ -341,10 +341,13 @@
             document.getElementById('map-overlay').style.display='flex'; 
             setTimeout(()=>{ 
                 if(!map){ 
-                    map = L.map('map', { zoomControl: false, dragging: true, tap: true }).setView(SANAA_CENTER, 14); 
+                    map = L.map('map', { zoomControl: false, dragging: true, tap: true, touchZoom: true, scrollWheelZoom: true }).setView(SANAA_CENTER, 14); 
                     L.tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', { subdomains: ['mt0','mt1','mt2','mt3'] }).addTo(map); 
                     marker = L.marker(SANAA_CENTER, { draggable: true, autoPan: true }).addTo(map); 
                     map.on('click', e => marker.setLatLng(e.latlng));
+                    // تحسينات اللمس للخريطة
+                    map.getContainer().addEventListener('touchmove', function(e) { e.preventDefault(); }, { passive: false });
+                    map.once('moveend', function() { map.invalidateSize(); });
                 } else {
                     map.setView(SANAA_CENTER, 14);
                     marker.setLatLng(SANAA_CENTER);
@@ -357,7 +360,6 @@
                     marker.setLatLng(locs[mode]);
                     map.setView(locs[mode], 15);
                 }
-                // إصلاح مشكلة عدم القدرة على السحب: التأكد من أن الخريطة تتفاعل
                 setTimeout(() => map.invalidateSize(), 200);
             }, 100); 
         };
@@ -448,8 +450,10 @@
         };
 
         window.showMyTracking = () => {
-            let id = localStorage.getItem('currentTrackingOrder') || currentClientOrderId;
-            if (id) viewOrderTracking(parseInt(id)); else showToast('لا يوجد طلب نشط');
+            // إيجاد آخر طلب للمستخدم الحالي
+            let order = allOrders.find(o => o.customerPhone === currentUser?.phone || o.phone === currentUser?.phone);
+            if (order) viewOrderTracking(order.id);
+            else showToast('لا يوجد طلب نشط');
         };
 
         // ---------- واجهة المندوب (تفاصيل كاملة وأزرار ثلاثية) ----------
@@ -510,7 +514,49 @@
         window.updateStatusNow = async (id, newStatus) => { await updateOrder(id, { status: newStatus }); if(newStatus==='delivered'){ await updateUserBusy(currentUser.phone, false); showToast("✅ تم التوصيل.. شكراً لاستخدامك خدمتنا"); backToDriverPanel(); } else { openOrderDetail(id); } refreshDriverPanel(); };
         window.backToDriverPanel = () => { showPage('driverPage'); refreshDriverPanel(); };
 
-        async function loadAdminPanel() { /* ... */ }
+        // عرض طلبات المستخدم الحالي (للعميل)
+        window.renderMyOrders = async function() {
+            if (!currentUser || currentUser.role !== 'customer') return showToast('يجب تسجيل الدخول كعميل');
+            await loadOrders();
+            let myOrders = allOrders.filter(o => o.customerPhone === currentUser.phone || o.phone === currentUser.phone);
+            if (!myOrders.length) {
+                document.getElementById('myOrdersContainer').innerHTML = '<p style="text-align:center;">لا توجد طلبات سابقة</p>';
+                return;
+            }
+            let html = '';
+            myOrders.forEach(o => {
+                let isRestaurant = o.type === 'restaurant';
+                html += `<div class="order-card-modern" style="margin-bottom:15px;">
+                            <div class="order-header"><span class="order-id">#${o.id}</span><span class="order-status-badge">${getStatusText(o.status)}</span></div>
+                            <div class="order-details-row"><i class="fas fa-store"></i> ${isRestaurant ? o.restaurant : o.service}</div>
+                            <div class="order-details-row"><i class="fas fa-map-marker-alt"></i> ${isRestaurant ? o.address : o.pickupAddress}</div>
+                            <div class="order-details-row"><i class="fas fa-money-bill"></i> ${isRestaurant ? o.total : o.price} ريال</div>
+                            <div class="action-buttons"><button class="action-btn primary" onclick="viewOrderTracking(${o.id})"><i class="fas fa-location-dot"></i> تتبع</button></div>
+                         </div>`;
+            });
+            document.getElementById('myOrdersContainer').innerHTML = html;
+        };
+
+        // لوحة تحكم الإدارة (بسيطة)
+        window.loadAdminPanel = async function() {
+            await loadOrders();
+            let stats = {
+                total: allOrders.length,
+                pending: allOrders.filter(o=>o.status==='pending').length,
+                completed: allOrders.filter(o=>o.status==='delivered').length,
+                restaurantOrders: allOrders.filter(o=>o.type==='restaurant').length
+            };
+            document.getElementById('adminPanel').innerHTML = `
+                <h3>📊 لوحة التحكم</h3>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:15px;margin:20px 0;">
+                    <div class="stat-card">الطلبات الكلية: ${stats.total}</div>
+                    <div class="stat-card">قيد التنفيذ: ${stats.pending}</div>
+                    <div class="stat-card">مكتملة: ${stats.completed}</div>
+                    <div class="stat-card">طلبات المطاعم: ${stats.restaurantOrders}</div>
+                </div>
+                <button class="btn-primary" onclick="showPage('homePage');setActiveNav('homePage')">🔙 الخروج</button>
+            `;
+        };
 
         (function init() {
             document.getElementById('loginBtn').onclick = async () => {
@@ -533,12 +579,50 @@
                 else { showPage('homePage'); setActiveNav('homePage'); renderServices(); }
             };
             let saved = localStorage.getItem('waselny_user'); if (saved) { currentUser = JSON.parse(saved); document.getElementById('loginOverlay').style.display = 'none'; if (currentUser.role === 'driver') { showPage('driverPage'); refreshDriverPanel(); setInterval(refreshDriverPanel, 5000); } else { showPage('homePage'); setActiveNav('homePage'); renderServices(); } }
+            // إصلاح دالة الوضع الليلي (الخطأ السابق)
+            document.getElementById('darkModeToggle').onclick = () => {
+                document.body.classList.toggle('dark-mode'); 
+                let icon = document.getElementById('darkModeIcon'); 
+                icon.className = document.body.classList.contains('dark-mode') ? 'fas fa-toggle-on' : 'fas fa-toggle-off'; 
+                localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
+            };
             if (localStorage.getItem('darkMode') === 'true') { document.body.classList.add('dark-mode'); document.getElementById('darkModeIcon').className = 'fas fa-toggle-on'; }
+            else { document.body.classList.remove('dark-mode'); document.getElementById('darkModeIcon').className = 'fas fa-toggle-off'; }
             renderRestaurants();
             let clicks=0; document.getElementById('adminTrigger').onclick=()=>{ clicks++; setTimeout(()=>clicks=0,800); if(clicks>=5){ let p=prompt("كلمة سر الإدارة"); if(p===ADMIN_PASSWORD){ currentUser={role:'admin'}; showPage('adminPanelPage'); } clicks=0; } };
             document.getElementById('modalConfirm').onclick = async () => { if(pendingAction){ if(pendingAction.action==='acceptOrder') await acceptOrder(pendingAction.orderId); else if(pendingAction.action==='updateStatus') await updateStatusNow(pendingAction.orderId, pendingAction.extra); } document.getElementById('confirmationModal').classList.remove('open'); pendingAction=null; };
             document.getElementById('modalCancel').onclick = () => { document.getElementById('confirmationModal').classList.remove('open'); };
+            // إضافة تسجيل الخروج
+            document.getElementById('settingsLogoutBtn').onclick = () => { localStorage.removeItem('waselny_user'); location.reload(); };
+            document.getElementById('driverLogoutBtn') && (document.getElementById('driverLogoutBtn').onclick = () => { localStorage.removeItem('waselny_user'); location.reload(); });
+            // ربط شريط التنقل
+            document.querySelectorAll('.nav-item').forEach(n => n.onclick = () => { let p = n.dataset.page; showPage(p); setActiveNav(p); if (p==='ordersPage') window.renderMyOrders(); });
+            // إضافة زر مشاركة التطبيق وواتساب
+            document.getElementById('whatsappSupport').onclick = () => { window.open('https://wa.me/777215154?text=مرحباً، أحتاج مساعدة في تطبيق وصول', '_blank'); };
+            document.getElementById('shareApp').onclick = () => { if(navigator.share) navigator.share({title:'وصّال', text:'تطبيق توصيل ومطاعم', url:location.href}); else showToast('مشاركة غير مدعومة'); };
+            // تبديل أدوار تسجيل الدخول
+            document.querySelectorAll('.role-btn').forEach(btn => {
+                btn.onclick = () => {
+                    document.querySelectorAll('.role-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    let isDriver = btn.dataset.role === 'driver';
+                    document.getElementById('driverName').style.display = isDriver ? 'block' : 'none';
+                    document.getElementById('loginPassword').style.display = isDriver ? 'block' : 'none';
+                    document.getElementById('customerName').style.display = isDriver ? 'none' : 'block';
+                };
+            });
+            // إظهار حقل المندوب إذا كان محددًا مسبقًا
+            if(document.querySelector('.role-btn.active')?.dataset.role === 'driver') {
+                document.getElementById('driverName').style.display = 'block';
+                document.getElementById('loginPassword').style.display = 'block';
+                document.getElementById('customerName').style.display = 'none';
+            } else {
+                document.getElementById('driverName').style.display = 'none';
+                document.getElementById('loginPassword').style.display = 'none';
+                document.getElementById('customerName').style.display = 'block';
+            }
         })();
-
-        document.querySelectorAll('.nav-item').forEach(n => n.onclick = () => { let p = n.dataset.page; showPage(p); setActiveNav(p); if (p==='ordersPage') renderMyOrders(); });
-        document.getElementById('darkModeToggle').onclick = () => { document.body.classList.toggle('dark-mode'); let icon = document.getElementById('darkModeIcon'); icon.className = document.body.classList.contains('dark-mode') ? 'fas fa-toggle-on' : 'fas fa-toggle-off'; localStorage.setItem('darkMode', document.body.classLis
+    })();
+</script>
+</body>
+</html>

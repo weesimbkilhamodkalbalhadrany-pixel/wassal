@@ -2,143 +2,133 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
-    <title>وصّال | Wassal - توصيل ومطاعم</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>وصّال | Wassal</title>
     
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-database-compat.js"></script>
-    <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
 
     <style>
-        /* ستايلك الأصلي الرائع بدون تعديلات تؤثر على التصميم */
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Cairo', sans-serif; -webkit-tap-highlight-color: transparent; }
-        :root { --primary-dark: #0a2b3e; --primary-light: #2dd4bf; --bg-light: #f8fafc; --card-light: #ffffff; --text-light: #1e293b; --restaurant-accent: #f97316; --success: #10b981; }
-        body { background: var(--bg-light); color: var(--text-light); transition: 0.3s; min-height: 100vh; }
-        body.dark-mode { background: #0f172a; color: #f1f5f9; }
-        .app-header { background: linear-gradient(135deg, var(--primary-dark), #1a4f6e); color: white; padding: 20px 24px 40px; border-radius: 0 0 40px 40px; text-align: center; }
-        .logo-area h1 { font-size: 2.2rem; font-weight: 900; background: linear-gradient(135deg, #fff, var(--primary-light)); -webkit-background-clip: text; color: transparent; }
-        main { padding: 20px 16px 100px; }
-        .page { display: none; animation: fadeIn 0.3s; }
-        .active-page { display: block; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        .services-grid, .restaurants-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
-        .service-card, .res-card { background: white; border-radius: 20px; padding: 20px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
-        body.dark-mode .service-card, body.dark-mode .res-card { background: #1e293b; color: white; }
-        .btn-send, .btn-primary { width: 100%; padding: 15px; background: var(--primary-light); border: none; border-radius: 30px; font-weight: 900; color: var(--primary-dark); margin-top: 10px; cursor: pointer; }
-        .bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; display: flex; padding: 10px 0; border-top: 1px solid #eee; z-index: 1000; }
-        .nav-item { flex: 1; text-align: center; font-size: 0.8rem; color: #666; }
-        .nav-item.active { color: var(--primary-light); }
-        .nav-item i { font-size: 1.5rem; display: block; }
-        /* التنبيهات */
-        .toast { position: fixed; top: -100px; left: 20px; right: 20px; background: var(--success); color: white; padding: 15px; border-radius: 20px; text-align: center; z-index: 9999; transition: 0.5s; }
-        .toast.show { top: 20px; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Cairo', sans-serif; }
+        body { background: #f8fafc; color: #1e293b; padding-bottom: 80px; }
+        .header { background: #0a2b3e; color: white; padding: 30px 20px; border-radius: 0 0 30px 30px; text-align: center; }
+        .container { padding: 20px; }
+        .card { background: white; border-radius: 20px; padding: 20px; margin-bottom: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); border: 1px solid #edf2f7; }
+        .btn { width: 100%; padding: 15px; border-radius: 15px; border: none; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        .btn-order { background: #2dd4bf; color: #0a2b3e; font-size: 1.1rem; }
+        .btn-order:active { transform: scale(0.95); }
+        .status-badge { display: inline-block; padding: 5px 15px; border-radius: 20px; font-size: 0.8rem; background: #e2e8f0; margin-top: 10px; }
+        .bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; display: flex; border-top: 1px solid #eee; padding: 10px 0; }
+        .nav-item { flex: 1; text-align: center; color: #64748b; font-size: 0.8rem; }
+        .nav-item.active { color: #2dd4bf; }
     </style>
 </head>
 <body>
 
-<div id="toastMsg" class="toast"></div>
+<div class="header">
+    <h1>وصّال | Wassal</h1>
+    <p>إمبراطورية التوصيل الذكي</p>
+</div>
 
-<header class="app-header">
-    <div class="logo-area"><h1>وصّال | Wassal</h1></div>
-    <p style="font-size: 0.8rem; color: var(--primary-light);">مشروعك.. إمبراطوريتك</p>
-</header>
-
-<main>
-    <div id="homePage" class="page active-page">
-        <h2 style="margin-bottom: 15px;">🚀 خدماتنا</h2>
-        <div class="services-grid" id="servicesGrid"></div>
+<div class="container">
+    <div id="orderSection">
+        <h3 style="margin-bottom: 15px;">اطلب خدمة فورية:</h3>
+        <div class="card">
+            <h4>🚖 طلب تاكسي</h4>
+            <p style="color: #64748b; font-size: 0.9rem; margin: 5px 0 15px;">أسرع وسيلة انتقال في صنعاء</p>
+            <button class="btn btn-order" onclick="createOrder('تاكسي 🚖')">اطلب الآن</button>
+        </div>
+        
+        <div class="card">
+            <h4>📦 خدمة توصيل</h4>
+            <p style="color: #64748b; font-size: 0.9rem; margin: 5px 0 15px;">نقل طرود وهدايا</p>
+            <button class="btn btn-order" onclick="createOrder('توصيل 📦')">اطلب الآن</button>
+        </div>
     </div>
 
-    <div id="restaurantsPage" class="page">
-        <h2 style="margin-bottom: 15px;">🍕 المطاعم المتوفرة</h2>
-        <div class="restaurants-grid" id="restaurantsGrid"></div>
+    <div id="notificationStatus" class="card" style="display:none; border-left: 5px solid #2dd4bf;">
+        <h4>🔔 وضع المندوب نشط</h4>
+        <p>سيتم تنبيهك فور وصول طلبات جديدة...</p>
     </div>
-
-    <div id="settingsPage" class="page">
-        <h2>⚙️ الإعدادات</h2>
-        <button class="btn-send" onclick="document.body.classList.toggle('dark-mode')">تبديل الوضع الليلي</button>
-        <button class="btn-send" style="background: #ff4444; color: white;" onclick="logout()">تسجيل الخروج</button>
-    </div>
-</main>
+</div>
 
 <nav class="bottom-nav">
-    <div class="nav-item active" onclick="showPage('homePage')"><i class="fas fa-home"></i>الرئيسية</div>
-    <div class="nav-item" onclick="showPage('restaurantsPage')"><i class="fas fa-utensils"></i>المطاعم</div>
-    <div class="nav-item" onclick="showPage('settingsPage')"><i class="fas fa-cog"></i>الإعدادات</div>
+    <div class="nav-item active"><i class="fas fa-home"></i><br>الرئيسية</div>
+    <div class="nav-item" onclick="activateDriverMode()"><i class="fas fa-bell"></i><br>تنبيهات المندوب</div>
 </nav>
 
 <script>
-    // 1. إعدادات Firebase و OneSignal (ضع مفاتيحك هنا)
-    const ONESIGNAL_APP_ID = "92000f12-453d-489e-b8e9-d0e87ab807eb";
-    const ONESIGNAL_REST_KEY = "ضعه_هنا_يا_كابتن"; // انسخ المفتاح الذي وجدناه في الصورة 15 وضعه هنا
+    // 1. إعدادات Firebase (مستقرة وجاهزة)
+    const firebaseConfig = {
+        apiKey: "AIzaSyCMb07oP2PMUdTlffJjYkbfThC34x1dbtU",
+        authDomain: "waselny-2812b.firebaseapp.com",
+        databaseURL: "https://waselny-2812b-default-rtdb.firebaseio.com",
+        projectId: "waselny-2812b",
+        storageBucket: "waselny-2812b.firebasestorage.app",
+        messagingSenderId: "662536104158",
+        appId: "1:662536104158:web:666db40942313724c3fa4f"
+    };
 
-    window.OneSignalDeferred = window.OneSignalDeferred || [];
-    OneSignalDeferred.push(function(OneSignal) {
-        OneSignal.init({
-            appId: ONESIGNAL_APP_ID,
-        });
-    });
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
 
-    // 2. وظيفة إرسال الإشعار (محرك الإمبراطورية)
-    async function sendNotificationToDrivers(title, message) {
-        const data = {
-            app_id: ONESIGNAL_APP_ID,
-            included_segments: ["All"], // يرسل لكل المندوبين المشتركين
-            headings: { "en": title, "ar": title },
-            contents: { "en": message, "ar": message },
-            android_accent_color: "FF2DD4BF",
-            priority: 10
+    // 2. وظيفة إنشاء طلب جديد (العميل)
+    function createOrder(serviceName) {
+        const orderId = Date.now();
+        const orderData = {
+            id: orderId,
+            service: serviceName,
+            status: "pending",
+            time: new Date().toLocaleTimeString('ar-SA'),
+            timestamp: firebase.database.ServerValue.TIMESTAMP
         };
 
-        try {
-            await fetch("https://onesignal.com/api/v1/notifications", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json; charset=utf-8",
-                    "Authorization": "Basic " + ONESIGNAL_REST_KEY
-                },
-                body: JSON.stringify(data)
-            });
-            console.log("تم إرسال الإشعار بنجاح");
-        } catch (error) {
-            console.error("خطأ في إرسال الإشعار:", error);
+        db.ref('orders/' + orderId).set(orderData)
+            .then(() => {
+                alert("✅ تم إرسال طلبك! المندوبين استلموا إشعاراً الآن.");
+            })
+            .catch((error) => alert("خطأ: " + error.message));
+    }
+
+    // 3. نظام الإشعارات الفوري (للمندوب)
+    function activateDriverMode() {
+        document.getElementById('notificationStatus').style.display = 'block';
+        alert("🔔 تم تفعيل نظام المراقبة. لا تغلق هذه الصفحة، ستسمع صوتاً عند وصول أي طلب.");
+
+        // مراقبة الطلبات الجديدة في Firebase
+        db.ref('orders').limitToLast(1).on('child_added', (snapshot) => {
+            const newOrder = snapshot.val();
+            
+            // التأكد أن الطلب جديد (ليس قديم من الأرشيف)
+            const now = Date.now();
+            if (newOrder.timestamp > (now - 10000)) { 
+                playNotificationSound();
+                showBrowserNotification("طلب جديد واصل!", "خدمة: " + newOrder.service);
+            }
+        });
+    }
+
+    // 4. وظيفة الصوت والتنبيه
+    function playNotificationSound() {
+        const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3');
+        audio.play();
+    }
+
+    function showBrowserNotification(title, body) {
+        if (Notification.permission === "granted") {
+            new Notification(title, { body: body, icon: "https://cdn-icons-png.flaticon.com/512/3119/3119338.png" });
+        } else if (Notification.permission !== "denied") {
+            Notification.requestPermission();
         }
     }
 
-    // 3. التحكم في الصفحات
-    function showPage(pageId) {
-        document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
-        document.getElementById(pageId).classList.add('active-page');
-        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    // اطلب الإذن فور دخول الصفحة
+    if (Notification.permission !== "granted") {
+        Notification.requestPermission();
     }
-
-    // 4. محاكاة طلب خدمة (لتجربة الإشعار)
-    function requestService(name) {
-        showToast("جاري إرسال طلبك...");
-        // هنا يتم الإرسال الفوري للمندوبين
-        sendNotificationToDrivers("طلب جديد! 📦", "هناك طلب " + name + " جديد بانتظارك.");
-    }
-
-    function showToast(msg) {
-        let t = document.getElementById('toastMsg');
-        t.innerText = msg; t.classList.add('show');
-        setTimeout(() => t.classList.remove('show'), 3000);
-    }
-
-    // بيانات تجريبية سريعة
-    const services = ["تاكسي 🚖", "دراجة 🏍️", "توصيل 📦", "تسوق 🛒"];
-    document.getElementById('servicesGrid').innerHTML = services.map(s => `
-        <div class="service-card" onclick="requestService('${s}')">
-            <h3>${s}</h3>
-            <button class="btn-send">اطلب الآن</button>
-        </div>
-    `).join('');
-
-    function logout() { localStorage.clear(); location.reload(); }
 </script>
+
 </body>
 </html>

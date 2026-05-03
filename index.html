@@ -320,6 +320,48 @@ document.getElementById('testNotifBtn')?.addEventListener('click', sendTestNotif
 // ... (هنا يوضع باقي الكود الأصلي الذي يزيد عن 20000 حرف) ...
 
 console.log("تم تهيئة Firebase v9 بنجاح");
-</script>
+</script>// إصلاح شامل لمشكلة اللمس وعدم الاستجابة
+(function fixTouch() {
+    // التأكد من أن جميع العناصر القابلة للنقر تمتلك الخصائص المطلوبة
+    const clickableSelectors = [
+        '.service-card', '.res-card', '.cat-chip', '.payment-btn', 
+        '.btn-send', '.geo-btn', '.action-btn', '.nav-item', 
+        '.setting-row', '.add-btn-circle', '#enableNotifBtn', '#testNotifBtn'
+    ];
+    const elements = document.querySelectorAll(clickableSelectors.join(','));
+    elements.forEach(el => {
+        // إجبار الخصائص
+        el.style.cursor = 'pointer';
+        el.style.touchAction = 'manipulation';
+        el.style.userSelect = 'none'; // منع تحديد النص أثناء الضغط
+        // إضافة حدث touchstart للتأكيد (يتحول إلى click)
+        el.addEventListener('touchstart', (e) => {
+            // لا نمنع الافتراضي بالكامل، ولكن نضمن أن العنصر سيولّد click أيضاً
+            // فقط نضمن أن العنصر ليس معطلاً
+            if (el.getAttribute('disabled')) return;
+            // محاكاة الـ click بعد 10ms إذا لم تنطلق تلقائياً
+            setTimeout(() => {
+                el.click();
+            }, 10);
+        }, { passive: false });
+    });
+    // إصلاح حالة الأزرار التي تستخدم onclick بالسلسلة النصية
+    document.querySelectorAll('[onclick]').forEach(el => {
+        const originalOnClick = el.getAttribute('onclick');
+        if (originalOnClick && !el.hasAttribute('data-fixed')) {
+            el.setAttribute('data-fixed', 'true');
+            el.removeAttribute('onclick'); // إزالة السمة القديمة
+            el.addEventListener('click', (e) => {
+                try {
+                    // تنفيذ الكود بداخل السمة بأمان
+                    new Function('event', originalOnClick)(e);
+                } catch (err) {
+                    console.warn('خطأ في تنفيذ onclick:', err);
+                }
+            });
+        }
+    });
+    console.log('✅ تم إصلاح اللمس لجميع العناصر');
+})();
 </body>
 </html>

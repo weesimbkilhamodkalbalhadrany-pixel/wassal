@@ -2,73 +2,71 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>وصّال | Wassal - إشعارات فورية</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <!-- Firebase SDKs -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
     <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-messaging-compat.js"></script>
     <style>
-        /* أنماط مختصرة لكنها تغطي كل الأساسيات */
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Cairo', sans-serif; }
-        :root { --primary-dark: #0a2b3e; --primary-light: #2dd4bf; --bg-light: #f8fafc; --card-light: #ffffff; --text-light: #1e293b; --danger: #ef4444; --success: #10b981; --restaurant-accent: #f97316; }
-        body { background: var(--bg-light); color: var(--text-light); }
-        .app-header { background: linear-gradient(135deg, var(--primary-dark), #1a4f6e); color: white; padding: 20px 24px 32px; border-radius: 0 0 48px 48px; text-align: center; }
-        .logo-area h1 { font-size: 2.2rem; font-weight: 900; }
-        .categories-scroll { display: flex; gap: 12px; overflow-x: auto; padding: 15px 20px; margin-top: -30px; }
-        .category-item { min-width: 100px; background: white; padding: 15px 10px; border-radius: 22px; text-align: center; cursor: pointer; border: 2px solid transparent; }
-        .category-item.active { border-color: var(--primary-light); background: #f0fdfa; }
-        .services-grid, .restaurants-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; margin: 10px 0; }
-        .service-card, .restaurant-card { background: var(--card-light); border-radius: 28px; padding: 24px 12px; text-align: center; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
-        .btn-send { width: 100%; padding: 16px; background: var(--primary-light); border: none; border-radius: 44px; font-weight: 900; font-size: 1.1rem; cursor: pointer; margin-top: 16px; }
-        .bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; display: flex; justify-content: space-around; padding: 10px 0; border-top: 1px solid #ddd; }
-        .nav-item { text-align: center; flex: 1; color: gray; cursor: pointer; }
-        .nav-item.active { color: var(--primary-light); }
-        .page { display: none; }
+        :root { --primary: #2dd4bf; --dark: #0a2b3e; --bg: #f8fafc; --white: #fff; --gray: #64748b; --danger: #ef4444; }
+        body { background: var(--bg); color: #1e293b; }
+        .app-header { background: linear-gradient(135deg, var(--dark), #1a4f6e); color: white; padding: 20px; text-align: center; border-radius: 0 0 40px 40px; }
+        .logo h1 { font-size: 2rem; font-weight: 900; }
+        .categories { display: flex; gap: 12px; overflow-x: auto; padding: 15px; margin-top: -25px; }
+        .category { background: var(--white); padding: 12px; border-radius: 28px; text-align: center; min-width: 90px; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.05); border: 2px solid transparent; }
+        .category.active { border-color: var(--primary); background: #e6fffa; }
+        .category i { font-size: 1.5rem; color: var(--primary); display: block; margin-bottom: 5px; }
+        .grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 16px; padding: 20px; }
+        .card { background: var(--white); border-radius: 28px; padding: 20px 12px; text-align: center; cursor: pointer; box-shadow: 0 2px 6px rgba(0,0,0,0.05); transition: 0.2s; }
+        .card:active { transform: scale(0.97); }
+        .card-icon { font-size: 2.5rem; background: var(--primary); width: 65px; height: 65px; border-radius: 35px; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; color: white; }
+        .btn { width: 100%; padding: 14px; background: var(--primary); border: none; border-radius: 40px; font-weight: bold; font-size: 1rem; cursor: pointer; margin-top: 12px; }
+        .bottom-nav { position: fixed; bottom: 0; width: 100%; background: var(--white); display: flex; justify-content: space-around; padding: 10px 0; border-top: 1px solid #e2e8f0; }
+        .nav-item { text-align: center; flex: 1; color: var(--gray); cursor: pointer; }
+        .nav-item.active { color: var(--primary); }
+        .page { display: none; padding: 20px 16px 80px; }
         .active-page { display: block; }
-        .toast { position: fixed; top: -100px; left: 20px; right: 20px; background: var(--success); color: white; padding: 16px; border-radius: 30px; text-align: center; z-index: 9999; transition: top 0.3s; }
-        .toast.show { top: 20px; }
-        .login-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #0a2b3e; display: flex; align-items: center; justify-content: center; z-index: 10000; }
-        .login-card { background: white; border-radius: 48px; padding: 32px; width: 90%; max-width: 380px; text-align: center; }
-        .role-buttons { display: flex; gap: 10px; margin-bottom: 20px; }
+        .toast { position: fixed; bottom: 80px; left: 20px; right: 20px; background: #10b981; color: white; padding: 12px; border-radius: 30px; text-align: center; z-index: 9999; opacity: 0; transition: 0.3s; pointer-events: none; }
+        .toast.show { opacity: 1; bottom: 100px; }
+        .login-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--dark); display: flex; align-items: center; justify-content: center; z-index: 10000; }
+        .login-card { background: var(--white); border-radius: 48px; padding: 32px; width: 90%; max-width: 360px; text-align: center; }
+        .role-buttons { display: flex; gap: 10px; margin: 20px 0; }
         .role-btn { flex: 1; padding: 10px; border-radius: 30px; background: #e2e8f0; cursor: pointer; }
-        .role-btn.active { background: var(--primary-light); color: white; }
-        input { width: 100%; padding: 14px; margin: 10px 0; border-radius: 30px; border: 1px solid #ccc; }
-        .order-card, .restaurant-menu-card { background: white; border-radius: 32px; padding: 24px; margin-bottom: 20px; }
-        .menu-item-row { display: flex; justify-content: space-between; padding: 12px; border-bottom: 1px solid #eee; }
+        .role-btn.active { background: var(--primary); color: white; }
+        input { width: 100%; padding: 12px; margin: 8px 0; border-radius: 30px; border: 1px solid #ccc; }
+        .menu-item { display: flex; justify-content: space-between; padding: 12px; border-bottom: 1px solid #eee; align-items: center; }
+        .item-price { color: var(--primary); font-weight: bold; }
+        .order-card { background: var(--white); border-radius: 28px; padding: 20px; margin-bottom: 20px; }
     </style>
 </head>
 <body>
 
-<header class="app-header">
-    <div class="logo-area"><h1>وصّال | Wassal</h1><div class="slogan">إشعارات فورية - مشروع جديد</div></div>
-</header>
+<header class="app-header"><div class="logo"><h1>وصّال | Wassal</h1><p>إشعارات فورية - 18 مطعماً</p></div></header>
 
-<div class="categories-scroll" id="categoriesScroll">
-    <div class="category-item active" data-category="restaurants"><i class="fas fa-utensils"></i><span>المطاعم</span></div>
-    <div class="category-item" data-category="delivery"><i class="fas fa-motorcycle"></i><span>التوصيل</span></div>
-    <div class="category-item" data-category="market"><i class="fas fa-shopping-basket"></i><span>سوبر ماركت</span></div>
+<div class="categories" id="categories">
+    <div class="category active" data-cat="restaurants"><i class="fas fa-utensils"></i><span>مطاعم</span></div>
+    <div class="category" data-cat="delivery"><i class="fas fa-motorcycle"></i><span>توصيل</span></div>
+    <div class="category" data-cat="market"><i class="fas fa-shopping-basket"></i><span>سوبرماركت</span></div>
 </div>
 
 <main>
     <div id="homePage" class="page active-page">
-        <h3 id="sectionTitle" style="margin-bottom:15px;">🍕 المطاعم</h3>
-        <div class="services-grid" id="dynamicGrid"></div>
-        <button id="enableNotificationsBtn" class="btn-send">🔔 تفعيل الإشعارات</button>
-        <button id="trackOrderBtnHome" class="btn-send" style="display:none;">📍 تتبع طلبي</button>
+        <h3 id="sectionTitle">🍕 المطاعم</h3>
+        <div id="dynamicGrid" class="grid"></div>
+        <button id="enableNotificationsBtn" class="btn" style="background:#f97316;">🔔 تفعيل الإشعارات</button>
+        <button id="trackBtn" class="btn" style="display:none;">📍 تتبع طلبي</button>
     </div>
-    <div id="ordersPage" class="page"><div class="order-card">قائمة الطلبات قيد التطوير</div></div>
-    <div id="settingsPage" class="page"><div class="order-card"><button id="logoutBtn" class="btn-send">تسجيل الخروج</button></div></div>
-    <div id="restaurantMenuPage" class="page"><div id="restaurantMenuContainer"></div></div>
+    <div id="ordersPage" class="page"><div class="order-card" id="ordersList">📋 لا توجد طلبات</div></div>
+    <div id="settingsPage" class="page"><div class="order-card"><button id="logoutBtn" class="btn">تسجيل الخروج</button></div></div>
+    <div id="menuPage" class="page"><div id="menuContainer"></div></div>
     <div id="invoicePage" class="page"><div id="invoiceContainer"></div></div>
 </main>
 
 <nav class="bottom-nav">
     <div class="nav-item active" data-page="homePage"><i class="fas fa-home"></i><span>الرئيسية</span></div>
-    <div class="nav-item" data-page="ordersPage"><i class="fas fa-list-ul"></i><span>طلباتي</span></div>
+    <div class="nav-item" data-page="ordersPage"><i class="fas fa-list"></i><span>طلباتي</span></div>
     <div class="nav-item" data-page="settingsPage"><i class="fas fa-cog"></i><span>الإعدادات</span></div>
 </nav>
 
@@ -77,9 +75,9 @@
     <div class="login-card">
         <h3>وصّال | Wassal</h3>
         <div class="role-buttons"><div class="role-btn active" data-role="customer">عميل</div><div class="role-btn" data-role="driver">مندوب</div></div>
-        <input type="text" id="customerName" placeholder="الاسم بالعربي"><input type="tel" id="loginPhone" placeholder="رقم الهاتف">
-        <input type="text" id="driverName" placeholder="الاسم (للمندوب)" style="display:none;"><input type="password" id="loginPassword" placeholder="كلمة السر" style="display:none;">
-        <button id="loginBtn" class="btn-send">دخول</button>
+        <input type="text" id="customerName" placeholder="الاسم"><input type="tel" id="customerPhone" placeholder="رقم الهاتف">
+        <input type="text" id="driverName" placeholder="الاسم (مندوب)" style="display:none;"><input type="password" id="driverPassword" placeholder="كلمة السر" style="display:none;">
+        <button id="loginBtn" class="btn">دخول</button>
     </div>
 </div>
 
@@ -98,41 +96,33 @@
     firebase.initializeApp(firebaseConfig);
     const messaging = firebase.messaging();
     
-    // دالة طلب الإذن والحصول على التوكن
-    async function requestNotificationPermission() {
-        try {
-            const permission = await Notification.requestPermission();
-            if (permission === 'granted') {
-                const token = await messaging.getToken({ vapidKey: vapidKey });
-                console.log('✅ FCM Token:', token);
-                // حفظ التوكن في Realtime Database (اختياري)
-                if (currentUser && currentUser.phone) {
-                    await fetch(`https://wassal-app-final-default-rtdb.firebaseio.com/users/${currentUser.phone}/fcm_token.json`, {
-                        method: 'PUT',
-                        body: JSON.stringify(token)
-                    });
-                }
-                showToast('✅ تم تفعيل الإشعارات بنجاح');
-                return token;
-            } else {
-                showToast('⚠️ لم يتم منح الإذن');
-                return null;
-            }
-        } catch (err) {
-            console.error(err);
-            showToast('❌ فشل تفعيل الإشعارات: ' + err.message);
-        }
-    }
+    // ======================= قائمة المطاعم الـ 18 كاملة =======================
+    const restaurants = [
+        { id: 1, name: "رويال بروستر", category: "بروست", items: [{n:"بروست 4 قطع",p:3500},{n:"بروست 8 قطع",p:6800},{n:"وجبة حراق",p:3700},{n:"ساندوتش زنجر",p:1800},{n:"بطاطس عائلي",p:1200}] },
+        { id: 2, name: "البيك رويال", category: "بروست", items: [{n:"وجبة مسحب",p:3200},{n:"ساندوتش مسحب",p:1400},{n:"ناجتس",p:2500},{n:"ذرة مسلوقة",p:600}] },
+        { id: 3, name: "شاورما هت", category: "شاورما", items: [{n:"شاورما دجاج",p:1200},{n:"صاروخ دجاج",p:1800},{n:"عربي دبل",p:2500},{n:"فتة شاورما",p:2800}] },
+        { id: 4, name: "ستار برجر", category: "برجر", items: [{n:"برجر لحم",p:1800},{n:"برجر دجاج",p:1700},{n:"مشروم برجر",p:2200},{n:"حلقات بصل",p:800}] },
+        { id: 5, name: "شواية المكلا", category: "مشاوي", items: [{n:"دجاجة شواية",p:4500},{n:"ربع دجاج",p:1200},{n:"مندي دجاج",p:3500},{n:"أرز مندي",p:1000}] },
+        { id: 6, name: "كنافة تايم", category: "حلويات", items: [{n:"كنافة نابلسية",p:1500},{n:"كنافة بالقشطة",p:1600},{n:"بسبوسة",p:800},{n:"قطايف",p:1000}] },
+        { id: 7, name: "أرسو - ARSO", category: "عصائر", items: [{n:"عصير عرائسي",p:1500},{n:"عصير أفوكادو",p:2000},{n:"وافل نوتيلا",p:1800},{n:"سموذي توت",p:1500}] },
+        { id: 8, name: "أمين بيتزا", category: "بيتزا", items: [{n:"بيتزا ببروني",p:3800},{n:"بيتزا خضار",p:3200},{n:"باستا إيطالية",p:2500},{n:"لازانيا",p:3000}] },
+        { id: 9, name: "زيت وزعتر", category: "فطور", items: [{n:"منقوشة زعتر",p:800},{n:"جبن عكاوي",p:1200},{n:"فطيرة سبانخ",p:900},{n:"صحن زيتون",p:500}] },
+        { id: 10, name: "خير زمان", category: "شعبيات", items: [{n:"فول طاوة",p:800},{n:"شكشوكة",p:1000},{n:"معصوب ملكي",p:2200},{n:"عريكة",p:2500}] },
+        { id: 11, name: "عشش تهامة", category: "مشاوي", items: [{n:"موفى دجاج",p:4000},{n:"سمك مخبزة",p:6000},{n:"لحوح بلدي",p:500},{n:"كبسة تهامية",p:3500}] },
+        { id: 12, name: "سام روستر", category: "بروست", items: [{n:"دجاج حار 4 قطع",p:3600},{n:"أجنحة دجاج",p:2500},{n:"برجر سام",p:2400},{n:"بطاطس كرنش",p:900}] },
+        { id: 13, name: "هوت سبايسي", category: "وجبات حارة", items: [{n:"تاكو حراق",p:2200},{n:"برجر سبايسي",p:2500},{n:"بطاطس ناري",p:1200},{n:"دجاج متبل",p:3500}] },
+        { id: 14, name: "مأكولات الشرق", category: "مشاوي", items: [{n:"كباب لحم",p:3500},{n:"ريش غنم",p:5500},{n:"مشكل مشويات",p:14000},{n:"أرز زعفران",p:1200}] },
+        { id: 15, name: "عالم العصائر", category: "عصائر", items: [{n:"عصير مانجو",p:1200},{n:"عصير فراولة",p:1300},{n:"كوكتيل فواكه",p:1400},{n:"كريب بالجبن",p:1800}] },
+        { id: 16, name: "فلافل على كيفك", category: "فطور", items: [{n:"ساندوتش فلافل",p:800},{n:"صحن فلافل",p:1500},{n:"فول طاوة",p:1000},{n:"طعمية مصرية",p:600}] },
+        { id: 17, name: "ركن الحلويات", category: "حلويات", items: [{n:"تورتة شوكولاتة",p:8500},{n:"سينابون",p:1500},{n:"تشيز كيك",p:1800},{n:"كب كيك",p:700}] },
+        { id: 18, name: "حضرموت للمندي", category: "مندي", items: [{n:"مندي لحم",p:7000},{n:"مندي دجاج",p:3500},{n:"مدفون لحم",p:7500},{n:"زربيان",p:5500}] }
+    ];
     
-    // استقبال الإشعارات أثناء فتح التطبيق
-    messaging.onMessage((payload) => {
-        showToast(`${payload.notification.title}: ${payload.notification.body}`);
-    });
-    
-    // ======================= دوال التطبيق الأساسية =======================
+    // ======================= دوال التطبيق =======================
     let currentUser = null;
-    const DRIVER_PASSWORD = "weesim73741";
     let currentCategory = 'restaurants';
+    let currentRestaurant = null;
+    let cart = [];
     
     function showToast(msg) {
         let t = document.getElementById('toastMsg');
@@ -140,130 +130,166 @@
         t.classList.add('show');
         setTimeout(() => t.classList.remove('show'), 3000);
     }
+    
     function tab(pageId) {
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
         document.getElementById(pageId).classList.add('active-page');
     }
+    
     function setActiveNav(pageId) {
-        document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
         document.querySelector(`.nav-item[data-page="${pageId}"]`).classList.add('active');
     }
     
-    // بيانات المطاعم التجريبية
-    const wassalRestaurants = [
-        { id: 1, name: "رويال بروستر", category: "بروست", items: [{n:"بروست 4 قطع",p:3500},{n:"بطاطس",p:1200}] },
-        { id: 2, name: "شاورما هت", category: "شاورما", items: [{n:"شاورما دجاج",p:1200}] }
-    ];
-    
-    function renderDynamicGrid() {
+    function renderGrid() {
         const grid = document.getElementById('dynamicGrid');
         const title = document.getElementById('sectionTitle');
-        if(!grid) return;
+        if (!grid) return;
         grid.innerHTML = '';
-        if(currentCategory === 'restaurants') {
-            title.innerHTML = '🍕 المطاعم';
-            wassalRestaurants.forEach(r => {
-                grid.innerHTML += `<div class="restaurant-card" onclick="openRestaurantMenu(${r.id})"><div class="service-icon"><i class="fas fa-utensils"></i></div><h3>${r.name}</h3></div>`;
+        if (currentCategory === 'restaurants') {
+            title.innerHTML = '🍕 المطاعم (18 مطعماً)';
+            restaurants.forEach(r => {
+                grid.innerHTML += `<div class="card" onclick="openRestaurant(${r.id})"><div class="card-icon"><i class="fas fa-utensils"></i></div><h3>${r.name}</h3><p style="font-size:12px; color:gray;">${r.category}</p></div>`;
             });
-        } else if(currentCategory === 'delivery') {
-            title.innerHTML = '🛵 خدمة التوصيل';
-            grid.innerHTML = `<div class="service-card" onclick="alert('خدمة التوصيل قيد التطوير')"><div class="service-icon">🚖</div><h3>تاكسي</h3></div>`;
-        } else if(currentCategory === 'market') {
+        } else if (currentCategory === 'delivery') {
+            title.innerHTML = '🛵 خدمات التوصيل';
+            grid.innerHTML = `<div class="card" onclick="showToast('خدمة التوصيل قيد التطوير')"><div class="card-icon"><i class="fas fa-taxi"></i></div><h3>تاكسي</h3></div><div class="card" onclick="showToast('قريباً')"><div class="card-icon"><i class="fas fa-motorcycle"></i></div><h3>دراجة</h3></div>`;
+        } else if (currentCategory === 'market') {
             title.innerHTML = '🛒 سوبر ماركت';
-            grid.innerHTML = `<div class="service-card" onclick="alert('سوبر ماركت قيد التطوير')"><div class="service-icon">🏢</div><h3>خير زمان</h3></div>`;
+            grid.innerHTML = `<div class="card" onclick="showToast('سوبر ماركت قيد التطوير')"><div class="card-icon"><i class="fas fa-store"></i></div><h3>خير زمان</h3></div>`;
         }
     }
     
-    window.openRestaurantMenu = function(restId) {
-        if(currentUser?.role !== 'customer') { showToast("الرجاء تسجيل الدخول كعميل"); return; }
-        let restaurant = wassalRestaurants.find(r => r.id === restId);
-        let html = `<h2>${restaurant.name}</h2><div class="menu-items-list">`;
-        restaurant.items.forEach(item => {
-            html += `<div class="menu-item-row"><span>${item.n}</span><span>${Math.round(item.p/1000)} ريال</span><button class="btn-send" style="width:auto; padding:8px 16px; margin-top:0;" onclick="showToast('تمت الإضافة')">➕ أضف</button></div>`;
+    window.openRestaurant = function(id) {
+        if (!currentUser || currentUser.role !== 'customer') { showToast("سجل دخول كعميل أولاً"); return; }
+        currentRestaurant = restaurants.find(r => r.id === id);
+        if (!currentRestaurant) return;
+        let html = `<div class="order-card"><h2>🍽️ ${currentRestaurant.name}</h2><h4>قائمة الطعام</h4>`;
+        currentRestaurant.items.forEach(item => {
+            html += `<div class="menu-item"><span>${item.n}</span><span class="item-price">${Math.round(item.p/1000)} ريال</span><button class="btn" style="width:auto; padding:6px 16px; margin-top:0;" onclick="addToCart('${item.n}',${item.p})">➕ أضف</button></div>`;
         });
-        html += `<button class="btn-send" onclick="tab('homePage')">🔙 رجوع</button></div>`;
-        document.getElementById('restaurantMenuContainer').innerHTML = html;
-        tab('restaurantMenuPage');
+        html += `<div id="cartPreview"></div><button class="btn" onclick="tab('homePage')">🔙 رجوع</button></div>`;
+        document.getElementById('menuContainer').innerHTML = html;
+        tab('menuPage');
     };
     
-    function switchCategory(cat) {
-        currentCategory = cat;
-        document.querySelectorAll('.category-item').forEach(item => {
-            if(item.dataset.category === cat) item.classList.add('active');
-            else item.classList.remove('active');
-        });
-        renderDynamicGrid();
+    window.addToCart = function(name, price) {
+        cart.push({ name, price, qty: 1 });
+        showToast(`✅ تمت إضافة ${name}`);
+        let cartDiv = document.getElementById('cartPreview');
+        if (cartDiv) {
+            let total = cart.reduce((s,i)=>s+(i.price*i.qty),0);
+            cartDiv.innerHTML = `<hr><h4>السلة (${cart.length})</h4><p>المجموع: ${Math.round(total/1000)} ريال</p><button class="btn" onclick="checkout()">إتمام الطلب</button>`;
+        }
+    };
+    
+    window.checkout = function() {
+        if (cart.length === 0) { showToast("السلة فارغة"); return; }
+        let total = cart.reduce((s,i)=>s+(i.price*i.qty),0);
+        let orderId = Date.now();
+        let order = { id: orderId, restaurant: currentRestaurant.name, items: cart, total, status: 'pending', customer: currentUser.name, phone: currentUser.phone, createdAt: new Date().toISOString() };
+        localStorage.setItem('currentOrder', JSON.stringify(order));
+        showToast(`✅ تم إنشاء الطلب #${orderId}`);
+        cart = [];
         tab('homePage');
-        setActiveNav('homePage');
+        document.getElementById('trackBtn').style.display = 'block';
+    };
+    
+    // ======================= الإشعارات =======================
+    async function requestNotifications() {
+        try {
+            const permission = await Notification.requestPermission();
+            if (permission === 'granted') {
+                const token = await messaging.getToken({ vapidKey });
+                console.log('📢 FCM Token:', token);
+                showToast('✅ تم تفعيل الإشعارات');
+                // حفظ التوكن في قاعدة البيانات
+                if (currentUser && currentUser.phone) {
+                    await fetch(`https://wassal-app-final-default-rtdb.firebaseio.com/users/${currentUser.phone}/fcm_token.json`, {
+                        method: 'PUT', body: JSON.stringify(token)
+                    });
+                }
+            } else showToast('⚠️ لم يتم منح الإذن');
+        } catch (err) { console.error(err); showToast('❌ فشل تفعيل الإشعارات'); }
     }
     
-    // تسجيل الدخول
+    messaging.onMessage((payload) => {
+        showToast(`${payload.notification.title}: ${payload.notification.body}`);
+    });
+    
+    // ======================= تسجيل الدخول =======================
     function handleLogin() {
         let role = document.querySelector('.role-btn.active').dataset.role;
-        if(role === 'customer') {
+        if (role === 'customer') {
             let name = document.getElementById('customerName').value.trim();
-            let phone = document.getElementById('loginPhone').value.trim();
-            if(!name || !phone) { showToast("أدخل الاسم والهاتف"); return; }
-            currentUser = { role:'customer', name, phone };
+            let phone = document.getElementById('customerPhone').value.trim();
+            if (!name || !phone) { showToast("أدخل الاسم والهاتف"); return; }
+            currentUser = { role: 'customer', name, phone };
             localStorage.setItem('wassalUser', JSON.stringify(currentUser));
             document.getElementById('loginOverlay').style.display = 'none';
             document.querySelector('main').style.display = 'block';
-            document.querySelector('.categories-scroll').style.display = 'flex';
+            document.querySelector('.categories').style.display = 'flex';
             document.querySelector('.bottom-nav').style.display = 'flex';
             document.querySelector('.app-header').style.display = 'block';
             showToast(`مرحباً ${name}`);
-            switchCategory('restaurants');
-        } else if(role === 'driver') {
+            renderGrid();
+        } else if (role === 'driver') {
             let name = document.getElementById('driverName').value.trim();
-            let pwd = document.getElementById('loginPassword').value.trim();
-            if(!name || pwd !== DRIVER_PASSWORD) { showToast("بيانات المندوب غير صحيحة"); return; }
-            currentUser = { role:'driver', name };
+            let pwd = document.getElementById('driverPassword').value.trim();
+            if (!name || pwd !== 'weesim73741') { showToast("بيانات المندوب غير صحيحة"); return; }
+            currentUser = { role: 'driver', name };
             localStorage.setItem('wassalUser', JSON.stringify(currentUser));
             document.getElementById('loginOverlay').style.display = 'none';
             document.querySelector('main').style.display = 'block';
-            document.querySelector('.categories-scroll').style.display = 'flex';
+            document.querySelector('.categories').style.display = 'flex';
             document.querySelector('.bottom-nav').style.display = 'flex';
             document.querySelector('.app-header').style.display = 'block';
             showToast(`مرحباً مندوب ${name}`);
             tab('ordersPage');
-            setActiveNav('ordersPage');
         }
     }
     
     // ربط الأحداث
-    document.getElementById('loginBtn').addEventListener('click', handleLogin);
-    document.getElementById('enableNotificationsBtn').addEventListener('click', requestNotificationPermission);
-    document.getElementById('logoutBtn')?.addEventListener('click', () => { localStorage.removeItem('wassalUser'); location.reload(); });
+    document.getElementById('loginBtn').onclick = handleLogin;
+    document.getElementById('enableNotificationsBtn').onclick = requestNotifications;
+    document.getElementById('logoutBtn').onclick = () => { localStorage.removeItem('wassalUser'); location.reload(); };
     document.querySelectorAll('.role-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
+        btn.onclick = () => {
             document.querySelectorAll('.role-btn').forEach(r => r.classList.remove('active'));
             btn.classList.add('active');
             let isDriver = btn.dataset.role === 'driver';
             document.getElementById('customerName').style.display = isDriver ? 'none' : 'block';
-            document.getElementById('loginPhone').style.display = isDriver ? 'none' : 'block';
+            document.getElementById('customerPhone').style.display = isDriver ? 'none' : 'block';
             document.getElementById('driverName').style.display = isDriver ? 'block' : 'none';
-            document.getElementById('loginPassword').style.display = isDriver ? 'block' : 'none';
-        });
+            document.getElementById('driverPassword').style.display = isDriver ? 'block' : 'none';
+        };
     });
     document.querySelectorAll('.nav-item').forEach(nav => {
-        nav.addEventListener('click', () => { let page = nav.dataset.page; if(page) { tab(page); setActiveNav(page); } });
+        nav.onclick = () => { let page = nav.dataset.page; if(page) { tab(page); setActiveNav(page); } };
     });
-    document.querySelectorAll('.category-item').forEach(cat => {
-        cat.addEventListener('click', () => switchCategory(cat.dataset.category));
+    document.querySelectorAll('.category').forEach(cat => {
+        cat.onclick = () => {
+            document.querySelectorAll('.category').forEach(c => c.classList.remove('active'));
+            cat.classList.add('active');
+            currentCategory = cat.dataset.cat;
+            renderGrid();
+            tab('homePage');
+            setActiveNav('homePage');
+        };
     });
     
     // استعادة الجلسة
-    if(localStorage.getItem('wassalUser')) {
+    if (localStorage.getItem('wassalUser')) {
         currentUser = JSON.parse(localStorage.getItem('wassalUser'));
         document.getElementById('loginOverlay').style.display = 'none';
         document.querySelector('main').style.display = 'block';
-        document.querySelector('.categories-scroll').style.display = 'flex';
+        document.querySelector('.categories').style.display = 'flex';
         document.querySelector('.bottom-nav').style.display = 'flex';
         document.querySelector('.app-header').style.display = 'block';
-        switchCategory('restaurants');
+        renderGrid();
     } else {
         document.querySelector('main').style.display = 'none';
-        document.querySelector('.categories-scroll').style.display = 'none';
+        document.querySelector('.categories').style.display = 'none';
         document.querySelector('.bottom-nav').style.display = 'none';
         document.querySelector('.app-header').style.display = 'none';
     }

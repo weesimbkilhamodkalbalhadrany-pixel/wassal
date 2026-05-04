@@ -95,7 +95,7 @@
     // 3. نظام الإشعارات الفوري (للمندوب)
     function activateDriverMode() {
         document.getElementById('notificationStatus').style.display = 'block';
-        alert("🔔 تم تفعيل نظام المراقبة. لا تغلق هذه الصفحة، ستسمع صوتاً عند وصول أي طلب.");
+        alert("🔔 ارحب ياعمرو.");
 
         // مراقبة الطلبات الجديدة في Firebase
         db.ref('orders').limitToLast(1).on('child_added', (snapshot) => {

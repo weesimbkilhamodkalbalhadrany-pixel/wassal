@@ -755,9 +755,10 @@
         let driverActiveTab = 'active', appSettings = { workStart: "06:00", workEnd: "22:00" };
         let pendingAction = null, trackingInterval = null, currentClientOrderId = null;
         
-        // قائمة المطاعم الكاملة (18 مطعماً مع كامل الأصناف)
-        const wassalRestaurants = [
-    // المطاعم الـ 18 الحالية
+        // قائمة المطاعم الكاملة (18 مطعماً مع 
+        const restaurants = [
+         [
+    // 1
     {
         "id": 1,
         "name": "مطعم القلعة - Castle",
@@ -781,6 +782,7 @@
             { "name": "معصوب", "price": 1000 }
         ]
     },
+    // 2
     {
         "id": 2,
         "name": "مطعم الشيباني",
@@ -796,6 +798,7 @@
             { "name": "كبدة عجل", "price": 1700 }
         ]
     },
+    // 3
     {
         "id": 3,
         "name": "مطعم روما",
@@ -811,6 +814,7 @@
             { "name": "برجر دجاج", "price": 1200 }
         ]
     },
+    // 4
     {
         "id": 4,
         "name": "نكهة زمان",
@@ -826,6 +830,7 @@
             { "name": "أرز أبيض", "price": 600 }
         ]
     },
+    // 5
     {
         "id": 5,
         "name": "KFC",
@@ -837,6 +842,7 @@
             { "name": "فيليه سوبريم", "price": 2300 }
         ]
     },
+    // 6
     {
         "id": 6,
         "name": "Juice City",
@@ -851,6 +857,7 @@
             { "name": "حمص", "price": 600 }
         ]
     },
+    // 7
     {
         "id": 7,
         "name": "Turkish House",
@@ -862,6 +869,7 @@
             { "name": "لحم بالعجين", "price": 700 }
         ]
     },
+    // 8
     {
         "id": 8,
         "name": "Hot Spicy",
@@ -873,6 +881,7 @@
             { "name": "بيتزا مارجريتا", "price": 1800 }
         ]
     },
+    // 9
     {
         "id": 9,
         "name": "Trend Cafe",
@@ -884,6 +893,7 @@
             { "name": "موكا", "price": 700 }
         ]
     },
+    // 10
     {
         "id": 10,
         "name": "Al Andalus",
@@ -895,6 +905,7 @@
             { "name": "سلتة", "price": 1500 }
         ]
     },
+    // 11
     {
         "id": 11,
         "name": "Crispy Flavors",
@@ -904,6 +915,7 @@
             { "name": "ساندوتش زنجر", "price": 1200 }
         ]
     },
+    // 12
     {
         "id": 12,
         "name": "Amin Pizza",
@@ -913,6 +925,7 @@
             { "name": "بيتزا مارجريتا", "price": 1900 }
         ]
     },
+    // 13
     {
         "id": 13,
         "name": "قرية تهامية",
@@ -923,6 +936,7 @@
             { "name": "لحم مضغوط", "price": 2500 }
         ]
     },
+    // 14
     {
         "id": 14,
         "name": "علم طه",
@@ -932,6 +946,7 @@
             { "name": "طبق شاورما", "price": 2000 }
         ]
     },
+    // 15
     {
         "id": 15,
         "name": "Joe La Yonsa",
@@ -941,6 +956,7 @@
             { "name": "برجر لحم", "price": 1000 }
         ]
     },
+    // 16
     {
         "id": 16,
         "name": "Five Star Burger",
@@ -950,6 +966,7 @@
             { "name": "وجبة بروست", "price": 1300 }
         ]
     },
+    // 17
     {
         "id": 17,
         "name": "Albaik Royal",
@@ -959,6 +976,7 @@
             { "name": "بروست", "price": 1300 }
         ]
     },
+    // 18
     {
         "id": 18,
         "name": "Dynamite",
@@ -968,33 +986,36 @@
             { "name": "شاورما جمبري", "price": 1500 }
         ]
     },
-    // إضافة المطاعم الجديدة
+    // 19
     {
-        id: 19,
-        name: "أبوظبي",
-        category: "مطعم",
-        items: []
+        "id": 19,
+        "name": "أبوظبي",
+        "category": "مطعم",
+        "items": []
     },
+    // 20
     {
-        id: 20,
-        name: "الرابعة",
-        category: "مطعم",
-        items: []
+        "id": 20,
+        "name": "الرابعة",
+        "category": "مطعم",
+        "items": []
     },
+    // 21
     {
-        id: 21,
-        name: "الخيضر",
-        category: "مطعم",
-        items: []
+        "id": 21,
+        "name": "الخيضر",
+        "category": "مطعم",
+        "items": []
     },
+    // 22
     {
-        id: 22,
-        name: "الزهراء",
-        category: "مطعم",
-        items: []
+        "id": 22,
+        "name": "الزهراء",
+        "category": "مطعم",
+        "items": []
     }
-];
-        
+];  // <-- القوس المغلق
+    
 
         // دوال مساعدة
         window.showToast = msg => { let t = document.getElementById('toastMsg'); t.innerText = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 3000); };

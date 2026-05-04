@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -10,7 +9,6 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <style>
-        /* جميع الأنماط كما هي في الكود الأصلي (محذوفة للاختصار ولكنها موجودة في الكود الكامل) */
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Cairo', sans-serif; }
         :root { --primary-dark: #0a2b3e; --primary-light: #2dd4bf; --bg-light: #f8fafc; --card-light: #ffffff; --text-light: #1e293b; --border-light: #e2e8f0; --restaurant-accent: #f97316; }
         body { background: var(--bg-light); color: var(--text-light); }
@@ -97,7 +95,10 @@
 <div id="loginOverlay" class="login-overlay">
     <div class="login-card">
         <h3>وصّال | Wassal</h3>
-        <div class="role-buttons"><button class="role-btn active" data-role="customer">عميل</button><button class="role-btn" data-role="driver">مندوب</button></div>
+        <div class="role-buttons">
+            <button class="role-btn active" data-role="customer">عميل</button>
+            <button class="role-btn" data-role="driver">مندوب</button>
+        </div>
         <input type="text" id="customerName" placeholder="الاسم">
         <input type="tel" id="loginPhone" placeholder="رقم الهاتف">
         <input type="text" id="driverName" placeholder="الاسم (للمندوب)" style="display:none;">
@@ -525,28 +526,71 @@
     document.querySelector('.map-confirm').onclick = () => window.confirmMapLocation();
     document.querySelector('.map-back').onclick = () => { document.getElementById('map-overlay').style.display = 'none'; currentMapMode = null; };
     
-    // ------------------- تسجيل الدخول -------------------
+    // ========== إصلاح تسجيل الدخول: ربط الأحداث بشكل آمن واستجابة النقر ==========
     function setupLogin() {
-        let roleBtns = document.querySelectorAll('.role-btn');
-        let custName = document.getElementById('customerName'), custPhone = document.getElementById('loginPhone');
-        let driverName = document.getElementById('driverName'), driverPass = document.getElementById('loginPassword');
-        roleBtns.forEach(btn => { btn.onclick = () => { roleBtns.forEach(b=>b.classList.remove('active')); btn.classList.add('active'); if(btn.dataset.role==='customer'){ custName.style.display='block'; custPhone.style.display='block'; driverName.style.display='none'; driverPass.style.display='none'; } else { custName.style.display='none'; custPhone.style.display='block'; driverName.style.display='block'; driverPass.style.display='block'; } }; });
-        document.getElementById('loginBtn').onclick = async () => {
-            let role = document.querySelector('.role-btn.active').dataset.role;
-            if(role === 'customer') {
-                let name = custName.value.trim(), phone = custPhone.value.trim();
-                if(!name || !phone) { showToast("أدخل الاسم والهاتف"); return; }
-                currentUser = { role:'customer', name, phone };
+        const roleBtns = document.querySelectorAll('.role-btn');
+        const custNameInput = document.getElementById('customerName');
+        const loginPhoneInput = document.getElementById('loginPhone');
+        const driverNameInput = document.getElementById('driverName');
+        const driverPassInput = document.getElementById('loginPassword');
+        const loginBtn = document.getElementById('loginBtn');
+
+        if (!roleBtns.length || !loginBtn) {
+            console.error("عناصر تسجيل الدخول غير موجودة!");
+            return;
+        }
+
+        // تبديل دور العميل / المندوب
+        roleBtns.forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                roleBtns.forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                const isDriver = this.dataset.role === 'driver';
+                custNameInput.style.display = isDriver ? 'none' : 'block';
+                loginPhoneInput.style.display = 'block';
+                driverNameInput.style.display = isDriver ? 'block' : 'none';
+                driverPassInput.style.display = isDriver ? 'block' : 'none';
+                if (!isDriver) {
+                    driverNameInput.value = '';
+                    driverPassInput.value = '';
+                }
+            });
+        });
+
+        // زر تسجيل الدخول
+        loginBtn.addEventListener('click', async function(e) {
+            e.preventDefault();
+            const activeRole = document.querySelector('.role-btn.active').dataset.role;
+            if (activeRole === 'customer') {
+                const name = custNameInput.value.trim();
+                const phone = loginPhoneInput.value.trim();
+                if (!name || !phone) {
+                    showToast("يرجى إدخال الاسم ورقم الهاتف");
+                    return;
+                }
+                currentUser = { role: 'customer', name, phone };
                 localStorage.setItem('wassalUser', JSON.stringify(currentUser));
                 document.getElementById('loginOverlay').style.display = 'none';
                 showToast(`مرحباً ${name}`);
                 await loadOrders();
                 renderDynamicGrid();
-            } else {
-                let name = driverName.value.trim(), phone = custPhone.value.trim(), pass = driverPass.value.trim();
-                if(!name || !phone || !pass) { showToast("أدخل جميع البيانات"); return; }
-                if(pass !== DRIVER_PASSWORD) { showToast("كلمة سر خاطئة"); return; }
-                currentUser = { role:'driver', name, phone, password:pass };
+                tab('homePage');
+                setActiveNav('homePage');
+            } 
+            else if (activeRole === 'driver') {
+                const name = driverNameInput.value.trim();
+                const phone = loginPhoneInput.value.trim();
+                const password = driverPassInput.value.trim();
+                if (!name || !phone || !password) {
+                    showToast("يرجى إدخال جميع بيانات المندوب");
+                    return;
+                }
+                if (password !== DRIVER_PASSWORD) {
+                    showToast("كلمة سر المندوب غير صحيحة");
+                    return;
+                }
+                currentUser = { role: 'driver', name, phone, password };
                 localStorage.setItem('wassalUser', JSON.stringify(currentUser));
                 document.getElementById('loginOverlay').style.display = 'none';
                 showToast(`مرحباً مندوب ${name}`);
@@ -555,31 +599,58 @@
                 tab('driverPage');
                 setActiveNav('driverPage');
             }
-        };
+        });
     }
-    
+
     // ------------------- بدء التطبيق -------------------
     document.addEventListener('DOMContentLoaded', async () => {
+        // ربط أزرار التنقل الرئيسية
+        document.querySelectorAll('.nav-item').forEach(nav => {
+            nav.addEventListener('click', () => {
+                tab(nav.dataset.page);
+                setActiveNav(nav.dataset.page);
+                if (nav.dataset.page === 'driverPage' && currentUser?.role === 'driver') initDriverPanel();
+            });
+        });
+        document.querySelectorAll('.category-item').forEach(cat => {
+            cat.addEventListener('click', () => switchCategory(cat.dataset.category));
+        });
+        
+        const settingsLogoutBtn = document.getElementById('settingsLogoutBtn');
+        if(settingsLogoutBtn) settingsLogoutBtn.addEventListener('click', () => { localStorage.removeItem('wassalUser'); location.reload(); });
+        
+        const trackOrderBtn = document.getElementById('trackOrderBtnHome');
+        if(trackOrderBtn) trackOrderBtn.addEventListener('click', () => { if(currentTrackingOrderId) viewOrderTracking(currentTrackingOrderId); else showToast("لا يوجد طلب نشط"); });
+        
+        const refreshOrders = document.getElementById('refreshOrdersBtn');
+        if(refreshOrders) refreshOrders.addEventListener('click', () => loadOrders());
+        
+        const closeTracking = document.getElementById('closeTrackingBtn');
+        if(closeTracking) closeTracking.addEventListener('click', () => document.getElementById('trackFullscreen').style.display = 'none');
+        
+        const darkModeToggle = document.getElementById('darkModeToggle');
+        if(darkModeToggle) darkModeToggle.addEventListener('click', () => document.body.classList.toggle('dark-mode'));
+
+        // التحقق من وجود مستخدم مسجل مسبقاً
         let saved = localStorage.getItem('wassalUser');
         if(saved) {
             currentUser = JSON.parse(saved);
             document.getElementById('loginOverlay').style.display = 'none';
             await loadOrders();
-            if(currentUser.role === 'driver') { initDriverPanel(); tab('driverPage'); setActiveNav('driverPage'); }
-            else renderDynamicGrid();
+            if(currentUser.role === 'driver') { 
+                initDriverPanel(); 
+                tab('driverPage'); 
+                setActiveNav('driverPage');
+            } else {
+                renderDynamicGrid();
+                tab('homePage');
+                setActiveNav('homePage');
+            }
         } else {
             document.getElementById('loginOverlay').style.display = 'flex';
-            setupLogin();
+            setupLogin();   // ربط الأحداث بعد أن تكون العناصر جاهزة
         }
-        document.querySelectorAll('.nav-item').forEach(nav => { nav.onclick = () => { tab(nav.dataset.page); setActiveNav(nav.dataset.page); if(nav.dataset.page === 'driverPage' && currentUser?.role === 'driver') initDriverPanel(); }; });
-        document.querySelectorAll('.category-item').forEach(cat => { cat.onclick = () => switchCategory(cat.dataset.category); });
-        document.getElementById('settingsLogoutBtn').onclick = () => { localStorage.removeItem('wassalUser'); location.reload(); };
-        document.getElementById('trackOrderBtnHome').onclick = () => { if(currentTrackingOrderId) viewOrderTracking(currentTrackingOrderId); else showToast("لا يوجد طلب نشط"); };
-        document.getElementById('refreshOrdersBtn').onclick = () => loadOrders();
-        document.getElementById('closeTrackingBtn').onclick = () => document.getElementById('trackFullscreen').style.display = 'none';
-        document.getElementById('darkModeToggle').onclick = () => document.body.classList.toggle('dark-mode');
     });
 </script>
 </body>
 </html>
-```

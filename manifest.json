@@ -1,0 +1,20 @@
+{
+  "name": "وصّال | Wassal",
+  "short_name": "وصّال",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a2b3e",
+  "theme_color": "#0a2b3e",
+  "icons": [
+    {
+      "src": "https://wassal-one.vercel.app/icon.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "https://wassal-one.vercel.app/icon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

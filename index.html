@@ -410,9 +410,24 @@
 <script>(function(w,d, s, id) {if(typeof(w.webpushr)!=='undefined') return;w.webpushr=w.webpushr||function(){(w.webpushr.q=w.webpushr.q||[]).push(arguments)};var js, fjs = d.getElementsByTagName(s)[0];js = d.createElement(s); js.id = id;js.async=1;js.src = "https://cdn.webpushr.com/app.min.js";fjs.parentNode.appendChild(js);}(window,document, 'script', 'webpushr-jssdk'));webpushr('setup',{'key':'BGm2E3kXah3RWguM9lGLSXfwPRLDwULTYUaml28jdI4JkbwqQ9l3qac3sJv3lxN4bahu7hnLH4mKzABEbwOl9Ec' });</script>
 <!-- end webpushr code -->
 
-<!-- طلب الإذن فور فتح التطبيق لضمان تفعيل الخدمة للمناديب -->
+<!-- دمج طلب الإذن والتأكد من تفعيل الإشعارات فور فتح التطبيق -->
 <script>
+    // دالة لطلب الاشتراك يدوياً داخل التطبيق
+    function askForNotification() {
+        if (typeof webpushr !== 'undefined') {
+            webpushr('subscribe', {
+                'callback': function(result) {
+                    if(result.status === 'success'){
+                        console.log("تم الاشتراك بنجاح من داخل تطبيق وصّال");
+                    }
+                }
+            });
+        }
+    }
+
+    // دمج الكود القديم والجديد في onload واحد
     window.onload = function() {
+        // الكود الموجود سابقاً لفحص الحالة والاشتراك إذا كان unsubscribed
         if (typeof webpushr !== 'undefined') {
             webpushr('fetch_subscription_status', function (status) {
                 if (status === 'unsubscribed') {
@@ -420,6 +435,8 @@
                 }
             });
         }
+        // طلب اشتراك إضافي بعد تأخير بسيط للتأكيد وجلب الإذن إذا لم يظهر
+        setTimeout(askForNotification, 2000);
     };
 </script>
 

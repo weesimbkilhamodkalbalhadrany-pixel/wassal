@@ -239,7 +239,7 @@
         let driverActiveTab = 'active', appSettings = { workStart: "06:00", workEnd: "22:00" };
         let pendingAction = null, trackingInterval = null, currentClientOrderId = null;
 
-        // ---------------------- دالة إشعارات Webpushr ----------------------
+        // ---------------------- دالة إشعارات Webpushr (النسخة المحسنة) ----------------------
         async function notifyWassalDrivers() {
             const webpushrKey = '09c8548dcca018e3a6cfbc2656099060';
             const webpushrAuthToken = '121098';
@@ -254,15 +254,15 @@
                     },
                     body: JSON.stringify({
                         "title": "طلب جديد في وصّال! 🚀",
-                        "message": "هناك طلب بانتظارك، افتح التطبيق لقبوله.",
+                        "message": "هناك طلب جديد متاح، افتح التطبيق لقبوله.",
                         "target_url": "https://wassal-one.vercel.app/driver",
-                        "segment": ["drivers"]
+                        "segment": ["drivers"] // هذا هو اسم الشريحة التي أنشأناها
                     })
                 });
                 const result = await response.json();
-                console.log("إشعار webpushr أرسل:", result);
+                console.log("تم إرسال الإشعار بنجاح:", result);
             } catch (error) {
-                console.error("فشل إرسال إشعار webpushr:", error);
+                console.error("فشل إرسال الإشعار:", error);
             }
         }
 

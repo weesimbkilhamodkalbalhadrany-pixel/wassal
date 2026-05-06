@@ -4,12 +4,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
     <title>وصّال | Wassal - توصيل ومطاعم</title>
+    <link rel="manifest" href="/manifest.json">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-messaging-compat.js"></script>
+    
+    <!-- PushAlert Unified Code -->
+    <script type="text/javascript">
+        (function(d, t) {
+            var g = d.createElement(t),
+            s = d.getElementsByTagName(t)[0];
+            g.src = "https://cdn.pushalert.co/unified_515a443a59db04647004635984fda906.js";
+            s.parentNode.insertBefore(g, s);
+        }(document, "script"));
+    </script>
+    <!-- End PushAlert Unified Code -->
+
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Cairo', sans-serif; -webkit-tap-highlight-color: transparent; }
         :root { --primary-dark: #0a2b3e; --primary-light: #2dd4bf; --bg-light: #f8fafc; --card-light: #ffffff; --text-light: #1e293b; --text-muted: #64748b; --border-light: #e2e8f0; --bg-dark: #0f172a; --card-dark: #1e293b; --text-dark: #f1f5f9; --border-dark: #334155; --danger: #ef4444; --success: #10b981; --warning: #f59e0b; --restaurant-accent: #f97316; }
@@ -226,55 +239,34 @@
         let driverActiveTab = 'active', appSettings = { workStart: "06:00", workEnd: "22:00" };
         let pendingAction = null, trackingInterval = null, currentClientOrderId = null;
 
-        // ------------------- دالة إرسال إشعار للمناديب عبر Webpushr -------------------
-        function sendOrderToDrivers(orderId, type) {
+        // ---------------------- دالة إشعارات Webpushr ----------------------
+        async function notifyWassalDrivers() {
             const webpushrKey = '09c8548dcca018e3a6cfbc2656099060';
             const webpushrAuthToken = '121098';
 
-            const payload = {
-                "title": `طلب جديد في وصّال - ${type}! 🚀`,
-                "message": `طلب #${orderId} - هناك عميل بانتظارك، اضغط لقبول الطلب.`,
-                "target_url": "https://wassal-one.vercel.app/orders",
-                "segment": ["drivers_segment"]
-            };
-
-            fetch('https://api.webpushr.com/v1/notification/send/segment', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'webpushrKey': webpushrKey,
-                    'webpushrAuthToken': webpushrAuthToken
-                },
-                body: JSON.stringify(payload)
-            })
-            .then(response => response.json())
-            .then(data => console.log("✅ تم إخطار المناديب عبر Webpushr", data))
-            .catch(err => console.error("❌ فشل إرسال الإشعار:", err));
+            try {
+                const response = await fetch('https://api.webpushr.com/v1/notification/send/segment', {
+                    method: 'POST',
+                    headers: {
+                        'webpushrKey': webpushrKey,
+                        'webpushrAuthToken': webpushrAuthToken,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        "title": "طلب جديد في وصّال! 🚀",
+                        "message": "هناك طلب بانتظارك، افتح التطبيق لقبوله.",
+                        "target_url": "https://wassal-one.vercel.app/driver",
+                        "segment": ["drivers"]
+                    })
+                });
+                const result = await response.json();
+                console.log("إشعار webpushr أرسل:", result);
+            } catch (error) {
+                console.error("فشل إرسال إشعار webpushr:", error);
+            }
         }
 
-        // ------------------- قائمة المطاعم الـ 18 (بالأصناف والصور) -------------------
-        const restaurants = [
-            { id: 1, name: "مطعم القلعة - Castle", category: "مأكولات متنوعة", img: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400", items: [{name:"بروست مع التوابع",price:1500},{name:"بروست بدون توابع",price:1300},{name:"شبس",price:500},{name:"اصابع دجاج",price:1800},{name:"ذبيحة لحم حنيذ",price:8000},{name:"برمة لحم حنيذ",price:9000},{name:"سلطه",price:1900},{name:"فحسة",price:3200},{name:"دجاج محمر تندوري",price:1200},{name:"دجاج شواية",price:1100},{name:"كباب دجاج",price:2300},{name:"صانونة جمبري",price:3000},{name:"بيتزا بالجبن",price:2500},{name:"بيتزا بالدجاج",price:3500},{name:"عريكه",price:1500},{name:"معصوب",price:1000}] },
-            { id: 2, name: "مطعم الشيباني", category: "مأكولات شعبية", img: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=400", items: [{name:"عقدة لحم",price:4000},{name:"فحسة لحم غنمي",price:4000},{name:"شيش طاووق",price:2500},{name:"ريش غنم",price:4600},{name:"مشاوي الشيباني",price:4800},{name:"فتة تمر",price:500},{name:"فتة دخن بالقشطة",price:1600},{name:"كبدة عجل",price:1700}] },
-            { id: 3, name: "مطعم روما", category: "بيتزا وبرجر", img: "https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=400", items: [{name:"بيتزا بالجبن",price:2500},{name:"بيتزا بالدجاج",price:3500},{name:"بيتزا خضار",price:2000},{name:"بيتزا روما",price:2700},{name:"بروست",price:1300},{name:"أصابع دجاج",price:1500},{name:"تشكن جريل",price:3000},{name:"برجر دجاج",price:1200}] },
-            { id: 4, name: "نكهة زمان", category: "لحوم ومشاوي", img: "https://images.unsplash.com/photo-1544025162-d76694265947?w=400", items: [{name:"ثمن ذبيحة حنيذ",price:8000},{name:"برجر دجاج",price:1100},{name:"سلتة",price:1700},{name:"فحسة",price:3000},{name:"بروست",price:1300},{name:"دجاج مضغوط",price:2000},{name:"كباب دجاج",price:2300},{name:"أرز أبيض",price:600}] },
-            { id: 5, name: "KFC", category: "وجبات سريعة", img: "https://images.unsplash.com/photo-1585032226651-759b368d7246?w=400", items: [{name:"زنجر بوكس السمك",price:4400},{name:"تويستر السمك",price:3200},{name:"وجبة أطفال",price:2150},{name:"فيليه سوبريم",price:2300}] },
-            { id: 6, name: "Juice City", category: "عصائر", img: "https://images.unsplash.com/photo-1622484214888-a7c847b3b52e?w=400", items: [{name:"وجبة بروست قطعتين",price:1300},{name:"طبق زنجر",price:1500},{name:"برجر لحم",price:1200},{name:"عصير بطيخ",price:1000},{name:"ميلك شيك أوريو",price:1000},{name:"شاورما صاروخ",price:1200},{name:"حمص",price:600}] },
-            { id: 7, name: "Turkish House", category: "مطبخ تركي", img: "https://images.unsplash.com/photo-1553621042-f6e147245754?w=400", items: [{name:"كباب لحم",price:2400},{name:"شيش طاووق",price:2400},{name:"بيتزا جبن",price:2000},{name:"لحم بالعجين",price:700}] },
-            { id: 8, name: "Hot Spicy", category: "وجبات حارة", img: "https://images.unsplash.com/photo-1534224039826-c7a0eda0e6b3?w=400", items: [{name:"بروست عادي",price:1300},{name:"بروست سبايسي",price:1300},{name:"برجر دجاج",price:1000},{name:"بيتزا مارجريتا",price:1800}] },
-            { id: 9, name: "Trend Cafe", category: "كافيه", img: "https://images.unsplash.com/photo-1442512595331-e89e73853f31?w=400", items: [{name:"وجبة بروست",price:1300},{name:"تشيكن فرايز",price:1900},{name:"برجر ترند",price:1200},{name:"موكا",price:700}] },
-            { id: 10, name: "Al Andalus", category: "عربي", img: "https://images.unsplash.com/photo-1517244683847-7456b63c5969?w=400", items: [{name:"دجاج شواية",price:550},{name:"دجاج مندي",price:900},{name:"برمة لحم",price:2700},{name:"سلتة",price:1500}] },
-            { id: 11, name: "Crispy Flavors", category: "مقرمشات", img: "https://images.unsplash.com/photo-1598515214211-89d3c73ae83b?w=400", items: [{name:"تشكن فرايز",price:1500},{name:"ساندوتش زنجر",price:1200}] },
-            { id: 12, name: "Amin Pizza", category: "بيتزا", img: "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=400", items: [{name:"بيتزا تونة محشية",price:2200},{name:"بيتزا مارجريتا",price:1900}] },
-            { id: 13, name: "قرية تهامية", category: "شعبي", img: "https://images.unsplash.com/photo-1543352634-a1c51d9f1fa7?w=400", items: [{name:"سلتة",price:800},{name:"فحسة",price:1500},{name:"لحم مضغوط",price:2500}] },
-            { id: 14, name: "علم طه", category: "شاورما", img: "https://images.unsplash.com/photo-1594221708779-94832f4320d1?w=400", items: [{name:"شاورما عربي",price:700},{name:"طبق شاورما",price:2000}] },
-            { id: 15, name: "Joe La Yonsa", category: "برجر", img: "https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=400", items: [{name:"برجر دجاج",price:1000},{name:"برجر لحم",price:1000}] },
-            { id: 16, name: "Five Star Burger", category: "برجر", img: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400", items: [{name:"برجر لحم",price:1100},{name:"وجبة بروست",price:1300}] },
-            { id: 17, name: "Albaik Royal", category: "بروست", img: "https://images.unsplash.com/photo-1626645738196-c2a7c8d08f58?w=400", items: [{name:"عريكة ملكي",price:2500},{name:"بروست",price:1300}] },
-            { id: 18, name: "Dynamite", category: "حار", img: "https://images.unsplash.com/photo-1551782450-17144efb9c50?w=400", items: [{name:"وجبة C4",price:2500},{name:"شاورما جمبري",price:1500}] }
-        ];
-
-        // ========== دوال مساعدة ==========
+        // ------------------- دوال مساعدة -------------------
         window.showToast = msg => { let t = document.getElementById('toastMsg'); t.innerText = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 3000); };
         function showPage(pageId) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
@@ -293,7 +285,7 @@
         async function updateUserBusy(phone, isBusy) { await fetch(`${FIREBASE_URL}/users/${phone}.json`, { method: 'PATCH', body: JSON.stringify({ isBusy }) }); }
         function getStatusText(st) { const m = {pending:'قيد المراجعة', on_the_way:'في الطريق', arrived:'وصل الموقع', delivered:'تم التوصيل'}; return m[st] || st; }
 
-        // الإشعارات
+        // الإشعارات المحلية (Firebase Messaging)
         async function registerServiceWorker() { if (!('serviceWorker' in navigator)) return false; try { await navigator.serviceWorker.register('/firebase-messaging-sw.js'); return true; } catch(e) { return false; } }
         async function requestDriverNotificationPermission() { if (!messaging) { showToast("المتصفح لا يدعم الإشعارات"); return; } const swOk = await registerServiceWorker(); if (!swOk) { showToast("فشل تسجيل Service Worker"); return; } try { const permission = await Notification.requestPermission(); if (permission !== 'granted') { showToast("تم رفض الإشعارات"); return; } const token = await messaging.getToken({ vapidKey: VAPID_KEY }); if (token && currentUser?.phone) { await fetch(`${FIREBASE_URL}/driverTokens/${currentUser.phone}.json`, { method: 'PUT', body: JSON.stringify({ token, updatedAt: Date.now() }) }); showToast("🔔 تم تفعيل التنبيهات"); } else showToast("⚠️ لم نحصل على توكن"); } catch(e) { console.error(e); showToast("خطأ في الإشعارات"); } }
         async function notifyDrivers(orderId, type) { await fetch(`${FIREBASE_URL}/pushNotifications/${orderId}.json`, { method: 'PUT', body: JSON.stringify({ orderId, type, title: "📦 طلب جديد!", body: `طلب ${type} #${orderId}`, timestamp: Date.now(), topic: "drivers" }) }).catch(e=>console.warn); }
@@ -321,7 +313,8 @@
             let msg = `🚖 طلب ${vSel}\n🆔 ${id}\n👤 ${tel}\n💰 ${price} ريال\n💳 ${selectedPayment}\n📍 ${pAddr}\n🏁 ${dAddr}\n📝 ${order.note||'لا توجد'}\n\nعزيزي العميل عد للتطبيق لتتبع حالة طلبك 😊`;
             window.open(`https://wa.me/777215154?text=${encodeURIComponent(msg)}`, '_blank');
             notifyDrivers(id, vSel);
-            sendOrderToDrivers(id, vSel);   // إشعار Webpushr للمناديب
+            // إرسال إشعار Webpushr للسائقين
+            await notifyWassalDrivers();
         }
 
         // الخريطة والمطاعم
@@ -335,7 +328,7 @@
         window.addToCart = idx => { const item=currentRestaurant.items[idx]; let existing=cart.find(i=>i.name===item.name); if(existing) existing.qty++; else cart.push({...item, qty:1}); updateCartDisplay(); showToast(`تمت إضافة ${item.name}`); };
         function updateCartDisplay() { const total=cart.reduce((s,i)=>s+(i.price*i.qty),0); document.getElementById('cartCount').innerText=cart.reduce((s,i)=>s+i.qty,0); document.getElementById('cartTotal').innerText=total; document.getElementById('floatCart').style.display=cart.length?'flex':'none'; let html=cart.map(i=>`<div style="display:flex;justify-content:space-between;"><span>${i.name} x${i.qty}</span><span>${i.price*i.qty} ريال</span></div>`).join(''); html+=`<div style="font-weight:bold; margin-top:10px;">الإجمالي: ${total} ريال</div>`; if(deliveryCost) html+=`<div>🚚 التوصيل: ${deliveryCost} ريال</div><div style="color:var(--restaurant-accent);">💰 الإجمالي الكلي: ${total+deliveryCost} ريال</div>`; document.getElementById('cartSummaryRestaurant').innerHTML=html; }
         window.showRestaurantInvoice = () => { if(!customerLocationLatLng&&!customerAddress) return showToast('حدد عنوان التوصيل'); if(!cart.length) return showToast('السلة فارغة'); const totalFood=cart.reduce((s,i)=>s+(i.price*i.qty),0), total=totalFood+deliveryCost; document.getElementById('invoiceContent').innerHTML = cart.map(i=>`<div style="display:flex;justify-content:space-between;"><span>${i.name} x${i.qty}</span><span>${i.price*i.qty} ريال</span></div>`).join('')+`<div style="margin-top:15px; border-top:2px solid #ddd; padding-top:15px;"><span>سعر التوصيل:</span><span>${deliveryCost} ريال</span></div><div style="display:flex; justify-content:space-between; font-size:1.4rem; margin:20px 0; color:var(--restaurant-accent)"><span>الإجمالي:</span><span>${total} ريال</span></div>`; showPage('restaurantInvoicePage'); };
-        window.confirmRestaurantOrder = async () => { if(!customerLocationLatLng&&!customerAddress) return; const totalFood=cart.reduce((s,i)=>s+(i.price*i.qty),0), total=totalFood+deliveryCost, id=Date.now(); const order={ id, type:'restaurant', restaurant:currentRestaurant.name, customerName:currentUser?.name, customerPhone:currentUser?.phone, address:customerAddress, lat:customerLocationLatLng?.lat, lng:customerLocationLatLng?.lng, items:cart.map(i=>({name:i.name,qty:i.qty,price:i.price})), totalFood, deliveryCost, total, status:'pending', createdAt:new Date().toISOString() }; await fetch(`${FIREBASE_URL}/orders/${id}.json`,{method:'PUT',body:JSON.stringify(order)}); localStorage.setItem('currentTrackingOrder',id); currentClientOrderId = id; let msg=`🍽️ طلب من ${currentRestaurant.name}\n🆔 ${id}\n👤 ${currentUser?.name}\n📞 ${currentUser?.phone}\n📍 ${customerAddress}\n\n`; cart.forEach(i=>msg+=`• ${i.name} x${i.qty} = ${i.price*i.qty} ريال\n`); msg+=`\n🚚 التوصيل: ${deliveryCost} ريال\n💰 الإجمالي: ${total} ريال\n\nعزيزي العميل عد للتطبيق لتتبع حالة طلبك 😊`; window.open(`https://wa.me/777215154?text=${encodeURIComponent(msg)}`, '_blank'); showToast('تم إرسال الطلب'); cart=[]; showPage('homePage'); setActiveNav('homePage'); document.getElementById('trackOrderBtnHome').style.display='block'; setTimeout(()=>viewOrderTracking(id),1000); notifyDrivers(id, 'طلب مطعم'); sendOrderToDrivers(id, 'طلب مطعم'); };
+        window.confirmRestaurantOrder = async () => { if(!customerLocationLatLng&&!customerAddress) return; const totalFood=cart.reduce((s,i)=>s+(i.price*i.qty),0), total=totalFood+deliveryCost, id=Date.now(); const order={ id, type:'restaurant', restaurant:currentRestaurant.name, customerName:currentUser?.name, customerPhone:currentUser?.phone, address:customerAddress, lat:customerLocationLatLng?.lat, lng:customerLocationLatLng?.lng, items:cart.map(i=>({name:i.name,qty:i.qty,price:i.price})), totalFood, deliveryCost, total, status:'pending', createdAt:new Date().toISOString() }; await fetch(`${FIREBASE_URL}/orders/${id}.json`,{method:'PUT',body:JSON.stringify(order)}); localStorage.setItem('currentTrackingOrder',id); currentClientOrderId = id; let msg=`🍽️ طلب من ${currentRestaurant.name}\n🆔 ${id}\n👤 ${currentUser?.name}\n📞 ${currentUser?.phone}\n📍 ${customerAddress}\n\n`; cart.forEach(i=>msg+=`• ${i.name} x${i.qty} = ${i.price*i.qty} ريال\n`); msg+=`\n🚚 التوصيل: ${deliveryCost} ريال\n💰 الإجمالي: ${total} ريال\n\nعزيزي العميل عد للتطبيق لتتبع حالة طلبك 😊`; window.open(`https://wa.me/777215154?text=${encodeURIComponent(msg)}`, '_blank'); showToast('تم إرسال الطلب'); cart=[]; showPage('homePage'); setActiveNav('homePage'); document.getElementById('trackOrderBtnHome').style.display='block'; setTimeout(()=>viewOrderTracking(id),1000); notifyDrivers(id, 'طلب مطعم'); await notifyWassalDrivers(); };
 
         // تتبع الطلب
         window.viewOrderTracking = async (id) => { await loadOrders(); const order = allOrders.find(o=>o.id==id); if(!order) return; renderTrackingContent(order); document.getElementById('trackFullscreen').style.display='block'; startTrackingListener(id); };
@@ -411,12 +404,12 @@
         loadSettings();
 
         // ربط الأحداث العامة
-        document.getElementById('darkModeToggle').addEventListener('click', () => { document.body.classList.toggle('dark-mode'); let icon = document.getElementById('darkModeIcon'); icon.className = document.body.classList.contains('dark-mode') ? 'fas fa-toggle-on' : 'fas fa-toggle-off'; localStorage.setItem('darkMode', document.body.classList.contains('dark-mode')); });
-        document.getElementById('whatsappSupport').addEventListener('click', () => window.open('https://wa.me/777215154', '_blank'));
-        document.getElementById('shareApp').addEventListener('click', () => { if(navigator.share) navigator.share({title:'وصّال', text:'تطبيق توصيل ومطاعم', url:location.href}); else showToast("المشاركة غير مدعومة"); });
-        document.getElementById('settingsLogoutBtn').addEventListener('click', () => { localStorage.removeItem('waselny_user'); location.reload(); });
-        document.getElementById('driverLogoutBtn').addEventListener('click', () => { localStorage.removeItem('waselny_user'); location.reload(); });
-        document.getElementById('enableNotificationsBtn').addEventListener('click', () => requestDriverNotificationPermission());
+        document.getElementById('darkModeToggle')?.addEventListener('click', () => { document.body.classList.toggle('dark-mode'); let icon = document.getElementById('darkModeIcon'); icon.className = document.body.classList.contains('dark-mode') ? 'fas fa-toggle-on' : 'fas fa-toggle-off'; localStorage.setItem('darkMode', document.body.classList.contains('dark-mode')); });
+        document.getElementById('whatsappSupport')?.addEventListener('click', () => window.open('https://wa.me/777215154', '_blank'));
+        document.getElementById('shareApp')?.addEventListener('click', () => { if(navigator.share) navigator.share({title:'وصّال', text:'تطبيق توصيل ومطاعم', url:location.href}); else showToast("المشاركة غير مدعومة"); });
+        document.getElementById('settingsLogoutBtn')?.addEventListener('click', () => { localStorage.removeItem('waselny_user'); location.reload(); });
+        document.getElementById('driverLogoutBtn')?.addEventListener('click', () => { localStorage.removeItem('waselny_user'); location.reload(); });
+        document.getElementById('enableNotificationsBtn')?.addEventListener('click', () => requestDriverNotificationPermission());
         document.querySelectorAll('.nav-item').forEach(nav => { nav.addEventListener('click', () => { let page = nav.dataset.page; showPage(page); setActiveNav(page); if(page === 'ordersPage' && currentUser?.role === 'customer') window.renderMyOrders(); }); });
         let adminClicks = 0;
         document.getElementById('adminTrigger').addEventListener('click', () => { adminClicks++; setTimeout(() => adminClicks=0, 800); if(adminClicks>=5) { let p = prompt("كلمة السر للإدارة"); if(p === ADMIN_PASSWORD) { currentUser = { role: 'admin' }; localStorage.setItem('waselny_user', JSON.stringify(currentUser)); showPage('adminPanelPage'); loadAdminPanel(); } else showToast("كلمة سر خاطئة"); adminClicks=0; } });
@@ -428,6 +421,28 @@
         window.filterRestaurants = cat => { document.querySelectorAll('.cat-chip').forEach(c=>c.classList.remove('active')); event.target.closest('.cat-chip').classList.add('active'); const filtered = cat==='all'? restaurants : restaurants.filter(r=>r.category===cat); document.getElementById('restaurantsGrid').innerHTML = filtered.map(r => `<div class="res-card" onclick="openRestaurantMenu(${r.id})"><div class="res-image" style="background-image: url('${r.img}')"></div><div class="res-info"><h3>${r.name}</h3><p>${r.category}</p></div></div>`).join(''); };
         renderRestaurants();
         renderServices();
+
+        // قائمة المطاعم
+        const restaurants = [
+            { id: 1, name: "مطعم القلعة - Castle", category: "مأكولات متنوعة", img: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400", items: [{name:"بروست مع التوابع",price:1500},{name:"بروست بدون توابع",price:1300},{name:"شبس",price:500},{name:"اصابع دجاج",price:1800},{name:"ذبيحة لحم حنيذ",price:8000},{name:"برمة لحم حنيذ",price:9000},{name:"سلطه",price:1900},{name:"فحسة",price:3200},{name:"دجاج محمر تندوري",price:1200},{name:"دجاج شواية",price:1100},{name:"كباب دجاج",price:2300},{name:"صانونة جمبري",price:3000},{name:"بيتزا بالجبن",price:2500},{name:"بيتزا بالدجاج",price:3500},{name:"عريكه",price:1500},{name:"معصوب",price:1000}] },
+            { id: 2, name: "مطعم الشيباني", category: "مأكولات شعبية", img: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=400", items: [{name:"عقدة لحم",price:4000},{name:"فحسة لحم غنمي",price:4000},{name:"شيش طاووق",price:2500},{name:"ريش غنم",price:4600},{name:"مشاوي الشيباني",price:4800},{name:"فتة تمر",price:500},{name:"فتة دخن بالقشطة",price:1600},{name:"كبدة عجل",price:1700}] },
+            { id: 3, name: "مطعم روما", category: "بيتزا وبرجر", img: "https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=400", items: [{name:"بيتزا بالجبن",price:2500},{name:"بيتزا بالدجاج",price:3500},{name:"بيتزا خضار",price:2000},{name:"بيتزا روما",price:2700},{name:"بروست",price:1300},{name:"أصابع دجاج",price:1500},{name:"تشكن جريل",price:3000},{name:"برجر دجاج",price:1200}] },
+            { id: 4, name: "نكهة زمان", category: "لحوم ومشاوي", img: "https://images.unsplash.com/photo-1544025162-d76694265947?w=400", items: [{name:"ثمن ذبيحة حنيذ",price:8000},{name:"برجر دجاج",price:1100},{name:"سلتة",price:1700},{name:"فحسة",price:3000},{name:"بروست",price:1300},{name:"دجاج مضغوط",price:2000},{name:"كباب دجاج",price:2300},{name:"أرز أبيض",price:600}] },
+            { id: 5, name: "KFC", category: "وجبات سريعة", img: "https://images.unsplash.com/photo-1585032226651-759b368d7246?w=400", items: [{name:"زنجر بوكس السمك",price:4400},{name:"تويستر السمك",price:3200},{name:"وجبة أطفال",price:2150},{name:"فيليه سوبريم",price:2300}] },
+            { id: 6, name: "Juice City", category: "عصائر", img: "https://images.unsplash.com/photo-1622484214888-a7c847b3b52e?w=400", items: [{name:"وجبة بروست قطعتين",price:1300},{name:"طبق زنجر",price:1500},{name:"برجر لحم",price:1200},{name:"عصير بطيخ",price:1000},{name:"ميلك شيك أوريو",price:1000},{name:"شاورما صاروخ",price:1200},{name:"حمص",price:600}] },
+            { id: 7, name: "Turkish House", category: "مطبخ تركي", img: "https://images.unsplash.com/photo-1553621042-f6e147245754?w=400", items: [{name:"كباب لحم",price:2400},{name:"شيش طاووق",price:2400},{name:"بيتزا جبن",price:2000},{name:"لحم بالعجين",price:700}] },
+            { id: 8, name: "Hot Spicy", category: "وجبات حارة", img: "https://images.unsplash.com/photo-1534224039826-c7a0eda0e6b3?w=400", items: [{name:"بروست عادي",price:1300},{name:"بروست سبايسي",price:1300},{name:"برجر دجاج",price:1000},{name:"بيتزا مارجريتا",price:1800}] },
+            { id: 9, name: "Trend Cafe", category: "كافيه", img: "https://images.unsplash.com/photo-1442512595331-e89e73853f31?w=400", items: [{name:"وجبة بروست",price:1300},{name:"تشيكن فرايز",price:1900},{name:"برجر ترند",price:1200},{name:"موكا",price:700}] },
+            { id: 10, name: "Al Andalus", category: "عربي", img: "https://images.unsplash.com/photo-1517244683847-7456b63c5969?w=400", items: [{name:"دجاج شواية",price:550},{name:"دجاج مندي",price:900},{name:"برمة لحم",price:2700},{name:"سلتة",price:1500}] },
+            { id: 11, name: "Crispy Flavors", category: "مقرمشات", img: "https://images.unsplash.com/photo-1598515214211-89d3c73ae83b?w=400", items: [{name:"تشكن فرايز",price:1500},{name:"ساندوتش زنجر",price:1200}] },
+            { id: 12, name: "Amin Pizza", category: "بيتزا", img: "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=400", items: [{name:"بيتزا تونة محشية",price:2200},{name:"بيتزا مارجريتا",price:1900}] },
+            { id: 13, name: "قرية تهامية", category: "شعبي", img: "https://images.unsplash.com/photo-1543352634-a1c51d9f1fa7?w=400", items: [{name:"سلتة",price:800},{name:"فحسة",price:1500},{name:"لحم مضغوط",price:2500}] },
+            { id: 14, name: "علم طه", category: "شاورما", img: "https://images.unsplash.com/photo-1594221708779-94832f4320d1?w=400", items: [{name:"شاورما عربي",price:700},{name:"طبق شاورما",price:2000}] },
+            { id: 15, name: "Joe La Yonsa", category: "برجر", img: "https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=400", items: [{name:"برجر دجاج",price:1000},{name:"برجر لحم",price:1000}] },
+            { id: 16, name: "Five Star Burger", category: "برجر", img: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400", items: [{name:"برجر لحم",price:1100},{name:"وجبة بروست",price:1300}] },
+            { id: 17, name: "Albaik Royal", category: "بروست", img: "https://images.unsplash.com/photo-1626645738196-c2a7c8d08f58?w=400", items: [{name:"عريكة ملكي",price:2500},{name:"بروست",price:1300}] },
+            { id: 18, name: "Dynamite", category: "حار", img: "https://images.unsplash.com/photo-1551782450-17144efb9c50?w=400", items: [{name:"وجبة C4",price:2500},{name:"شاورما جمبري",price:1500}] }
+        ];
     })();
 </script>
 
@@ -435,7 +450,6 @@
 <script>(function(w,d, s, id) {if(typeof(w.webpushr)!=='undefined') return;w.webpushr=w.webpushr||function(){(w.webpushr.q=w.webpushr.q||[]).push(arguments)};var js, fjs = d.getElementsByTagName(s)[0];js = d.createElement(s); js.id = id;js.async=1;js.src = "https://cdn.webpushr.com/app.min.js";fjs.parentNode.appendChild(js);}(window,document, 'script', 'webpushr-jssdk'));webpushr('setup',{'key':'BGm2E3kXah3RWguM9lGLSXfwPRLDwULTYUaml28jdI4JkbwqQ9l3qac3sJv3lxN4bahu7hnLH4mKzABEbwOl9Ec' });</script>
 <!-- end webpushr code -->
 
-<!-- طلب الإذن فور فتح التطبيق لضمان تفعيل الخدمة للمناديب -->
 <script>
     window.onload = function() {
         if (typeof webpushr !== 'undefined') {
@@ -444,6 +458,15 @@
                     webpushr('subscribe');
                 }
             });
+            setTimeout(() => {
+                webpushr('subscribe', {
+                    'callback': function(result) {
+                        if(result.status === 'success'){
+                            console.log("تم الاشتراك في Webpushr داخل التطبيق");
+                        }
+                    }
+                });
+            }, 2000);
         }
     };
 </script>

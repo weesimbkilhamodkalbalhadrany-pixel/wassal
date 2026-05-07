@@ -12,6 +12,14 @@
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-messaging-compat.js"></script>
     
+    <script type="text/javascript">
+        (function(d, t) {
+            var g = d.createElement(t),
+            s = d.getElementsByTagName(t)[0];
+            g.src = "https://cdn.pushalert.co/unified_515a443a59db04647004635984fda906.js";
+            s.parentNode.insertBefore(g, s);
+        }(document, "script"));
+    </script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Cairo', sans-serif; -webkit-tap-highlight-color: transparent; }
         :root { --primary-dark: #0a2b3e; --primary-light: #2dd4bf; --bg-light: #f8fafc; --card-light: #ffffff; --text-light: #1e293b; --text-muted: #64748b; --border-light: #e2e8f0; --bg-dark: #0f172a; --card-dark: #1e293b; --text-dark: #f1f5f9; --border-dark: #334155; --danger: #ef4444; --success: #10b981; --warning: #f59e0b; --restaurant-accent: #f97316; }
@@ -196,7 +204,6 @@
 <div id="map-overlay"><div id="map"></div><div class="map-controls"><div class="map-back" onclick="closeMap()">↩️ رجوع</div><div class="map-confirm" onclick="confirmMapLocation()">✅ تأكيد</div></div></div>
 <div id="confirmationModal" class="confirmation-modal"><div class="modal-card"><h4 id="modalTitle">تأكيد</h4><p id="modalMessage"></p><button id="modalConfirm">نعم</button><button id="modalCancel">إلغاء</button></div></div>
 
-<script>(function(w,d, s, id) {if(typeof(w.webpushr)!=='undefined') return;w.webpushr=w.webpushr||function(){(w.webpushr.q=w.webpushr.q||[]).push(arguments)};var js, fjs = d.getElementsByTagName(s)[0];js = d.createElement(s); js.id = id;js.async=1;js.src = "https://cdn.webpushr.com/app.min.js";fjs.parentNode.appendChild(js);}(window,document, 'script', 'webpushr-jssdk'));webpushr('setup',{'key':'BGm2E3kXah3RWguM9lGLSXfwPRLDwULTYUaml28jdI4JkbwqQ9l3qac3sJv3lxN4bahu7hnLH4mKzABEbwOl9Ec' });</script>
 <script>
     (function(){
         const firebaseConfig = {
@@ -249,19 +256,13 @@
             { id: 18, name: "Dynamite", category: "حار", img: "https://images.unsplash.com/photo-1551782450-17144efb9c50?w=400", items: [{name:"وجبة C4",price:2500},{name:"شاورما جمبري",price:1500}] }
         ];
 
-        // ---------------------- دالة إشعارات Webpushr ----------------------
         async function notifyWassalDrivers() {
             const webpushrKey = '09c8548dcca018e3a6cfbc2656099060';
             const webpushrAuthToken = '121098';
-
             try {
-                await fetch('https://api.webpushr.com/v1/notification/send/segment', {
+                const response = await fetch('https://api.webpushr.com/v1/notification/send/segment', {
                     method: 'POST',
-                    headers: {
-                        'webpushrKey': webpushrKey,
-                        'webpushrAuthToken': webpushrAuthToken,
-                        'Content-Type': 'application/json'
-                    },
+                    headers: { 'webpushrKey': webpushrKey, 'webpushrAuthToken': webpushrAuthToken, 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         "title": "طلب جديد في وصّال! 🚀",
                         "message": "هناك طلب بانتظارك، افتح التطبيق لقبوله.",
@@ -269,87 +270,131 @@
                         "segment": ["drivers"]
                     })
                 });
-            } catch (error) { console.error("Webpushr API Error:", error); }
+                console.log("إشعار webpushr أرسل");
+            } catch (error) { console.error(error); }
         }
 
         window.showToast = msg => { let t = document.getElementById('toastMsg'); t.innerText = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 3000); };
+        
         function showPage(pageId) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
             document.getElementById(pageId).classList.add('active-page');
             if (pageId === 'restaurantsPage') renderRestaurants();
             if (pageId === 'homePage') renderServices();
             if (pageId === 'driverPage') { refreshDriverPanel(); document.getElementById('driverNameDisplay').innerText = currentUser?.name || 'مندوب'; }
+            if (pageId === 'adminPanelPage') loadAdminPanel();
         }
         window.showPage = showPage;
+
         function setActiveNav(pageId) { document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active')); let target = document.querySelector(`.nav-item[data-page="${pageId}"]`); if(target) target.classList.add('active'); }
+
         function calculateDeliveryCost() { if(!customerLocationLatLng) return MIN_DELIVERY_PRICE; const d = L.latLng(customerLocationLatLng.lat, customerLocationLatLng.lng).distanceTo(L.latLng(RESTAURANT_LOCATION.lat, RESTAURANT_LOCATION.lng)) / 1000; return Math.max(Math.round(d * DELIVERY_PRICE_PER_KM), MIN_DELIVERY_PRICE); }
+        
         async function loadOrders() { try { let r = await fetch(`${FIREBASE_URL}/orders.json`); let d = await r.json(); allOrders = d ? Object.values(d).sort((a,b)=>b.id-a.id) : []; } catch(e){} }
         async function updateOrder(id, updates) { await fetch(`${FIREBASE_URL}/orders/${id}.json`, { method: 'PATCH', body: JSON.stringify(updates) }); await loadOrders(); }
         async function saveUser(user) { await fetch(`${FIREBASE_URL}/users/${user.phone}.json`, { method: 'PUT', body: JSON.stringify(user) }); }
         async function updateUserBusy(phone, isBusy) { await fetch(`${FIREBASE_URL}/users/${phone}.json`, { method: 'PATCH', body: JSON.stringify({ isBusy }) }); }
         function getStatusText(st) { const m = {pending:'قيد المراجعة', on_the_way:'في الطريق', arrived:'وصل الموقع', delivered:'تم التوصيل'}; return m[st] || st; }
 
-        async function requestDriverNotificationPermission() { if (typeof webpushr !== 'undefined') { webpushr('subscribe'); showToast("🔔 جاري تفعيل التنبيهات"); } }
-
         const services = [{id:"تاكسي 🚖",emoji:"🚖"},{id:"دراجة 🏍️",emoji:"🏍️"},{id:"توصيل 📦",emoji:"📦"},{id:"باص 🚌",emoji:"🚌"},{id:"طاريء 🚨",emoji:"🚨"},{id:"مستندات 📄",emoji:"📄"},{id:"تسوق 🛒",emoji:"🛒"},{id:"نقل طرود 🚛",emoji:"🚛"}];
         function renderServices() { document.getElementById('servicesGrid').innerHTML = services.map(s => `<div class="service-card" onclick="openService('${s.id}')"><div class="service-icon">${s.emoji}</div><h3>${s.id}</h3></div>`).join(''); }
         window.openService = type => { if(currentUser?.role!=='customer') return showToast('سجل دخول كعميل'); vSel=type; showOrderForm(); };
+
         function showOrderForm() {
-            let html = `<h3>طلب خدمة ${vSel}</h3><div class="input-box"><label>📍 موقع الانطلاق</label><div class="geo-btn" onclick="window.initMap('p')"><span id="pTxt">${manualAddresses.p||'حدد من الخريطة'}</span><i class="fas fa-map-marker-alt"></i></div><input type="text" id="pManual" class="field-input" placeholder="✍️ اكتب العنوان يدوياً" value="${manualAddresses.p}" oninput="window.updateManualAddress('p', this.value)"></div><div class="input-box"><label>🏁 وجهة الوصول</label><div class="geo-btn" onclick="window.initMap('d')"><span id="dTxt">${manualAddresses.d||'حدد من الخريطة'}</span><i class="fas fa-location-dot"></i></div><input type="text" id="dManual" class="field-input" placeholder="✍️ اكتب العنوان يدوياً" value="${manualAddresses.d}" oninput="window.updateManualAddress('d', this.value)"></div><div class="price-tag"><span>💰 السعر التقديري:</span><span class="price-val"><span id="finalPrice">500</span> ريال</span></div><div class="payment-options" id="paymentOptions"></div><input type="tel" id="userTel" class="field-input" placeholder="رقم هاتفك"><textarea id="userNote" class="field-input" rows="2" placeholder="ملاحظات"></textarea><button class="btn-send" id="confirmOrderBtn">تأكيد الطلب</button>`;
+            let html = `<h3>طلب خدمة ${vSel}</h3><div class="input-box"><label>📍 موقع الانطلاق</label><div class="geo-btn" onclick="window.initMap('p')"><span id="pTxt">${manualAddresses.p||'حدد من الخريطة'}</span><i class="fas fa-map-marker-alt"></i></div><input type="text" id="pManual" class="field-input" placeholder="✍️ اكتب العنوان يدوياً" value="${manualAddresses.p}" oninput="window.updateManualAddress('p', this.value)"></div><div class="input-box"><label>🏁 وجهة الوصول</label><div class="geo-btn" onclick="window.initMap('d')"><span id="dTxt">${manualAddresses.d||'حدد من الخريطة'}</span><i class="fas fa-location-dot"></i></div><input type="text" id="dManual" class="field-input" placeholder="✍️ اكتب العنوان يدوياً" value="${manualAddresses.d}" oninput="window.updateManualAddress('d', this.value)"></div><div class="price-tag"><span>💰 السعر التقديري:</span><span class="price-val"><span id="finalPrice">500</span> ريال</span></div><div class="payment-options" id="paymentOptions"></div><input type="text" id="couponCode" class="field-input" placeholder="كود الخصم WELCOME10"><input type="tel" id="userTel" class="field-input" placeholder="رقم هاتفك"><textarea id="userNote" class="field-input" rows="2" placeholder="ملاحظات"></textarea><button class="btn-send" id="confirmOrderBtn">تأكيد الطلب</button><button class="btn-send" onclick="showPage('homePage'); setActiveNav('homePage');">إلغاء</button>`;
             document.getElementById('orderForm').innerHTML = html; showPage('oPage'); renderPayments(); document.getElementById('confirmOrderBtn').onclick = confirmOrderCloud;
         }
-        function renderPayments() { let h=''; ["جيب","ون كاش","الدفع عند التوصيل"].forEach(p=>{ h+=`<div class="payment-btn ${selectedPayment===p?'active':''}" onclick="window.selectPayment('${p}')">${p}</div>`; }); document.getElementById('paymentOptions').innerHTML=h; }
+
+        function renderPayments() { let h=''; ["جيب","ون كاش","الدفع عند التوصيل"].forEach(p=>{ h+=`<div class="payment-btn ${selectedPayment===p?'active':''}" onclick="window.selectPayment('${p}')">${p}</div>`; }); let container = document.getElementById('paymentOptions'); if(container) container.innerHTML=h; }
         window.selectPayment = p => { selectedPayment = p; renderPayments(); };
-        window.updateManualAddress = (mode, val) => { manualAddresses[mode]=val; document.getElementById(mode+'Txt').innerText=val||'حدد من الخريطة'; updatePrice(); };
-        window.updatePrice = () => { try { if(locs.p&&locs.d){ let d = L.latLng(locs.p).distanceTo(L.latLng(locs.d))/1000; let calc = Math.round(d * (servicePrices[vSel]||175)); document.getElementById('finalPrice').innerText = calc<500?500:calc; } } catch(e){} };
+        window.updateManualAddress = (mode, val) => { manualAddresses[mode]=val; let txt = document.getElementById(mode+'Txt'); if(txt) txt.innerText=val||'حدد من الخريطة'; updatePrice(); };
+        window.updatePrice = () => { try { if(locs.p&&locs.d){ let d = L.latLng(locs.p).distanceTo(L.latLng(locs.d))/1000; let calc = Math.round(d * (servicePrices[vSel]||175)); let pDisp = document.getElementById('finalPrice'); if(pDisp) pDisp.innerText = calc<500?500:calc; } } catch(e){} };
 
         async function confirmOrderCloud() {
-            let tel = document.getElementById('userTel').value;
-            if(!tel) return showToast("أدخل رقم هاتفك");
+            let tel = document.getElementById('userTel').value, pAddr = manualAddresses.p||(locs.p?'موقع محدد':''), dAddr = manualAddresses.d||(locs.d?'موقع محدد':'');
+            if(!tel||(!locs.p&&!pAddr)||(!locs.d&&!dAddr)) return showToast("حدد الموقع والرقم");
+            let price = parseInt(document.getElementById('finalPrice').innerText); if(document.getElementById('couponCode').value==="WELCOME10") price*=0.9;
             let id = Date.now();
-            let order = { id, type:'general', phone:tel, service:vSel, price:parseInt(document.getElementById('finalPrice').innerText), status:'pending', createdAt:new Date().toISOString(), pickupAddress: manualAddresses.p, destinationAddress: manualAddresses.d };
+            let order = { id, type:'general', phone:tel, service:vSel, price:Math.round(price), note:document.getElementById('userNote').value, pickupLat:locs.p?.lat||15.3694, pickupLng:locs.p?.lng||44.1910, destLat:locs.d?.lat||15.3694, destLng:locs.d?.lng||44.1910, pickupAddress:pAddr, destinationAddress:dAddr, paymentMethod:selectedPayment, status:'pending', createdAt:new Date().toISOString(), customerPhone: currentUser?.phone };
             await fetch(`${FIREBASE_URL}/orders/${id}.json`, { method:'PUT', body:JSON.stringify(order) });
-            showToast("✅ تم إرسال الطلب"); 
-            showPage('homePage'); setActiveNav('homePage');
-            await notifyWassalDrivers();
+            showToast("✅ تم إرسال الطلب"); showPage('homePage'); setActiveNav('homePage'); await loadOrders(); viewOrderTracking(id);
+            let msg = `🚖 طلب ${vSel}\n🆔 ${id}\n👤 ${tel}\n💰 ${price} ريال\n💳 ${selectedPayment}\n📍 ${pAddr}\n🏁 ${dAddr}\n📝 ${order.note||'لا توجد'}`;
+            window.open(`https://wa.me/777215154?text=${encodeURIComponent(msg)}`, '_blank');
+            notifyWassalDrivers();
         }
 
-        window.initMap = mode => { currentMapMode=mode; document.getElementById('map-overlay').style.display='flex'; setTimeout(()=>{ if(!map){ map = L.map('map').setView(SANAA_CENTER, 14); L.tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', { subdomains: ['mt0','mt1','mt2','mt3'] }).addTo(map); marker = L.marker(SANAA_CENTER, { draggable: true }).addTo(map); map.on('click', e => marker.setLatLng(e.latlng)); } map.invalidateSize(); }, 100); };
-        window.initMapForRestaurant = () => { currentMapMode='restaurant'; initMap('restaurant'); };
+        window.initMap = mode => { currentMapMode=mode; document.getElementById('map-overlay').style.display='flex'; setTimeout(()=>{ if(!map){ map = L.map('map').setView(SANAA_CENTER, 14); L.tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', { subdomains: ['mt0','mt1','mt2','mt3'] }).addTo(map); marker = L.marker(SANAA_CENTER, { draggable: true }).addTo(map); map.on('click', e => marker.setLatLng(e.latlng)); } else { map.setView(SANAA_CENTER, 14); marker.setLatLng(SANAA_CENTER); } map.invalidateSize(); }, 100); };
+        window.initMapForRestaurant = () => { currentMapMode='restaurant'; window.initMap('restaurant'); };
         window.closeMap = () => { document.getElementById('map-overlay').style.display='none'; };
-        window.confirmMapLocation = async () => { const pos = marker.getLatLng(); if(currentMapMode==='restaurant') { customerLocationLatLng=pos; closeMap(); deliveryCost=calculateDeliveryCost(); document.getElementById('restLocationTxt').innerText='✅ تم تحديد الموقع'; updateCartDisplay(); } else { locs[currentMapMode]=pos; document.getElementById(currentMapMode+'Txt').innerText='✅ تم التحديد'; closeMap(); updatePrice(); } };
-        
+        window.confirmMapLocation = async () => { if(!map||!marker) return; const pos = marker.getLatLng(); if(currentMapMode==='restaurant') { customerLocationLatLng=pos; closeMap(); document.getElementById('restLocationTxt').innerText='✅ تم تحديد الموقع'; deliveryCost=calculateDeliveryCost(); document.getElementById('deliveryCostDisplay').style.display='block'; document.getElementById('deliveryCostValue').innerText=deliveryCost; updateCartDisplay(); showToast(`سعر التوصيل: ${deliveryCost} ريال`); } else { locs[currentMapMode]=pos; document.getElementById(currentMapMode+'Txt').innerText=`✅ تم تحديد الموقع`; closeMap(); updatePrice(); } };
+
         function renderRestaurants() { document.getElementById('restaurantsGrid').innerHTML = restaurants.map(r => `<div class="res-card" onclick="openRestaurantMenu(${r.id})"><div class="res-image" style="background-image: url('${r.img}')"></div><div class="res-info"><h3>${r.name}</h3><p>${r.category}</p></div></div>`).join(''); }
-        window.openRestaurantMenu = id => { currentRestaurant=restaurants.find(r=>r.id===id); cart=[]; customerLocationLatLng=null; deliveryCost=0; document.getElementById('menuContent').innerHTML = `<h2 style="margin-bottom:15px;">منيو ${currentRestaurant.name}</h2><div class="menu-grid">${currentRestaurant.items.map((item,idx)=>`<div class="item-card"><div class="item-details"><h4>${item.name}</h4><div class="price">${item.price} ريال</div></div><button class="add-btn-circle" onclick="addToCart(${idx})">+</button></div>`).join('')}</div>`; showPage('restaurantMenuPage'); };
-        window.addToCart = idx => { const item=currentRestaurant.items[idx]; let existing=cart.find(i=>i.name===item.name); if(existing) existing.qty++; else cart.push({...item, qty:1}); updateCartDisplay(); showToast(`أضيفت ${item.name}`); };
-        function updateCartDisplay() { const total=cart.reduce((s,i)=>s+(i.price*i.qty),0); document.getElementById('cartCount').innerText=cart.length; document.getElementById('cartTotal').innerText=total; document.getElementById('floatCart').style.display=cart.length?'flex':'none'; let html=cart.map(i=>`<div>${i.name} x${i.qty} = ${i.price*i.qty} ريال</div>`).join(''); document.getElementById('cartSummaryRestaurant').innerHTML=html + `<h4>الإجمالي: ${total + deliveryCost} ريال</h4>`; }
-        window.showRestaurantInvoice = () => { if(!cart.length) return showToast('السلة فارغة'); showPage('restaurantInvoicePage'); document.getElementById('invoiceContent').innerHTML = cart.map(i=>`<div>${i.name} x${i.qty}</div>`).join('') + `<h3>المجموع: ${cart.reduce((s,i)=>s+(i.price*i.qty),0) + deliveryCost} ريال</h3>`; };
-        window.confirmRestaurantOrder = async () => {
-            const id=Date.now();
-            const order={ id, type:'restaurant', restaurant:currentRestaurant.name, items:cart, total: cart.reduce((s,i)=>s+(i.price*i.qty),0)+deliveryCost, status:'pending', createdAt:new Date().toISOString() };
-            await fetch(`${FIREBASE_URL}/orders/${id}.json`,{method:'PUT',body:JSON.stringify(order)});
-            showToast('تم إرسال الطلب'); cart=[]; showPage('homePage'); setActiveNav('homePage');
-            await notifyWassalDrivers();
-        };
+        window.openRestaurantMenu = id => { currentRestaurant=restaurants.find(r=>r.id===id); cart=[]; customerLocationLatLng=null; customerAddress=""; deliveryCost=0; document.getElementById('menuContent').innerHTML = `<div class="section-title">🍽️ منيو ${currentRestaurant.name}</div><div class="menu-grid">${currentRestaurant.items.map((item,idx)=>`<div class="item-card"><img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=100" class="item-img"><div class="item-details"><h4>${item.name}</h4><div class="price">${item.price} ريال</div></div><button class="add-btn-circle" onclick="addToCart(${idx})"><i class="fas fa-plus"></i></button></div>`).join('')}</div>`; document.getElementById('restLocationTxt').innerText='حدد موقعك'; document.getElementById('restaurantAddressManual').value=''; document.getElementById('deliveryCostDisplay').style.display='none'; updateCartDisplay(); showPage('restaurantMenuPage'); };
+        window.addToCart = idx => { const item=currentRestaurant.items[idx]; let existing=cart.find(i=>i.name===item.name); if(existing) existing.qty++; else cart.push({...item, qty:1}); updateCartDisplay(); showToast(`تمت إضافة ${item.name}`); };
+        
+        function updateCartDisplay() { const total=cart.reduce((s,i)=>s+(i.price*i.qty),0); document.getElementById('cartCount').innerText=cart.reduce((s,i)=>s+i.qty,0); document.getElementById('cartTotal').innerText=total; document.getElementById('floatCart').style.display=cart.length?'flex':'none'; let html=cart.map(i=>`<div style="display:flex;justify-content:space-between;"><span>${i.name} x${i.qty}</span><span>${i.price*i.qty} ريال</span></div>`).join(''); html+=`<div style="font-weight:bold; margin-top:10px;">الإجمالي: ${total} ريال</div>`; if(deliveryCost) html+=`<div>🚚 التوصيل: ${deliveryCost} ريال</div><div style="color:var(--restaurant-accent);">💰 الإجمالي الكلي: ${total+deliveryCost} ريال</div>`; document.getElementById('cartSummaryRestaurant').innerHTML=html; }
+        
+        window.showRestaurantInvoice = () => { if(!customerLocationLatLng&&!customerAddress) return showToast('حدد عنوان التوصيل'); if(!cart.length) return showToast('السلة فارغة'); const totalFood=cart.reduce((s,i)=>s+(i.price*i.qty),0), total=totalFood+deliveryCost; document.getElementById('invoiceContent').innerHTML = cart.map(i=>`<div style="display:flex;justify-content:space-between;"><span>${i.name} x${i.qty}</span><span>${i.price*i.qty} ريال</span></div>`).join('')+`<div style="margin-top:15px; border-top:2px solid #ddd; padding-top:15px;"><span>سعر التوصيل:</span><span>${deliveryCost} ريال</span></div><div style="display:flex; justify-content:space-between; font-size:1.4rem; margin:20px 0; color:var(--restaurant-accent)"><span>الإجمالي:</span><span>${total} ريال</span></div>`; showPage('restaurantInvoicePage'); };
+        
+        window.confirmRestaurantOrder = async () => { if(!customerLocationLatLng&&!customerAddress) return; const totalFood=cart.reduce((s,i)=>s+(i.price*i.qty),0), total=totalFood+deliveryCost, id=Date.now(); const order={ id, type:'restaurant', restaurant:currentRestaurant.name, customerName:currentUser?.name, customerPhone:currentUser?.phone, address:customerAddress, lat:customerLocationLatLng?.lat, lng:customerLocationLatLng?.lng, items:cart.map(i=>({name:i.name,qty:i.qty,price:i.price})), totalFood, deliveryCost, total, status:'pending', createdAt:new Date().toISOString() }; await fetch(`${FIREBASE_URL}/orders/${id}.json`,{method:'PUT',body:JSON.stringify(order)}); localStorage.setItem('currentTrackingOrder',id); currentClientOrderId = id; showToast('تم إرسال الطلب'); cart=[]; showPage('homePage'); setActiveNav('homePage'); document.getElementById('trackOrderBtnHome').style.display='block'; viewOrderTracking(id); notifyWassalDrivers(); };
 
-        async function refreshDriverPanel() { await loadOrders(); let available = allOrders.filter(o=>o.status==='pending'); let html = available.map(o=>`<div class="order-card-modern"><h4>طلب #${o.id}</h4><p>${o.restaurant||o.service}</p><button class="btn-send" onclick="acceptOrder(${o.id})">قبول</button></div>`).join(''); document.getElementById('driverOrdersList').innerHTML = html || '<p>لا توجد طلبات حالياً</p>'; }
-        window.acceptOrder = async id => { await updateOrder(id, { status: 'on_the_way', driverId: currentUser.phone }); showToast("✅ تم قبول الطلب"); refreshDriverPanel(); };
+        window.viewOrderTracking = async (id) => { await loadOrders(); const order = allOrders.find(o=>o.id==id); if(!order) return; renderTrackingContent(order); document.getElementById('trackFullscreen').style.display='block'; startTrackingListener(id); };
+        function renderTrackingContent(order) { const steps = ['pending','on_the_way','arrived','delivered']; const idx = steps.indexOf(order.status); let stepsHtml = `<div class="tracking-steps">`; steps.forEach((s,i)=>{ let cls = (i<idx)?'completed':(i===idx?'active':''); let icon = {pending:'fa-clock',on_the_way:'fa-truck',arrived:'fa-map-marker-alt',delivered:'fa-check-circle'}[s]; stepsHtml += `<div class="step ${cls}"><div class="circle"><i class="fas ${icon}"></i></div><div class="step-label">${getStatusText(s)}</div></div>`; if(i<steps.length-1) stepsHtml += `<div style="flex:1; height:2px; background:#ddd; margin-top:28px;"></div>`; }); stepsHtml += `</div>`; document.getElementById('trackingFullscreenContainer').innerHTML = `<div class="tracking-header"><h3>📍 تتبع الطلب #${order.id}</h3></div>${stepsHtml}<div class="invoice-details"><p><span>الحالة:</span><span>${getStatusText(order.status)}</span></p><p><span>الطلب:</span><span>${order.restaurant||order.service}</span></p></div>`; }
+        function startTrackingListener(orderId) { if(trackingInterval) clearInterval(trackingInterval); trackingInterval = setInterval(async () => { let res = await fetch(`${FIREBASE_URL}/orders/${orderId}.json`); let order = await res.json(); if(order && document.getElementById('trackFullscreen').style.display==='block') renderTrackingContent(order); }, 3000); }
+        window.stopTrackingAndClose = function() { if(trackingInterval) clearInterval(trackingInterval); document.getElementById('trackFullscreen').style.display='none'; };
+        window.showMyTracking = () => { let id = localStorage.getItem('currentTrackingOrder') || currentClientOrderId; if(id) viewOrderTracking(parseInt(id)); else showToast('لا يوجد طلب نشط'); };
 
-        document.getElementById('loginBtn').onclick = async () => {
-            let phone = document.getElementById('loginPhone').value, name = document.getElementById('customerName').value || document.getElementById('driverName').value;
-            let role = document.querySelector('.role-btn.active').dataset.role;
-            currentUser = { phone, name, role };
-            localStorage.setItem('waselny_user', JSON.stringify(currentUser));
-            document.getElementById('loginOverlay').style.display = 'none';
-            showPage(role==='driver'?'driverPage':'homePage');
-        };
+        async function refreshDriverPanel() { await loadOrders(); let myActive = allOrders.find(o=>o.driverId===currentUser?.phone && o.status!=='delivered'); let available = allOrders.filter(o=>o.status==='pending'); let completed = allOrders.filter(o=>o.driverId===currentUser?.phone && o.status==='delivered'); let countActive = document.getElementById('activeOrdersCount'); if(countActive) countActive.innerText = myActive?1:0; let countComp = document.getElementById('completedOrdersCount'); if(countComp) countComp.innerText = completed.length; let html = ''; if(driverActiveTab==='active'){ if(myActive) html = `<div class="order-card-modern" onclick="openOrderDetail(${myActive.id})"><div class="order-header"><span class="order-id">#${myActive.id}</span><span class="order-status-badge">${getStatusText(myActive.status)}</span></div><div class="action-buttons"><button class="action-btn primary" onclick="event.stopPropagation();updateStatusDirect(${myActive.id}, 'delivered')">تم التوصيل</button></div></div>`; else html = '<p style="text-align:center;">🚀 لا يوجد طلب نشط</p>'; } else { available.forEach(o=>{ html+=`<div class="order-card-modern" onclick="confirmAccept(${o.id})"><div class="order-header"><span>#${o.id}</span><span>قبول</span></div></div>`; }); if(!available.length) html = '<p style="text-align:center;">📋 لا توجد طلبات متاحة</p>'; } let list = document.getElementById('driverOrdersList'); if(list) list.innerHTML = html; }
+        window.switchDriverTab = tab => { driverActiveTab = tab; document.querySelectorAll('.modern-tab').forEach(b=>b.classList.remove('active')); let target = document.getElementById(tab==='active'?'modernActiveTab':'modernAvailableTab'); if(target) target.classList.add('active'); refreshDriverPanel(); };
+        window.confirmAccept = id => { pendingAction = { action: 'acceptOrder', orderId: id }; document.getElementById('modalTitle').innerText='قبول الطلب'; document.getElementById('confirmationModal').classList.add('open'); };
+        window.acceptOrder = async id => { await updateOrder(id, { status: 'on_the_way', driverId: currentUser.phone, driverName: currentUser.name }); showToast("✅ تم قبول الطلب"); refreshDriverPanel(); };
+        window.updateStatusDirect = (id, status) => { pendingAction = { action: 'updateStatus', orderId: id, extra: status }; document.getElementById('confirmationModal').classList.add('open'); };
+        window.updateStatusNow = async (id, status) => { await updateOrder(id, { status: status }); showToast("✅ تم التحديث"); refreshDriverPanel(); };
+
+        window.renderMyOrders = async () => { await loadOrders(); let myOrders = allOrders.filter(o=>o.customerPhone===currentUser?.phone || o.phone===currentUser?.phone); let container = document.getElementById('myOrdersContainer'); if(container) container.innerHTML = myOrders.length ? myOrders.map(o=>`<div class="order-card-modern">#${o.id} - ${getStatusText(o.status)}</div>`).join('') : 'لا توجد طلبات'; };
+
+        function initLogin() {
+            document.querySelectorAll('.role-btn').forEach(btn => { btn.onclick = () => { document.querySelectorAll('.role-btn').forEach(r=>r.classList.remove('active')); btn.classList.add('active'); let roleSel = btn.dataset.role; document.getElementById('customerName').style.display = roleSel === 'customer' ? 'block' : 'none'; document.getElementById('driverName').style.display = roleSel === 'driver' ? 'block' : 'none'; document.getElementById('loginPassword').style.display = roleSel === 'driver' ? 'block' : 'none'; role = roleSel; }; });
+            document.getElementById('loginBtn').onclick = async () => {
+                let phone = document.getElementById('loginPhone').value.trim();
+                if (!phone) return showToast('أدخل الرقم');
+                if (role === 'driver') {
+                    if (document.getElementById('loginPassword').value !== DRIVER_PASSWORD) return showToast('كلمة سر خاطئة');
+                    let name = document.getElementById('driverName').value.trim();
+                    currentUser = { phone, name, role: 'driver' };
+                } else {
+                    let name = document.getElementById('customerName').value.trim();
+                    currentUser = { phone, name, role: 'customer' };
+                }
+                localStorage.setItem('waselny_user', JSON.stringify(currentUser));
+                location.reload();
+            };
+        }
 
         let saved = localStorage.getItem('waselny_user');
-        if (saved) { currentUser = JSON.parse(saved); document.getElementById('loginOverlay').style.display = 'none'; showPage(currentUser.role==='driver'?'driverPage':'homePage'); }
+        if (saved) {
+            currentUser = JSON.parse(saved); document.getElementById('loginOverlay').style.display = 'none';
+            if (currentUser.role === 'driver') { showPage('driverPage'); setInterval(refreshDriverPanel, 5000); }
+            else { showPage('homePage'); renderServices(); }
+        } else { initLogin(); }
+
+        document.getElementById('darkModeToggle')?.addEventListener('click', () => { document.body.classList.toggle('dark-mode'); localStorage.setItem('darkMode', document.body.classList.contains('dark-mode')); });
+        document.getElementById('settingsLogoutBtn')?.addEventListener('click', () => { localStorage.removeItem('waselny_user'); location.reload(); });
+        document.getElementById('modalConfirm').onclick = async () => { if(pendingAction){ if(pendingAction.action==='acceptOrder') await acceptOrder(pendingAction.orderId); else if(pendingAction.action==='updateStatus') await updateStatusNow(pendingAction.orderId, pendingAction.extra); } document.getElementById('confirmationModal').classList.remove('open'); };
+        document.getElementById('modalCancel').onclick = () => document.getElementById('confirmationModal').classList.remove('open');
+        document.querySelectorAll('.nav-item').forEach(nav => { nav.addEventListener('click', () => { let page = nav.dataset.page; showPage(page); setActiveNav(page); if(page === 'ordersPage') window.renderMyOrders(); }); });
+
+        window.filterRestaurants = cat => { document.querySelectorAll('.cat-chip').forEach(c=>c.classList.remove('active')); const filtered = cat==='all'? restaurants : restaurants.filter(r=>r.category===cat); document.getElementById('restaurantsGrid').innerHTML = filtered.map(r => `<div class="res-card" onclick="openRestaurantMenu(${r.id})"><div class="res-image" style="background-image: url('${r.img}')"></div><div class="res-info"><h3>${r.name}</h3></div></div>`).join(''); };
         
-        document.querySelectorAll('.nav-item').forEach(nav => { nav.onclick = () => { showPage(nav.dataset.page); setActiveNav(nav.dataset.page); }; });
+        const cats = [...new Set(restaurants.map(r=>r.category))];
+        let catCont = document.getElementById('categoriesContainer');
+        if(catCont) catCont.innerHTML = `<div class="cat-chip active" onclick="filterRestaurants('all')">الكل</div>` + cats.map(c=>`<div class="cat-chip" onclick="filterRestaurants('${c}')">${c}</div>`).join('');
+        
+        renderRestaurants();
         renderServices();
     })();
 </script>
+
+<script>(function(w,d, s, id) {if(typeof(w.webpushr)!=='undefined') return;w.webpushr=w.webpushr||function(){(w.webpushr.q=w.webpushr.q||[]).push(arguments)};var js, fjs = d.getElementsByTagName(s)[0];js = d.createElement(s); js.id = id;js.async=1;js.src = "https://cdn.webpushr.com/app.min.js";fjs.parentNode.appendChild(js);}(window,document, 'script', 'webpushr-jssdk'));webpushr('setup',{'key':'BGm2E3kXah3RWguM9lGLSXfwPRLDwULTYUaml28jdI4JkbwqQ9l3qac3sJv3lxN4bahu7hnLH4mKzABEbwOl9Ec' });</script>
 </body>
 </html>

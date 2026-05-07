@@ -13,16 +13,21 @@
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
     <!-- تم حذف firebase-messaging-compat نهائياً بناءً على طلب إزالة خدمات الإشعارات المتعارضة -->
     
-    <!-- OneSignal SDK - تمت إضافته بشكل صحيح مع معرف التطبيق المطلوب -->
+    <!-- OneSignal SDK - تمت إضافته بشكل صحيح مع معرف التطبيق المطلوب وتفعيل زر الإشعارات -->
     <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
     <script>
         window.OneSignalDeferred = window.OneSignalDeferred || [];
         OneSignalDeferred.push(async function(OneSignal) {
             await OneSignal.init({
                 appId: "d626b1b5-d529-4e0d-8166-1192e85fca25",
+                notifyButton: {
+                    enable: true,          // تفعيل زر الإشعارات المنبثق
+                },
+                // يمكن إضافة خيارات أخرى مثل:
+                // allowLocalhostAsSecureOrigin: true,
+                // promptOptions: { autoPrompt: true }
             });
-            // يمكن تفعيل الإشعارات للمستخدمين بعد تسجيل الدخول إذا أردت
-            console.log("OneSignal initialized");
+            console.log("OneSignal initialized with notify button enabled");
         });
     </script>
     <!-- تم إزالة PushAlert و Webpushr نهائياً -->
@@ -243,21 +248,9 @@
         let driverActiveTab = 'active', appSettings = { workStart: "06:00", workEnd: "22:00" };
         let pendingAction = null, trackingInterval = null, currentClientOrderId = null;
         
-        // ========= دالة إشعارات السائقين عبر OneSignal (بديل Webpushr و Firebase) =========
-        // باستخدام OneSignal SDK يمكننا إرسال إشعارات للسائقين عبر API إذا أردنا.
-        // لكن SDK المضمن سيتولى الاشتراك والإشعارات. لإرسال إشعار فوري عند طلب جديد نستخدم OneSignal REST API.
-        // للتكامل السهل، سنحتفظ بدالة notifyDrivers ولكن نستبدل محتواها بإرسال عبر OneSignal Server API (اختياري)
-        // نستخدم مفتاح REST API الخاص بالتطبيق (يجب توليده من لوحة OneSignal). لكن لدينا appId فقط. يمكن تفعيله لاحقاً.
-        // لضمان عمل الإشعارات للسائقين بعد قبول الطلب، سنقوم بتسجيل السائقين في OneSignal عبر SDK وسنرسل إشعارات عبر واجهة OneSignal.
-        // حالياً سنقوم بإرسال تنبيه عن طريق تحديث قاعدة البيانات (وليس إشعار فوري) حتى يتم تكامل API كامل.
-        // لكن لو أردنا إرسال إشعارات فورية نستخدم fetch لواجهة OneSignal. للتبسيط ولأن المطلوب هو استبدال الخدمات فقط، سنقوم بتعليق هذه الدالة
-        // ونعتمد على تحديث واجهة السائق المباشر. يمكن لاحقاً تفعيلها.
-        async function notifyDriversViaOneSignal(orderId, type) {
-            // اختياري: يمكن إرسال إشعار عبر OneSignal REST API إذا كان لديك REST API Key.
-            // حالياً نقوم بتسجيل الطلب فقط ليطلع عليه السائق عند تحديث الصفحة.
+        // دالة إشعارات للسائقين عبر تخزين قاعدة البيانات (بدون خدمات خارجية)
+        async function notifyDriversViaDB(orderId, type) {
             console.log(`طلب جديد #${orderId} من نوع ${type} - سيتم عرضه للسائقين عبر التحديث التلقائي`);
-            // يمكن إضافة إشعار محلي للمندوبين المتصلين عبر OneSignal
-            // للتكامل الكامل سنقوم بتخزين إشعار في قاعدة البيانات لتظهر تنبيه للمندوبين النشطين
             await fetch(`${FIREBASE_URL}/pushNotifications/${orderId}.json`, {
                 method: 'PUT',
                 body: JSON.stringify({ orderId, type, title: "📦 طلب جديد!", body: `طلب ${type} #${orderId}`, timestamp: Date.now(), topic: "drivers" })
@@ -305,8 +298,7 @@
             showToast("✅ تم إرسال الطلب"); showPage('homePage'); setActiveNav('homePage'); await loadOrders(); viewOrderTracking(id);
             let msg = `🚖 طلب ${vSel}\n🆔 ${id}\n👤 ${tel}\n💰 ${price} ريال\n💳 ${selectedPayment}\n📍 ${pAddr}\n🏁 ${dAddr}\n📝 ${order.note||'لا توجد'}\n\nعزيزي العميل عد للتطبيق لتتبع حالة طلبك 😊`;
             window.open(`https://wa.me/777215154?text=${encodeURIComponent(msg)}`, '_blank');
-            // استخدام الإشعارات عبر OneSignal API بشكل اختياري (حالياً تخزين قاعدة بيانات)
-            await notifyDriversViaOneSignal(id, vSel);
+            await notifyDriversViaDB(id, vSel);
         }
         
         // الخريطة والمطاعم (نفس الكود بدون تعديل)
@@ -340,7 +332,7 @@
         window.addToCart = idx => { const item=currentRestaurant.items[idx]; let existing=cart.find(i=>i.name===item.name); if(existing) existing.qty++; else cart.push({...item, qty:1}); updateCartDisplay(); showToast(`تمت إضافة ${item.name}`); };
         function updateCartDisplay() { const total=cart.reduce((s,i)=>s+(i.price*i.qty),0); document.getElementById('cartCount').innerText=cart.reduce((s,i)=>s+i.qty,0); document.getElementById('cartTotal').innerText=total; document.getElementById('floatCart').style.display=cart.length?'flex':'none'; let html=cart.map(i=>`<div style="display:flex;justify-content:space-between;"><span>${i.name} x${i.qty}</span><span>${i.price*i.qty} ريال</span></div>`).join(''); html+=`<div style="font-weight:bold; margin-top:10px;">الإجمالي: ${total} ريال</div>`; if(deliveryCost) html+=`<div>🚚 التوصيل: ${deliveryCost} ريال</div><div style="color:var(--restaurant-accent);">💰 الإجمالي الكلي: ${total+deliveryCost} ريال</div>`; document.getElementById('cartSummaryRestaurant').innerHTML=html; }
         window.showRestaurantInvoice = () => { if(!customerLocationLatLng&&!customerAddress) return showToast('حدد عنوان التوصيل'); if(!cart.length) return showToast('السلة فارغة'); const totalFood=cart.reduce((s,i)=>s+(i.price*i.qty),0), total=totalFood+deliveryCost; document.getElementById('invoiceContent').innerHTML = cart.map(i=>`<div style="display:flex;justify-content:space-between;"><span>${i.name} x${i.qty}</span><span>${i.price*i.qty} ريال</span></div>`).join('')+`<div style="margin-top:15px; border-top:2px solid #ddd; padding-top:15px;"><span>سعر التوصيل:</span><span>${deliveryCost} ريال</span></div><div style="display:flex; justify-content:space-between; font-size:1.4rem; margin:20px 0; color:var(--restaurant-accent)"><span>الإجمالي:</span><span>${total} ريال</span></div>`; showPage('restaurantInvoicePage'); };
-        window.confirmRestaurantOrder = async () => { if(!customerLocationLatLng&&!customerAddress) return; const totalFood=cart.reduce((s,i)=>s+(i.price*i.qty),0), total=totalFood+deliveryCost, id=Date.now(); const order={ id, type:'restaurant', restaurant:currentRestaurant.name, customerName:currentUser?.name, customerPhone:currentUser?.phone, address:customerAddress, lat:customerLocationLatLng?.lat, lng:customerLocationLatLng?.lng, items:cart.map(i=>({name:i.name,qty:i.qty,price:i.price})), totalFood, deliveryCost, total, status:'pending', createdAt:new Date().toISOString() }; await fetch(`${FIREBASE_URL}/orders/${id}.json`,{method:'PUT',body:JSON.stringify(order)}); localStorage.setItem('currentTrackingOrder',id); currentClientOrderId = id; let msg=`🍽️ طلب من ${currentRestaurant.name}\n🆔 ${id}\n👤 ${currentUser?.name}\n📞 ${currentUser?.phone}\n📍 ${customerAddress}\n\n`; cart.forEach(i=>msg+=`• ${i.name} x${i.qty} = ${i.price*i.qty} ريال\n`); msg+=`\n🚚 التوصيل: ${deliveryCost} ريال\n💰 الإجمالي: ${total} ريال\n\nعزيزي العميل عد للتطبيق لتتبع حالة طلبك 😊`; window.open(`https://wa.me/777215154?text=${encodeURIComponent(msg)}`, '_blank'); showToast('تم إرسال الطلب'); cart=[]; showPage('homePage'); setActiveNav('homePage'); document.getElementById('trackOrderBtnHome').style.display='block'; setTimeout(()=>viewOrderTracking(id),1000); await notifyDriversViaOneSignal(id, 'طلب مطعم'); };
+        window.confirmRestaurantOrder = async () => { if(!customerLocationLatLng&&!customerAddress) return; const totalFood=cart.reduce((s,i)=>s+(i.price*i.qty),0), total=totalFood+deliveryCost, id=Date.now(); const order={ id, type:'restaurant', restaurant:currentRestaurant.name, customerName:currentUser?.name, customerPhone:currentUser?.phone, address:customerAddress, lat:customerLocationLatLng?.lat, lng:customerLocationLatLng?.lng, items:cart.map(i=>({name:i.name,qty:i.qty,price:i.price})), totalFood, deliveryCost, total, status:'pending', createdAt:new Date().toISOString() }; await fetch(`${FIREBASE_URL}/orders/${id}.json`,{method:'PUT',body:JSON.stringify(order)}); localStorage.setItem('currentTrackingOrder',id); currentClientOrderId = id; let msg=`🍽️ طلب من ${currentRestaurant.name}\n🆔 ${id}\n👤 ${currentUser?.name}\n📞 ${currentUser?.phone}\n📍 ${customerAddress}\n\n`; cart.forEach(i=>msg+=`• ${i.name} x${i.qty} = ${i.price*i.qty} ريال\n`); msg+=`\n🚚 التوصيل: ${deliveryCost} ريال\n💰 الإجمالي: ${total} ريال\n\nعزيزي العميل عد للتطبيق لتتبع حالة طلبك 😊`; window.open(`https://wa.me/777215154?text=${encodeURIComponent(msg)}`, '_blank'); showToast('تم إرسال الطلب'); cart=[]; showPage('homePage'); setActiveNav('homePage'); document.getElementById('trackOrderBtnHome').style.display='block'; setTimeout(()=>viewOrderTracking(id),1000); await notifyDriversViaDB(id, 'طلب مطعم'); };
         
         // تتبع الطلب (بدون تغيير)
         window.viewOrderTracking = async (id) => { await loadOrders(); const order = allOrders.find(o=>o.id==id); if(!order) return; renderTrackingContent(order); document.getElementById('trackFullscreen').style.display='block'; startTrackingListener(id); };
@@ -349,7 +341,7 @@
         window.stopTrackingAndClose = function() { if(trackingInterval) clearInterval(trackingInterval); document.getElementById('trackFullscreen').style.display='none'; };
         window.showMyTracking = () => { let id = localStorage.getItem('currentTrackingOrder') || currentClientOrderId; if(id) viewOrderTracking(parseInt(id)); else showToast('لا يوجد طلب نشط'); };
         
-        // دوال المندوب (بدون طلب إذن الإشعارات)
+        // دوال المندوب
         async function refreshDriverPanel() { await loadOrders(); let myActive = allOrders.find(o=>o.driverId===currentUser?.phone && o.status!=='delivered'); let available = allOrders.filter(o=>o.status==='pending'); let completed = allOrders.filter(o=>o.driverId===currentUser?.phone && o.status==='delivered'); document.getElementById('activeOrdersCount').innerText = myActive?1:0; document.getElementById('completedOrdersCount').innerText = completed.length; let html = ''; if(driverActiveTab==='active'){ if(myActive){ html = `<div class="order-card-modern" onclick="openOrderDetail(${myActive.id})"><div class="order-header"><span class="order-id">#${myActive.id}</span><span class="order-status-badge">${getStatusText(myActive.status)}</span></div><div class="order-details-row"><i class="fas fa-user"></i> ${myActive.customerName||myActive.phone}</div><div class="order-details-row"><i class="fas fa-store"></i> ${myActive.restaurant||myActive.service}</div><div class="order-details-row"><i class="fas fa-map-marker-alt"></i> من: ${myActive.pickupAddress||myActive.address}</div><div class="order-details-row"><i class="fas fa-flag-checkered"></i> إلى: ${myActive.destinationAddress||(myActive.type==='restaurant'?myActive.address:'غير محدد')}</div><div class="action-buttons">`; if(myActive.status==='pending') html+=`<button class="action-btn primary" onclick="event.stopPropagation();updateStatusDirect(${myActive.id}, 'on_the_way')"><i class="fas fa-truck"></i> في الطريق</button>`; else if(myActive.status==='on_the_way') html+=`<button class="action-btn warning" onclick="event.stopPropagation();updateStatusDirect(${myActive.id}, 'arrived')"><i class="fas fa-map-pin"></i> وصلت الموقع</button>`; else if(myActive.status==='arrived') html+=`<button class="action-btn success" onclick="event.stopPropagation();updateStatusDirect(${myActive.id}, 'delivered')"><i class="fas fa-check-double"></i> تم التوصيل</button>`; html+=`</div></div>`; } else html = '<p style="text-align:center;">🚀 لا يوجد طلب نشط</p>'; } else { available.forEach(o=>{ html+=`<div class="order-card-modern" onclick="confirmAccept(${o.id})"><div class="order-header"><span class="order-id">#${o.id}</span><span class="order-status-badge">متاح</span></div><div class="order-details-row"><i class="fas fa-store"></i> ${o.restaurant||o.service}</div><div class="order-details-row"><i class="fas fa-map-marker-alt"></i> ${o.pickupAddress||o.address}</div><div class="order-details-row"><i class="fas fa-money-bill"></i> ${o.price||o.total} ريال</div><div class="action-buttons"><button class="action-btn primary" onclick="event.stopPropagation();confirmAccept(${o.id})"><i class="fas fa-check-circle"></i> قبول</button></div></div>`; }); if(!available.length) html = '<p style="text-align:center;">📋 لا توجد طلبات متاحة</p>'; } document.getElementById('driverOrdersList').innerHTML = html; }
         window.switchDriverTab = tab => { driverActiveTab = tab; document.querySelectorAll('.modern-tab').forEach(b=>b.classList.remove('active')); document.getElementById(tab==='active'?'modernActiveTab':'modernAvailableTab').classList.add('active'); refreshDriverPanel(); };
         window.confirmAccept = id => { pendingAction = { action: 'acceptOrder', orderId: id }; document.getElementById('modalTitle').innerText='قبول الطلب'; document.getElementById('modalMessage').innerText='هل أنت متأكد؟'; document.getElementById('confirmationModal').classList.add('open'); };
@@ -361,7 +353,7 @@
         window.renderMyOrders = async () => { await loadOrders(); let myOrders = allOrders.filter(o=>o.customerPhone===currentUser?.phone || o.phone===currentUser?.phone); let container = document.getElementById('myOrdersContainer'); if(myOrders.length===0) container.innerHTML = '<p style="text-align:center;">لا توجد طلبات</p>'; else container.innerHTML = myOrders.map(o=>`<div class="order-card-modern" onclick="window.viewOrderTracking(${o.id})"><div class="order-header"><span class="order-id">#${o.id}</span><span class="order-status-badge">${getStatusText(o.status)}</span></div><div class="order-details-row"><i class="fas fa-store"></i> ${o.restaurant||o.service||'طلب'}</div><div class="order-details-row"><i class="fas fa-money-bill"></i> ${o.total?o.total+' ريال':(o.price?o.price+' ريال':'---')}</div></div>`).join(''); };
         async function loadAdminPanel() { document.getElementById('adminPanel').innerHTML = '<h3>🛠️ لوحة المدير</h3><p>تم التحميل بنجاح</p>'; }
         
-        // تسجيل الدخول (تم إزالة requestDriverNotificationPermission)
+        // تسجيل الدخول (بدون طلب إذن منفصل)
         let role = 'customer';
         function initLogin() {
             document.querySelectorAll('.role-btn').forEach(btn => {
@@ -386,7 +378,6 @@
                     showPage('driverPage');
                     refreshDriverPanel();
                     setInterval(refreshDriverPanel, 5000);
-                    // تم حذف طلب الإذن للإشعارات لأن OneSignal سيتولى ذلك تلقائياً
                 } else {
                     let name = document.getElementById('customerName').value.trim();
                     if (!name) { showToast('أدخل اسمك'); return; }

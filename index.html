@@ -9,87 +9,29 @@
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <!-- Firebase Database فقط -->
+    <!-- Firebase Database فقط (بدون Firebase Messaging) -->
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+    <!-- تم حذف firebase-messaging-compat نهائياً بناءً على طلب إزالة خدمات الإشعارات المتعارضة -->
     
-    <!-- OneSignal SDK -->
+    <!-- OneSignal SDK - تمت إضافته بشكل صحيح مع معرف التطبيق المطلوب وتفعيل زر الإشعارات -->
     <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
     <script>
         window.OneSignalDeferred = window.OneSignalDeferred || [];
         OneSignalDeferred.push(async function(OneSignal) {
             await OneSignal.init({
                 appId: "d626b1b5-d529-4e0d-8166-1192e85fca25",
-                notifyButton: { enable: true },
-                promptOptions: { autoPrompt: false }
+                notifyButton: {
+                    enable: true,          // تفعيل زر الإشعارات المنبثق
+                },
+                // يمكن إضافة خيارات أخرى مثل:
+                // allowLocalhostAsSecureOrigin: true,
+                // promptOptions: { autoPrompt: true }
             });
-            console.log("OneSignal initialized");
-            // ربط المستخدم الحالي إن وجد
-            const saved = localStorage.getItem('waselny_user');
-            if (saved) {
-                try {
-                    const user = JSON.parse(saved);
-                    if (user && user.phone) {
-                        await OneSignal.login(user.phone);
-                        console.log("OneSignal external ID set:", user.phone);
-                    }
-                } catch(e) {}
-            }
+            console.log("OneSignal initialized with notify button enabled");
         });
-
-        // دالة عمومية قوية لطلب الإذن - سيتم إضافتها إلى window بعد تحميل الصفحة
-        window.requestOneSignalPermission = async function() {
-            console.log("requestOneSignalPermission called");
-            // دالة لعرض إشعار داخل التطبيق
-            const showMsg = (msg, isError = false) => {
-                let toast = document.getElementById('toastMsg');
-                if (toast) {
-                    toast.innerText = msg;
-                    toast.style.background = isError ? '#ef4444' : '#10b981';
-                    toast.classList.add('show');
-                    setTimeout(() => toast.classList.remove('show'), 3000);
-                    setTimeout(() => { if(toast) toast.style.background = '#10b981'; }, 3200);
-                } else {
-                    alert(msg);
-                }
-            };
-
-            try {
-                // انتظار تحميل OneSignal
-                if (!window.OneSignalDeferred) {
-                    showMsg("⚠️ خدمة الإشعارات لم تكتمل بعد، حاول مرة أخرى", true);
-                    return;
-                }
-                const OneSignal = await new Promise((resolve) => {
-                    window.OneSignalDeferred.push(async (OS) => resolve(OS));
-                });
-                if (!OneSignal || !OneSignal.Notifications) {
-                    showMsg("⚠️ OneSignal غير جاهز، أعد المحاولة", true);
-                    return;
-                }
-                const permission = await OneSignal.Notifications.requestPermission();
-                if (permission === 'granted') {
-                    showMsg("🔔 تم تفعيل الإشعارات بنجاح! ستصلك التنبيهات عند الطلبات الجديدة.");
-                    // تحديث الـ external ID مرة أخرى للتأكد
-                    const saved = localStorage.getItem('waselny_user');
-                    if (saved) {
-                        try {
-                            const user = JSON.parse(saved);
-                            if (user && user.phone) {
-                                await OneSignal.login(user.phone);
-                            }
-                        } catch(e) {}
-                    }
-                } else {
-                    showMsg("⚠️ لم يتم منح صلاحية الإشعارات. يمكنك تفعيلها من إعدادات المتصفح.", true);
-                }
-            } catch (err) {
-                console.error("OneSignal error:", err);
-                showMsg("حدث خطأ أثناء تفعيل الإشعارات: " + (err.message || "غير معروف"), true);
-            }
-        };
     </script>
+    <!-- تم إزالة PushAlert و Webpushr نهائياً -->
 
-    <style>/* نفس الأنماط السابقة كما هي - اختصار للمساحة مع الحفاظ على الوظائف */</style>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Cairo', sans-serif; -webkit-tap-highlight-color: transparent; }
         :root { --primary-dark: #0a2b3e; --primary-light: #2dd4bf; --bg-light: #f8fafc; --card-light: #ffffff; --text-light: #1e293b; --text-muted: #64748b; --border-light: #e2e8f0; --bg-dark: #0f172a; --card-dark: #1e293b; --text-dark: #f1f5f9; --border-dark: #334155; --danger: #ef4444; --success: #10b981; --warning: #f59e0b; --restaurant-accent: #f97316; }
@@ -199,8 +141,6 @@
         <div class="settings-card">
             <h3 style="color: var(--primary-light); margin-bottom: 20px;">⚙️ الإعدادات</h3>
             <div class="setting-row" id="darkModeToggle"><span><i class="fas fa-moon"></i> الوضع الليلي</span><i class="fas fa-toggle-off" id="darkModeIcon"></i></div>
-            <!-- زر تفعيل الإشعارات -->
-            <div class="setting-row" id="enableNotificationsSetting"><span><i class="fas fa-bell"></i> تفعيل الإشعارات</span><i class="fas fa-bell"></i></div>
             <div class="setting-row" id="whatsappSupport"><span><i class="fab fa-whatsapp"></i> خدمة العملاء</span><i class="fas fa-chevron-left"></i></div>
             <div class="setting-row" id="shareApp"><span><i class="fas fa-share-alt"></i> مشاركة التطبيق</span><i class="fas fa-chevron-left"></i></div>
             <div class="setting-row"><span><i class="fas fa-code-branch"></i> الإصدار</span><span>v8.0.0 (OneSignal)</span></div>
@@ -238,9 +178,8 @@
             <div class="driver-stats"><div class="stat-card"><i class="fas fa-truck"></i><div class="number" id="activeOrdersCount">0</div><span>نشط</span></div><div class="stat-card"><i class="fas fa-check-circle"></i><div class="number" id="completedOrdersCount">0</div><span>مكتمل</span></div></div>
             <div class="modern-tabs"><div class="modern-tab active" id="modernActiveTab" onclick="switchDriverTab('active')"><i class="fas fa-play-circle"></i> طلبي النشط</div><div class="modern-tab" id="modernAvailableTab" onclick="switchDriverTab('available')"><i class="fas fa-list"></i> الطلبات المتاحة</div></div>
             <div id="driverOrdersList"></div>
-            <!-- زر تفعيل الإشعارات الخاص بالسائق -->
-            <button class="btn-send" id="driverEnableNotificationsBtn" style="background: var(--primary-light); margin-top: 10px;">🔔 تفعيل الإشعارات (OneSignal)</button>
             <button class="btn-send" id="driverLogoutBtn" style="background: var(--danger); color:white; margin-top:20px;">تسجيل الخروج</button>
+            <!-- تم إزالة زر تفعيل الإشعارات يدوياً لأن OneSignal يقوم بها تلقائياً -->
         </div>
     </div>
     <div id="adminPanelPage" class="page"><div class="admin-panel" id="adminPanel"></div></div>
@@ -279,7 +218,7 @@
 
 <script>
     (function(){
-        // Firebase config
+        // Firebase config (للبيانات فقط، بدون Firebase Messaging)
         const firebaseConfig = {
             apiKey: "AIzaSyCMb07oP2PMUdTlffJjYkbfThC34x1dbtU",
             authDomain: "waselny-2812b.firebaseapp.com",
@@ -291,12 +230,14 @@
         };
         if (typeof firebase !== 'undefined' && !firebase.apps.length) firebase.initializeApp(firebaseConfig);
         
+        // تم حذف كل ما يتعلق بـ Firebase Messaging و VAPID_KEY و service worker للإشعارات
+        
         // ثوابت
         const FIREBASE_URL = "https://waselny-2812b-default-rtdb.firebaseio.com";
         const DRIVER_PASSWORD = "weesim73741", ADMIN_PASSWORD = "weesim73741";
         const RESTAURANT_LOCATION = { lat: 15.285158, lng: 44.2207412 };
         const DELIVERY_PRICE_PER_KM = 180, MIN_DELIVERY_PRICE = 550;
-        let currentUser = null, allOrders = [];
+        let currentUser = null, allOrders = [], allDrivers = [];
         let map, marker, currentMapMode = null;
         const SANAA_CENTER = [15.3694, 44.1910];
         let vSel = "تاكسي 🚖", selectedPayment = "الدفع عند التوصيل";
@@ -307,32 +248,17 @@
         let driverActiveTab = 'active', appSettings = { workStart: "06:00", workEnd: "22:00" };
         let pendingAction = null, trackingInterval = null, currentClientOrderId = null;
         
-        // دالة مساعدة للتوست متاحة عمومياً
-        window.showToast = function(msg, isError = false) { 
-            let t = document.getElementById('toastMsg'); 
-            if(t) {
-                t.innerText = msg; 
-                t.style.background = isError ? '#ef4444' : '#10b981';
-                t.classList.add('show'); 
-                setTimeout(() => t.classList.remove('show'), 3000);
-                setTimeout(() => t.style.background = '#10b981', 3200);
-            }
-        };
-        
-        // ربط المستخدم بـ OneSignal بعد تسجيل الدخول
-        async function setOneSignalExternalId(phone) {
-            if (window.OneSignalDeferred) {
-                try {
-                    const OneSignal = await new Promise((resolve) => {
-                        window.OneSignalDeferred.push(async (OS) => resolve(OS));
-                    });
-                    await OneSignal.login(phone);
-                    console.log("OneSignal external ID set:", phone);
-                } catch(e) { console.warn(e); }
-            }
+        // دالة إشعارات للسائقين عبر تخزين قاعدة البيانات (بدون خدمات خارجية)
+        async function notifyDriversViaDB(orderId, type) {
+            console.log(`طلب جديد #${orderId} من نوع ${type} - سيتم عرضه للسائقين عبر التحديث التلقائي`);
+            await fetch(`${FIREBASE_URL}/pushNotifications/${orderId}.json`, {
+                method: 'PUT',
+                body: JSON.stringify({ orderId, type, title: "📦 طلب جديد!", body: `طلب ${type} #${orderId}`, timestamp: Date.now(), topic: "drivers" })
+            }).catch(e=>console.warn);
         }
         
-        // دوال التنقل
+        // دوال مساعدة
+        window.showToast = msg => { let t = document.getElementById('toastMsg'); t.innerText = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 3000); };
         function showPage(pageId) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
             document.getElementById(pageId).classList.add('active-page');
@@ -343,7 +269,6 @@
         }
         function setActiveNav(pageId) { document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active')); document.querySelector(`.nav-item[data-page="${pageId}"]`).classList.add('active'); }
         window.showPage = showPage;
-        
         function calculateDeliveryCost() { if(!customerLocationLatLng) return MIN_DELIVERY_PRICE; const d = L.latLng(customerLocationLatLng.lat, customerLocationLatLng.lng).distanceTo(L.latLng(RESTAURANT_LOCATION.lat, RESTAURANT_LOCATION.lng)) / 1000; return Math.max(Math.round(d * DELIVERY_PRICE_PER_KM), MIN_DELIVERY_PRICE); }
         async function loadOrders() { try { let r = await fetch(`${FIREBASE_URL}/orders.json`); let d = await r.json(); allOrders = d ? Object.values(d).sort((a,b)=>b.id-a.id) : []; } catch(e){} }
         async function updateOrder(id, updates) { await fetch(`${FIREBASE_URL}/orders/${id}.json`, { method: 'PATCH', body: JSON.stringify(updates) }); await loadOrders(); }
@@ -373,39 +298,50 @@
             showToast("✅ تم إرسال الطلب"); showPage('homePage'); setActiveNav('homePage'); await loadOrders(); viewOrderTracking(id);
             let msg = `🚖 طلب ${vSel}\n🆔 ${id}\n👤 ${tel}\n💰 ${price} ريال\n💳 ${selectedPayment}\n📍 ${pAddr}\n🏁 ${dAddr}\n📝 ${order.note||'لا توجد'}\n\nعزيزي العميل عد للتطبيق لتتبع حالة طلبك 😊`;
             window.open(`https://wa.me/777215154?text=${encodeURIComponent(msg)}`, '_blank');
-            await fetch(`${FIREBASE_URL}/pushNotifications/${id}.json`, { method:'PUT', body: JSON.stringify({ orderId:id, type:vSel, title:"طلب جديد", body:`طلب ${vSel} #${id}`, timestamp:Date.now() }) });
+            await notifyDriversViaDB(id, vSel);
         }
         
-        // الخريطة والمطاعم
+        // الخريطة والمطاعم (نفس الكود بدون تعديل)
         window.initMap = mode => { currentMapMode=mode; document.getElementById('map-overlay').style.display='flex'; setTimeout(()=>{ if(!map){ map = L.map('map').setView(SANAA_CENTER, 14); L.tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', { subdomains: ['mt0','mt1','mt2','mt3'] }).addTo(map); marker = L.marker(SANAA_CENTER, { draggable: true }).addTo(map); map.on('click', e => marker.setLatLng(e.latlng)); } else { map.setView(SANAA_CENTER, 14); marker.setLatLng(SANAA_CENTER); } map.invalidateSize(); }, 100); };
         window.initMapForRestaurant = () => { currentMapMode='restaurant'; initMap('restaurant'); };
         window.closeMap = () => { document.getElementById('map-overlay').style.display='none'; };
         window.confirmMapLocation = async () => { if(!map||!marker) return; const pos = marker.getLatLng(); if(currentMapMode==='restaurant') { customerLocationLatLng=pos; closeMap(); document.getElementById('restLocationTxt').innerText='✅ تم تحديد الموقع'; deliveryCost=calculateDeliveryCost(); document.getElementById('deliveryCostDisplay').style.display='block'; document.getElementById('deliveryCostValue').innerText=deliveryCost; updateCartDisplay(); showToast(`سعر التوصيل: ${deliveryCost} ريال`); fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${pos.lat}&lon=${pos.lng}&addressdetails=1&accept-language=ar`).then(r=>r.json()).then(d=>{ if(d.display_name){ customerAddress=d.display_name.split(',')[0]; document.getElementById('restLocationTxt').innerText=customerAddress.substring(0,40); document.getElementById('restaurantAddressManual').value=customerAddress; } }).catch(e=>{}); } else { locs[currentMapMode]=pos; document.getElementById(currentMapMode+'Txt').innerText=`✅ تم تحديد ${currentMapMode==='p'?'الانطلاق':'الوصول'}`; closeMap(); updatePrice(); } };
         window.updateRestaurantAddressManual = addr => { customerAddress=addr; document.getElementById('restLocationTxt').innerText=addr||'حدد موقعك'; if(addr&&addr.length>3){ deliveryCost=MIN_DELIVERY_PRICE; document.getElementById('deliveryCostDisplay').style.display='block'; document.getElementById('deliveryCostValue').innerText=deliveryCost; updateCartDisplay(); } };
-        
-        // قائمة المطاعم (مختصرة قليلاً لكنها تعمل)
-        const restaurants = [
-            { id: 1, name: "مطعم القلعة - Castle", category: "مأكولات متنوعة", img: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400", items: [{name:"بروست مع التوابع",price:1500},{name:"بروست بدون توابع",price:1300},{name:"شبس",price:500},{name:"اصابع دجاج",price:1800}] },
-            { id: 2, name: "مطعم الشيباني", category: "مأكولات شعبية", img: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=400", items: [{name:"عقدة لحم",price:4000},{name:"فحسة لحم غنمي",price:4000},{name:"شيش طاووق",price:2500}] },
-            { id: 3, name: "مطعم روما", category: "بيتزا وبرجر", img: "https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=400", items: [{name:"بيتزا بالجبن",price:2500},{name:"بيتزا بالدجاج",price:3500}] },
-            { id: 4, name: "نكهة زمان", category: "لحوم ومشاوي", img: "https://images.unsplash.com/photo-1544025162-d76694265947?w=400", items: [{name:"ثمن ذبيحة حنيذ",price:8000},{name:"برجر دجاج",price:1100}] }
+        const restaurants = [ /* القائمة الكاملة كما هي مع الحفاظ على البيانات */ 
+            { id: 1, name: "مطعم القلعة - Castle", category: "مأكولات متنوعة", img: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400", items: [{name:"بروست مع التوابع",price:1500},{name:"بروست بدون توابع",price:1300},{name:"شبس",price:500},{name:"اصابع دجاج",price:1800},{name:"ذبيحة لحم حنيذ",price:8000},{name:"برمة لحم حنيذ",price:9000},{name:"سلطه",price:1900},{name:"فحسة",price:3200},{name:"دجاج محمر تندوري",price:1200},{name:"دجاج شواية",price:1100},{name:"كباب دجاج",price:2300},{name:"صانونة جمبري",price:3000},{name:"بيتزا بالجبن",price:2500},{name:"بيتزا بالدجاج",price:3500},{name:"عريكه",price:1500},{name:"معصوب",price:1000}] },
+            { id: 2, name: "مطعم الشيباني", category: "مأكولات شعبية", img: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=400", items: [{name:"عقدة لحم",price:4000},{name:"فحسة لحم غنمي",price:4000},{name:"شيش طاووق",price:2500},{name:"ريش غنم",price:4600},{name:"مشاوي الشيباني",price:4800},{name:"فتة تمر",price:500},{name:"فتة دخن بالقشطة",price:1600},{name:"كبدة عجل",price:1700}] },
+            { id: 3, name: "مطعم روما", category: "بيتزا وبرجر", img: "https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=400", items: [{name:"بيتزا بالجبن",price:2500},{name:"بيتزا بالدجاج",price:3500},{name:"بيتزا خضار",price:2000},{name:"بيتزا روما",price:2700},{name:"بروست",price:1300},{name:"أصابع دجاج",price:1500},{name:"تشكن جريل",price:3000},{name:"برجر دجاج",price:1200}] },
+            { id: 4, name: "نكهة زمان", category: "لحوم ومشاوي", img: "https://images.unsplash.com/photo-1544025162-d76694265947?w=400", items: [{name:"ثمن ذبيحة حنيذ",price:8000},{name:"برجر دجاج",price:1100},{name:"سلتة",price:1700},{name:"فحسة",price:3000},{name:"بروست",price:1300},{name:"دجاج مضغوط",price:2000},{name:"كباب دجاج",price:2300},{name:"أرز أبيض",price:600}] },
+            { id: 5, name: "KFC", category: "وجبات سريعة", img: "https://images.unsplash.com/photo-1585032226651-759b368d7246?w=400", items: [{name:"زنجر بوكس السمك",price:4400},{name:"تويستر السمك",price:3200},{name:"وجبة أطفال",price:2150},{name:"فيليه سوبريم",price:2300}] },
+            { id: 6, name: "Juice City", category: "عصائر", img: "https://images.unsplash.com/photo-1622484214888-a7c847b3b52e?w=400", items: [{name:"وجبة بروست قطعتين",price:1300},{name:"طبق زنجر",price:1500},{name:"برجر لحم",price:1200},{name:"عصير بطيخ",price:1000},{name:"ميلك شيك أوريو",price:1000},{name:"شاورما صاروخ",price:1200},{name:"حمص",price:600}] },
+            { id: 7, name: "Turkish House", category: "مطبخ تركي", img: "https://images.unsplash.com/photo-1553621042-f6e147245754?w=400", items: [{name:"كباب لحم",price:2400},{name:"شيش طاووق",price:2400},{name:"بيتزا جبن",price:2000},{name:"لحم بالعجين",price:700}] },
+            { id: 8, name: "Hot Spicy", category: "وجبات حارة", img: "https://images.unsplash.com/photo-1534224039826-c7a0eda0e6b3?w=400", items: [{name:"بروست عادي",price:1300},{name:"بروست سبايسي",price:1300},{name:"برجر دجاج",price:1000},{name:"بيتزا مارجريتا",price:1800}] },
+            { id: 9, name: "Trend Cafe", category: "كافيه", img: "https://images.unsplash.com/photo-1442512595331-e89e73853f31?w=400", items: [{name:"وجبة بروست",price:1300},{name:"تشيكن فرايز",price:1900},{name:"برجر ترند",price:1200},{name:"موكا",price:700}] },
+            { id: 10, name: "Al Andalus", category: "عربي", img: "https://images.unsplash.com/photo-1517244683847-7456b63c5969?w=400", items: [{name:"دجاج شواية",price:550},{name:"دجاج مندي",price:900},{name:"برمة لحم",price:2700},{name:"سلتة",price:1500}] },
+            { id: 11, name: "Crispy Flavors", category: "مقرمشات", img: "https://images.unsplash.com/photo-1598515214211-89d3c73ae83b?w=400", items: [{name:"تشكن فرايز",price:1500},{name:"ساندوتش زنجر",price:1200}] },
+            { id: 12, name: "Amin Pizza", category: "بيتزا", img: "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=400", items: [{name:"بيتزا تونة محشية",price:2200},{name:"بيتزا مارجريتا",price:1900}] },
+            { id: 13, name: "قرية تهامية", category: "شعبي", img: "https://images.unsplash.com/photo-1543352634-a1c51d9f1fa7?w=400", items: [{name:"سلتة",price:800},{name:"فحسة",price:1500},{name:"لحم مضغوط",price:2500}] },
+            { id: 14, name: "علم طه", category: "شاورما", img: "https://images.unsplash.com/photo-1594221708779-94832f4320d1?w=400", items: [{name:"شاورما عربي",price:700},{name:"طبق شاورما",price:2000}] },
+            { id: 15, name: "Joe La Yonsa", category: "برجر", img: "https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=400", items: [{name:"برجر دجاج",price:1000},{name:"برجر لحم",price:1000}] },
+            { id: 16, name: "Five Star Burger", category: "برجر", img: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400", items: [{name:"برجر لحم",price:1100},{name:"وجبة بروست",price:1300}] },
+            { id: 17, name: "Albaik Royal", category: "بروست", img: "https://images.unsplash.com/photo-1626645738196-c2a7c8d08f58?w=400", items: [{name:"عريكة ملكي",price:2500},{name:"بروست",price:1300}] },
+            { id: 18, name: "Dynamite", category: "حار", img: "https://images.unsplash.com/photo-1551782450-17144efb9c50?w=400", items: [{name:"وجبة C4",price:2500},{name:"شاورما جمبري",price:1500}] }
         ];
-        
         function renderRestaurants() { document.getElementById('restaurantsGrid').innerHTML = restaurants.map(r => `<div class="res-card" onclick="openRestaurantMenu(${r.id})"><div class="res-image" style="background-image: url('${r.img}')"></div><div class="res-info"><h3>${r.name}</h3><p>${r.category}</p></div></div>`).join(''); }
         window.openRestaurantMenu = id => { currentRestaurant=restaurants.find(r=>r.id===id); cart=[]; customerLocationLatLng=null; customerAddress=""; deliveryCost=0; document.getElementById('menuContent').innerHTML = `<div class="section-title">🍽️ منيو ${currentRestaurant.name}</div><div class="menu-grid">${currentRestaurant.items.map((item,idx)=>`<div class="item-card"><img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=100" class="item-img"><div class="item-details"><h4>${item.name}</h4><div class="price">${item.price} ريال</div></div><button class="add-btn-circle" onclick="addToCart(${idx})"><i class="fas fa-plus"></i></button></div>`).join('')}</div>`; document.getElementById('restLocationTxt').innerText='حدد موقعك'; document.getElementById('restaurantAddressManual').value=''; document.getElementById('deliveryCostDisplay').style.display='none'; updateCartDisplay(); showPage('restaurantMenuPage'); };
         window.addToCart = idx => { const item=currentRestaurant.items[idx]; let existing=cart.find(i=>i.name===item.name); if(existing) existing.qty++; else cart.push({...item, qty:1}); updateCartDisplay(); showToast(`تمت إضافة ${item.name}`); };
         function updateCartDisplay() { const total=cart.reduce((s,i)=>s+(i.price*i.qty),0); document.getElementById('cartCount').innerText=cart.reduce((s,i)=>s+i.qty,0); document.getElementById('cartTotal').innerText=total; document.getElementById('floatCart').style.display=cart.length?'flex':'none'; let html=cart.map(i=>`<div style="display:flex;justify-content:space-between;"><span>${i.name} x${i.qty}</span><span>${i.price*i.qty} ريال</span></div>`).join(''); html+=`<div style="font-weight:bold; margin-top:10px;">الإجمالي: ${total} ريال</div>`; if(deliveryCost) html+=`<div>🚚 التوصيل: ${deliveryCost} ريال</div><div style="color:var(--restaurant-accent);">💰 الإجمالي الكلي: ${total+deliveryCost} ريال</div>`; document.getElementById('cartSummaryRestaurant').innerHTML=html; }
         window.showRestaurantInvoice = () => { if(!customerLocationLatLng&&!customerAddress) return showToast('حدد عنوان التوصيل'); if(!cart.length) return showToast('السلة فارغة'); const totalFood=cart.reduce((s,i)=>s+(i.price*i.qty),0), total=totalFood+deliveryCost; document.getElementById('invoiceContent').innerHTML = cart.map(i=>`<div style="display:flex;justify-content:space-between;"><span>${i.name} x${i.qty}</span><span>${i.price*i.qty} ريال</span></div>`).join('')+`<div style="margin-top:15px; border-top:2px solid #ddd; padding-top:15px;"><span>سعر التوصيل:</span><span>${deliveryCost} ريال</span></div><div style="display:flex; justify-content:space-between; font-size:1.4rem; margin:20px 0; color:var(--restaurant-accent)"><span>الإجمالي:</span><span>${total} ريال</span></div>`; showPage('restaurantInvoicePage'); };
-        window.confirmRestaurantOrder = async () => { if(!customerLocationLatLng&&!customerAddress) return; const totalFood=cart.reduce((s,i)=>s+(i.price*i.qty),0), total=totalFood+deliveryCost, id=Date.now(); const order={ id, type:'restaurant', restaurant:currentRestaurant.name, customerName:currentUser?.name, customerPhone:currentUser?.phone, address:customerAddress, lat:customerLocationLatLng?.lat, lng:customerLocationLatLng?.lng, items:cart.map(i=>({name:i.name,qty:i.qty,price:i.price})), totalFood, deliveryCost, total, status:'pending', createdAt:new Date().toISOString() }; await fetch(`${FIREBASE_URL}/orders/${id}.json`,{method:'PUT',body:JSON.stringify(order)}); localStorage.setItem('currentTrackingOrder',id); currentClientOrderId = id; let msg=`🍽️ طلب من ${currentRestaurant.name}\n🆔 ${id}\n👤 ${currentUser?.name}\n📞 ${currentUser?.phone}\n📍 ${customerAddress}\n\n`; cart.forEach(i=>msg+=`• ${i.name} x${i.qty} = ${i.price*i.qty} ريال\n`); msg+=`\n🚚 التوصيل: ${deliveryCost} ريال\n💰 الإجمالي: ${total} ريال`; window.open(`https://wa.me/777215154?text=${encodeURIComponent(msg)}`, '_blank'); showToast('تم إرسال الطلب'); cart=[]; showPage('homePage'); setActiveNav('homePage'); document.getElementById('trackOrderBtnHome').style.display='block'; setTimeout(()=>viewOrderTracking(id),1000); await fetch(`${FIREBASE_URL}/pushNotifications/${id}.json`,{method:'PUT',body:JSON.stringify({ orderId:id, type:'طلب مطعم', title:"طلب جديد", body:`طلب من ${currentRestaurant.name}`, timestamp:Date.now() })}); };
+        window.confirmRestaurantOrder = async () => { if(!customerLocationLatLng&&!customerAddress) return; const totalFood=cart.reduce((s,i)=>s+(i.price*i.qty),0), total=totalFood+deliveryCost, id=Date.now(); const order={ id, type:'restaurant', restaurant:currentRestaurant.name, customerName:currentUser?.name, customerPhone:currentUser?.phone, address:customerAddress, lat:customerLocationLatLng?.lat, lng:customerLocationLatLng?.lng, items:cart.map(i=>({name:i.name,qty:i.qty,price:i.price})), totalFood, deliveryCost, total, status:'pending', createdAt:new Date().toISOString() }; await fetch(`${FIREBASE_URL}/orders/${id}.json`,{method:'PUT',body:JSON.stringify(order)}); localStorage.setItem('currentTrackingOrder',id); currentClientOrderId = id; let msg=`🍽️ طلب من ${currentRestaurant.name}\n🆔 ${id}\n👤 ${currentUser?.name}\n📞 ${currentUser?.phone}\n📍 ${customerAddress}\n\n`; cart.forEach(i=>msg+=`• ${i.name} x${i.qty} = ${i.price*i.qty} ريال\n`); msg+=`\n🚚 التوصيل: ${deliveryCost} ريال\n💰 الإجمالي: ${total} ريال\n\nعزيزي العميل عد للتطبيق لتتبع حالة طلبك 😊`; window.open(`https://wa.me/777215154?text=${encodeURIComponent(msg)}`, '_blank'); showToast('تم إرسال الطلب'); cart=[]; showPage('homePage'); setActiveNav('homePage'); document.getElementById('trackOrderBtnHome').style.display='block'; setTimeout(()=>viewOrderTracking(id),1000); await notifyDriversViaDB(id, 'طلب مطعم'); };
         
-        // تتبع الطلب
+        // تتبع الطلب (بدون تغيير)
         window.viewOrderTracking = async (id) => { await loadOrders(); const order = allOrders.find(o=>o.id==id); if(!order) return; renderTrackingContent(order); document.getElementById('trackFullscreen').style.display='block'; startTrackingListener(id); };
         function renderTrackingContent(order) { const steps = ['pending','on_the_way','arrived','delivered']; const idx = steps.indexOf(order.status); let stepsHtml = `<div class="tracking-steps">`; steps.forEach((s,i)=>{ let cls = (i<idx)?'completed':(i===idx?'active':''); let icon = {pending:'fa-clock',on_the_way:'fa-truck',arrived:'fa-map-marker-alt',delivered:'fa-check-circle'}[s]; stepsHtml += `<div class="step ${cls}"><div class="circle"><i class="fas ${icon}"></i></div><div class="step-label">${getStatusText(s)}</div></div>`; if(i<steps.length-1) stepsHtml += `<div class="step-connector ${i<idx?'completed':(i===idx?'active':'')}"></div>`; }); stepsHtml += `</div>`; let details = order.type==='restaurant'? `<p><span>المطعم:</span><span>${order.restaurant}</span></p><p><span>الأصناف:</span><span>${order.items?.map(i=>`${i.name} x${i.qty}`).join('، ')}</span></p><p><span>إجمالي الأصناف:</span><span>${order.totalFood} ريال</span></p><p><span>التوصيل:</span><span>${order.deliveryCost} ريال</span></p><p><span>الإجمالي:</span><span>${order.total} ريال</span></p><p><span>العنوان:</span><span>${order.address}</span></p>`:`<p><span>الخدمة:</span><span>${order.service}</span></p><p><span>السعر:</span><span>${order.price} ريال</span></p><p><span>الدفع:</span><span>${order.paymentMethod}</span></p><p><span>من:</span><span>${order.pickupAddress}</span></p><p><span>إلى:</span><span>${order.destinationAddress}</span></p>`; document.getElementById('trackingFullscreenContainer').innerHTML = `<div class="tracking-header"><h3>📍 تتبع الطلب #${order.id}</h3></div>${stepsHtml}<div class="invoice-details"><p><span>العميل:</span><span>${order.customerName||order.phone}</span></p><p><span>الهاتف:</span><span>${order.customerPhone||order.phone}</span></p>${details}<p><span>تاريخ الطلب:</span><span>${new Date(order.createdAt).toLocaleString('ar-SA')}</span></p></div>`; }
         function startTrackingListener(orderId) { if(trackingInterval) clearInterval(trackingInterval); trackingInterval = setInterval(async () => { let res = await fetch(`${FIREBASE_URL}/orders/${orderId}.json`); let order = await res.json(); if(order && document.getElementById('trackFullscreen').style.display==='block') renderTrackingContent(order); }, 3000); }
         window.stopTrackingAndClose = function() { if(trackingInterval) clearInterval(trackingInterval); document.getElementById('trackFullscreen').style.display='none'; };
         window.showMyTracking = () => { let id = localStorage.getItem('currentTrackingOrder') || currentClientOrderId; if(id) viewOrderTracking(parseInt(id)); else showToast('لا يوجد طلب نشط'); };
         
-        // لوحة السائق
+        // دوال المندوب
         async function refreshDriverPanel() { await loadOrders(); let myActive = allOrders.find(o=>o.driverId===currentUser?.phone && o.status!=='delivered'); let available = allOrders.filter(o=>o.status==='pending'); let completed = allOrders.filter(o=>o.driverId===currentUser?.phone && o.status==='delivered'); document.getElementById('activeOrdersCount').innerText = myActive?1:0; document.getElementById('completedOrdersCount').innerText = completed.length; let html = ''; if(driverActiveTab==='active'){ if(myActive){ html = `<div class="order-card-modern" onclick="openOrderDetail(${myActive.id})"><div class="order-header"><span class="order-id">#${myActive.id}</span><span class="order-status-badge">${getStatusText(myActive.status)}</span></div><div class="order-details-row"><i class="fas fa-user"></i> ${myActive.customerName||myActive.phone}</div><div class="order-details-row"><i class="fas fa-store"></i> ${myActive.restaurant||myActive.service}</div><div class="order-details-row"><i class="fas fa-map-marker-alt"></i> من: ${myActive.pickupAddress||myActive.address}</div><div class="order-details-row"><i class="fas fa-flag-checkered"></i> إلى: ${myActive.destinationAddress||(myActive.type==='restaurant'?myActive.address:'غير محدد')}</div><div class="action-buttons">`; if(myActive.status==='pending') html+=`<button class="action-btn primary" onclick="event.stopPropagation();updateStatusDirect(${myActive.id}, 'on_the_way')"><i class="fas fa-truck"></i> في الطريق</button>`; else if(myActive.status==='on_the_way') html+=`<button class="action-btn warning" onclick="event.stopPropagation();updateStatusDirect(${myActive.id}, 'arrived')"><i class="fas fa-map-pin"></i> وصلت الموقع</button>`; else if(myActive.status==='arrived') html+=`<button class="action-btn success" onclick="event.stopPropagation();updateStatusDirect(${myActive.id}, 'delivered')"><i class="fas fa-check-double"></i> تم التوصيل</button>`; html+=`</div></div>`; } else html = '<p style="text-align:center;">🚀 لا يوجد طلب نشط</p>'; } else { available.forEach(o=>{ html+=`<div class="order-card-modern" onclick="confirmAccept(${o.id})"><div class="order-header"><span class="order-id">#${o.id}</span><span class="order-status-badge">متاح</span></div><div class="order-details-row"><i class="fas fa-store"></i> ${o.restaurant||o.service}</div><div class="order-details-row"><i class="fas fa-map-marker-alt"></i> ${o.pickupAddress||o.address}</div><div class="order-details-row"><i class="fas fa-money-bill"></i> ${o.price||o.total} ريال</div><div class="action-buttons"><button class="action-btn primary" onclick="event.stopPropagation();confirmAccept(${o.id})"><i class="fas fa-check-circle"></i> قبول</button></div></div>`; }); if(!available.length) html = '<p style="text-align:center;">📋 لا توجد طلبات متاحة</p>'; } document.getElementById('driverOrdersList').innerHTML = html; }
         window.switchDriverTab = tab => { driverActiveTab = tab; document.querySelectorAll('.modern-tab').forEach(b=>b.classList.remove('active')); document.getElementById(tab==='active'?'modernActiveTab':'modernAvailableTab').classList.add('active'); refreshDriverPanel(); };
         window.confirmAccept = id => { pendingAction = { action: 'acceptOrder', orderId: id }; document.getElementById('modalTitle').innerText='قبول الطلب'; document.getElementById('modalMessage').innerText='هل أنت متأكد؟'; document.getElementById('confirmationModal').classList.add('open'); };
@@ -417,7 +353,7 @@
         window.renderMyOrders = async () => { await loadOrders(); let myOrders = allOrders.filter(o=>o.customerPhone===currentUser?.phone || o.phone===currentUser?.phone); let container = document.getElementById('myOrdersContainer'); if(myOrders.length===0) container.innerHTML = '<p style="text-align:center;">لا توجد طلبات</p>'; else container.innerHTML = myOrders.map(o=>`<div class="order-card-modern" onclick="window.viewOrderTracking(${o.id})"><div class="order-header"><span class="order-id">#${o.id}</span><span class="order-status-badge">${getStatusText(o.status)}</span></div><div class="order-details-row"><i class="fas fa-store"></i> ${o.restaurant||o.service||'طلب'}</div><div class="order-details-row"><i class="fas fa-money-bill"></i> ${o.total?o.total+' ريال':(o.price?o.price+' ريال':'---')}</div></div>`).join(''); };
         async function loadAdminPanel() { document.getElementById('adminPanel').innerHTML = '<h3>🛠️ لوحة المدير</h3><p>تم التحميل بنجاح</p>'; }
         
-        // تسجيل الدخول
+        // تسجيل الدخول (بدون طلب إذن منفصل)
         let role = 'customer';
         function initLogin() {
             document.querySelectorAll('.role-btn').forEach(btn => {
@@ -442,7 +378,6 @@
                     showPage('driverPage');
                     refreshDriverPanel();
                     setInterval(refreshDriverPanel, 5000);
-                    await setOneSignalExternalId(phone);
                 } else {
                     let name = document.getElementById('customerName').value.trim();
                     if (!name) { showToast('أدخل اسمك'); return; }
@@ -456,54 +391,27 @@
                     await loadOrders();
                     let trackingId = localStorage.getItem('currentTrackingOrder');
                     if (trackingId) document.getElementById('trackOrderBtnHome').style.display = 'block';
-                    await setOneSignalExternalId(phone);
                 }
             };
         }
         let saved = localStorage.getItem('waselny_user');
         if (saved) {
             try { currentUser = JSON.parse(saved); document.getElementById('loginOverlay').style.display = 'none';
-                if (currentUser.role === 'driver') { showPage('driverPage'); refreshDriverPanel(); setInterval(refreshDriverPanel, 5000); setOneSignalExternalId(currentUser.phone); }
+                if (currentUser.role === 'driver') { showPage('driverPage'); refreshDriverPanel(); setInterval(refreshDriverPanel, 5000); }
                 else if (currentUser.role === 'admin') { showPage('adminPanelPage'); loadAdminPanel(); }
-                else { showPage('homePage'); setActiveNav('homePage'); renderServices(); let trackingId = localStorage.getItem('currentTrackingOrder'); if (trackingId) document.getElementById('trackOrderBtnHome').style.display = 'block'; setOneSignalExternalId(currentUser.phone); }
+                else { showPage('homePage'); setActiveNav('homePage'); renderServices(); let trackingId = localStorage.getItem('currentTrackingOrder'); if (trackingId) document.getElementById('trackOrderBtnHome').style.display = 'block'; }
             } catch(e) {}
         } else { document.getElementById('loginOverlay').style.display = 'flex'; initLogin(); }
-        
         if (localStorage.getItem('darkMode') === 'true') { document.body.classList.add('dark-mode'); document.getElementById('darkModeIcon').className = 'fas fa-toggle-on'; }
         async function loadSettings() { try { let res = await fetch(`${FIREBASE_URL}/appSettings.json`); let data = await res.json(); if(data) appSettings = { ...appSettings, ...data }; document.getElementById('workHoursDisplay').innerText = `${appSettings.workStart.substring(0,5)} - ${appSettings.workEnd.substring(0,5)}`; } catch(e) {} }
         loadSettings();
         
-        // ربط أزرار تفعيل الإشعارات مع تجنب الأخطاء
-        const enableBtn1 = document.getElementById('enableNotificationsSetting');
-        const enableBtn2 = document.getElementById('driverEnableNotificationsBtn');
-        if (enableBtn1) {
-            enableBtn1.addEventListener('click', (e) => {
-                e.preventDefault();
-                if (typeof window.requestOneSignalPermission === 'function') {
-                    window.requestOneSignalPermission();
-                } else {
-                    showToast("⚠️ وظيفة الإشعارات غير متاحة بعد، حاول مرة أخرى", true);
-                }
-            });
-        }
-        if (enableBtn2) {
-            enableBtn2.addEventListener('click', (e) => {
-                e.preventDefault();
-                if (typeof window.requestOneSignalPermission === 'function') {
-                    window.requestOneSignalPermission();
-                } else {
-                    showToast("⚠️ وظيفة الإشعارات غير متاحة بعد، حاول مرة أخرى", true);
-                }
-            });
-        }
-        
-        // باقي الأحداث
+        // ربط الأحداث
         document.getElementById('darkModeToggle')?.addEventListener('click', () => { document.body.classList.toggle('dark-mode'); let icon = document.getElementById('darkModeIcon'); icon.className = document.body.classList.contains('dark-mode') ? 'fas fa-toggle-on' : 'fas fa-toggle-off'; localStorage.setItem('darkMode', document.body.classList.contains('dark-mode')); });
         document.getElementById('whatsappSupport')?.addEventListener('click', () => window.open('https://wa.me/777215154', '_blank'));
         document.getElementById('shareApp')?.addEventListener('click', () => { if(navigator.share) navigator.share({title:'وصّال', text:'تطبيق توصيل ومطاعم', url:location.href}); else showToast("المشاركة غير مدعومة"); });
         document.getElementById('settingsLogoutBtn')?.addEventListener('click', () => { localStorage.removeItem('waselny_user'); location.reload(); });
         document.getElementById('driverLogoutBtn')?.addEventListener('click', () => { localStorage.removeItem('waselny_user'); location.reload(); });
-        
         document.querySelectorAll('.nav-item').forEach(nav => { nav.addEventListener('click', () => { let page = nav.dataset.page; showPage(page); setActiveNav(page); if(page === 'ordersPage' && currentUser?.role === 'customer') window.renderMyOrders(); }); });
         let adminClicks = 0;
         document.getElementById('adminTrigger').addEventListener('click', () => { adminClicks++; setTimeout(() => adminClicks=0, 800); if(adminClicks>=5) { let p = prompt("كلمة السر للإدارة"); if(p === ADMIN_PASSWORD) { currentUser = { role: 'admin' }; localStorage.setItem('waselny_user', JSON.stringify(currentUser)); showPage('adminPanelPage'); loadAdminPanel(); } else showToast("كلمة سر خاطئة"); adminClicks=0; } });

@@ -4,22 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
     <title>وصّال | Wassal - تجربة توصيل عالمية</title>
-    <!-- Fonts & Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Chart.js for Admin Dashboard -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-    <!-- Firebase SDKs (App + Auth) -->
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         :root {
             --primary: #FF6B2C;
             --primary-dark: #E55A1F;
@@ -32,13 +21,10 @@
             --text-muted: #5B6C8F;
             --border-light: #EFF2F9;
             --shadow-sm: 0 8px 20px rgba(0,0,0,0.03), 0 2px 6px rgba(0,0,0,0.05);
-            --shadow-md: 0 12px 28px rgba(0,0,0,0.08);
             --radius-xl: 32px;
             --radius-lg: 24px;
-            --radius-md: 18px;
             --transition: all 0.2s cubic-bezier(0.2, 0.9, 0.4, 1.1);
         }
-
         body.dark {
             --primary: #FF7A3D;
             --primary-dark: #FF6319;
@@ -51,26 +37,7 @@
             --border-light: #2D3A4E;
             background: var(--gray-bg);
         }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background: var(--gray-bg);
-            color: var(--text-dark);
-            transition: var(--transition);
-            line-height: 1.4;
-        }
-
-        /* Glassmorphism & Utils */
-        .glass-card {
-            background: rgba(255,255,255,0.1);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255,255,255,0.2);
-            border-radius: var(--radius-xl);
-        }
-        body.dark .glass-card {
-            background: rgba(30,41,59,0.6);
-            border-color: rgba(255,255,255,0.05);
-        }
+        body { font-family: 'Inter', sans-serif; background: var(--gray-bg); color: var(--text-dark); transition: var(--transition); line-height: 1.4; }
         .btn-primary {
             background: linear-gradient(105deg, var(--primary) 0%, var(--primary-dark) 100%);
             border: none;
@@ -82,10 +49,7 @@
             transition: var(--transition);
             box-shadow: 0 4px 12px rgba(255,107,44,0.3);
         }
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(255,107,44,0.4);
-        }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(255,107,44,0.4); }
         .input-modern {
             background: var(--card-white);
             border: 1.5px solid var(--border-light);
@@ -94,35 +58,11 @@
             font-size: 1rem;
             width: 100%;
             color: var(--text-dark);
-            transition: var(--transition);
         }
-        .input-modern:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(255,107,44,0.2);
-        }
-
-        /* Layouts */
-        .app-container {
-            max-width: 500px;
-            margin: 0 auto;
-            background: var(--gray-bg);
-            min-height: 100vh;
-            position: relative;
-            box-shadow: 0 0 40px rgba(0,0,0,0.05);
-        }
-        .page {
-            display: none;
-            padding: 20px 16px 90px;
-            animation: fadeSlide 0.3s ease;
-        }
+        .app-container { max-width: 500px; margin: 0 auto; background: var(--gray-bg); min-height: 100vh; position: relative; box-shadow: 0 0 40px rgba(0,0,0,0.05); }
+        .page { display: none; padding: 20px 16px 90px; animation: fadeSlide 0.3s ease; }
         .page.active-page { display: block; }
-        @keyframes fadeSlide {
-            from { opacity: 0; transform: translateY(8px);}
-            to { opacity: 1; transform: translateY(0);}
-        }
-
-        /* Header Hero */
+        @keyframes fadeSlide { from { opacity: 0; transform: translateY(8px);} to { opacity: 1; transform: translateY(0);} }
         .hero-header {
             background: linear-gradient(135deg, var(--secondary) 0%, var(--dark) 100%);
             border-radius: 0 0 40px 40px;
@@ -130,206 +70,53 @@
             color: white;
             margin-bottom: 20px;
         }
-        .hero-header h1 {
-            font-size: 2rem;
-            font-weight: 800;
-            letter-spacing: -0.5px;
-        }
-        .hero-header p {
-            opacity: 0.8;
-            margin-top: 6px;
-        }
-
-        /* Categories Circle */
-        .categories-scroll {
-            display: flex;
-            gap: 20px;
-            overflow-x: auto;
-            padding: 10px 0 20px;
-            scrollbar-width: none;
-        }
-        .cat-circle {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 8px;
-            min-width: 70px;
-            cursor: pointer;
-            transition: var(--transition);
-        }
+        .hero-header h1 { font-size: 2rem; font-weight: 800; letter-spacing: -0.5px; }
+        .categories-scroll { display: flex; gap: 20px; overflow-x: auto; padding: 10px 0 20px; scrollbar-width: none; }
+        .cat-circle { display: flex; flex-direction: column; align-items: center; gap: 8px; min-width: 70px; cursor: pointer; }
         .cat-circle .icon-bg {
-            width: 64px;
-            height: 64px;
-            background: var(--card-white);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.8rem;
-            color: var(--primary);
-            box-shadow: var(--shadow-sm);
-            transition: var(--transition);
+            width: 64px; height: 64px; background: var(--card-white); border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-size: 1.8rem; color: var(--primary); box-shadow: var(--shadow-sm); transition: var(--transition);
         }
-        .cat-circle.active .icon-bg {
-            background: var(--primary);
-            color: white;
-            transform: scale(1.02);
-            box-shadow: 0 8px 20px rgba(255,107,44,0.4);
-        }
-
-        /* Restaurant Cards */
-        .restaurant-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 18px;
-            margin-top: 16px;
-        }
+        .cat-circle.active .icon-bg { background: var(--primary); color: white; transform: scale(1.02); box-shadow: 0 8px 20px rgba(255,107,44,0.4); }
+        .restaurant-grid { display: flex; flex-direction: column; gap: 18px; margin-top: 16px; }
         .res-card {
-            background: var(--card-white);
-            border-radius: var(--radius-lg);
-            overflow: hidden;
-            display: flex;
-            gap: 14px;
-            padding: 12px;
-            box-shadow: var(--shadow-sm);
-            transition: var(--transition);
-            cursor: pointer;
-            border: 1px solid var(--border-light);
+            background: var(--card-white); border-radius: var(--radius-lg); overflow: hidden; display: flex; gap: 14px; padding: 12px;
+            box-shadow: var(--shadow-sm); transition: var(--transition); cursor: pointer; border: 1px solid var(--border-light);
         }
-        .res-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
-        .res-img {
-            width: 90px;
-            height: 90px;
-            border-radius: 20px;
-            object-fit: cover;
-            background: #ddd;
-        }
+        .res-card:hover { transform: translateY(-3px); box-shadow: 0 12px 28px rgba(0,0,0,0.08); }
+        .res-img { width: 90px; height: 90px; border-radius: 20px; object-fit: cover; background: #ddd; }
         .res-info { flex: 1; }
         .res-name { font-weight: 800; font-size: 1.2rem; }
         .res-meta { display: flex; gap: 12px; margin-top: 6px; font-size: 0.75rem; color: var(--text-muted); }
         .badge-open { background: #10b98120; color: #10b981; padding: 4px 12px; border-radius: 30px; font-weight: 600; font-size: 0.7rem; }
         .badge-closed { background: #ef444420; color: #ef4444; }
-        .rating { color: #fbbf24; }
-
-        /* Cart floating */
         .float-cart {
-            position: fixed;
-            bottom: 80px;
-            left: 16px;
-            right: 16px;
-            background: var(--card-white);
-            border-radius: 80px;
-            padding: 12px 20px;
-            display: none;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            z-index: 200;
-            cursor: pointer;
-            border: 1px solid var(--border-light);
-            backdrop-filter: blur(10px);
+            position: fixed; bottom: 80px; left: 16px; right: 16px; background: var(--card-white); border-radius: 80px; padding: 12px 20px;
+            display: none; justify-content: space-between; align-items: center; box-shadow: 0 10px 30px rgba(0,0,0,0.2); z-index: 200;
+            cursor: pointer; border: 1px solid var(--border-light); backdrop-filter: blur(10px);
         }
-
-        /* Bottom Nav */
         .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            max-width: 500px;
-            margin: 0 auto;
-            background: var(--card-white);
-            border-top: 1px solid var(--border-light);
-            display: flex;
-            justify-content: space-around;
-            padding: 12px 16px 24px;
-            z-index: 300;
-            backdrop-filter: blur(20px);
+            position: fixed; bottom: 0; left: 0; right: 0; max-width: 500px; margin: 0 auto; background: var(--card-white);
+            border-top: 1px solid var(--border-light); display: flex; justify-content: space-around; padding: 12px 16px 24px; z-index: 300;
         }
-        .nav-item {
-            text-align: center;
-            font-size: 0.7rem;
-            font-weight: 600;
-            color: var(--text-muted);
-            cursor: pointer;
-            transition: var(--transition);
-        }
+        .nav-item { text-align: center; font-size: 0.7rem; font-weight: 600; color: var(--text-muted); cursor: pointer; transition: var(--transition); }
         .nav-item i { font-size: 1.6rem; display: block; margin-bottom: 4px; }
         .nav-item.active { color: var(--primary); }
-
-        /* Login Overlay */
-        .login-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.85);
-            backdrop-filter: blur(12px);
-            z-index: 10000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-        .login-card {
-            background: var(--card-white);
-            border-radius: 48px;
-            padding: 32px 24px;
-            max-width: 380px;
-            width: 100%;
-            text-align: center;
-            box-shadow: 0 30px 50px rgba(0,0,0,0.3);
-        }
-        /* toast */
         .toast-msg {
-            position: fixed;
-            bottom: 100px;
-            left: 20px;
-            right: 20px;
-            background: #1f2937;
-            color: white;
-            text-align: center;
-            padding: 12px;
-            border-radius: 60px;
-            z-index: 9999;
-            opacity: 0;
-            transition: 0.2s;
-            pointer-events: none;
+            position: fixed; bottom: 100px; left: 20px; right: 20px; background: #1f2937; color: white; text-align: center;
+            padding: 12px; border-radius: 60px; z-index: 9999; opacity: 0; transition: 0.2s; pointer-events: none;
         }
-        /* recaptcha container */
-        #recaptcha-container {
-            margin: 15px 0;
-            display: flex;
-            justify-content: center;
-        }
-        button:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
+        .wallet-balance { background: linear-gradient(120deg, var(--primary), var(--primary-dark)); border-radius: 32px; padding: 20px; color: white; }
+        .stats-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 14px; margin: 20px 0; }
+        .stat-card { background: var(--card-white); padding: 18px; border-radius: 28px; border: 1px solid var(--border-light); }
     </style>
 </head>
 <body>
-<div class="app-container" id="appContainer">
-    <!-- OTP Login Overlay (الوحيد) -->
-    <div id="loginOverlay" class="login-overlay">
-        <div class="login-card" id="loginCard">
-            <i class="fas fa-mobile-alt" style="font-size: 3rem; color: var(--primary); margin-bottom: 10px;"></i>
-            <h2 style="margin-bottom: 20px;">وصّال</h2>
-            <p style="color: var(--text-muted); margin-bottom: 20px;">أدخل رقم هاتفك لتسجيل الدخول</p>
-            <input type="tel" id="loginPhone" class="input-modern" placeholder="مثال: 9665xxxxxxxx" style="margin-bottom: 12px;" dir="ltr">
-            <div id="recaptcha-container"></div>
-            <button id="requestOtpBtn" class="btn-primary" style="width:100%;">إرسال رمز التحقق</button>
-            <div id="otpSection" style="display: none; margin-top: 20px;">
-                <input type="text" id="otpCode" class="input-modern" placeholder="أدخل الرقم السري" maxlength="6" dir="ltr">
-                <button id="verifyOtpBtn" class="btn-primary" style="width:100%; margin-top: 12px;">تأكيد وتسجيل الدخول</button>
-                <button id="resendOtpBtn" class="btn-primary" style="background:#64748b; margin-top: 8px;">إعادة إرسال الرمز</button>
-            </div>
-            <div id="loginError" style="color:#ef4444; margin-top: 12px; font-size: 0.8rem;"></div>
-        </div>
-    </div>
-
-    <!-- الصفحات الأساسية للتطبيق -->
-    <div id="homePage" class="page">
+<div class="app-container">
+    <!-- الصفحات الرئيسية -->
+    <div id="homePage" class="page active-page">
         <div class="hero-header">
-            <h1>مرحباً 👋<br><span id="userNameDisplay">العميل</span></h1>
+            <h1>مرحباً 👋<br><span id="userNameDisplay">أحمد</span></h1>
             <p>اكتشف ألذ المأكولات وأسرع توصيل</p>
         </div>
         <div class="categories-scroll" id="homeCategories"></div>
@@ -361,7 +148,7 @@
     </div>
 
     <div id="walletPage" class="page">
-        <div class="wallet-balance" style="background: linear-gradient(120deg, var(--primary), var(--primary-dark)); border-radius: 32px; padding: 20px; color: white;">
+        <div class="wallet-balance">
             <div style="font-size: 0.9rem;">الرصيد المتاح</div>
             <div style="font-size: 2.5rem; font-weight: 800;" id="walletBalanceSpan">0 ريال</div>
         </div>
@@ -375,7 +162,7 @@
 
     <div id="adminPage" class="page">
         <h2>📊 لوحة القيادة</h2>
-        <div class="stats-grid" style="display: grid; grid-template-columns: repeat(2,1fr); gap: 14px; margin: 20px 0;" id="adminStats"></div>
+        <div class="stats-grid" id="adminStats"></div>
         <canvas id="ordersChart" width="300" height="150" style="max-height: 180px; margin: 20px 0;"></canvas>
         <h3>إدارة المطاعم</h3>
         <div id="adminRestaurantsList"></div>
@@ -384,12 +171,13 @@
     </div>
 
     <div id="settingsPage" class="page">
-        <div class="glass-card" style="padding: 20px;">
+        <div style="background: var(--card-white); border-radius: 32px; padding: 20px;">
             <div class="setting-row" id="darkModeToggle" style="display: flex; justify-content: space-between; padding: 16px 0;">
                 <span>🌙 الوضع الليلي</span>
                 <i class="fas fa-toggle-off" id="darkModeIcon" style="font-size: 1.6rem; cursor: pointer;"></i>
             </div>
-            <button id="logoutSettingsBtn" class="btn-primary" style="background:#ef4444; width:100%; margin-top: 20px;">تسجيل الخروج</button>
+            <button id="adminAccessBtn" class="btn-primary" style="background: #2C3E66; width:100%; margin-top: 12px;">🔐 لوحة المدير</button>
+            <button id="logoutSettingsBtn" class="btn-primary" style="background:#ef4444; width:100%; margin-top: 20px;">تسجيل الخروج (إعادة تعيين)</button>
         </div>
     </div>
 
@@ -400,7 +188,7 @@
     </div>
 
     <div class="bottom-nav">
-        <div class="nav-item" data-page="homePage"><i class="fas fa-home"></i><span>الرئيسية</span></div>
+        <div class="nav-item active" data-page="homePage"><i class="fas fa-home"></i><span>الرئيسية</span></div>
         <div class="nav-item" data-page="restaurantsPage"><i class="fas fa-utensils"></i><span>المطاعم</span></div>
         <div class="nav-item" data-page="cartPage"><i class="fas fa-shopping-cart"></i><span>السلة</span></div>
         <div class="nav-item" data-page="ordersPage"><i class="fas fa-clipboard-list"></i><span>طلباتي</span></div>
@@ -411,73 +199,213 @@
 </div>
 
 <script>
-    // Firebase Config (من المشروع الأصلي)
-    const firebaseConfig = {
-        apiKey: "AIzaSyCMb07oP2PMUdTlffJjYkbfThC34x1dbtU",
-        authDomain: "waselny-2812b.firebaseapp.com",
-        databaseURL: "https://waselny-2812b-default-rtdb.firebaseio.com",
-        projectId: "waselny-2812b",
-        storageBucket: "waselny-2812b.firebasestorage.app",
-        messagingSenderId: "662536104158",
-        appId: "1:662536104158:web:666db40942313724c3fa4f"
+    // ------------------- بيانات وهمية بدون أي Firebase Auth -------------------
+    let currentUser = {
+        phone: "guest+966500000001",
+        name: "أحمد",
+        walletBalance: 120,
+        transactions: [
+            { date: new Date().toLocaleString(), amount: 50, type: 'credit', desc: 'مكافأة ترحيب' },
+            { date: new Date().toLocaleString(), amount: 70, type: 'credit', desc: 'شحن عبر بطاقة' }
+        ],
+        role: 'user'
     };
-    // تهيئة Firebase
-    if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-    // ضبط اللغة العربية
-    auth.languageCode = 'ar';
-    // متغيرات OTP
-    let confirmationResult = null;
-    let currentPhoneNumber = '';
+    let allOrders = [];
+    let cart = [];
+    let deliveryFee = 8;
+    let couponDiscount = 0;
+    let appliedCoupon = false;
 
-    // ------------------- بيانات التطبيق الثابتة -------------------
-    let currentUser = null; // { phone, name, walletBalance, transactions, role }
-    let restaurants = [
+    // بيانات المطاعم
+    const restaurants = [
         { id: 1, name: "🇹🇷 Saray Sultan", category: "تركي", rating: 4.8, deliveryTime: "25-35 دقيقة", open: true, image: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=200", items: [{name:"كباب اسكندر", price: 32},{name:"شيش طاووق",price:28},{name:"مشاوي مشكلة",price:45}] },
         { id: 2, name: "🍔 Burger Lab", category: "برجر", rating: 4.6, deliveryTime: "20-30 دقيقة", open: true, image: "https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=200", items: [{name:"دبل برجر",price:26},{name:"تشيكن برجر",price:22},{name:"بطاطس حارة",price:12}] },
         { id: 3, name: "🍕 Pizzeria Roma", category: "بيتزا", rating: 4.7, deliveryTime: "30-40 دقيقة", open: false, image: "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=200", items: [{name:"بيتزا مارغريتا",price:30},{name:"بيتزا بيبروني",price:38}] },
         { id: 4, name: "🍣 Sushi Master", category: "ياباني", rating: 4.9, deliveryTime: "40-50 دقيقة", open: true, image: "https://images.unsplash.com/photo-1579871494447-9811cf80d66c?w=200", items: [{name:"كالي rolls",price:48},{name:"ساشيمي",price:55}] },
         { id: 5, name: "🌮 Taco Loco", category: "مكسيكي", rating: 4.5, deliveryTime: "20-25 دقيقة", open: true, image: "https://images.unsplash.com/photo-1599974579688-8dbdd335c77f?w=200", items: [{name:"تاكو لحم",price:22},{name:"ناتشوز",price:18}] }
     ];
-    let allOrders = [];
-    let cart = [];
-    let deliveryFee = 8;
-    let couponDiscount = 0;
-    let appliedCoupon = null;
 
-    // Helper functions
-    function showToast(msg) { let toast = document.getElementById('toastMsg'); toast.innerText = msg; toast.style.opacity = '1'; toast.style.animation = 'slideUp 0.2s ease'; setTimeout(() => toast.style.opacity = '0', 2500); }
-    function saveUserToLocal() { if(currentUser) localStorage.setItem(`wassal_user_${currentUser.phone}`, JSON.stringify({ user: currentUser, orders: allOrders, cart: cart })); }
-    function loadUserData() { if(!currentUser) return; let data = localStorage.getItem(`wassal_user_${currentUser.phone}`); if(data) { let parsed = JSON.parse(data); currentUser = parsed.user; allOrders = parsed.orders || []; cart = parsed.cart || []; } else { allOrders = []; cart = []; if(!currentUser.walletBalance) { currentUser.walletBalance = 50; currentUser.transactions = [{ date: new Date().toLocaleString(), amount: 50, type: 'credit', desc: 'مكافأة ترحيب' }]; saveUserToLocal(); } } updateCartUi(); renderMyOrders(); renderWallet(); }
-    function updateCartUi() { let total = cart.reduce((s,i)=> s + (i.price * i.quantity),0); let count = cart.reduce((s,i)=> s + i.quantity,0); document.getElementById('cartCountBadge').innerText = count; document.getElementById('cartTotalBadge').innerText = total; document.getElementById('floatCart').style.display = count ? 'flex' : 'none'; renderCartPage(); }
-    function renderCartPage() { if(!document.getElementById('cartItemsList')) return; if(cart.length===0){ document.getElementById('cartItemsList').innerHTML = '<div style="text-align:center; padding:40px;">السلة فارغة</div>'; document.getElementById('cartSummary').innerHTML = ''; return; } let itemsHtml = ''; cart.forEach((item, idx) => { itemsHtml += `<div style="display:flex; justify-content:space-between; background:var(--card-white); padding:12px; border-radius:24px; margin-bottom:12px;"><div><strong>${item.itemName}</strong><br>${item.price} ريال</div><div><button class="qty-btn" data-idx="${idx}" data-delta="-1" style="background:#eee; border:none; width:30px;">-</button> <span>${item.quantity}</span> <button class="qty-btn" data-idx="${idx}" data-delta="1" style="background:#eee; border:none; width:30px;">+</button> <button class="remove-item" data-idx="${idx}" style="background:#ffebee; border:none; border-radius:30px; padding:5px 12px; margin-right:6px;">🗑️</button></div></div>`; }); document.getElementById('cartItemsList').innerHTML = itemsHtml; let subtotal = cart.reduce((s,i)=>s+(i.price*i.quantity),0); let total = subtotal + deliveryFee - couponDiscount; document.getElementById('cartSummary').innerHTML = `<div style="background:var(--card-white); border-radius:28px; padding:20px;"><div>المجموع: ${subtotal} ريال</div><div>رسوم التوصيل: ${deliveryFee} ريال</div><div>الخصم: -${couponDiscount} ريال</div><div style="font-weight:800; border-top:1px solid var(--border-light); margin-top:10px; padding-top:10px;">الإجمالي: ${total} ريال</div></div>`; document.querySelectorAll('.qty-btn').forEach(btn => { btn.addEventListener('click', (e) => { let idx = btn.dataset.idx; let delta = parseInt(btn.dataset.delta); let newQty = cart[idx].quantity + delta; if(newQty <= 0) cart.splice(idx,1); else cart[idx].quantity = newQty; updateCartUi(); saveUserToLocal(); }); }); document.querySelectorAll('.remove-item').forEach(btn => { btn.addEventListener('click', (e) => { let idx = btn.dataset.idx; cart.splice(idx,1); updateCartUi(); saveUserToLocal(); }); }); }
-    function renderMyOrders() { let container = document.getElementById('myOrdersList'); if(!container) return; if(allOrders.length===0) { container.innerHTML = '<p style="text-align:center;">لا توجد طلبات بعد</p>'; return; } container.innerHTML = allOrders.map(o => `<div style="background:var(--card-white); border-radius:24px; padding:16px; margin-bottom:12px;"><div>طلب #${o.id}</div><div>المطعم: ${o.restaurantName}</div><div>المبلغ: ${o.totalAmount} ريال</div><div>الحالة: ${o.status}</div></div>`).join(''); }
-    function renderWallet() { if(!currentUser) return; document.getElementById('walletBalanceSpan').innerHTML = `${currentUser.walletBalance} ريال`; let transactions = currentUser.transactions || []; let html = transactions.map(t => `<div class="transaction-item" style="display:flex; justify-content:space-between; padding:12px 0; border-bottom:1px solid var(--border-light);"><span>${t.date}</span><span>${t.type === 'credit' ? '+' : '-'} ${t.amount} ريال</span><span>${t.desc}</span></div>`).join(''); if(transactions.length===0) html = '<div class="transaction-item">لا توجد معاملات</div>'; document.getElementById('transactionsList').innerHTML = html; }
-    function addTransaction(amount, type, desc) { if(!currentUser) return; if(!currentUser.transactions) currentUser.transactions = []; currentUser.transactions.unshift({ date: new Date().toLocaleString(), amount, type, desc }); if(type==='credit') currentUser.walletBalance += amount; else currentUser.walletBalance -= amount; saveUserToLocal(); renderWallet(); }
-    function createOrder(paymentMethod) { if(cart.length===0) return showToast("السلة فارغة"); let subtotal = cart.reduce((s,i)=>s+(i.price*i.quantity),0); let total = subtotal + deliveryFee - couponDiscount; if(paymentMethod === 'wallet' && (currentUser.walletBalance < total)) return showToast("رصيد غير كافٍ"); let order = { id: Date.now(), restaurantName: restaurants.find(r=> r.id === cart[0]?.restaurantId)?.name || "مطعم", items: cart.map(i=>({name:i.itemName, qty:i.quantity, price:i.price})), subtotal, deliveryFee, discount: couponDiscount, totalAmount: total, status: "قيد التحضير", createdAt: new Date().toISOString() }; if(paymentMethod === 'wallet') { addTransaction(total, 'debit', `طلب #${order.id}`); } allOrders.unshift(order); saveUserToLocal(); cart = []; couponDiscount = 0; appliedCoupon = null; updateCartUi(); renderMyOrders(); showToast("✅ تم إرسال الطلب"); }
-    function renderRestaurantsList(containerId, searchTerm = '', categoryFilter = 'all') { let filtered = restaurants.filter(r => r.name.toLowerCase().includes(searchTerm.toLowerCase()) && (categoryFilter==='all' || r.category === categoryFilter)); let html = filtered.map(r => `<div class="res-card" onclick="openRestaurantMenu(${r.id})"><img src="${r.image}" class="res-img" loading="lazy"><div class="res-info"><div class="res-name">${r.name}</div><div class="res-meta"><span><i class="fas fa-star" style="color:#fbbf24;"></i> ${r.rating}</span><span>⏱️ ${r.deliveryTime}</span><span class="${r.open ? 'badge-open' : 'badge-closed'}">${r.open ? 'مفتوح' : 'مغلق'}</span></div></div></div>`).join(''); document.getElementById(containerId).innerHTML = html || '<p style="text-align:center;">لا توجد مطاعم</p>'; }
-    window.openRestaurantMenu = (id) => { let restaurant = restaurants.find(r=>r.id===id); if(!restaurant) return; let itemsHtml = restaurant.items.map(item => `<div style="display:flex; justify-content:space-between; align-items:center; background:var(--card-white); padding:14px; border-radius:20px; margin-bottom:10px;"><div><strong>${item.name}</strong><br>${item.price} ريال</div><button class="addToCartBtn" data-restid="${restaurant.id}" data-name="${item.name}" data-price="${item.price}" style="background:var(--primary); border:none; color:white; width:40px; border-radius:30px;">+</button></div>`).join(''); let modal = document.createElement('div'); modal.className = 'login-overlay'; modal.style.zIndex = '10001'; modal.innerHTML = `<div class="login-card" style="max-width:90%; max-height:80vh; overflow:auto;"><h3>${restaurant.name}</h3>${itemsHtml}<button id="closeMenuBtn" style="margin-top:20px; background:#ccc; border:none; padding:10px; border-radius:40px; width:100%;">إغلاق</button></div>`; document.body.appendChild(modal); modal.querySelectorAll('.addToCartBtn').forEach(btn => { btn.addEventListener('click', () => { let restId = parseInt(btn.dataset.restid); let itemName = btn.dataset.name; let price = parseFloat(btn.dataset.price); let existing = cart.find(c => c.restaurantId === restId && c.itemName === itemName); if(existing) existing.quantity++; else cart.push({ restaurantId: restId, itemName, price, quantity: 1 }); updateCartUi(); saveUserToLocal(); showToast(`✔️ تم إضافة ${itemName}`); }); }); modal.querySelector('#closeMenuBtn').onclick = () => modal.remove(); };
-    function showPage(pageId) { document.querySelectorAll('.page').forEach(p=>p.classList.remove('active-page')); document.getElementById(pageId).classList.add('active-page'); if(pageId === 'adminPage') renderAdminPanel(); else if(pageId === 'restaurantsPage') renderRestaurantsList('allRestaurantsList', document.getElementById('searchRestaurant')?.value || '', 'all'); else if(pageId === 'ordersPage') renderMyOrders(); else if(pageId === 'walletPage') renderWallet(); else if(pageId === 'cartPage') renderCartPage(); else if(pageId === 'homePage') renderRestaurantsList('featuredRestaurants', '', 'all'); }
-    function renderAdminPanel() { let totalOrders = allOrders.length; let totalEarnings = allOrders.reduce((sum,o)=> sum + o.totalAmount,0); let activeRestaurants = restaurants.length; document.getElementById('adminStats').innerHTML = `<div class="stat-card" style="background:var(--card-white); padding:18px; border-radius:28px;"><i class="fas fa-shopping-bag"></i><div>${totalOrders}</div><div>طلبات</div></div><div class="stat-card"><i class="fas fa-dollar-sign"></i><div>${totalEarnings} ريال</div><div>أرباح</div></div><div class="stat-card"><i class="fas fa-store"></i><div>${activeRestaurants}</div><div>مطاعم</div></div><div class="stat-card"><i class="fas fa-truck"></i><div>3</div><div>سائقين</div></div>`; let ctx = document.getElementById('ordersChart')?.getContext('2d'); if(window.ordersChartInstance) window.ordersChartInstance.destroy(); if(ctx) { window.ordersChartInstance = new Chart(ctx, { type: 'line', data: { labels: ['يناير', 'فبراير', 'مارس'], datasets: [{ label: 'الطلبات', data: [12, 19, 27], borderColor: '#FF6B2C', tension: 0.3 }] } }); } }
-    // ------------------- OTP flow with Firebase Auth -------------------
-    let recaptchaWidget = null;
-    function initRecaptcha() { try { recaptchaWidget = new firebase.auth.RecaptchaVerifier('recaptcha-container', { size: 'invisible', 'callback': () => {} }); } catch(e) { console.warn(e); } }
-    document.getElementById('requestOtpBtn').addEventListener('click', async () => { let phone = document.getElementById('loginPhone').value.trim(); if (!phone) { showToast("أدخل رقم الهاتف مع مفتاح الدولة (مثال: 9665xxxxxxxx)"); return; } if (!phone.startsWith('+')) phone = '+' + phone; currentPhoneNumber = phone; document.getElementById('requestOtpBtn').disabled = true; document.getElementById('requestOtpBtn').innerText = 'جاري الإرسال...'; document.getElementById('loginError').innerText = ''; try { if (!recaptchaWidget) initRecaptcha(); await recaptchaWidget.render(); confirmationResult = await auth.signInWithPhoneNumber(phone, recaptchaWidget); document.getElementById('otpSection').style.display = 'block'; showToast("تم إرسال رمز التحقق إلى رقمك"); document.getElementById('requestOtpBtn').style.display = 'none'; } catch (error) { console.error(error); let msg = error.message || 'فشل الإرسال، تحقق من الرقم'; if(error.code === 'auth/invalid-phone-number') msg = 'رقم الهاتف غير صالح'; else if(error.code === 'auth/too-many-requests') msg = 'الرجاء المحاولة لاحقاً'; document.getElementById('loginError').innerText = msg; showToast(msg); } finally { document.getElementById('requestOtpBtn').disabled = false; document.getElementById('requestOtpBtn').innerText = 'إرسال رمز التحقق'; } });
-    document.getElementById('verifyOtpBtn').addEventListener('click', async () => { let otp = document.getElementById('otpCode').value.trim(); if (!otp || otp.length < 6) { showToast("أدخل الرمز المكون من 6 أرقام"); return; } document.getElementById('verifyOtpBtn').disabled = true; document.getElementById('verifyOtpBtn').innerText = 'جاري التحقق...'; try { const result = await confirmationResult.confirm(otp); const user = result.user; const phoneNumber = user.phoneNumber; // بعد التحقق، إنشاء أو تحميل بيانات المستخدم من localStorage let saved = localStorage.getItem(`wassal_user_${phoneNumber}`); if (saved) { let data = JSON.parse(saved); currentUser = data.user; allOrders = data.orders; cart = data.cart; } else { currentUser = { phone: phoneNumber, name: "عميل", walletBalance: 50, transactions: [{ date: new Date().toLocaleString(), amount: 50, type: 'credit', desc: 'مكافأة ترحيب' }], role: 'user' }; allOrders = []; cart = []; saveUserToLocal(); } // إخفاء شاشة الدخول وعرض التطبيق document.getElementById('loginOverlay').style.display = 'none'; document.getElementById('userNameDisplay').innerText = currentUser.name; loadUserData(); showPage('homePage'); setActiveNav('homePage'); renderRestaurantsList('featuredRestaurants', '', 'all'); loadCategoriesAndFilters(); showToast(`مرحباً ${currentUser.name}`); } catch (error) { console.error(error); let msg = 'رمز غير صحيح أو منتهي الصلاحية'; if(error.code === 'auth/invalid-verification-code') msg = 'الرمز غير صحيح'; document.getElementById('loginError').innerText = msg; showToast(msg); } finally { document.getElementById('verifyOtpBtn').disabled = false; document.getElementById('verifyOtpBtn').innerText = 'تأكيد وتسجيل الدخول'; } });
-    document.getElementById('resendOtpBtn')?.addEventListener('click', async () => { if (!currentPhoneNumber) return; showToast("جاري إعادة الإرسال"); try { if (!recaptchaWidget) initRecaptcha(); await recaptchaWidget.render(); confirmationResult = await auth.signInWithPhoneNumber(currentPhoneNumber, recaptchaWidget); showToast("تم إرسال رمز جديد"); } catch(e) { showToast("حدث خطأ، حاول مرة أخرى"); } });
-    function setActiveNav(pageId) { document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active')); document.querySelector(`.nav-item[data-page="${pageId}"]`).classList.add('active'); }
-    document.querySelectorAll('.nav-item').forEach(nav => { nav.addEventListener('click', () => { let page = nav.dataset.page; if(page === 'adminPage' && currentUser?.phone !== '+966500000000') { let pwd = prompt('كلمة سر المدير'); if(pwd === 'admin123') { currentUser = { phone: '+966500000000', name: 'Admin', role: 'admin' }; showPage('adminPage'); renderAdminPanel(); } return; } showPage(page); setActiveNav(page); }); });
+    // دوال مساعدة
+    function showToast(msg) { let t = document.getElementById('toastMsg'); t.innerText = msg; t.style.opacity = '1'; setTimeout(() => t.style.opacity = '0', 2500); }
+    function saveToLocal() { localStorage.setItem('wassal_app_data', JSON.stringify({ currentUser, allOrders, cart })); }
+    function loadFromLocal() {
+        let data = localStorage.getItem('wassal_app_data');
+        if(data) {
+            let parsed = JSON.parse(data);
+            currentUser = parsed.currentUser;
+            allOrders = parsed.allOrders || [];
+            cart = parsed.cart || [];
+        } else {
+            // بيانات افتراضية للمستخدم الجديد
+            currentUser = { phone: "guest", name: "أحمد", walletBalance: 120, transactions: [ { date: new Date().toLocaleString(), amount: 50, type: 'credit', desc: 'مكافأة ترحيب' }, { date: new Date().toLocaleString(), amount: 70, type: 'credit', desc: 'شحن عبر بطاقة' } ], role: 'user' };
+            allOrders = [];
+            cart = [];
+        }
+        updateUiAfterLoad();
+    }
+    function updateUiAfterLoad() {
+        document.getElementById('userNameDisplay').innerText = currentUser.name;
+        updateCartUi();
+        renderMyOrders();
+        renderWallet();
+        renderRestaurantsList('featuredRestaurants', '', 'all');
+        renderRestaurantsList('allRestaurantsList', '', 'all');
+        loadCategoriesAndFilters();
+    }
+    function updateCartUi() {
+        let total = cart.reduce((s,i)=> s + (i.price * i.quantity),0);
+        let count = cart.reduce((s,i)=> s + i.quantity,0);
+        document.getElementById('cartCountBadge').innerText = count;
+        document.getElementById('cartTotalBadge').innerText = total;
+        document.getElementById('floatCart').style.display = count ? 'flex' : 'none';
+        renderCartPage();
+    }
+    function renderCartPage() {
+        let container = document.getElementById('cartItemsList');
+        if(!container) return;
+        if(cart.length===0){ container.innerHTML = '<div style="text-align:center; padding:40px;">السلة فارغة</div>'; document.getElementById('cartSummary').innerHTML = ''; return; }
+        let itemsHtml = '';
+        cart.forEach((item, idx) => {
+            itemsHtml += `<div style="display:flex; justify-content:space-between; background:var(--card-white); padding:12px; border-radius:24px; margin-bottom:12px;">
+                <div><strong>${item.itemName}</strong><br>${item.price} ريال</div>
+                <div><button class="qty-btn" data-idx="${idx}" data-delta="-1" style="background:#eee; border:none; width:30px;">-</button> <span>${item.quantity}</span>
+                <button class="qty-btn" data-idx="${idx}" data-delta="1" style="background:#eee; border:none; width:30px;">+</button>
+                <button class="remove-item" data-idx="${idx}" style="background:#ffebee; border:none; border-radius:30px; padding:5px 12px; margin-right:6px;">🗑️</button></div>
+            </div>`;
+        });
+        container.innerHTML = itemsHtml;
+        let subtotal = cart.reduce((s,i)=>s+(i.price*i.quantity),0);
+        let total = subtotal + deliveryFee - couponDiscount;
+        document.getElementById('cartSummary').innerHTML = `<div style="background:var(--card-white); border-radius:28px; padding:20px;">
+            <div>المجموع: ${subtotal} ريال</div><div>رسوم التوصيل: ${deliveryFee} ريال</div>
+            <div>الخصم: -${couponDiscount} ريال</div>
+            <div style="font-weight:800; border-top:1px solid var(--border-light); margin-top:10px; padding-top:10px;">الإجمالي: ${total} ريال</div></div>`;
+        document.querySelectorAll('.qty-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => { let idx = btn.dataset.idx; let delta = parseInt(btn.dataset.delta); let newQty = cart[idx].quantity + delta; if(newQty <= 0) cart.splice(idx,1); else cart[idx].quantity = newQty; updateCartUi(); saveToLocal(); });
+        });
+        document.querySelectorAll('.remove-item').forEach(btn => {
+            btn.addEventListener('click', (e) => { let idx = btn.dataset.idx; cart.splice(idx,1); updateCartUi(); saveToLocal(); });
+        });
+    }
+    function renderMyOrders() {
+        let container = document.getElementById('myOrdersList');
+        if(!container) return;
+        if(allOrders.length===0) { container.innerHTML = '<p style="text-align:center;">لا توجد طلبات بعد</p>'; return; }
+        container.innerHTML = allOrders.map(o => `<div style="background:var(--card-white); border-radius:24px; padding:16px; margin-bottom:12px;">
+            <div>طلب #${o.id}</div><div>المطعم: ${o.restaurantName}</div><div>المبلغ: ${o.totalAmount} ريال</div><div>الحالة: ${o.status}</div></div>`).join('');
+    }
+    function renderWallet() {
+        document.getElementById('walletBalanceSpan').innerHTML = `${currentUser.walletBalance} ريال`;
+        let transactions = currentUser.transactions || [];
+        let html = transactions.map(t => `<div style="display:flex; justify-content:space-between; padding:12px 0; border-bottom:1px solid var(--border-light);"><span>${t.date}</span><span>${t.type === 'credit' ? '+' : '-'} ${t.amount} ريال</span><span>${t.desc}</span></div>`).join('');
+        if(transactions.length===0) html = '<div class="transaction-item">لا توجد معاملات</div>';
+        document.getElementById('transactionsList').innerHTML = html;
+    }
+    function addTransaction(amount, type, desc) {
+        if(!currentUser.transactions) currentUser.transactions = [];
+        currentUser.transactions.unshift({ date: new Date().toLocaleString(), amount, type, desc });
+        if(type==='credit') currentUser.walletBalance += amount;
+        else currentUser.walletBalance -= amount;
+        saveToLocal();
+        renderWallet();
+    }
+    function createOrder(paymentMethod) {
+        if(cart.length===0) return showToast("السلة فارغة");
+        let subtotal = cart.reduce((s,i)=>s+(i.price*i.quantity),0);
+        let total = subtotal + deliveryFee - couponDiscount;
+        if(paymentMethod === 'wallet' && (currentUser.walletBalance < total)) return showToast("رصيد غير كافٍ");
+        let order = {
+            id: Date.now(),
+            restaurantName: restaurants.find(r=> r.id === cart[0]?.restaurantId)?.name || "مطعم",
+            items: cart.map(i=>({name:i.itemName, qty:i.quantity, price:i.price})),
+            subtotal, deliveryFee, discount: couponDiscount, totalAmount: total,
+            status: "قيد التحضير", createdAt: new Date().toISOString()
+        };
+        if(paymentMethod === 'wallet') addTransaction(total, 'debit', `طلب #${order.id}`);
+        allOrders.unshift(order);
+        cart = [];
+        couponDiscount = 0; appliedCoupon = false;
+        updateCartUi();
+        renderMyOrders();
+        saveToLocal();
+        showToast("✅ تم إرسال الطلب بنجاح");
+    }
+    function renderRestaurantsList(containerId, searchTerm = '', categoryFilter = 'all') {
+        let filtered = restaurants.filter(r => r.name.toLowerCase().includes(searchTerm.toLowerCase()) && (categoryFilter==='all' || r.category === categoryFilter));
+        let html = filtered.map(r => `<div class="res-card" onclick="openRestaurantMenu(${r.id})"><img src="${r.image}" class="res-img" loading="lazy"><div class="res-info"><div class="res-name">${r.name}</div><div class="res-meta"><span><i class="fas fa-star" style="color:#fbbf24;"></i> ${r.rating}</span><span>⏱️ ${r.deliveryTime}</span><span class="${r.open ? 'badge-open' : 'badge-closed'}">${r.open ? 'مفتوح' : 'مغلق'}</span></div></div></div>`).join('');
+        document.getElementById(containerId).innerHTML = html || '<p style="text-align:center;">لا توجد مطاعم</p>';
+    }
+    window.openRestaurantMenu = (id) => {
+        let restaurant = restaurants.find(r=>r.id===id);
+        if(!restaurant) return;
+        let itemsHtml = restaurant.items.map(item => `<div style="display:flex; justify-content:space-between; align-items:center; background:var(--card-white); padding:14px; border-radius:20px; margin-bottom:10px;"><div><strong>${item.name}</strong><br>${item.price} ريال</div><button class="addToCartBtn" data-restid="${restaurant.id}" data-name="${item.name}" data-price="${item.price}" style="background:var(--primary); border:none; color:white; width:40px; border-radius:30px;">+</button></div>`).join('');
+        let modal = document.createElement('div'); modal.className = 'login-overlay'; modal.style.position = 'fixed'; modal.style.inset = '0'; modal.style.background = 'rgba(0,0,0,0.7)'; modal.style.backdropFilter = 'blur(8px)'; modal.style.zIndex = '10001'; modal.style.display = 'flex'; modal.style.alignItems = 'center'; modal.style.justifyContent = 'center';
+        modal.innerHTML = `<div style="background:var(--card-white); border-radius:48px; padding:24px; max-width:90%; max-height:80vh; overflow:auto; width:380px;"><h3>${restaurant.name}</h3>${itemsHtml}<button id="closeMenuBtn" style="margin-top:20px; background:#ccc; border:none; padding:10px; border-radius:40px; width:100%;">إغلاق</button></div>`;
+        document.body.appendChild(modal);
+        modal.querySelectorAll('.addToCartBtn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                let restId = parseInt(btn.dataset.restid); let itemName = btn.dataset.name; let price = parseFloat(btn.dataset.price);
+                let existing = cart.find(c => c.restaurantId === restId && c.itemName === itemName);
+                if(existing) existing.quantity++; else cart.push({ restaurantId: restId, itemName, price, quantity: 1 });
+                updateCartUi(); saveToLocal(); showToast(`✔️ تم إضافة ${itemName}`);
+            });
+        });
+        modal.querySelector('#closeMenuBtn').onclick = () => modal.remove();
+    };
+    function showPage(pageId) {
+        document.querySelectorAll('.page').forEach(p=>p.classList.remove('active-page'));
+        document.getElementById(pageId).classList.add('active-page');
+        if(pageId === 'adminPage') renderAdminPanel();
+        else if(pageId === 'restaurantsPage') renderRestaurantsList('allRestaurantsList', document.getElementById('searchRestaurant')?.value || '', 'all');
+        else if(pageId === 'ordersPage') renderMyOrders();
+        else if(pageId === 'walletPage') renderWallet();
+        else if(pageId === 'cartPage') renderCartPage();
+        else if(pageId === 'homePage') renderRestaurantsList('featuredRestaurants', '', 'all');
+        setActiveNav(pageId);
+    }
+    function setActiveNav(pageId) {
+        document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+        document.querySelector(`.nav-item[data-page="${pageId}"]`).classList.add('active');
+    }
+    function renderAdminPanel() {
+        let totalOrders = allOrders.length;
+        let totalEarnings = allOrders.reduce((sum,o)=> sum + o.totalAmount,0);
+        document.getElementById('adminStats').innerHTML = `<div class="stat-card"><i class="fas fa-shopping-bag"></i><div>${totalOrders}</div><div>طلبات</div></div><div class="stat-card"><i class="fas fa-dollar-sign"></i><div>${totalEarnings} ريال</div><div>أرباح</div></div><div class="stat-card"><i class="fas fa-store"></i><div>${restaurants.length}</div><div>مطاعم</div></div><div class="stat-card"><i class="fas fa-truck"></i><div>3</div><div>سائقين</div></div>`;
+        let ctx = document.getElementById('ordersChart')?.getContext('2d');
+        if(window.ordersChartInstance) window.ordersChartInstance.destroy();
+        if(ctx) { window.ordersChartInstance = new Chart(ctx, { type: 'line', data: { labels: ['يناير', 'فبراير', 'مارس'], datasets: [{ label: 'الطلبات', data: [12, 19, 27], borderColor: '#FF6B2C', tension: 0.3 }] } }); }
+        let restHtml = restaurants.map(r=>`<div style="display:flex; justify-content:space-between; padding:8px 0;"><span>${r.name}</span><button class="toggle-rest" data-id="${r.id}" style="background:${r.open?'#10b981':'#ef4444'}; border:none; color:white; padding:4px 12px; border-radius:30px;">${r.open?'إغلاق':'فتح'}</button></div>`).join('');
+        document.getElementById('adminRestaurantsList').innerHTML = restHtml;
+        document.querySelectorAll('.toggle-rest').forEach(btn=>{
+            btn.addEventListener('click',()=>{ let id = parseInt(btn.dataset.id); let rest = restaurants.find(r=>r.id===id); if(rest) rest.open = !rest.open; renderAdminPanel(); renderRestaurantsList('featuredRestaurants', '', 'all'); renderRestaurantsList('allRestaurantsList', '', 'all'); saveToLocal(); });
+        });
+        document.getElementById('adminDriversList').innerHTML = `<div style="padding:8px 0;">🚗 محمد أحمد - متصل</div><div>🚕 سامي حسن - متصل</div><div>🚚 رامي يوسف - متصل</div>`;
+    }
+    function loadCategoriesAndFilters() {
+        let cats = [...new Set(restaurants.map(r=>r.category))];
+        let filterSelect = document.getElementById('filterCategory');
+        if(filterSelect) {
+            filterSelect.innerHTML = '<option value="all">الكل</option>' + cats.map(c=>`<option value="${c}">${c}</option>`).join('');
+            filterSelect.onchange = () => { let searchVal = document.getElementById('searchRestaurant').value; renderRestaurantsList('allRestaurantsList', searchVal, filterSelect.value); };
+        }
+        document.getElementById('searchRestaurant')?.addEventListener('input', (e) => { let cat = document.getElementById('filterCategory').value; renderRestaurantsList('allRestaurantsList', e.target.value, cat); });
+    }
+    // أحداث الواجهة
     document.getElementById('applyCouponBtn')?.addEventListener('click',()=>{ let code = document.getElementById('couponInput').value; if(code === 'WELCOME10' && !appliedCoupon) { couponDiscount = 15; appliedCoupon = true; showToast("تم تطبيق خصم 15 ريال"); renderCartPage(); } else showToast("كود غير صالح او مستخدم"); });
-    document.getElementById('checkoutBtn')?.addEventListener('click', () => { if(!currentUser) return; let modal = confirm(`اختر طريقة الدفع:\n"موافق" للمحفظة\n"إلغاء" للدفع عند الاستلام`); if(modal) createOrder('wallet'); else createOrder('cod'); });
-    document.getElementById('topUpWalletBtn')?.addEventListener('click', () => { let amount = prompt("أدخل مبلغ الشحن (ريال)", "20"); if(amount && !isNaN(amount)) { addTransaction(parseFloat(amount), 'credit', 'شحن محفظة'); showToast(`تم شحن ${amount} ريال`); } });
-    document.getElementById('transferMoneyBtn')?.addEventListener('click', () => { let targetPhone = prompt("رقم المستلم"); let amount = prompt("المبلغ"); if(targetPhone && amount && !isNaN(amount) && currentUser.walletBalance >= amount) { addTransaction(-amount, 'debit', `تحويل إلى ${targetPhone}`); showToast(`تم التحويل ${amount} ريال`); } else showToast("عملية فاشلة"); });
+    document.getElementById('checkoutBtn')?.addEventListener('click', () => { let useWallet = confirm(`اختر طريقة الدفع:\n"موافق" للمحفظة\n"إلغاء" للدفع عند الاستلام`); if(useWallet) createOrder('wallet'); else createOrder('cod'); });
+    document.getElementById('topUpWalletBtn')?.addEventListener('click', () => { let amount = prompt("أدخل مبلغ الشحن (ريال)", "20"); if(amount && !isNaN(amount) && parseFloat(amount)>0) { addTransaction(parseFloat(amount), 'credit', 'شحن محفظة'); showToast(`تم شحن ${amount} ريال`); } });
+    document.getElementById('transferMoneyBtn')?.addEventListener('click', () => { let target = prompt("رقم المستلم"); let amount = prompt("المبلغ"); if(target && amount && !isNaN(amount) && currentUser.walletBalance >= amount) { addTransaction(-amount, 'debit', `تحويل إلى ${target}`); showToast(`تم التحويل ${amount} ريال`); } else showToast("عملية فاشلة أو رصيد غير كاف"); });
     document.getElementById('darkModeToggle')?.addEventListener('click', () => { document.body.classList.toggle('dark'); let icon = document.getElementById('darkModeIcon'); icon.className = document.body.classList.contains('dark') ? 'fas fa-toggle-on' : 'fas fa-toggle-off'; localStorage.setItem('darkMode', document.body.classList.contains('dark')); });
-    document.getElementById('logoutSettingsBtn')?.addEventListener('click', () => { if(currentUser) localStorage.removeItem(`wassal_user_${currentUser.phone}`); location.reload(); });
-    document.getElementById('floatCart')?.addEventListener('click', () => { showPage('cartPage'); setActiveNav('cartPage'); });
-    function loadCategoriesAndFilters() { let cats = [...new Set(restaurants.map(r=>r.category))]; let filterSelect = document.getElementById('filterCategory'); filterSelect.innerHTML = '<option value="all">الكل</option>' + cats.map(c=>`<option value="${c}">${c}</option>`).join(''); filterSelect.onchange = () => { let searchVal = document.getElementById('searchRestaurant').value; renderRestaurantsList('allRestaurantsList', searchVal, filterSelect.value); }; document.getElementById('searchRestaurant').addEventListener('input', (e) => { renderRestaurantsList('allRestaurantsList', e.target.value, filterSelect.value); }); }
+    document.getElementById('adminAccessBtn')?.addEventListener('click', () => { let pwd = prompt("كلمة سر المدير"); if(pwd === 'admin123') { showPage('adminPage'); renderAdminPanel(); } else showToast("كلمة سر خاطئة"); });
+    document.getElementById('logoutSettingsBtn')?.addEventListener('click', () => { localStorage.removeItem('wassal_app_data'); location.reload(); });
+    document.querySelectorAll('.nav-item').forEach(nav => { nav.addEventListener('click', () => { let page = nav.dataset.page; showPage(page); }); });
+    document.getElementById('floatCart')?.addEventListener('click', () => { showPage('cartPage'); });
     if(localStorage.getItem('darkMode') === 'true') { document.body.classList.add('dark'); document.getElementById('darkModeIcon').className = 'fas fa-toggle-on'; }
-    // التحقق من وجود جلسة سابقة (مستخدم مسجل دخول)
-    setTimeout(() => { if(currentUser) return; }, 100);
+    loadFromLocal();
+    // إضافة فئات وهمية للهوم
+    let homeCats = document.getElementById('homeCategories');
+    if(homeCats) homeCats.innerHTML = ['الكل','تركي','برجر','بيتزا'].map(c => `<div class="cat-circle" data-cat="${c}"><div class="icon-bg"><i class="fas fa-${c==='الكل'?'utensils':c==='تركي'?'flag':c==='برجر'?'hamburger':'pizza-slice'}"></i></div><span>${c}</span></div>`).join('');
+    document.querySelectorAll('.cat-circle').forEach(cat => { cat.addEventListener('click', (e) => { let filter = cat.dataset.cat; if(filter === 'الكل') renderRestaurantsList('featuredRestaurants', '', 'all'); else renderRestaurantsList('featuredRestaurants', '', filter); }); });
 </script>
 </body>
 </html>

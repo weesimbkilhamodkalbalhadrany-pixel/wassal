@@ -388,7 +388,7 @@
             { id: 1, name: "مطعم القلعة - Castle", category: "مأكولات متنوعة", img: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400", items: [{name:"بروست مع التوابع",price:1500},{name:"بروست بدون توابع",price:1300},{name:"شبس",price:500},{name:"اصابع دجاج",price:1800}] },
             { id: 2, name: "مطعم الشيباني", category: "مأكولات شعبية", img: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=400", items: [{name:"عقدة لحم",price:4000},{name:"فحسة لحم غنمي",price:4000},{name:"شيش طاووق",price:2500}] },
             { id: 3, name: "مطعم روما", category: "بيتزا وبرجر", img: "https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=400", items: [{name:"بيتزا بالجبن",price:2500},{name:"بيتزا بالدجاج",price:3500}] },
-            { id: 4, name: "مطعم ابراهيم المطري, category: "لحوم ومشاوي", img: "https://images.unsplash.com/photo-1544025162-d76694265947?w=400", items: [{name:"ثمن ذبيحة حنيذ",price:8000},{name:"برجر دجاج",price:1100}] }
+            { id: 4, name: "نكهة زمان", category: "لحوم ومشاوي", img: "https://images.unsplash.com/photo-1544025162-d76694265947?w=400", items: [{name:"ثمن ذبيحة حنيذ",price:8000},{name:"برجر دجاج",price:1100}] }
         ];
         
         function renderRestaurants() { document.getElementById('restaurantsGrid').innerHTML = restaurants.map(r => `<div class="res-card" onclick="openRestaurantMenu(${r.id})"><div class="res-image" style="background-image: url('${r.img}')"></div><div class="res-info"><h3>${r.name}</h3><p>${r.category}</p></div></div>`).join(''); }

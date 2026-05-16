@@ -11,15 +11,17 @@
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-messaging-compat.js"></script>
     
-    <!-- OneSignal SDK - الكود الجديد المطلوب -->
+    <!-- OneSignal SDK مع مسار Service Worker الصحيح -->
     <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
     <script>
       window.OneSignalDeferred = window.OneSignalDeferred || [];
-      OneSignalDeferred.push(async function(OneSignal) {
-        await OneSignal.init({
+      window.OneSignalDeferred.push(function(OneSignal) {
+        OneSignal.init({
           appId: "7851bb5c-7373-4e5d-8330-b595732b5807",
+          serviceWorkerParam: { scope: "/" },
+          serviceWorkerPath: "OneSignalSDKWorker.js"
         });
-        console.log("OneSignal initialized with new app ID");
+        console.log("OneSignal initialized with custom serviceWorkerPath");
       });
     </script>
     
@@ -259,7 +261,7 @@
         // دالة إرسال إشعار للمناديب عبر OneSignal (باستخدام REST API)
         function sendOrderToDriversViaOneSignal(orderId, type) {
             const appId = "7851bb5c-7373-4e5d-8330-b595732b5807";
-            const apiKey = "YOUR_REST_API_KEY"; // يجب إدخال مفتاح REST API الصحيح من لوحة OneSignal
+            const apiKey = "os_v2_app_pbi3wxdtonhf3azqwwkxgk2ya6ojrrfnqeyej3mqr6gevlb264pqnras4xtbswhinpbs6tbz5yfya4ckk2fxn7mewy2bnagfvp4u5ni";
 
             const notification = {
                 app_id: appId,

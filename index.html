@@ -11,17 +11,18 @@
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-messaging-compat.js"></script>
     
-    <!-- OneSignal SDK مع مسار Service Worker الصحيح -->
+    <!-- OneSignal SDK مع تهيئة مناسبة لرابط Vercel -->
     <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
     <script>
       window.OneSignalDeferred = window.OneSignalDeferred || [];
-      window.OneSignalDeferred.push(function(OneSignal) {
-        OneSignal.init({
+      window.OneSignalDeferred.push(async function(OneSignal) {
+        await OneSignal.init({
           appId: "7851bb5c-7373-4e5d-8330-b595732b5807",
+          // السماح بالتسجيل عبر Service Worker الافتراضي
           serviceWorkerParam: { scope: "/" },
           serviceWorkerPath: "OneSignalSDKWorker.js"
         });
-        console.log("OneSignal initialized with custom serviceWorkerPath");
+        console.log("OneSignal initialized with Vercel URL support");
       });
     </script>
     
@@ -243,7 +244,7 @@
         let driverActiveTab = 'active', appSettings = { workStart: "06:00", workEnd: "22:00" };
         let pendingAction = null, trackingInterval = null, currentClientOrderId = null;
 
-        // دالة تفعيل الإشعارات عبر OneSignal
+        // دالة تفعيل الإشعارات عبر OneSignal (واجهة أمامية فقط)
         window.enableOneSignalNotifications = async () => {
             if (typeof OneSignal === 'undefined') {
                 showToast("جاري تحميل الخدمة... حاول مرة أخرى");
@@ -258,31 +259,13 @@
             }
         };
 
-        // دالة إرسال إشعار للمناديب عبر OneSignal (باستخدام REST API)
+        // دالة إرسال إشعار للمناديب - سيتم تفعيلها عبر خادم لاحقاً لأسباب أمنية
+        // حالياً نقوم بتسجيل الطلب في Firebase فقط، ويمكن إرسال الإشعار من خادم خارجي
         function sendOrderToDriversViaOneSignal(orderId, type) {
-            const appId = "7851bb5c-7373-4e5d-8330-b595732b5807";
-            const apiKey = "os_v2_app_pbi3wxdtonhf3azqwwkxgk2ya6ojrrfnqeyej3mqr6gevlb264pqnras4xtbswhinpbs6tbz5yfya4ckk2fxn7mewy2bnagfvp4u5ni";
-
-            const notification = {
-                app_id: appId,
-                headings: { en: `طلب جديد في وصّال - ${type}! 🚀` },
-                contents: { en: `طلب #${orderId} - هناك عميل بانتظارك، اضغط لقبول الطلب.` },
-                url: "https://wassal-one.vercel.app/orders",
-                included_segments: ["Subscribed Users"],
-                data: { orderId: orderId, type: type }
-            };
-
-            fetch('https://onesignal.com/api/v1/notifications', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Basic ${apiKey}`
-                },
-                body: JSON.stringify(notification)
-            })
-            .then(response => response.json())
-            .then(data => console.log("✅ تم إخطار المناديب عبر OneSignal", data))
-            .catch(err => console.error("❌ فشل إرسال الإشعار:", err));
+            // تمت إزالة REST API من الواجهة الأمامية لأسباب أمنية
+            // سيتم تفعيل الإشعارات عبر استدعاء API من خادم لاحقاً
+            console.log(`[OneSignal] سيتم إخطار المناديب بالطلب #${orderId} من نوع ${type}`);
+            // يمكن إضافة كود لاستدعاء endpoint خاص بالخادم هنا مستقبلاً
         }
 
         // ------------------- قائمة المطاعم الـ 18 (بالأصناف والصور) -------------------
@@ -354,7 +337,7 @@
             let msg = `🚖 طلب ${vSel}\n🆔 ${id}\n👤 ${tel}\n💰 ${price} ريال\n💳 ${selectedPayment}\n📍 ${pAddr}\n🏁 ${dAddr}\n📝 ${order.note||'لا توجد'}\n\nعزيزي العميل عد للتطبيق لتتبع حالة طلبك 😊`;
             window.open(`https://wa.me/777215154?text=${encodeURIComponent(msg)}`, '_blank');
             notifyDrivers(id, vSel);
-            sendOrderToDriversViaOneSignal(id, vSel);   // إشعار OneSignal للمناديب
+            sendOrderToDriversViaOneSignal(id, vSel);   // إشعار OneSignal (سيتم تفعيله لاحقاً)
         }
 
         // الخريطة والمطاعم

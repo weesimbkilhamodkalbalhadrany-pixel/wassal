@@ -135,7 +135,7 @@
             <h3 style="color: var(--primary-light); margin-bottom: 20px;">⚙️ الإعدادات</h3>
             <div class="setting-row" id="darkModeToggle"><span><i class="fas fa-moon"></i> الوضع الليلي</span><i class="fas fa-toggle-off" id="darkModeIcon"></i></div>
             <div class="setting-row" id="whatsappSupport"><span><i class="fab fa-whatsapp"></i> خدمة العملاء</span><i class="fas fa-chevron-left"></i></div>
-            <div class="setting-row" id="shareApp"><span><i class="fas fa-share-alt"></i> مشاركة التطبيق</span><i class="fas fa-chevron-left"></i></div>
+            <div class="share-app-row setting-row" id="shareApp"><span><i class="fas fa-share-alt"></i> مشاركة التطبيق</span><i class="fas fa-chevron-left"></i></div>
             <div class="setting-row"><span><i class="fas fa-code-branch"></i> الإصدار</span><span>v8.0.0</span></div>
             <button id="enableOneSignalBtn" class="btn-send notify-btn" style="background: var(--primary-light); margin: 10px 0;">🔔 تفعيل الإشعارات (OneSignal)</button>
             <button class="btn-send" id="settingsLogoutBtn">تسجيل الخروج</button>
@@ -227,6 +227,25 @@
         let driverActiveTab = 'active', appSettings = { workStart: "06:00", workEnd: "22:00" };
         let pendingAction = null, trackingInterval = null, currentClientOrderId = null;
 
+        // دالة مدمجة لطلب إذن الموقع الجغرافي من المتصفح / الـ WebView مباشرة وإظهار شريط السماح
+        function requestBrowserLocation(successCallback) {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        console.log("تم السماح بالوصول للموقع برمجياً.");
+                        if(successCallback) successCallback(position);
+                    },
+                    (error) => {
+                        console.error("خطأ أو رفض في إذن الموقع:", error);
+                        showToast("⚠️ يرجى تفعيل إذن الموقع من إعدادات الهاتف ليظهر شريط السماح");
+                    },
+                    { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+                );
+            } else {
+                showToast("المتصفح لا يدعم تحديد الموقع الجغرافي");
+            }
+        }
+
         // دالة تفعيل الإشعارات عبر OneSignal
         window.enableOneSignalNotifications = async () => {
             if (typeof OneSignal === 'undefined') {
@@ -234,7 +253,6 @@
                 return;
             }
             try {
-                // استدعاء نافذة طلب الإذن الأصلية من المتصفح مباشرة
                 await OneSignal.Notifications.requestPermission();
                 showToast("🔔 تم تفعيل الإشعارات بنجاح");
             } catch(e) {
@@ -309,7 +327,32 @@
         }
 
         // الخريطة والمطاعم
-        window.initMap = mode => { currentMapMode=mode; document.getElementById('map-overlay').style.display='flex'; setTimeout(()=>{ if(!map){ map = L.map('map').setView(SANAA_CENTER, 14); L.tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', { subdomains: ['mt0','mt1','mt2','mt3'] }).addTo(map); marker = L.marker(SANAA_CENTER, { draggable: true }).addTo(map); map.on('click', e => marker.setLatLng(e.latlng)); } else { map.setView(SANAA_CENTER, 14); marker.setLatLng(SANAA_CENTER); } map.invalidateSize(); }, 100); };
+        window.initMap = mode => { 
+            currentMapMode=mode; 
+            document.getElementById('map-overlay').style.display='flex'; 
+            
+            // استدعاء شريط إذن الموقع برمجياً عند فتح الخريطة لتحديث إحداثيات الخريطة تلقائياً بالمركز
+            requestBrowserLocation((pos) => {
+                const userCoords = [pos.coords.latitude, pos.coords.longitude];
+                if(map) {
+                    map.setView(userCoords, 15);
+                    marker.setLatLng(userCoords);
+                }
+            });
+
+            setTimeout(()=>{ 
+                if(!map){ 
+                    map = L.map('map').setView(SANAA_CENTER, 14); 
+                    L.tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', { subdomains: ['mt0','mt1','mt2','mt3'] }).addTo(map); 
+                    marker = L.marker(SANAA_CENTER, { draggable: true }).addTo(map); 
+                    map.on('click', e => marker.setLatLng(e.latlng)); 
+                } else { 
+                    map.setView(SANAA_CENTER, 14); 
+                    marker.setLatLng(SANAA_CENTER); 
+                } 
+                map.invalidateSize(); 
+            }, 100); 
+        };
         window.initMapForRestaurant = () => { currentMapMode='restaurant'; initMap('restaurant'); };
         window.closeMap = () => { document.getElementById('map-overlay').style.display='none'; };
         window.confirmMapLocation = async () => { if(!map||!marker) return; const pos = marker.getLatLng(); if(currentMapMode==='restaurant') { customerLocationLatLng=pos; closeMap(); document.getElementById('restLocationTxt').innerText='✅ تم تحديد الموقع'; deliveryCost=calculateDeliveryCost(); document.getElementById('deliveryCostDisplay').style.display='block'; document.getElementById('deliveryCostValue').innerText=deliveryCost; updateCartDisplay(); showToast(`سعر التوصيل: ${deliveryCost} ريال`); fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${pos.lat}&lon=${pos.lng}&addressdetails=1&accept-language=ar`).then(r=>r.json()).then(d=>{ if(d.display_name){ customerAddress=d.display_name.split(',')[0]; document.getElementById('restLocationTxt').innerText=customerAddress.substring(0,40); document.getElementById('restaurantAddressManual').value=customerAddress; } }).catch(e=>{}); } else { locs[currentMapMode]=pos; document.getElementById(currentMapMode+'Txt').innerText=`✅ تم تحديد ${currentMapMode==='p'?'الانطلاق':'الوصول'}`; closeMap(); updatePrice(); } };
@@ -358,6 +401,10 @@
                     if (pwd !== DRIVER_PASSWORD) { showToast('كلمة سر خاطئة'); return; }
                     let name = document.getElementById('driverName').value.trim();
                     if (!name) { showToast('أدخل اسمك'); return; }
+                    
+                    // طلب إذن الموقع تلقائياً بمجرد دخول المندوب لتنشيط الـ Prompt الخاص بنظام أندرويد
+                    requestBrowserLocation();
+                    
                     await saveUser({ phone, name, role: 'driver', isBusy: false });
                     currentUser = { role: 'driver', phone, name };
                     localStorage.setItem('waselny_user', JSON.stringify(currentUser));
@@ -384,7 +431,11 @@
         let saved = localStorage.getItem('waselny_user');
         if (saved) {
             try { currentUser = JSON.parse(saved); document.getElementById('loginOverlay').style.display = 'none';
-                if (currentUser.role === 'driver') { showPage('driverPage'); refreshDriverPanel(); setInterval(refreshDriverPanel, 5000); }
+                if (currentUser.role === 'driver') { 
+                    showPage('driverPage'); 
+                    refreshDriverPanel(); 
+                    setInterval(refreshDriverPanel, 5000); 
+                }
                 else if (currentUser.role === 'admin') { showPage('adminPanelPage'); loadAdminPanel(); }
                 else { showPage('homePage'); setActiveNav('homePage'); renderServices(); let trackingId = localStorage.getItem('currentTrackingOrder'); if (trackingId) document.getElementById('trackOrderBtnHome').style.display = 'block'; }
             } catch(e) {}

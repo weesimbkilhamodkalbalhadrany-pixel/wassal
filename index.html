@@ -45,31 +45,41 @@
           notifyButton: { enable: true },
         });
         window.OneSignal = OneSignal;
-        console.log("✅ OneSignal ready");
+        console.log("✅ OneSignal initialized");
       });
 
-      // دالة عالمية لطلب الإذن - سيتم استدعاؤها من الأزرار
-      window.askNotificationPermission = async function() {
-        if (!window.OneSignal) {
-          window.showToast("⏳ جاري تحميل الإشعارات، حاول مرة أخرى بعد ثانية");
-          return;
-        }
-        try {
-          const result = await window.OneSignal.Notifications.requestPermission();
-          if (result) {
-            window.showToast("🔔 تم تفعيل الإشعارات! سيتم إعلامك عند تحديث الطلبات.");
-          } else {
-            window.showToast("⚠️ لم يتم السماح بالإشعارات، يمكنك تفعيلها لاحقاً من إعدادات المتصفح.");
+      // دالة طلب الإذن مع التأكد من جاهزية OneSignal (polling)
+      window.requestNotificationPermission = function() {
+        // عرض رسالة "جاري التحميل" أولاً
+        window.showToastTop("⏳ جاري تجهيز الإشعارات...");
+
+        let attempts = 0;
+        const maxAttempts = 30; // 3 ثواني (100ms لكل محاولة)
+        const interval = setInterval(async () => {
+          attempts++;
+          if (window.OneSignal && window.OneSignal.Notifications) {
+            clearInterval(interval);
+            try {
+              const result = await window.OneSignal.Notifications.requestPermission();
+              if (result) {
+                window.showToastTop("🔔 تم تفعيل الإشعارات بنجاح!");
+              } else {
+                window.showToastTop("⚠️ لم يتم السماح بالإشعارات.");
+              }
+            } catch (err) {
+              console.error(err);
+              window.showToastTop("❌ حدث خطأ، تأكد من دعم المتصفح للإشعارات.");
+            }
+          } else if (attempts >= maxAttempts) {
+            clearInterval(interval);
+            window.showToastTop("❌ فشل تحميل الإشعارات، حاول تحديث الصفحة.");
           }
-        } catch (err) {
-          console.error(err);
-          window.showToast("❌ حدث خطأ، تأكد من أن المتصفح يدعم الإشعارات.");
-        }
+        }, 100);
       };
     </script>
 
     <style>
-        /* جميع الأنماط الأصلية محفوظة بالكامل */
+        /* جميع الأنماط السابقة مع تعديل موضع رسالة toast إلى الأعلى */
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Cairo', sans-serif; -webkit-tap-highlight-color: transparent; }
         :root { --primary-dark: #0a2b3e; --primary-light: #2dd4bf; --bg-light: #f8fafc; --card-light: #ffffff; --text-light: #1e293b; --text-muted: #64748b; --border-light: #e2e8f0; --bg-dark: #0f172a; --card-dark: #1e293b; --text-dark: #f1f5f9; --border-dark: #334155; --danger: #ef4444; --success: #10b981; --warning: #f59e0b; --restaurant-accent: #f97316; }
         body { background: var(--bg-light); color: var(--text-light); transition: background 0.3s, color 0.3s; min-height: 100vh; }
@@ -128,8 +138,9 @@
         .map-controls { display: flex; background: var(--primary-dark); }
         .map-confirm, .map-back { flex: 1; color: white; padding: 20px; text-align: center; font-weight: 900; cursor: pointer; }
         .map-confirm { background: var(--primary-light); color: var(--primary-dark); }
-        .toast { position: fixed; top: -100px; left: 20px; right: 20px; background: var(--success); color: white; padding: 16px; border-radius: 30px; text-align: center; z-index: 999999; opacity: 0; transition: 0.4s; pointer-events: none; }
-        .toast.show { top: 20px; opacity: 1; }
+        /* Toast أعلى الشاشة */
+        .toast-top { position: fixed; top: -100px; left: 20px; right: 20px; background: var(--success); color: white; padding: 16px; border-radius: 30px; text-align: center; z-index: 999999; opacity: 0; transition: 0.4s; pointer-events: none; font-weight: bold; }
+        .toast-top.show { top: 70px; opacity: 1; }
         .login-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(145deg, #0a2b3e, #071a26); z-index: 20000; display: flex; align-items: center; justify-content: center; flex-direction: column; }
         .login-card { background: white; border-radius: 48px; padding: 32px; width: 90%; max-width: 380px; text-align: center; }
         body.dark-mode .login-card { background: #1e293b; color: white; }
@@ -169,8 +180,7 @@
     <div id="homePage" class="page active-page">
         <div class="services-grid" id="servicesGrid"></div>
         <button id="trackOrderBtnHome" class="btn-send" style="display: none;" onclick="window.showMyTracking()">📍 تتبع طلبي الحالي</button>
-        <!-- زر إشعارات بارز في الرئيسية -->
-        <button id="homeNotificationBtn" class="btn-send" style="margin-top: 10px; background: #f97316; display: none;" onclick="askNotificationPermission()">🔔 تفعيل الإشعارات</button>
+        <button id="homeNotificationBtn" class="btn-send" style="margin-top: 10px; background: #f97316; display: none;" onclick="requestNotificationPermission()">🔔 تفعيل الإشعارات</button>
     </div>
     <div id="ordersPage" class="page">
         <div class="order-card" id="myOrdersContainer"><p style="text-align:center;">لا توجد طلبات</p></div>
@@ -180,8 +190,7 @@
         <div class="settings-card">
             <h3 style="color: var(--primary-light); margin-bottom: 20px;">⚙️ الإعدادات</h3>
             <div class="setting-row" id="darkModeToggle"><span><i class="fas fa-moon"></i> الوضع الليلي</span><i class="fas fa-toggle-off" id="darkModeIcon"></i></div>
-            <!-- زر تفعيل الإشعارات مع onclick مباشر -->
-            <div class="setting-row" id="enableNotificationsBtn" style="background: var(--primary-light); color: var(--primary-dark); cursor: pointer;" onclick="askNotificationPermission()">
+            <div class="setting-row" style="background: var(--primary-light); color: var(--primary-dark); cursor: pointer;" onclick="requestNotificationPermission()">
                 <span><i class="fas fa-bell"></i> تفعيل الإشعارات</span>
                 <i class="fas fa-chevron-left"></i>
             </div>
@@ -240,7 +249,8 @@
     <div class="nav-item" data-page="settingsPage"><i class="fas fa-cog"></i><span>الإعدادات</span></div>
 </nav>
 
-<div id="toastMsg" class="toast"></div>
+<!-- Toast علوي -->
+<div id="toastTopMsg" class="toast-top"></div>
 <div id="loginOverlay" class="login-overlay">
     <div class="login-card">
         <h3>وصّال | Wassal</h3>
@@ -260,7 +270,15 @@
 <div id="confirmationModal" class="confirmation-modal"><div class="modal-card"><h4 id="modalTitle">تأكيد</h4><p id="modalMessage"></p><button id="modalConfirm">نعم</button><button id="modalCancel">إلغاء</button></div></div>
 
 <script>
-    // -------------------- إعدادات Firebase Realtime Database --------------------
+    // -------------------- دالة Toast علوية جديدة --------------------
+    window.showToastTop = function(msg) {
+        let t = document.getElementById('toastTopMsg');
+        t.innerText = msg;
+        t.classList.add('show');
+        setTimeout(() => t.classList.remove('show'), 3000);
+    };
+
+    // -------------------- باقي الكود كما هو مع تغيير showToast إلى showToastTop في أماكن الإشعارات --------------------
     const FIREBASE_DB_URL = "https://waselny-2812b-default-rtdb.firebaseio.com";
     const DRIVER_PASSWORD = "weesim73741";
     const ADMIN_PASSWORD = "weesim73741";
@@ -288,12 +306,8 @@
 
     window.currentUser = currentUser;
 
-    window.showToast = function(msg) {
-        let t = document.getElementById('toastMsg');
-        t.innerText = msg;
-        t.classList.add('show');
-        setTimeout(() => t.classList.remove('show'), 3000);
-    };
+    // استبدال showToast القديم بـ showToastTop في كل مكان (لكن نحتفظ بالاسم القديم للتوافق)
+    window.showToast = window.showToastTop;
 
     function showPage(pageId) {
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
@@ -458,12 +472,11 @@
                 renderServices();
                 await loadOrders();
                 if (localStorage.getItem('currentTrackingOrder')) document.getElementById('trackOrderBtnHome').style.display = 'block';
-                // إظهار زر الإشعارات في الرئيسية
                 const homeNoti = document.getElementById('homeNotificationBtn');
                 if (homeNoti) homeNoti.style.display = 'block';
-                // طلب الإذن تلقائياً بعد تسجيل الدخول
+                // طلب الإذن تلقائياً بعد ثانيتين
                 setTimeout(() => {
-                    if (window.askNotificationPermission) window.askNotificationPermission();
+                    if (window.requestNotificationPermission) window.requestNotificationPermission();
                 }, 2000);
             }
         };

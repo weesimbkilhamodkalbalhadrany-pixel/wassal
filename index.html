@@ -35,9 +35,10 @@
       console.log("✅ Firebase Analytics initialized");
     </script>
 
-    <!-- OneSignal Push Notifications (الإشعارات) - الإصدار v16 مع طلب الإذن -->
+    <!-- OneSignal Push Notifications (الإشعارات) - الإصدار v16 مع طلب الإذن المحسن -->
     <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
     <script>
+      // تهيئة OneSignal
       window.OneSignalDeferred = window.OneSignalDeferred || [];
       window.OneSignalDeferred.push(async function(OneSignal) {
         await OneSignal.init({
@@ -46,27 +47,36 @@
             enable: true,
           },
         });
-        // طلب إذن الإشعارات تلقائياً بعد التهيئة (ستظهر نافذة المتصفح)
-        // ولكن نفضل استدعاؤها بعد تفاعل المستخدم، لذا سنعرضها بعد تسجيل الدخول.
-        // سيتم استدعاء الدالة requestNotificationPermission بعد نجاح تسجيل الدخول.
+        // تخزين كائن OneSignal في النافذة لاستخدامه لاحقاً
+        window.OneSignalSDK = OneSignal;
+        console.log("✅ OneSignal initialized");
       });
 
-      // دالة عامة لطلب الإذن يمكن استدعاؤها من أي مكان
-      window.requestNotificationPermission = async () => {
-        if (window.OneSignalDeferred) {
-          const OneSignal = await window.OneSignalDeferred[0]?.();
-          if (OneSignal && OneSignal.Notifications) {
-            const permission = await OneSignal.Notifications.requestPermission();
+      // دالة عالمية لطلب الإذن مع معالجة الأخطاء
+      window.requestNotificationPermission = async function() {
+        try {
+          // انتظار تحميل OneSignal إذا لم يكن جاهزاً
+          if (!window.OneSignalSDK) {
+            // انتظار التهيئة لمدة تصل إلى 5 ثوانٍ
+            for (let i = 0; i < 50; i++) {
+              if (window.OneSignalSDK) break;
+              await new Promise(r => setTimeout(r, 100));
+            }
+          }
+          
+          if (window.OneSignalSDK && window.OneSignalSDK.Notifications) {
+            const permission = await window.OneSignalSDK.Notifications.requestPermission();
             if (permission) {
-              window.showToast("🔔 تم تفعيل الإشعارات بنجاح");
+              window.showToast("🔔 تم تفعيل الإشعارات بنجاح! سيتم إعلامك عند تحديث طلباتك.");
             } else {
-              window.showToast("⚠️ لم يتم السماح بالإشعارات");
+              window.showToast("⚠️ لم يتم السماح بالإشعارات. يمكنك تفعيلها لاحقاً من إعدادات المتصفح.");
             }
           } else {
-            window.showToast("جاري تجهيز الإشعارات، حاول مرة أخرى");
+            window.showToast("⏳ جاري تجهيز الإشعارات، حاول مرة أخرى بعد ثوانٍ.");
           }
-        } else {
-          window.showToast("OneSignal لم يتم تحميله بعد");
+        } catch (error) {
+          console.error("خطأ في طلب الإشعارات:", error);
+          window.showToast("❌ حدث خطأ في طلب الإشعارات، حاول مرة أخرى.");
         }
       };
     </script>
@@ -477,11 +487,19 @@
     document.getElementById('settingsLogoutBtn')?.addEventListener('click', () => { localStorage.removeItem('waselny_user'); location.reload(); });
     document.getElementById('driverLogoutBtn')?.addEventListener('click', () => { localStorage.removeItem('waselny_user'); location.reload(); });
 
-    // زر تفعيل الإشعارات في صفحة الإعدادات
-    document.getElementById('enableNotificationsBtn')?.addEventListener('click', () => {
-        if (window.requestNotificationPermission) window.requestNotificationPermission();
-        else window.showToast("الإشعارات غير متاحة حالياً");
-    });
+    // زر تفعيل الإشعارات في صفحة الإعدادات - تأكيد الاستجابة
+    const enableNotificationsBtn = document.getElementById('enableNotificationsBtn');
+    if (enableNotificationsBtn) {
+        enableNotificationsBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            console.log("تم النقر على زر تفعيل الإشعارات");
+            if (window.requestNotificationPermission) {
+                window.requestNotificationPermission();
+            } else {
+                window.showToast("⚠️ الإشعارات غير متاحة حالياً، حاول تحديث الصفحة");
+            }
+        });
+    }
 
     document.querySelectorAll('.nav-item').forEach(nav => { nav.addEventListener('click', () => { let page = nav.dataset.page; showPage(page); setActiveNav(page); if(page === 'ordersPage' && currentUser?.role === 'customer') window.renderMyOrders(); }); });
 

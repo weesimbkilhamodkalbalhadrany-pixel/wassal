@@ -37,7 +37,7 @@
       });
     </script>
 
-    <!-- Firebase SDK للإشعارات -->
+    <!-- Firebase SDK v9 compat (للتوافق مع الكود الجديد) -->
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-messaging-compat.js"></script>
 
@@ -254,53 +254,57 @@
     let pendingAction = null;
     let trackingInterval = null;
     let currentClientOrderId = null;
-    let messaging = null;
 
-    // -------------------- تهيئة Firebase Messaging --------------------
-    const firebaseConfig = {
-        apiKey: "AIzaSyBvnmHgN1m4Xs-d-LBQo0ZBPGxm_Fzsrk",
-        authDomain: "wassal-app-final.firebaseapp.com",
-        projectId: "wassal-app-final",
-        storageBucket: "wassal-app-final.appspot.com",
-        messagingSenderId: "110183430414",
-        appId: "1:110183430414:web:e4b8e88e31e91a0f61ff5f"
-    };
-    if (typeof firebase !== 'undefined' && !firebase.apps.length) {
-        firebase.initializeApp(firebaseConfig);
-        messaging = firebase.messaging();
+    // -------------------- Firebase Messaging v9 (الكود المحدث) --------------------
+    // تهيئة Firebase (تمت في الأعلى عبر script compat)
+    let messaging = null;
+    if (typeof firebase !== 'undefined' && firebase.messaging) {
+        try {
+            messaging = firebase.messaging();
+        } catch(e) { console.warn(e); }
     }
 
-    // دالة تفعيل إشعارات Firebase
-    window.enableFirebaseNotifications = async () => {
-        if (!messaging) { showToast("Firebase Messaging غير متاح"); return; }
-        if (!('serviceWorker' in navigator)) { showToast("المتصفح لا يدعم service workers"); return; }
-        try {
-            // تسجيل Service Worker مبدئي (إذا لم يكن موجوداً سننشئه افتراضياً)
-            let registration = await navigator.serviceWorker.register('/firebase-messaging-sw.js').catch(() => null);
-            if (!registration) {
-                // إنشاء Service Worker افتراضي في الذاكرة إذا لم يجد الملف
-                const swCode = `self.addEventListener('push', function(event) { if(event.data) self.registration.showNotification('وصّال', { body: event.data.text() }); });`;
-                const blob = new Blob([swCode], {type: 'application/javascript'});
-                const url = URL.createObjectURL(blob);
-                registration = await navigator.serviceWorker.register(url);
-                URL.revokeObjectURL(url);
-            }
-            await messaging.requestPermission();
-            const token = await messaging.getToken({ vapidKey: VAPID_KEY });
-            if (token) {
-                showToast("✅ تم تفعيل إشعارات Firebase");
-                console.log("Firebase Token:", token);
-                // يمكن حفظ التوكن في قاعدة البيانات
-                if (currentUser?.phone) {
-                    await fetch(`${FIREBASE_URL}/fcmTokens/${currentUser.phone}.json`, { method: 'PUT', body: JSON.stringify({ token, updated: Date.now() }) });
-                }
-            } else showToast("⚠️ لم نتمكن من الحصول على التوكن");
-        } catch(e) {
-            console.error(e);
-            showToast("فشل تفعيل إشعارات Firebase: " + e.message);
+    // دالة التفعيل المحدثة المتوافقة مع v9
+    window.activateFirebaseNotifications = function() {
+        if (!messaging) {
+            showToast("Firebase Messaging غير متوفر");
+            return;
+        }
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/firebase-messaging-sw.js')
+                .then((registration) => {
+                    console.log('تم تسجيل الـ Service Worker بنجاح');
+                    // طلب الإذن من المستخدم بالطريقة القياسية
+                    return Notification.requestPermission();
+                })
+                .then((permission) => {
+                    if (permission === 'granted') {
+                        console.log('تم قبول إذن الإشعارات بنجاح!');
+                        return messaging.getToken({ vapidKey: VAPID_KEY });
+                    } else {
+                        throw new Error('المستخدم رفض إذن الإشعارات');
+                    }
+                })
+                .then((token) => {
+                    if (token) {
+                        console.log('Token الجهاز الحالي هو:', token);
+                        showToast('✅ تم تفعيل إشعارات Firebase بنجاح');
+                        // حفظ التوكن في قاعدة البيانات (اختياري)
+                        if (currentUser?.phone) {
+                            fetch(`${FIREBASE_URL}/fcmTokens/${currentUser.phone}.json`, { method: 'PUT', body: JSON.stringify({ token, updated: Date.now() }) });
+                        }
+                    }
+                })
+                .catch((err) => {
+                    console.error('حدث خطأ أثناء التفعيل:', err);
+                    showToast('⚠️ فشل تفعيل إشعارات Firebase: ' + err.message);
+                });
+        } else {
+            showToast("المتصفح لا يدعم Service Workers");
         }
     };
 
+    // دالة OneSignal (موجودة مسبقاً مع زر منفصل)
     window.enableOneSignalNotifications = async () => {
         if (typeof OneSignal === 'undefined') { showToast("OneSignal لم يتم تحميله بعد"); return; }
         try {
@@ -330,7 +334,7 @@
         document.querySelector(`.nav-item[data-page="${pageId}"]`).classList.add('active');
     }
 
-    // دوال التوصيل والمطاعم الأساسية (مختصرة ولكنها تعمل)
+    // خدمات التوصيل
     const services = [{id:"تاكسي 🚖",emoji:"🚖"},{id:"دراجة 🏍️",emoji:"🏍️"},{id:"توصيل 📦",emoji:"📦"},{id:"باص 🚌",emoji:"🚌"},{id:"طاريء 🚨",emoji:"🚨"},{id:"مستندات 📄",emoji:"📄"},{id:"تسوق 🛒",emoji:"🛒"},{id:"نقل طرود 🚛",emoji:"🚛"}];
     function renderServices() { document.getElementById('servicesGrid').innerHTML = services.map(s => `<div class="service-card" onclick="openService('${s.id}')"><div class="service-icon">${s.emoji}</div><h3>${s.id}</h3></div>`).join(''); }
 
@@ -354,7 +358,7 @@
         window.open(`https://wa.me/777215154?text=${encodeURIComponent(`🚖 طلب ${vSel}\n🆔 ${id}\n💰 ${price} ريال`)}`, '_blank');
     }
 
-    // دوال الخريطة المختصرة
+    // دوال الخريطة
     const SANAA_CENTER = [15.3694, 44.1910];
     window.initMap = (mode) => {
         currentMapMode = mode;
@@ -391,10 +395,11 @@
     };
     window.updateRestaurantAddressManual = (addr) => { customerAddress = addr; document.getElementById('restLocationTxt').innerText = addr||'حدد موقعك'; if(addr) deliveryCost = MIN_DELIVERY_PRICE; updateCartDisplay(); };
 
-    // المطاعم (نموذج مبسط)
+    // المطاعم (نموذج مبسط لكن يعمل)
     const restaurants = [
-        { id:1, name:"مطعم القلعة", category:"مأكولات", img:"https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400", items:[{name:"بروست",price:1500}] },
-        { id:2, name:"KFC", category:"سريع", img:"https://images.unsplash.com/photo-1585032226651-759b368d7246?w=400", items:[{name:"زنجر",price:4400}] }
+        { id:1, name:"مطعم القلعة", category:"مأكولات", img:"https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400", items:[{name:"بروست",price:1500},{name:"شاورما",price:1200}] },
+        { id:2, name:"KFC", category:"سريع", img:"https://images.unsplash.com/photo-1585032226651-759b368d7246?w=400", items:[{name:"زنجر",price:4400},{name:"تويستر",price:3200}] },
+        { id:3, name:"بيتزا هت", category:"بيتزا", img:"https://images.unsplash.com/photo-1513104890138-7c749659a591?w=400", items:[{name:"بيتزا جبن",price:2500}] }
     ];
     function renderRestaurants() { document.getElementById('restaurantsGrid').innerHTML = restaurants.map(r => `<div class="res-card" onclick="openRestaurantMenu(${r.id})"><div class="res-image" style="background-image: url('${r.img}')"></div><div class="res-info"><h3>${r.name}</h3><p>${r.category}</p></div></div>`).join(''); }
     window.openRestaurantMenu = (id) => {
@@ -429,7 +434,7 @@
     window.showMyTracking = () => { let id = localStorage.getItem('currentTrackingOrder') || currentClientOrderId; if(id) viewOrderTracking(parseInt(id)); else showToast('لا يوجد طلب نشط'); };
     function getStatusText(st) { const m = {pending:'قيد المراجعة', on_the_way:'في الطريق', arrived:'وصل الموقع', delivered:'تم التوصيل'}; return m[st] || st; }
 
-    // دوال المندوب المختصرة
+    // دوال المندوب
     async function refreshDriverPanel() { await loadOrders(); let myActive = allOrders.find(o=>o.driverId===currentUser?.phone && o.status!=='delivered'); let available = allOrders.filter(o=>o.status==='pending'); let completed = allOrders.filter(o=>o.driverId===currentUser?.phone && o.status==='delivered'); document.getElementById('activeOrdersCount').innerText = myActive?1:0; document.getElementById('completedOrdersCount').innerText = completed.length; let html = ''; if(driverActiveTab==='active'){ if(myActive){ html = `<div>طلب #${myActive.id} - ${myActive.restaurant||myActive.service}</div><div class="action-buttons"><button class="action-btn primary" onclick="updateStatusDirect(${myActive.id}, 'on_the_way')">في الطريق</button></div>`; } else html = '<p>لا يوجد طلب نشط</p>'; } else { available.forEach(o=>{ html+=`<div>طلب #${o.id} - ${o.restaurant||o.service} <button onclick="confirmAccept(${o.id})">قبول</button></div>`; }); if(!available.length) html = '<p>لا توجد طلبات متاحة</p>'; } document.getElementById('driverOrdersList').innerHTML = html; }
     window.switchDriverTab = (tab) => { driverActiveTab = tab; refreshDriverPanel(); };
     window.confirmAccept = (id) => { pendingAction = { action:'acceptOrder', orderId:id }; document.getElementById('modalTitle').innerText='قبول الطلب'; document.getElementById('modalMessage').innerText='هل أنت متأكد؟'; document.getElementById('confirmationModal').classList.add('open'); };
@@ -501,7 +506,7 @@
     document.getElementById('settingsLogoutBtn')?.addEventListener('click', () => { localStorage.removeItem('waselny_user'); location.reload(); });
     document.getElementById('driverLogoutBtn')?.addEventListener('click', () => { localStorage.removeItem('waselny_user'); location.reload(); });
     document.getElementById('enableOneSignalBtn')?.addEventListener('click', () => window.enableOneSignalNotifications());
-    document.getElementById('enableFirebaseBtn')?.addEventListener('click', () => window.enableFirebaseNotifications());
+    document.getElementById('enableFirebaseBtn')?.addEventListener('click', () => window.activateFirebaseNotifications());
 
     document.querySelectorAll('.nav-item').forEach(nav => { nav.addEventListener('click', () => { let page = nav.dataset.page; showPage(page); setActiveNav(page); if(page === 'ordersPage' && currentUser?.role === 'customer') window.renderMyOrders(); }); });
 

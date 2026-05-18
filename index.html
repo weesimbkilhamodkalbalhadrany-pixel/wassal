@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-    <!-- Firebase SDK v9 compat (قاعدة البيانات فقط) -->
+    <!-- Firebase SDK v9 compat -->
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-database-compat.js"></script>
 
@@ -38,54 +38,38 @@
     <!-- OneSignal Push Notifications v16 -->
     <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
     <script>
-      // تهيئة OneSignal
       window.OneSignalDeferred = window.OneSignalDeferred || [];
       window.OneSignalDeferred.push(async function(OneSignal) {
         await OneSignal.init({
           appId: "8e3f39dc-d2e1-480e-a25b-e0e431792120",
-          notifyButton: {
-            enable: true,      // يظهر زر الإشعارات العائم (اختياري)
-          },
+          notifyButton: { enable: true },
         });
-        window.OneSignal = OneSignal;  // حفظ الكائن للاستخدام العام
-        console.log("✅ OneSignal initialized");
+        window.OneSignal = OneSignal;
+        console.log("✅ OneSignal ready");
       });
 
-      // دالة طلب الإذن بشكل مباشر مع رسائل واضحة
-      window.requestNotificationPermission = async function() {
+      // دالة عالمية لطلب الإذن - سيتم استدعاؤها من الأزرار
+      window.askNotificationPermission = async function() {
+        if (!window.OneSignal) {
+          window.showToast("⏳ جاري تحميل الإشعارات، حاول مرة أخرى بعد ثانية");
+          return;
+        }
         try {
-          // التأكد من أن OneSignal جاهز
-          if (!window.OneSignal) {
-            window.showToast("⏳ جاري تجهيز الإشعارات، انتظر ثانية ثم حاول مرة أخرى.");
-            return;
-          }
-          // طلب الإذن من المتصفح
-          const permissionResult = await window.OneSignal.Notifications.requestPermission();
-          if (permissionResult) {
-            window.showToast("🔔 تم تفعيل الإشعارات بنجاح! سيتم إعلامك عند تحديث الطلبات.");
+          const result = await window.OneSignal.Notifications.requestPermission();
+          if (result) {
+            window.showToast("🔔 تم تفعيل الإشعارات! سيتم إعلامك عند تحديث الطلبات.");
           } else {
-            window.showToast("⚠️ لم يتم السماح بالإشعارات. يمكنك تفعيلها لاحقاً من إعدادات المتصفح.");
+            window.showToast("⚠️ لم يتم السماح بالإشعارات، يمكنك تفعيلها لاحقاً من إعدادات المتصفح.");
           }
         } catch (err) {
-          console.error("طلب الإذن فشل:", err);
-          window.showToast("❌ حدث خطأ في طلب الإشعارات، تأكد من دعم المتصفح.");
+          console.error(err);
+          window.showToast("❌ حدث خطأ، تأكد من أن المتصفح يدعم الإشعارات.");
         }
-      };
-
-      // دالة استدعاء تلقائية بعد تسجيل الدخول (اختياري)
-      window.autoRequestNotification = function() {
-        setTimeout(() => {
-          if (window.OneSignal) {
-            window.requestNotificationPermission();
-          } else {
-            console.log("OneSignal لا يزال جاري التحميل");
-          }
-        }, 2000);
       };
     </script>
 
     <style>
-        /* جميع الأنماط السابقة كما هي دون تغيير - تم الحفاظ عليها بالكامل */
+        /* جميع الأنماط الأصلية محفوظة بالكامل */
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Cairo', sans-serif; -webkit-tap-highlight-color: transparent; }
         :root { --primary-dark: #0a2b3e; --primary-light: #2dd4bf; --bg-light: #f8fafc; --card-light: #ffffff; --text-light: #1e293b; --text-muted: #64748b; --border-light: #e2e8f0; --bg-dark: #0f172a; --card-dark: #1e293b; --text-dark: #f1f5f9; --border-dark: #334155; --danger: #ef4444; --success: #10b981; --warning: #f59e0b; --restaurant-accent: #f97316; }
         body { background: var(--bg-light); color: var(--text-light); transition: background 0.3s, color 0.3s; min-height: 100vh; }
@@ -185,8 +169,8 @@
     <div id="homePage" class="page active-page">
         <div class="services-grid" id="servicesGrid"></div>
         <button id="trackOrderBtnHome" class="btn-send" style="display: none;" onclick="window.showMyTracking()">📍 تتبع طلبي الحالي</button>
-        <!-- زر إشعارات إضافي في الصفحة الرئيسية للمستخدم -->
-        <button id="homeNotificationBtn" class="btn-send" style="margin-top: 10px; background: #10b981; display: none;">🔔 تفعيل الإشعارات</button>
+        <!-- زر إشعارات بارز في الرئيسية -->
+        <button id="homeNotificationBtn" class="btn-send" style="margin-top: 10px; background: #f97316; display: none;" onclick="askNotificationPermission()">🔔 تفعيل الإشعارات</button>
     </div>
     <div id="ordersPage" class="page">
         <div class="order-card" id="myOrdersContainer"><p style="text-align:center;">لا توجد طلبات</p></div>
@@ -196,8 +180,8 @@
         <div class="settings-card">
             <h3 style="color: var(--primary-light); margin-bottom: 20px;">⚙️ الإعدادات</h3>
             <div class="setting-row" id="darkModeToggle"><span><i class="fas fa-moon"></i> الوضع الليلي</span><i class="fas fa-toggle-off" id="darkModeIcon"></i></div>
-            <!-- زر تفعيل الإشعارات - مع تحسين الحدث -->
-            <div class="setting-row" id="enableNotificationsBtn" style="background: var(--primary-light); color: var(--primary-dark);">
+            <!-- زر تفعيل الإشعارات مع onclick مباشر -->
+            <div class="setting-row" id="enableNotificationsBtn" style="background: var(--primary-light); color: var(--primary-dark); cursor: pointer;" onclick="askNotificationPermission()">
                 <span><i class="fas fa-bell"></i> تفعيل الإشعارات</span>
                 <i class="fas fa-chevron-left"></i>
             </div>
@@ -474,15 +458,12 @@
                 renderServices();
                 await loadOrders();
                 if (localStorage.getItem('currentTrackingOrder')) document.getElementById('trackOrderBtnHome').style.display = 'block';
-                // إظهار زر الإشعارات في الصفحة الرئيسية للعميل
-                const notiBtn = document.getElementById('homeNotificationBtn');
-                if (notiBtn) {
-                    notiBtn.style.display = 'block';
-                    notiBtn.onclick = () => window.requestNotificationPermission();
-                }
-                // طلب الإشعارات تلقائياً بعد ثانيتين
+                // إظهار زر الإشعارات في الرئيسية
+                const homeNoti = document.getElementById('homeNotificationBtn');
+                if (homeNoti) homeNoti.style.display = 'block';
+                // طلب الإذن تلقائياً بعد تسجيل الدخول
                 setTimeout(() => {
-                    if (window.requestNotificationPermission) window.requestNotificationPermission();
+                    if (window.askNotificationPermission) window.askNotificationPermission();
                 }, 2000);
             }
         };
@@ -493,8 +474,8 @@
         try { currentUser = JSON.parse(saved); window.currentUser = currentUser; document.getElementById('loginOverlay').style.display = 'none';
             if (currentUser.role === 'driver') { showPage('driverPage'); refreshDriverPanel(); setInterval(refreshDriverPanel, 5000); }
             else { showPage('homePage'); setActiveNav('homePage'); renderServices(); loadOrders(); if(localStorage.getItem('currentTrackingOrder')) document.getElementById('trackOrderBtnHome').style.display = 'block'; 
-                const notiBtn = document.getElementById('homeNotificationBtn');
-                if (notiBtn) { notiBtn.style.display = 'block'; notiBtn.onclick = () => window.requestNotificationPermission(); }
+                const homeNoti = document.getElementById('homeNotificationBtn');
+                if (homeNoti) homeNoti.style.display = 'block';
             }
         } catch(e) {}
     } else { document.getElementById('loginOverlay').style.display = 'flex'; initLogin(); }
@@ -504,20 +485,6 @@
     document.getElementById('shareApp')?.addEventListener('click', () => { if(navigator.share) navigator.share({title:'وصّال', text:'تطبيق توصيل ومطاعم', url:location.href}); else window.showToast("المشاركة غير مدعومة"); });
     document.getElementById('settingsLogoutBtn')?.addEventListener('click', () => { localStorage.removeItem('waselny_user'); location.reload(); });
     document.getElementById('driverLogoutBtn')?.addEventListener('click', () => { localStorage.removeItem('waselny_user'); location.reload(); });
-
-    // زر الإشعارات في الإعدادات - مع تأكيد إضافي
-    const enableNotificationsBtn = document.getElementById('enableNotificationsBtn');
-    if (enableNotificationsBtn) {
-        enableNotificationsBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            console.log("تم النقر على زر تفعيل الإشعارات من الإعدادات");
-            if (window.requestNotificationPermission) {
-                window.requestNotificationPermission();
-            } else {
-                window.showToast("⚠️ الإشعارات غير متاحة حالياً، حاول تحديث الصفحة");
-            }
-        });
-    }
 
     document.querySelectorAll('.nav-item').forEach(nav => { nav.addEventListener('click', () => { let page = nav.dataset.page; showPage(page); setActiveNav(page); if(page === 'ordersPage' && currentUser?.role === 'customer') window.renderMyOrders(); }); });
 

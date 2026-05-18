@@ -35,7 +35,7 @@
       console.log("✅ Firebase Analytics initialized");
     </script>
 
-    <!-- OneSignal Push Notifications (الإشعارات) - الإصدار v16 -->
+    <!-- OneSignal Push Notifications (الإشعارات) - الإصدار v16 مع طلب الإذن -->
     <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
     <script>
       window.OneSignalDeferred = window.OneSignalDeferred || [];
@@ -46,7 +46,29 @@
             enable: true,
           },
         });
+        // طلب إذن الإشعارات تلقائياً بعد التهيئة (ستظهر نافذة المتصفح)
+        // ولكن نفضل استدعاؤها بعد تفاعل المستخدم، لذا سنعرضها بعد تسجيل الدخول.
+        // سيتم استدعاء الدالة requestNotificationPermission بعد نجاح تسجيل الدخول.
       });
+
+      // دالة عامة لطلب الإذن يمكن استدعاؤها من أي مكان
+      window.requestNotificationPermission = async () => {
+        if (window.OneSignalDeferred) {
+          const OneSignal = await window.OneSignalDeferred[0]?.();
+          if (OneSignal && OneSignal.Notifications) {
+            const permission = await OneSignal.Notifications.requestPermission();
+            if (permission) {
+              window.showToast("🔔 تم تفعيل الإشعارات بنجاح");
+            } else {
+              window.showToast("⚠️ لم يتم السماح بالإشعارات");
+            }
+          } else {
+            window.showToast("جاري تجهيز الإشعارات، حاول مرة أخرى");
+          }
+        } else {
+          window.showToast("OneSignal لم يتم تحميله بعد");
+        }
+      };
     </script>
 
     <style>
@@ -158,6 +180,8 @@
         <div class="settings-card">
             <h3 style="color: var(--primary-light); margin-bottom: 20px;">⚙️ الإعدادات</h3>
             <div class="setting-row" id="darkModeToggle"><span><i class="fas fa-moon"></i> الوضع الليلي</span><i class="fas fa-toggle-off" id="darkModeIcon"></i></div>
+            <!-- زر تفعيل الإشعارات يدويًا -->
+            <div class="setting-row" id="enableNotificationsBtn"><span><i class="fas fa-bell"></i> تفعيل الإشعارات</span><i class="fas fa-chevron-left"></i></div>
             <div class="setting-row" id="whatsappSupport"><span><i class="fab fa-whatsapp"></i> خدمة العملاء</span><i class="fas fa-chevron-left"></i></div>
             <div class="setting-row" id="shareApp"><span><i class="fas fa-share-alt"></i> مشاركة التطبيق</span><i class="fas fa-chevron-left"></i></div>
             <div class="setting-row"><span><i class="fas fa-code-branch"></i> الإصدار</span><span>v9.0.0</span></div>
@@ -431,6 +455,10 @@
                 renderServices();
                 await loadOrders();
                 if (localStorage.getItem('currentTrackingOrder')) document.getElementById('trackOrderBtnHome').style.display = 'block';
+                // طلب إذن الإشعارات بعد تسجيل دخول العميل (تفاعل المستخدم)
+                setTimeout(() => {
+                    if (window.requestNotificationPermission) window.requestNotificationPermission();
+                }, 1000);
             }
         };
     }
@@ -448,6 +476,12 @@
     document.getElementById('shareApp')?.addEventListener('click', () => { if(navigator.share) navigator.share({title:'وصّال', text:'تطبيق توصيل ومطاعم', url:location.href}); else window.showToast("المشاركة غير مدعومة"); });
     document.getElementById('settingsLogoutBtn')?.addEventListener('click', () => { localStorage.removeItem('waselny_user'); location.reload(); });
     document.getElementById('driverLogoutBtn')?.addEventListener('click', () => { localStorage.removeItem('waselny_user'); location.reload(); });
+
+    // زر تفعيل الإشعارات في صفحة الإعدادات
+    document.getElementById('enableNotificationsBtn')?.addEventListener('click', () => {
+        if (window.requestNotificationPermission) window.requestNotificationPermission();
+        else window.showToast("الإشعارات غير متاحة حالياً");
+    });
 
     document.querySelectorAll('.nav-item').forEach(nav => { nav.addEventListener('click', () => { let page = nav.dataset.page; showPage(page); setActiveNav(page); if(page === 'ordersPage' && currentUser?.role === 'customer') window.renderMyOrders(); }); });
 

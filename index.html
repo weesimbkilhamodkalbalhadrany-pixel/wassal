@@ -9,11 +9,11 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-    <!-- Firebase SDK v9 compat (قاعدة البيانات فقط - بدون إشعارات) -->
+    <!-- Firebase SDK v9 compat (قاعدة البيانات فقط) -->
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-database-compat.js"></script>
 
-    <!-- Firebase Analytics (بدون علاقة بالإشعارات) -->
+    <!-- Firebase Analytics -->
     <script type="module">
       import { initializeApp } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js";
       import { getAnalytics, logEvent } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-analytics.js";
@@ -35,7 +35,7 @@
       console.log("✅ Firebase Analytics initialized");
     </script>
 
-    <!-- OneSignal Push Notifications (الإشعارات) - الإصدار v16 مع طلب الإذن المحسن -->
+    <!-- OneSignal Push Notifications v16 -->
     <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
     <script>
       // تهيئة OneSignal
@@ -44,44 +44,48 @@
         await OneSignal.init({
           appId: "8e3f39dc-d2e1-480e-a25b-e0e431792120",
           notifyButton: {
-            enable: true,
+            enable: true,      // يظهر زر الإشعارات العائم (اختياري)
           },
         });
-        // تخزين كائن OneSignal في النافذة لاستخدامه لاحقاً
-        window.OneSignalSDK = OneSignal;
+        window.OneSignal = OneSignal;  // حفظ الكائن للاستخدام العام
         console.log("✅ OneSignal initialized");
       });
 
-      // دالة عالمية لطلب الإذن مع معالجة الأخطاء
+      // دالة طلب الإذن بشكل مباشر مع رسائل واضحة
       window.requestNotificationPermission = async function() {
         try {
-          // انتظار تحميل OneSignal إذا لم يكن جاهزاً
-          if (!window.OneSignalSDK) {
-            // انتظار التهيئة لمدة تصل إلى 5 ثوانٍ
-            for (let i = 0; i < 50; i++) {
-              if (window.OneSignalSDK) break;
-              await new Promise(r => setTimeout(r, 100));
-            }
+          // التأكد من أن OneSignal جاهز
+          if (!window.OneSignal) {
+            window.showToast("⏳ جاري تجهيز الإشعارات، انتظر ثانية ثم حاول مرة أخرى.");
+            return;
           }
-          
-          if (window.OneSignalSDK && window.OneSignalSDK.Notifications) {
-            const permission = await window.OneSignalSDK.Notifications.requestPermission();
-            if (permission) {
-              window.showToast("🔔 تم تفعيل الإشعارات بنجاح! سيتم إعلامك عند تحديث طلباتك.");
-            } else {
-              window.showToast("⚠️ لم يتم السماح بالإشعارات. يمكنك تفعيلها لاحقاً من إعدادات المتصفح.");
-            }
+          // طلب الإذن من المتصفح
+          const permissionResult = await window.OneSignal.Notifications.requestPermission();
+          if (permissionResult) {
+            window.showToast("🔔 تم تفعيل الإشعارات بنجاح! سيتم إعلامك عند تحديث الطلبات.");
           } else {
-            window.showToast("⏳ جاري تجهيز الإشعارات، حاول مرة أخرى بعد ثوانٍ.");
+            window.showToast("⚠️ لم يتم السماح بالإشعارات. يمكنك تفعيلها لاحقاً من إعدادات المتصفح.");
           }
-        } catch (error) {
-          console.error("خطأ في طلب الإشعارات:", error);
-          window.showToast("❌ حدث خطأ في طلب الإشعارات، حاول مرة أخرى.");
+        } catch (err) {
+          console.error("طلب الإذن فشل:", err);
+          window.showToast("❌ حدث خطأ في طلب الإشعارات، تأكد من دعم المتصفح.");
         }
+      };
+
+      // دالة استدعاء تلقائية بعد تسجيل الدخول (اختياري)
+      window.autoRequestNotification = function() {
+        setTimeout(() => {
+          if (window.OneSignal) {
+            window.requestNotificationPermission();
+          } else {
+            console.log("OneSignal لا يزال جاري التحميل");
+          }
+        }, 2000);
       };
     </script>
 
     <style>
+        /* جميع الأنماط السابقة كما هي دون تغيير - تم الحفاظ عليها بالكامل */
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Cairo', sans-serif; -webkit-tap-highlight-color: transparent; }
         :root { --primary-dark: #0a2b3e; --primary-light: #2dd4bf; --bg-light: #f8fafc; --card-light: #ffffff; --text-light: #1e293b; --text-muted: #64748b; --border-light: #e2e8f0; --bg-dark: #0f172a; --card-dark: #1e293b; --text-dark: #f1f5f9; --border-dark: #334155; --danger: #ef4444; --success: #10b981; --warning: #f59e0b; --restaurant-accent: #f97316; }
         body { background: var(--bg-light); color: var(--text-light); transition: background 0.3s, color 0.3s; min-height: 100vh; }
@@ -181,6 +185,8 @@
     <div id="homePage" class="page active-page">
         <div class="services-grid" id="servicesGrid"></div>
         <button id="trackOrderBtnHome" class="btn-send" style="display: none;" onclick="window.showMyTracking()">📍 تتبع طلبي الحالي</button>
+        <!-- زر إشعارات إضافي في الصفحة الرئيسية للمستخدم -->
+        <button id="homeNotificationBtn" class="btn-send" style="margin-top: 10px; background: #10b981; display: none;">🔔 تفعيل الإشعارات</button>
     </div>
     <div id="ordersPage" class="page">
         <div class="order-card" id="myOrdersContainer"><p style="text-align:center;">لا توجد طلبات</p></div>
@@ -190,8 +196,11 @@
         <div class="settings-card">
             <h3 style="color: var(--primary-light); margin-bottom: 20px;">⚙️ الإعدادات</h3>
             <div class="setting-row" id="darkModeToggle"><span><i class="fas fa-moon"></i> الوضع الليلي</span><i class="fas fa-toggle-off" id="darkModeIcon"></i></div>
-            <!-- زر تفعيل الإشعارات يدويًا -->
-            <div class="setting-row" id="enableNotificationsBtn"><span><i class="fas fa-bell"></i> تفعيل الإشعارات</span><i class="fas fa-chevron-left"></i></div>
+            <!-- زر تفعيل الإشعارات - مع تحسين الحدث -->
+            <div class="setting-row" id="enableNotificationsBtn" style="background: var(--primary-light); color: var(--primary-dark);">
+                <span><i class="fas fa-bell"></i> تفعيل الإشعارات</span>
+                <i class="fas fa-chevron-left"></i>
+            </div>
             <div class="setting-row" id="whatsappSupport"><span><i class="fab fa-whatsapp"></i> خدمة العملاء</span><i class="fas fa-chevron-left"></i></div>
             <div class="setting-row" id="shareApp"><span><i class="fas fa-share-alt"></i> مشاركة التطبيق</span><i class="fas fa-chevron-left"></i></div>
             <div class="setting-row"><span><i class="fas fa-code-branch"></i> الإصدار</span><span>v9.0.0</span></div>
@@ -465,10 +474,16 @@
                 renderServices();
                 await loadOrders();
                 if (localStorage.getItem('currentTrackingOrder')) document.getElementById('trackOrderBtnHome').style.display = 'block';
-                // طلب إذن الإشعارات بعد تسجيل دخول العميل (تفاعل المستخدم)
+                // إظهار زر الإشعارات في الصفحة الرئيسية للعميل
+                const notiBtn = document.getElementById('homeNotificationBtn');
+                if (notiBtn) {
+                    notiBtn.style.display = 'block';
+                    notiBtn.onclick = () => window.requestNotificationPermission();
+                }
+                // طلب الإشعارات تلقائياً بعد ثانيتين
                 setTimeout(() => {
                     if (window.requestNotificationPermission) window.requestNotificationPermission();
-                }, 1000);
+                }, 2000);
             }
         };
     }
@@ -477,7 +492,10 @@
     if (saved) {
         try { currentUser = JSON.parse(saved); window.currentUser = currentUser; document.getElementById('loginOverlay').style.display = 'none';
             if (currentUser.role === 'driver') { showPage('driverPage'); refreshDriverPanel(); setInterval(refreshDriverPanel, 5000); }
-            else { showPage('homePage'); setActiveNav('homePage'); renderServices(); loadOrders(); if(localStorage.getItem('currentTrackingOrder')) document.getElementById('trackOrderBtnHome').style.display = 'block'; }
+            else { showPage('homePage'); setActiveNav('homePage'); renderServices(); loadOrders(); if(localStorage.getItem('currentTrackingOrder')) document.getElementById('trackOrderBtnHome').style.display = 'block'; 
+                const notiBtn = document.getElementById('homeNotificationBtn');
+                if (notiBtn) { notiBtn.style.display = 'block'; notiBtn.onclick = () => window.requestNotificationPermission(); }
+            }
         } catch(e) {}
     } else { document.getElementById('loginOverlay').style.display = 'flex'; initLogin(); }
 
@@ -487,12 +505,12 @@
     document.getElementById('settingsLogoutBtn')?.addEventListener('click', () => { localStorage.removeItem('waselny_user'); location.reload(); });
     document.getElementById('driverLogoutBtn')?.addEventListener('click', () => { localStorage.removeItem('waselny_user'); location.reload(); });
 
-    // زر تفعيل الإشعارات في صفحة الإعدادات - تأكيد الاستجابة
+    // زر الإشعارات في الإعدادات - مع تأكيد إضافي
     const enableNotificationsBtn = document.getElementById('enableNotificationsBtn');
     if (enableNotificationsBtn) {
         enableNotificationsBtn.addEventListener('click', (e) => {
             e.preventDefault();
-            console.log("تم النقر على زر تفعيل الإشعارات");
+            console.log("تم النقر على زر تفعيل الإشعارات من الإعدادات");
             if (window.requestNotificationPermission) {
                 window.requestNotificationPermission();
             } else {

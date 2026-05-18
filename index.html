@@ -8,41 +8,12 @@
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    
-    <!-- OneSignal SDK - شريط سماح متكامل (المصدر الرئيسي للإشعارات) -->
-    <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
-    <script>
-      window.OneSignalDeferred = window.OneSignalDeferred || [];
-      OneSignalDeferred.push(async function(OneSignal) {
-        await OneSignal.init({
-          appId: "8e3f39dc-d2e1-480e-a25b-e0e431792120",
-          safari_web_id: "web.onesignal.auto.3ccdebf9-db5e-4efb-8664-96cf417535b6",
-          notifyButton: { enable: true, position: 'bottom-left' },
-          promptOptions: {
-            slidedown: {
-              enabled: true,
-              autoPrompt: true,
-              autoPromptDelay: 2,
-              prompts: {
-                push: {
-                  title: "📢 واصل مع واصل | Wassal",
-                  message: "فعّل الإشعارات لمتابعة طلباتك وأحدث العروض!",
-                  acceptButtonText: "✅ تفعيل",
-                  cancelButtonText: "❌ لاحقاً"
-                }
-              }
-            }
-          }
-        });
-      });
-    </script>
 
-    <!-- Firebase SDK v9 compat (للإشعارات عبر Firebase - اختياري) وقاعدة البيانات -->
+    <!-- Firebase SDK v9 compat (قاعدة البيانات فقط - بدون إشعارات) -->
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-messaging-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-database-compat.js"></script>
 
-    <!-- Firebase Analytics - نمط Modular (إضافي) -->
+    <!-- Firebase Analytics (بدون علاقة بالإشعارات) -->
     <script type="module">
       import { initializeApp } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js";
       import { getAnalytics, logEvent } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-analytics.js";
@@ -61,7 +32,21 @@
       const analytics = getAnalytics(app);
       logEvent(analytics, 'page_view', { page_title: 'Wassal App - توصيل ومطاعم', page_location: window.location.href });
       window.firebaseAnalytics = analytics;
-      console.log("✅ Firebase Analytics (modular) initialized");
+      console.log("✅ Firebase Analytics initialized");
+    </script>
+
+    <!-- OneSignal Push Notifications (الإشعارات) - الإصدار v16 -->
+    <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+    <script>
+      window.OneSignalDeferred = window.OneSignalDeferred || [];
+      window.OneSignalDeferred.push(async function(OneSignal) {
+        await OneSignal.init({
+          appId: "8e3f39dc-d2e1-480e-a25b-e0e431792120",
+          notifyButton: {
+            enable: true,
+          },
+        });
+      });
     </script>
 
     <style>
@@ -151,7 +136,6 @@
         .action-btn.success { background: var(--success); color: white; }
         .payment-btn { background: var(--bg-light); padding: 8px 15px; border-radius: 40px; display: inline-block; margin: 5px; cursor: pointer; border: 1px solid var(--border-light); }
         .payment-btn.active { background: var(--primary-light); color: white; border-color: var(--primary-light); }
-        .notify-btn { background: var(--primary-light); color: var(--primary-dark); margin-top: 10px; }
     </style>
 </head>
 <body>
@@ -177,8 +161,6 @@
             <div class="setting-row" id="whatsappSupport"><span><i class="fab fa-whatsapp"></i> خدمة العملاء</span><i class="fas fa-chevron-left"></i></div>
             <div class="setting-row" id="shareApp"><span><i class="fas fa-share-alt"></i> مشاركة التطبيق</span><i class="fas fa-chevron-left"></i></div>
             <div class="setting-row"><span><i class="fas fa-code-branch"></i> الإصدار</span><span>v9.0.0</span></div>
-            <button id="enableOneSignalBtn" class="btn-send notify-btn">🔔 تفعيل الإشعارات (OneSignal)</button>
-            <button id="enableFirebaseBtn" class="btn-send notify-btn" style="background: #34b7f1;">🔥 تفعيل إشعارات Firebase</button>
             <button class="btn-send" id="settingsLogoutBtn">تسجيل الخروج</button>
         </div>
     </div>
@@ -258,9 +240,6 @@
     const RESTAURANT_LOCATION = { lat: 15.285158, lng: 44.2207412 };
     const DELIVERY_PRICE_PER_KM = 180;
     const MIN_DELIVERY_PRICE = 550;
-    
-    // ✅ VAPID KEY المحدث (كما طلبت)
-    const VAPID_KEY = 'BE5Xx_uW2FKp76SMJe9Sul5CkBi2-0mwktJgg-yP9wqWe2Avw-kWxdc9xuIE0sh5FXLaFffFCgEwEacggCh7VzQ';
 
     let currentUser = null;
     let allOrders = [];
@@ -281,67 +260,6 @@
     let currentClientOrderId = null;
 
     window.currentUser = currentUser;
-
-    // -------------------- دالة Firebase Messaggio (باستخدام VAPID الجديد) --------------------
-    window.activateFirebaseNotifications = async function() {
-        try {
-            if (typeof firebase === 'undefined' || !firebase.messaging || !firebase.messaging.isSupported) {
-                alert('Firebase Messaging غير متوفر في هذا المتصفح.');
-                return;
-            }
-            const isSupported = await firebase.messaging.isSupported();
-            if (!isSupported) {
-                alert('المتصفح الحالي لا يدعم إشعارات Firebase. استخدم Chrome أو Edge.');
-                return;
-            }
-            const messaging = firebase.messaging();
-            if (!('serviceWorker' in navigator)) {
-                alert('المتصفح لا يدعم Service Workers.');
-                return;
-            }
-            let registration;
-            try {
-                registration = await navigator.serviceWorker.register('/firebase-messaging-sw.js');
-            } catch {
-                const fakeSw = `self.addEventListener('push',e=>{if(e.data)self.registration.showNotification('وصّال',{body:e.data.text()})});`;
-                const blob = new Blob([fakeSw], {type: 'application/javascript'});
-                const url = URL.createObjectURL(blob);
-                registration = await navigator.serviceWorker.register(url);
-                URL.revokeObjectURL(url);
-            }
-            const permission = await Notification.requestPermission();
-            if (permission !== 'granted') {
-                alert('تم رفض إذن الإشعارات.');
-                return;
-            }
-            // ✅ استخدام VAPID KEY الجديد
-            const token = await messaging.getToken({ vapidKey: VAPID_KEY });
-            if (token) {
-                console.log('✅ Firebase Token (VAPID updated):', token);
-                alert('✅ تم تفعيل إشعارات Firebase بنجاح باستخدام المفتاح الجديد!');
-                if (currentUser?.phone) {
-                    await fetch(`${FIREBASE_DB_URL}/fcmTokens/${currentUser.phone}.json`, {
-                        method: 'PUT',
-                        body: JSON.stringify({ token, updatedAt: Date.now() })
-                    });
-                }
-            } else {
-                alert('تم تفعيل الإشعارات لكن لم نحصل على التوكن.');
-            }
-        } catch (err) {
-            console.error(err);
-            alert('خطأ في تفعيل الإشعارات: ' + err.message);
-        }
-    };
-
-    // -------------------- OneSignal (المصدر الأساسي للإشعارات) --------------------
-    window.enableOneSignalNotifications = async () => {
-        if (typeof OneSignal === 'undefined') { window.showToast("OneSignal لم يتم تحميله"); return; }
-        try {
-            await OneSignal.Notifications.requestPermission();
-            window.showToast("🔔 تم فتح شريط الإشعارات، اضغط سماح");
-        } catch(e) { window.showToast("خطأ في OneSignal"); }
-    };
 
     window.showToast = function(msg) {
         let t = document.getElementById('toastMsg');
@@ -530,8 +448,6 @@
     document.getElementById('shareApp')?.addEventListener('click', () => { if(navigator.share) navigator.share({title:'وصّال', text:'تطبيق توصيل ومطاعم', url:location.href}); else window.showToast("المشاركة غير مدعومة"); });
     document.getElementById('settingsLogoutBtn')?.addEventListener('click', () => { localStorage.removeItem('waselny_user'); location.reload(); });
     document.getElementById('driverLogoutBtn')?.addEventListener('click', () => { localStorage.removeItem('waselny_user'); location.reload(); });
-    document.getElementById('enableOneSignalBtn')?.addEventListener('click', () => window.enableOneSignalNotifications());
-    document.getElementById('enableFirebaseBtn')?.addEventListener('click', () => window.activateFirebaseNotifications());
 
     document.querySelectorAll('.nav-item').forEach(nav => { nav.addEventListener('click', () => { let page = nav.dataset.page; showPage(page); setActiveNav(page); if(page === 'ordersPage' && currentUser?.role === 'customer') window.renderMyOrders(); }); });
 

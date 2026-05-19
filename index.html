@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>وصّال | Wassal</title>
     
+    <!-- OneSignal SDK -->
     <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
     <script>
         window.OneSignalDeferred = window.OneSignalDeferred || [];
@@ -48,13 +49,13 @@
         .role-btn.active { background: var(--primary-light); color: var(--primary-dark); }
         .login-card input { width: 100%; padding: 14px; margin: 10px 0; border-radius: 30px; border: 1px solid #ddd; font-size: 1rem; }
         .login-card button { width: 100%; padding: 14px; background: var(--primary-light); border: none; border-radius: 44px; font-weight: 900; font-size: 1.1rem; color: var(--primary-dark); cursor: pointer; }
-        .test-notification-btn { position: fixed; bottom: 100px; right: 20px; background: var(--primary-dark); color: white; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 1000; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
-        .test-notification-btn:active { transform: scale(0.95); }
+        .test-btn { position: fixed; bottom: 100px; right: 20px; background: var(--primary-dark); color: white; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 1000; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+        .test-btn:active { transform: scale(0.95); }
     </style>
 </head>
 <body>
 
-<div class="test-notification-btn" id="testNotificationBtn">
+<div class="test-btn" id="testBtn">
     <i class="fas fa-bell"></i>
 </div>
 
@@ -122,38 +123,40 @@
         document.querySelector(`.nav-item[data-page="${pageId}"]`)?.classList.add('active');
     }
     
-    // ========== إرسال إشعار عبر API الآمن ==========
-    async function sendTestPushNotification() {
-        showToast("📨 جاري إرسال إشعار تجريبي...");
+    // ========== إرسال إشعار تجريبي (طريقة مباشرة) ==========
+    async function sendTestNotification() {
+        showToast("📨 جاري إرسال الإشعار...");
         
-        try {
-            // إرسال طلب إلى الـ API الخاص بنا (بدون مفتاح في الأمام)
-            const response = await fetch('/api/send-notification', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    title: "🧪 وصّال",
-                    message: "إشعار تجريبي! التطبيق يعمل ✅"
-                })
+        // استخدام OneSignal مباشرة من الـ SDK
+        if (window.OneSignalDeferred) {
+            window.OneSignalDeferred.push(async (OneSignal) => {
+                try {
+                    // الحصول على معرف المشترك
+                    const userId = await OneSignal.User.getExternalId();
+                    console.log("User ID:", userId);
+                    
+                    // عرض إشعار محلي (للتأكد من أن الإشعارات تعمل)
+                    if (Notification.permission === "granted") {
+                        new Notification("🧪 وصّال", {
+                            body: "هذا إشعار تجريبي! ✅",
+                            icon: "https://wassal-one.vercel.app/favicon.ico",
+                            vibrate: [200, 100, 200]
+                        });
+                        showToast("✅ تم إرسال الإشعار المحلي!");
+                    } else {
+                        showToast("⚠️ الإشعارات غير مفعلة");
+                    }
+                } catch(e) {
+                    console.error(e);
+                    showToast("❌ خطأ: " + e.message);
+                }
             });
-            
-            const result = await response.json();
-            console.log("نتيجة الإرسال:", result);
-            
-            if (result.id) {
-                showToast("✅ تم إرسال الإشعار! انتظر وصوله");
-            } else {
-                showToast("⚠️ خطأ: " + (result.error || "لم يتم الإرسال"));
-            }
-        } catch(error) {
-            console.error(error);
-            showToast("❌ فشل الإرسال: " + error.message);
         }
     }
     
     // زر الاختبار
-    document.getElementById('testNotificationBtn').onclick = () => {
-        sendTestPushNotification();
+    document.getElementById('testBtn').onclick = () => {
+        sendTestNotification();
     };
     
     // ========== تسجيل الدخول ==========
@@ -196,16 +199,30 @@
             document.getElementById('loginOverlay').style.display = 'none';
             showToast('✅ تم تسجيل الدخول بنجاح');
             
-            // إرسال إشعار ترحيبي بعد ثانية
-            setTimeout(() => {
-                sendTestPushNotification();
-            }, 2000);
+            // طلب الإذن للإشعارات بعد تسجيل الدخول
+            setTimeout(async () => {
+                if (Notification.permission !== "granted") {
+                    const permission = await Notification.requestPermission();
+                    if (permission === "granted") {
+                        showToast("🔔 تم تفعيل الإشعارات!");
+                        sendTestNotification();
+                    }
+                } else {
+                    sendTestNotification();
+                }
+            }, 1000);
         };
     }
     
     const savedUser = localStorage.getItem('waselny_user');
     if (savedUser) {
         document.getElementById('loginOverlay').style.display = 'none';
+        // طلب الإشعارات تلقائياً للمستخدم المسجل
+        setTimeout(async () => {
+            if (Notification.permission !== "granted") {
+                await Notification.requestPermission();
+            }
+        }, 1000);
     } else {
         initLogin();
     }

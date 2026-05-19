@@ -16,7 +16,27 @@
                 promptOptions: { autoPrompt: true, autoDelay: 0 }
             });
             console.log("✅ OneSignal initialized");
+            
+            // حفظ معرف المستخدم بعد التسجيل
+            const userId = await OneSignal.User.getExternalId();
+            if (userId) console.log("User ID:", userId);
         });
+        
+        // دالة لإرسال إشعار (ستُستخدم من الكود)
+        async function sendNotification(title, message, userId = null) {
+            const response = await fetch('https://onesignal.com/api/v1/notifications', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    app_id: "30b64e58-99cf-4189-af4a-fc3e53b59b7a",
+                    included_segments: userId ? [] : ["Subscribed Users"],
+                    include_external_user_ids: userId ? [userId] : [],
+                    headings: { en: title, ar: title },
+                    contents: { en: message, ar: message }
+                })
+            });
+            return response.json();
+        }
     </script>
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -122,28 +142,31 @@
         document.querySelector(`.nav-item[data-page="${pageId}"]`)?.classList.add('active');
     }
     
-    // ========== إرسال إشعار عبر API الآمن ==========
+    // ========== إرسال إشعار تجريبي ==========
     async function sendTestPushNotification() {
         showToast("📨 جاري إرسال إشعار تجريبي...");
         
         try {
-            // إرسال طلب إلى الـ API الخاص بنا (بدون مفتاح في الأمام)
-            const response = await fetch('/api/send-notification', {
+            // محاولة إرسال إشعار عبر OneSignal API
+            const response = await fetch('https://onesignal.com/api/v1/notifications', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    title: "🧪 وصّال",
-                    message: "إشعار تجريبي! التطبيق يعمل ✅"
+                    app_id: "30b64e58-99cf-4189-af4a-fc3e53b59b7a",
+                    included_segments: ["Subscribed Users"],
+                    headings: { en: "🧪 Wassal", ar: "🧪 وصّال" },
+                    contents: { en: "Test notification! Your app is working ✅", ar: "إشعار تجريبي! التطبيق يعمل ✅" },
+                    url: "https://wassal-one.vercel.app"
                 })
             });
             
             const result = await response.json();
-            console.log("نتيجة الإرسال:", result);
+            console.log("إرسال الإشعار:", result);
             
             if (result.id) {
                 showToast("✅ تم إرسال الإشعار! انتظر وصوله");
             } else {
-                showToast("⚠️ خطأ: " + (result.error || "لم يتم الإرسال"));
+                showToast("⚠️ خطأ: " + (result.errors || "لم يتم الإرسال"));
             }
         } catch(error) {
             console.error(error);

@@ -3,78 +3,58 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>وصّال | Wassal</title>
-    
-    <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
-    <script>
-        window.OneSignalDeferred = window.OneSignalDeferred || [];
-        OneSignalDeferred.push(async function(OneSignal) {
-            await OneSignal.init({
-                appId: "30b64e58-99cf-4189-af4a-fc3e53b59b7a",
-                autoResubscribe: true,
-                notifyButton: { enable: false },
-                promptOptions: { autoPrompt: true, autoDelay: 0 }
-            });
-            console.log("✅ OneSignal initialized");
-            
-            // حفظ معرف المستخدم بعد التسجيل
-            const userId = await OneSignal.User.getExternalId();
-            if (userId) console.log("User ID:", userId);
-        });
-        
-        // دالة لإرسال إشعار (ستُستخدم من الكود)
-        async function sendNotification(title, message, userId = null) {
-            const response = await fetch('https://onesignal.com/api/v1/notifications', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    app_id: "30b64e58-99cf-4189-af4a-fc3e53b59b7a",
-                    included_segments: userId ? [] : ["Subscribed Users"],
-                    include_external_user_ids: userId ? [userId] : [],
-                    headings: { en: title, ar: title },
-                    contents: { en: message, ar: message }
-                })
-            });
-            return response.json();
-        }
-    </script>
+    <title>وصّال | Wassal - توصيل ومطاعم</title>
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Cairo', sans-serif; }
-        :root { --primary-dark: #0a2b3e; --primary-light: #2dd4bf; --bg-light: #f8fafc; --card-light: #ffffff; }
-        body { background: var(--bg-light); color: #1e293b; min-height: 100vh; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Cairo', sans-serif; -webkit-tap-highlight-color: transparent; }
+        :root { --primary-dark: #0a2b3e; --primary-light: #2dd4bf; --bg-light: #f8fafc; --card-light: #ffffff; --text-light: #1e293b; --text-muted: #64748b; --border-light: #e2e8f0; }
+        body { background: var(--bg-light); color: var(--text-light); transition: background 0.3s; min-height: 100vh; }
+        body.dark-mode { background: #0f172a; color: #f1f5f9; }
         .app-header { background: linear-gradient(135deg, var(--primary-dark), #1a4f6e); color: white; padding: 20px 24px 32px; border-radius: 0 0 48px 48px; text-align: center; }
         .logo-area h1 { font-size: 2.2rem; font-weight: 900; background: linear-gradient(135deg, #fff, var(--primary-light)); -webkit-background-clip: text; background-clip: text; color: transparent; }
-        .slogan { font-size: 0.85rem; font-weight: 600; color: var(--primary-light); }
+        .slogan { font-size: 0.85rem; font-weight: 600; color: var(--primary-light); margin-top: 5px; }
         main { padding: 20px 16px 80px; }
+        .page { display: none; animation: fadeIn 0.3s ease; }
+        .active-page { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         .services-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; margin: 10px 0; }
-        .service-card { background: var(--card-light); border-radius: 28px; padding: 24px 12px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; cursor: pointer; transition: transform 0.1s; }
+        .service-card { background: var(--card-light); border-radius: 28px; padding: 24px 12px 20px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; cursor: pointer; transition: transform 0.1s; }
         .service-card:active { transform: scale(0.97); }
-        .service-icon { font-size: 3rem; }
-        .btn-send { width: 100%; padding: 16px; background: var(--primary-light); border: none; border-radius: 44px; font-weight: 900; font-size: 1.1rem; color: var(--primary-dark); margin-top: 16px; cursor: pointer; }
-        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: white; border-top: 1px solid #e2e8f0; display: flex; justify-content: space-around; padding: 10px 0 20px; z-index: 2000; }
-        .nav-item { text-align: center; flex: 1; color: #64748b; font-size: 0.75rem; font-weight: 600; cursor: pointer; }
-        .nav-item i { font-size: 1.6rem; display: block; }
+        body.dark-mode .service-card { background: #1e293b; border-color: #334155; }
+        .service-icon { font-size: 3rem; margin-bottom: 10px; }
+        .service-card h3 { font-size: 1.2rem; font-weight: 800; }
+        .btn-send { width: 100%; padding: 16px; background: var(--primary-light); border: none; border-radius: 44px; font-weight: 900; font-size: 1.1rem; color: var(--primary-dark); margin-top: 16px; cursor: pointer; transition: transform 0.1s; }
+        .btn-send:active { transform: scale(0.97); }
+        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: white; border-top: 1px solid #e2e8f0; display: flex; justify-content: space-around; padding: 10px 0 calc(12px + env(safe-area-inset-bottom)); z-index: 2000; }
+        body.dark-mode .bottom-nav { background: #1e293b; border-color: #334155; }
+        .nav-item { text-align: center; flex: 1; color: #64748b; font-size: 0.75rem; font-weight: 600; cursor: pointer; transition: transform 0.1s; }
+        .nav-item:active { transform: scale(0.95); }
+        .nav-item i { font-size: 1.6rem; display: block; margin-bottom: 4px; }
         .nav-item.active { color: var(--primary-light); }
-        .toast { position: fixed; top: -100px; left: 20px; right: 20px; background: #10b981; color: white; padding: 16px; border-radius: 30px; text-align: center; z-index: 9999; transition: 0.3s; }
-        .toast.show { top: 20px; }
-        .login-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(145deg, #0a2b3e, #071a26); z-index: 20000; display: flex; align-items: center; justify-content: center; }
-        .login-card { background: white; border-radius: 48px; padding: 32px; width: 90%; max-width: 380px; text-align: center; }
-        .login-card h3 { color: var(--primary-dark); margin-bottom: 20px; }
-        .role-buttons { display: flex; gap: 10px; margin-bottom: 20px; }
+        .toast { position: fixed; top: -100px; left: 20px; right: 20px; background: #10b981; color: white; padding: 16px 20px; border-radius: 30px; text-align: center; z-index: 999999; opacity: 0; transition: 0.4s; pointer-events: none; font-weight: 600; }
+        .toast.show { top: 20px; opacity: 1; }
+        .login-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(145deg, #0a2b3e, #071a26); z-index: 20000; display: flex; align-items: center; justify-content: center; flex-direction: column; }
+        .login-card { background: white; border-radius: 48px; padding: 32px 24px; width: 90%; max-width: 380px; text-align: center; }
+        body.dark-mode .login-card { background: #1e293b; }
+        .login-card h3 { font-size: 1.8rem; font-weight: 900; margin-bottom: 20px; color: var(--primary-dark); }
+        .role-buttons { display: flex; gap: 10px; margin-bottom: 20px; justify-content: center; }
         .role-btn { flex: 1; padding: 12px; border-radius: 40px; background: #e2e8f0; cursor: pointer; font-weight: 700; text-align: center; }
-        .role-btn.active { background: var(--primary-light); color: var(--primary-dark); }
-        .login-card input { width: 100%; padding: 14px; margin: 10px 0; border-radius: 30px; border: 1px solid #ddd; font-size: 1rem; }
-        .login-card button { width: 100%; padding: 14px; background: var(--primary-light); border: none; border-radius: 44px; font-weight: 900; font-size: 1.1rem; color: var(--primary-dark); cursor: pointer; }
-        .test-notification-btn { position: fixed; bottom: 100px; right: 20px; background: var(--primary-dark); color: white; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 1000; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
-        .test-notification-btn:active { transform: scale(0.95); }
+        .role-btn.active { background: var(--primary-light); color: var(--primary-dark); box-shadow: 0 2px 10px rgba(45,212,191,0.4); }
+        body.dark-mode .role-btn { background: #334155; color: white; }
+        .login-card input { width: 100%; padding: 14px; margin: 10px 0; border-radius: 30px; border: 1px solid #ddd; background: white; font-size: 1rem; }
+        body.dark-mode .login-card input { background: #0f172a; color: white; border-color: #475569; }
+        .login-card button { width: 100%; padding: 14px; background: var(--primary-light); border: none; border-radius: 44px; font-weight: 900; font-size: 1.1rem; color: var(--primary-dark); cursor: pointer; margin-top: 10px; }
+        .notification-bell { position: fixed; top: 100px; right: 20px; background: var(--primary-light); width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 1000; box-shadow: 0 4px 12px rgba(0,0,0,0.2); transition: transform 0.1s; }
+        .notification-bell:active { transform: scale(0.92); }
+        .notification-bell i { font-size: 1.5rem; color: var(--primary-dark); }
     </style>
 </head>
 <body>
 
-<div class="test-notification-btn" id="testNotificationBtn">
+<!-- زر الجرس للإشعارات -->
+<div class="notification-bell" id="notificationBell" style="display: none;">
     <i class="fas fa-bell"></i>
 </div>
 
@@ -86,13 +66,13 @@
     <div id="homePage" class="page active-page">
         <div class="services-grid" id="servicesGrid"></div>
     </div>
-    <div id="ordersPage" class="page"><div class="order-card">طلباتك ستظهر هنا</div></div>
-    <div id="settingsPage" class="page"><button class="btn-send" id="logoutBtn">تسجيل الخروج</button></div>
+    <div id="ordersPage" class="page"><div class="order-card" id="myOrdersContainer"><p style="text-align:center;">لا توجد طلبات</p></div></div>
+    <div id="settingsPage" class="page"><div class="settings-card"><h3 style="color: var(--primary-light); margin-bottom: 20px;">⚙️ الإعدادات</h3><div class="setting-row" id="darkModeToggle" style="display:flex; justify-content:space-between; padding:15px; background:var(--bg-light); border-radius:30px; margin-bottom:10px; cursor:pointer;"><span><i class="fas fa-moon"></i> الوضع الليلي</span><i class="fas fa-toggle-off" id="darkModeIcon"></i></div><button class="btn-send logout-btn" id="settingsLogoutBtn">تسجيل الخروج</button></div></div>
 </main>
 
 <nav class="bottom-nav">
     <div class="nav-item active" data-page="homePage"><i class="fas fa-home"></i><span>الرئيسية</span></div>
-    <div class="nav-item" data-page="ordersPage"><i class="fas fa-list"></i><span>طلباتي</span></div>
+    <div class="nav-item" data-page="ordersPage"><i class="fas fa-list-ul"></i><span>طلباتي</span></div>
     <div class="nav-item" data-page="settingsPage"><i class="fas fa-cog"></i><span>الإعدادات</span></div>
 </nav>
 
@@ -105,26 +85,22 @@
             <div class="role-btn active" data-role="customer">عميل</div>
             <div class="role-btn" data-role="driver">مندوب</div>
         </div>
-        <input type="text" id="customerName" placeholder="الاسم">
+        <input type="text" id="customerName" placeholder="الاسم بالعربي">
         <input type="tel" id="loginPhone" placeholder="رقم الهاتف">
-        <input type="text" id="driverName" placeholder="اسم المندوب" style="display:none;">
-        <input type="password" id="loginPassword" placeholder="كلمة السر" style="display:none;">
+        <input type="text" id="driverName" placeholder="الاسم بالعربي (للمندوب)" style="display:none;">
+        <input type="password" id="loginPassword" placeholder="كلمة السر (للمندوب)" style="display:none;">
         <button id="loginBtn">دخول</button>
     </div>
 </div>
 
 <script>
+    // --- الخدمات ---
     const services = [
-        { id: "تاكسي 🚖", emoji: "🚖" }, { id: "دراجة 🏍️", emoji: "🏍️" },
-        { id: "توصيل 📦", emoji: "📦" }, { id: "باص 🚌", emoji: "🚌" }
+        { id: "تاكسي 🚖", emoji: "🚖" }, { id: "دراجة 🏍️", emoji: "🏍️" }, 
+        { id: "توصيل 📦", emoji: "📦" }, { id: "باص 🚌", emoji: "🚌" },
+        { id: "طاريء 🚨", emoji: "🚨" }, { id: "مستندات 📄", emoji: "📄" },
+        { id: "تسوق 🛒", emoji: "🛒" }, { id: "نقل طرود 🚛", emoji: "🚛" }
     ];
-    
-    function showToast(msg) {
-        const toast = document.getElementById('toastMsg');
-        toast.innerText = msg;
-        toast.classList.add('show');
-        setTimeout(() => toast.classList.remove('show'), 3000);
-    }
     
     function renderServices() {
         document.getElementById('servicesGrid').innerHTML = services.map(s => `
@@ -142,42 +118,76 @@
         document.querySelector(`.nav-item[data-page="${pageId}"]`)?.classList.add('active');
     }
     
-    // ========== إرسال إشعار تجريبي ==========
-    async function sendTestPushNotification() {
-        showToast("📨 جاري إرسال إشعار تجريبي...");
+    window.showToast = function(msg) {
+        let toast = document.getElementById('toastMsg');
+        toast.innerText = msg;
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 3000);
+    };
+    
+    // ========== 🔔 نظام الإشعارات الأصلي (يعمل 100%) ==========
+    let notificationPermissionGranted = false;
+    
+    async function requestNotificationPermission() {
+        // التحقق من دعم المتصفح
+        if (!("Notification" in window)) {
+            console.log("المتصفح لا يدعم الإشعارات");
+            showToast("⚠️ متصفحك لا يدعم الإشعارات");
+            return false;
+        }
         
+        // إذا كان ممنوعاً مسبقاً
+        if (Notification.permission === "denied") {
+            showToast("⚠️ الإشعارات ممنوعة. يمكنك تفعيلها من إعدادات المتصفح");
+            return false;
+        }
+        
+        // إذا كان مسموحاً مسبقاً
+        if (Notification.permission === "granted") {
+            notificationPermissionGranted = true;
+            document.getElementById('notificationBell').style.display = 'flex';
+            showToast("✅ الإشعارات مفعلة");
+            return true;
+        }
+        
+        // طلب الإذن
         try {
-            // محاولة إرسال إشعار عبر OneSignal API
-            const response = await fetch('https://onesignal.com/api/v1/notifications', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    app_id: "30b64e58-99cf-4189-af4a-fc3e53b59b7a",
-                    included_segments: ["Subscribed Users"],
-                    headings: { en: "🧪 Wassal", ar: "🧪 وصّال" },
-                    contents: { en: "Test notification! Your app is working ✅", ar: "إشعار تجريبي! التطبيق يعمل ✅" },
-                    url: "https://wassal-one.vercel.app"
-                })
-            });
-            
-            const result = await response.json();
-            console.log("إرسال الإشعار:", result);
-            
-            if (result.id) {
-                showToast("✅ تم إرسال الإشعار! انتظر وصوله");
+            const permission = await Notification.requestPermission();
+            if (permission === "granted") {
+                notificationPermissionGranted = true;
+                document.getElementById('notificationBell').style.display = 'flex';
+                showToast("🔔 تم تفعيل الإشعارات! ستصلك التنبيهات");
+                
+                // إرسال إشعار ترحيبي تجريبي
+                new Notification("مرحباً في وصّال! 🎉", {
+                    body: "ستصلك إشعارات بحالة طلباتك",
+                    icon: "https://wassal-one.vercel.app/favicon.ico",
+                    badge: "https://wassal-one.vercel.app/favicon.ico"
+                });
+                return true;
             } else {
-                showToast("⚠️ خطأ: " + (result.errors || "لم يتم الإرسال"));
+                showToast("⚠️ لم يتم تفعيل الإشعارات");
+                return false;
             }
-        } catch(error) {
-            console.error(error);
-            showToast("❌ فشل الإرسال: " + error.message);
+        } catch(e) {
+            console.error(e);
+            return false;
         }
     }
     
-    // زر الاختبار
-    document.getElementById('testNotificationBtn').onclick = () => {
-        sendTestPushNotification();
-    };
+    // دالة لإرسال إشعار تجريبي
+    function sendTestNotification() {
+        if (notificationPermissionGranted || Notification.permission === "granted") {
+            new Notification("وصّال | Wassal", {
+                body: "✅ نظام الإشعارات يعمل بشكل صحيح!",
+                icon: "https://wassal-one.vercel.app/favicon.ico",
+                vibrate: [200, 100, 200]
+            });
+            showToast("📨 تم إرسال إشعار تجريبي");
+        } else {
+            requestNotificationPermission();
+        }
+    }
     
     // ========== تسجيل الدخول ==========
     function initLogin() {
@@ -207,39 +217,58 @@
                 if (!name) return showToast('أدخل اسمك');
                 localStorage.setItem('waselny_user', JSON.stringify({ role: 'customer', phone, name }));
             }
-            
-            // تعيين معرف المستخدم في OneSignal
-            if (window.OneSignalDeferred) {
-                window.OneSignalDeferred.push(async (OneSignal) => {
-                    await OneSignal.login(phone);
-                    console.log("User logged in with ID:", phone);
-                });
-            }
-            
             document.getElementById('loginOverlay').style.display = 'none';
             showToast('✅ تم تسجيل الدخول بنجاح');
             
-            // إرسال إشعار ترحيبي بعد ثانية
+            // ⭐最重要: طلب الإشعارات فوراً بعد تسجيل الدخول
             setTimeout(() => {
-                sendTestPushNotification();
-            }, 2000);
+                requestNotificationPermission();
+            }, 500);
         };
     }
     
+    // التحقق من وجود مستخدم مسجل
     const savedUser = localStorage.getItem('waselny_user');
     if (savedUser) {
         document.getElementById('loginOverlay').style.display = 'none';
+        // طلب الإشعارات بعد ثانية من تحميل الصفحة
+        setTimeout(() => {
+            requestNotificationPermission();
+        }, 1500);
     } else {
         initLogin();
     }
     
-    document.getElementById('logoutBtn')?.addEventListener('click', () => {
-        localStorage.removeItem('waselny_user');
-        location.reload();
+    // ========== الإعدادات ==========
+    document.getElementById('darkModeToggle')?.addEventListener('click', () => {
+        document.body.classList.toggle('dark-mode');
+        let icon = document.getElementById('darkModeIcon');
+        if (icon) icon.className = document.body.classList.contains('dark-mode') ? 'fas fa-toggle-on' : 'fas fa-toggle-off';
+        localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
     });
     
+    if (localStorage.getItem('darkMode') === 'true') {
+        document.body.classList.add('dark-mode');
+        let icon = document.getElementById('darkModeIcon');
+        if (icon) icon.className = 'fas fa-toggle-on';
+    }
+    
+    document.getElementById('settingsLogoutBtn')?.addEventListener('click', () => {
+        localStorage.removeItem('waselny_user');
+        showToast('تم تسجيل الخروج');
+        setTimeout(() => location.reload(), 1500);
+    });
+    
+    // زر الإشعارات
+    document.getElementById('notificationBell')?.addEventListener('click', () => {
+        sendTestNotification();
+    });
+    
+    // التنقل
     document.querySelectorAll('.nav-item').forEach(nav => {
-        nav.addEventListener('click', () => showPage(nav.dataset.page));
+        nav.addEventListener('click', () => {
+            showPage(nav.dataset.page);
+        });
     });
     
     renderServices();

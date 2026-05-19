@@ -9,11 +9,9 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-    <!-- Firebase SDK v9 compat -->
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-database-compat.js"></script>
 
-    <!-- Firebase Analytics -->
     <script type="module">
       import { initializeApp } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js";
       import { getAnalytics, logEvent } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-analytics.js";
@@ -35,36 +33,42 @@
       console.log("✅ Firebase Analytics initialized");
     </script>
 
-    <!-- OneSignal Push Notifications v16 -->
     <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
     <script>
       window.OneSignalDeferred = window.OneSignalDeferred || [];
       window.OneSignalDeferred.push(async function(OneSignal) {
         await OneSignal.init({
           appId: "8e3f39dc-d2e1-480e-a25b-e0e431792120",
-          notifyButton: { enable: true },
+          notifyButton: { enable: false }, /* إخفاء الجرس الصغير والاعتماد على النافذة المباشرة */
         });
         window.OneSignal = OneSignal;
         console.log("✅ OneSignal initialized");
+
+        // إطلاق طلب السماح فوراً بمجرد جاهزية السيرفس وركر
+        try {
+          if (OneSignal.Notifications) {
+             await OneSignal.Notifications.requestPermission();
+          }
+        } catch(e) { console.log("Notification auto-prompt deferred"); }
       });
 
-      // دالة طلب الإذن مع التأكد من جاهزية OneSignal (polling)
+      // دالة طلب الإذن اليدوية والقسرية مع التنبيهات علوية الشاشة
       window.requestNotificationPermission = function() {
-        // عرض رسالة "جاري التحميل" أولاً
-        window.showToastTop("⏳ جاري تجهيز الإشعارات...");
+        window.showToastTop("⏳ جاري استدعاء نافذة الإشعارات...");
 
         let attempts = 0;
-        const maxAttempts = 30; // 3 ثواني (100ms لكل محاولة)
+        const maxAttempts = 30; 
         const interval = setInterval(async () => {
           attempts++;
           if (window.OneSignal && window.OneSignal.Notifications) {
             clearInterval(interval);
             try {
+              // أمر إجبار المتصفح على إظهار خانة سماح (Allow)
               const result = await window.OneSignal.Notifications.requestPermission();
               if (result) {
                 window.showToastTop("🔔 تم تفعيل الإشعارات بنجاح!");
               } else {
-                window.showToastTop("⚠️ لم يتم السماح بالإشعارات.");
+                window.showToastTop("⚠️ لم يتم السماح بالإشعارات.. قم بتفعيلها من إعدادات المتصفح.");
               }
             } catch (err) {
               console.error(err);
@@ -72,14 +76,13 @@
             }
           } else if (attempts >= maxAttempts) {
             clearInterval(interval);
-            window.showToastTop("❌ فشل تحميل الإشعارات، حاول تحديث الصفحة.");
+            window.showToastTop("❌ فشل تحميل نظام الإشعارات، يرجى تحديث الصفحة.");
           }
         }, 100);
       };
     </script>
 
     <style>
-        /* جميع الأنماط السابقة مع تعديل موضع رسالة toast إلى الأعلى */
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Cairo', sans-serif; -webkit-tap-highlight-color: transparent; }
         :root { --primary-dark: #0a2b3e; --primary-light: #2dd4bf; --bg-light: #f8fafc; --card-light: #ffffff; --text-light: #1e293b; --text-muted: #64748b; --border-light: #e2e8f0; --bg-dark: #0f172a; --card-dark: #1e293b; --text-dark: #f1f5f9; --border-dark: #334155; --danger: #ef4444; --success: #10b981; --warning: #f59e0b; --restaurant-accent: #f97316; }
         body { background: var(--bg-light); color: var(--text-light); transition: background 0.3s, color 0.3s; min-height: 100vh; }
@@ -138,7 +141,6 @@
         .map-controls { display: flex; background: var(--primary-dark); }
         .map-confirm, .map-back { flex: 1; color: white; padding: 20px; text-align: center; font-weight: 900; cursor: pointer; }
         .map-confirm { background: var(--primary-light); color: var(--primary-dark); }
-        /* Toast أعلى الشاشة */
         .toast-top { position: fixed; top: -100px; left: 20px; right: 20px; background: var(--success); color: white; padding: 16px; border-radius: 30px; text-align: center; z-index: 999999; opacity: 0; transition: 0.4s; pointer-events: none; font-weight: bold; }
         .toast-top.show { top: 70px; opacity: 1; }
         .login-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(145deg, #0a2b3e, #071a26); z-index: 20000; display: flex; align-items: center; justify-content: center; flex-direction: column; }
@@ -249,7 +251,6 @@
     <div class="nav-item" data-page="settingsPage"><i class="fas fa-cog"></i><span>الإعدادات</span></div>
 </nav>
 
-<!-- Toast علوي -->
 <div id="toastTopMsg" class="toast-top"></div>
 <div id="loginOverlay" class="login-overlay">
     <div class="login-card">
@@ -270,7 +271,6 @@
 <div id="confirmationModal" class="confirmation-modal"><div class="modal-card"><h4 id="modalTitle">تأكيد</h4><p id="modalMessage"></p><button id="modalConfirm">نعم</button><button id="modalCancel">إلغاء</button></div></div>
 
 <script>
-    // -------------------- دالة Toast علوية جديدة --------------------
     window.showToastTop = function(msg) {
         let t = document.getElementById('toastTopMsg');
         t.innerText = msg;
@@ -278,7 +278,6 @@
         setTimeout(() => t.classList.remove('show'), 3000);
     };
 
-    // -------------------- باقي الكود كما هو مع تغيير showToast إلى showToastTop في أماكن الإشعارات --------------------
     const FIREBASE_DB_URL = "https://waselny-2812b-default-rtdb.firebaseio.com";
     const DRIVER_PASSWORD = "weesim73741";
     const ADMIN_PASSWORD = "weesim73741";
@@ -305,8 +304,6 @@
     let currentClientOrderId = null;
 
     window.currentUser = currentUser;
-
-    // استبدال showToast القديم بـ showToastTop في كل مكان (لكن نحتفظ بالاسم القديم للتوافق)
     window.showToast = window.showToastTop;
 
     function showPage(pageId) {
@@ -474,7 +471,8 @@
                 if (localStorage.getItem('currentTrackingOrder')) document.getElementById('trackOrderBtnHome').style.display = 'block';
                 const homeNoti = document.getElementById('homeNotificationBtn');
                 if (homeNoti) homeNoti.style.display = 'block';
-                // طلب الإذن تلقائياً بعد ثانيتين
+
+                // طلب الإذن المباشر تلقائياً فور تسجيل دخول العميل الجديد
                 setTimeout(() => {
                     if (window.requestNotificationPermission) window.requestNotificationPermission();
                 }, 2000);
@@ -489,10 +487,16 @@
             else { showPage('homePage'); setActiveNav('homePage'); renderServices(); loadOrders(); if(localStorage.getItem('currentTrackingOrder')) document.getElementById('trackOrderBtnHome').style.display = 'block'; 
                 const homeNoti = document.getElementById('homeNotificationBtn');
                 if (homeNoti) homeNoti.style.display = 'block';
+
+                // طلب الإذن المباشر تلقائياً للعميل المسجل مسبقاً عند فتح التطبيق
+                setTimeout(() => {
+                    if (window.requestNotificationPermission) window.requestNotificationPermission();
+                }, 2000);
             }
         } catch(e) {}
     } else { document.getElementById('loginOverlay').style.display = 'flex'; initLogin(); }
 
+    document.body.classList.toggle('dark-mode', localStorage.getItem('darkMode') === 'true');
     document.getElementById('darkModeToggle')?.addEventListener('click', () => { document.body.classList.toggle('dark-mode'); let icon = document.getElementById('darkModeIcon'); icon.className = document.body.classList.contains('dark-mode') ? 'fas fa-toggle-on' : 'fas fa-toggle-off'; localStorage.setItem('darkMode', document.body.classList.contains('dark-mode')); });
     document.getElementById('whatsappSupport')?.addEventListener('click', () => window.open('https://wa.me/777215154', '_blank'));
     document.getElementById('shareApp')?.addEventListener('click', () => { if(navigator.share) navigator.share({title:'وصّال', text:'تطبيق توصيل ومطاعم', url:location.href}); else window.showToast("المشاركة غير مدعومة"); });

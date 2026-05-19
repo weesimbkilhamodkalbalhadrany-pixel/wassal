@@ -5,69 +5,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>وصّال | Wassal - توصيل ومطاعم</title>
     
-    <!-- OneSignal SDK - التهيئة الصحيحة -->
-    <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
-    <script>
-        // هذا الكود سيظهر النافذة فوراً بعد تحميل الصفحة
-        window.OneSignalDeferred = window.OneSignalDeferred || [];
-        
-        OneSignalDeferred.push(async function(OneSignal) {
-            await OneSignal.init({
-                appId: "30b64e58-99cf-4189-af4a-fc3e53b59b7a",
-                safari_web_id: "web.onesignal.auto.123456",
-                notifyButton: {
-                    enable: false, // نعطل الزر الافتراضي
-                },
-                // الخيارات السحرية لإظهار النافذة فوراً
-                promptOptions: {
-                    autoPrompt: true,      // يظهر تلقائياً
-                    autoDelay: 0,          // بدون تأخير
-                    customlink: {
-                        enabled: false
-                    }
-                }
-            });
-            
-            // سجل في الكونسول للتأكد من عمل التهيئة
-            console.log("✅ OneSignal initialized successfully");
-            
-            // محاولة إظهار النافذة يدوياً بعد ثانية (ضمان إضافي)
-            setTimeout(async () => {
-                const permission = await OneSignal.Notifications.permission;
-                if (permission === "default") {
-                    console.log("محاولة إظهار نافذة الإشعارات...");
-                    await OneSignal.Slidedown.promptPush();
-                }
-            }, 1500);
-        });
-    </script>
-    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Cairo', sans-serif; -webkit-tap-highlight-color: transparent; }
-        :root { --primary-dark: #0a2b3e; --primary-light: #2dd4bf; --bg-light: #f8fafc; --card-light: #ffffff; --text-light: #1e293b; --text-muted: #64748b; --border-light: #e2e8f0; --restaurant-accent: #f97316; }
+        :root { --primary-dark: #0a2b3e; --primary-light: #2dd4bf; --bg-light: #f8fafc; --card-light: #ffffff; --text-light: #1e293b; --text-muted: #64748b; --border-light: #e2e8f0; }
         body { background: var(--bg-light); color: var(--text-light); transition: background 0.3s; min-height: 100vh; }
         body.dark-mode { background: #0f172a; color: #f1f5f9; }
         .app-header { background: linear-gradient(135deg, var(--primary-dark), #1a4f6e); color: white; padding: 20px 24px 32px; border-radius: 0 0 48px 48px; text-align: center; }
         .logo-area h1 { font-size: 2.2rem; font-weight: 900; background: linear-gradient(135deg, #fff, var(--primary-light)); -webkit-background-clip: text; background-clip: text; color: transparent; }
         .slogan { font-size: 0.85rem; font-weight: 600; color: var(--primary-light); margin-top: 5px; }
-        .work-hours { display: inline-flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.12); padding: 5px 20px; border-radius: 60px; margin-top: 12px; font-size: 0.75rem; }
         main { padding: 20px 16px 80px; }
         .page { display: none; animation: fadeIn 0.3s ease; }
         .active-page { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         .services-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; margin: 10px 0; }
-        .service-card { background: var(--card-light); border-radius: 28px; padding: 24px 12px 20px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 1px solid var(--border-light); cursor: pointer; transition: transform 0.1s; }
+        .service-card { background: var(--card-light); border-radius: 28px; padding: 24px 12px 20px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; cursor: pointer; transition: transform 0.1s; }
         .service-card:active { transform: scale(0.97); }
         body.dark-mode .service-card { background: #1e293b; border-color: #334155; }
         .service-icon { font-size: 3rem; margin-bottom: 10px; }
-        .service-card h3 { font-size: 1.2rem; font-weight: 800; margin: 8px 0 4px; }
+        .service-card h3 { font-size: 1.2rem; font-weight: 800; }
         .btn-send { width: 100%; padding: 16px; background: var(--primary-light); border: none; border-radius: 44px; font-weight: 900; font-size: 1.1rem; color: var(--primary-dark); margin-top: 16px; cursor: pointer; transition: transform 0.1s; }
         .btn-send:active { transform: scale(0.97); }
-        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: var(--card-light); backdrop-filter: blur(20px); border-top: 1px solid var(--border-light); display: flex; justify-content: space-around; padding: 10px 0 calc(12px + env(safe-area-inset-bottom)); z-index: 2000; }
+        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: white; border-top: 1px solid #e2e8f0; display: flex; justify-content: space-around; padding: 10px 0 calc(12px + env(safe-area-inset-bottom)); z-index: 2000; }
         body.dark-mode .bottom-nav { background: #1e293b; border-color: #334155; }
-        .nav-item { text-align: center; flex: 1; color: var(--text-muted); font-size: 0.75rem; font-weight: 600; cursor: pointer; transition: transform 0.1s; }
+        .nav-item { text-align: center; flex: 1; color: #64748b; font-size: 0.75rem; font-weight: 600; cursor: pointer; transition: transform 0.1s; }
         .nav-item:active { transform: scale(0.95); }
         .nav-item i { font-size: 1.6rem; display: block; margin-bottom: 4px; }
         .nav-item.active { color: var(--primary-light); }
@@ -75,37 +37,41 @@
         .toast.show { top: 20px; opacity: 1; }
         .login-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(145deg, #0a2b3e, #071a26); z-index: 20000; display: flex; align-items: center; justify-content: center; flex-direction: column; }
         .login-card { background: white; border-radius: 48px; padding: 32px 24px; width: 90%; max-width: 380px; text-align: center; }
-        body.dark-mode .login-card { background: #1e293b; color: white; }
+        body.dark-mode .login-card { background: #1e293b; }
         .login-card h3 { font-size: 1.8rem; font-weight: 900; margin-bottom: 20px; color: var(--primary-dark); }
         .role-buttons { display: flex; gap: 10px; margin-bottom: 20px; justify-content: center; }
-        .role-btn { flex: 1; padding: 12px; border-radius: 40px; background: #e2e8f0; cursor: pointer; font-weight: 700; transition: all 0.2s; text-align: center; }
+        .role-btn { flex: 1; padding: 12px; border-radius: 40px; background: #e2e8f0; cursor: pointer; font-weight: 700; text-align: center; }
         .role-btn.active { background: var(--primary-light); color: var(--primary-dark); box-shadow: 0 2px 10px rgba(45,212,191,0.4); }
         body.dark-mode .role-btn { background: #334155; color: white; }
-        .login-card input { width: 100%; padding: 14px; margin: 10px 0; border-radius: 30px; border: 1px solid #ddd; background: white; color: black; font-size: 1rem; }
+        .login-card input { width: 100%; padding: 14px; margin: 10px 0; border-radius: 30px; border: 1px solid #ddd; background: white; font-size: 1rem; }
         body.dark-mode .login-card input { background: #0f172a; color: white; border-color: #475569; }
-        .login-card button { width: 100%; padding: 14px; background: var(--primary-light); border: none; border-radius: 44px; font-weight: 900; font-size: 1.1rem; color: var(--primary-dark); cursor: pointer; margin-top: 10px; transition: transform 0.1s; }
-        .login-card button:active { transform: scale(0.97); }
+        .login-card button { width: 100%; padding: 14px; background: var(--primary-light); border: none; border-radius: 44px; font-weight: 900; font-size: 1.1rem; color: var(--primary-dark); cursor: pointer; margin-top: 10px; }
+        .notification-bell { position: fixed; top: 100px; right: 20px; background: var(--primary-light); width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 1000; box-shadow: 0 4px 12px rgba(0,0,0,0.2); transition: transform 0.1s; }
+        .notification-bell:active { transform: scale(0.92); }
+        .notification-bell i { font-size: 1.5rem; color: var(--primary-dark); }
     </style>
 </head>
 <body>
 
-<header class="app-header" id="adminTrigger">
+<!-- زر الجرس للإشعارات -->
+<div class="notification-bell" id="notificationBell" style="display: none;">
+    <i class="fas fa-bell"></i>
+</div>
+
+<header class="app-header">
     <div class="logo-area"><h1>وصّال | Wassal</h1><div class="slogan">مشوارك أسرع.. وطلبك أقرب</div></div>
-    <div class="work-hours"><span id="workHoursDisplay">6:00 صباحاً - 10:00 مساءً</span></div>
 </header>
 
 <main>
     <div id="homePage" class="page active-page">
         <div class="services-grid" id="servicesGrid"></div>
-        <button id="trackOrderBtnHome" class="btn-send" style="display: none;">📍 تتبع طلبي الحالي</button>
     </div>
     <div id="ordersPage" class="page"><div class="order-card" id="myOrdersContainer"><p style="text-align:center;">لا توجد طلبات</p></div></div>
-    <div id="settingsPage" class="page"><div class="settings-card"><h3 style="color: var(--primary-light); margin-bottom: 20px;">⚙️ الإعدادات</h3><div class="setting-row" id="darkModeToggle"><span><i class="fas fa-moon"></i> الوضع الليلي</span></div><button class="btn-send logout-btn" id="settingsLogoutBtn">تسجيل الخروج</button></div></div>
+    <div id="settingsPage" class="page"><div class="settings-card"><h3 style="color: var(--primary-light); margin-bottom: 20px;">⚙️ الإعدادات</h3><div class="setting-row" id="darkModeToggle" style="display:flex; justify-content:space-between; padding:15px; background:var(--bg-light); border-radius:30px; margin-bottom:10px; cursor:pointer;"><span><i class="fas fa-moon"></i> الوضع الليلي</span><i class="fas fa-toggle-off" id="darkModeIcon"></i></div><button class="btn-send logout-btn" id="settingsLogoutBtn">تسجيل الخروج</button></div></div>
 </main>
 
 <nav class="bottom-nav">
     <div class="nav-item active" data-page="homePage"><i class="fas fa-home"></i><span>الرئيسية</span></div>
-    <div class="nav-item" data-page="restaurantsPage"><i class="fas fa-utensils"></i><span>المطاعم</span></div>
     <div class="nav-item" data-page="ordersPage"><i class="fas fa-list-ul"></i><span>طلباتي</span></div>
     <div class="nav-item" data-page="settingsPage"><i class="fas fa-cog"></i><span>الإعدادات</span></div>
 </nav>
@@ -128,7 +94,7 @@
 </div>
 
 <script>
-    // --- بيانات الخدمات والمطاعم الأساسية ---
+    // --- الخدمات ---
     const services = [
         { id: "تاكسي 🚖", emoji: "🚖" }, { id: "دراجة 🏍️", emoji: "🏍️" }, 
         { id: "توصيل 📦", emoji: "📦" }, { id: "باص 🚌", emoji: "🚌" },
@@ -137,15 +103,12 @@
     ];
     
     function renderServices() {
-        const grid = document.getElementById('servicesGrid');
-        if (grid) {
-            grid.innerHTML = services.map(s => `
-                <div class="service-card ripple" onclick="showToast('خدمة ${s.id} - قريباً')">
-                    <div class="service-icon">${s.emoji}</div>
-                    <h3>${s.id}</h3>
-                </div>
-            `).join('');
-        }
+        document.getElementById('servicesGrid').innerHTML = services.map(s => `
+            <div class="service-card" onclick="showToast('خدمة ${s.id} - قريباً')">
+                <div class="service-icon">${s.emoji}</div>
+                <h3>${s.id}</h3>
+            </div>
+        `).join('');
     }
     
     function showPage(pageId) {
@@ -156,13 +119,77 @@
     }
     
     window.showToast = function(msg) {
-        const toast = document.getElementById('toastMsg');
+        let toast = document.getElementById('toastMsg');
         toast.innerText = msg;
         toast.classList.add('show');
         setTimeout(() => toast.classList.remove('show'), 3000);
     };
     
-    // --- تسجيل الدخول ---
+    // ========== 🔔 نظام الإشعارات الأصلي (يعمل 100%) ==========
+    let notificationPermissionGranted = false;
+    
+    async function requestNotificationPermission() {
+        // التحقق من دعم المتصفح
+        if (!("Notification" in window)) {
+            console.log("المتصفح لا يدعم الإشعارات");
+            showToast("⚠️ متصفحك لا يدعم الإشعارات");
+            return false;
+        }
+        
+        // إذا كان ممنوعاً مسبقاً
+        if (Notification.permission === "denied") {
+            showToast("⚠️ الإشعارات ممنوعة. يمكنك تفعيلها من إعدادات المتصفح");
+            return false;
+        }
+        
+        // إذا كان مسموحاً مسبقاً
+        if (Notification.permission === "granted") {
+            notificationPermissionGranted = true;
+            document.getElementById('notificationBell').style.display = 'flex';
+            showToast("✅ الإشعارات مفعلة");
+            return true;
+        }
+        
+        // طلب الإذن
+        try {
+            const permission = await Notification.requestPermission();
+            if (permission === "granted") {
+                notificationPermissionGranted = true;
+                document.getElementById('notificationBell').style.display = 'flex';
+                showToast("🔔 تم تفعيل الإشعارات! ستصلك التنبيهات");
+                
+                // إرسال إشعار ترحيبي تجريبي
+                new Notification("مرحباً في وصّال! 🎉", {
+                    body: "ستصلك إشعارات بحالة طلباتك",
+                    icon: "https://wassal-one.vercel.app/favicon.ico",
+                    badge: "https://wassal-one.vercel.app/favicon.ico"
+                });
+                return true;
+            } else {
+                showToast("⚠️ لم يتم تفعيل الإشعارات");
+                return false;
+            }
+        } catch(e) {
+            console.error(e);
+            return false;
+        }
+    }
+    
+    // دالة لإرسال إشعار تجريبي
+    function sendTestNotification() {
+        if (notificationPermissionGranted || Notification.permission === "granted") {
+            new Notification("وصّال | Wassal", {
+                body: "✅ نظام الإشعارات يعمل بشكل صحيح!",
+                icon: "https://wassal-one.vercel.app/favicon.ico",
+                vibrate: [200, 100, 200]
+            });
+            showToast("📨 تم إرسال إشعار تجريبي");
+        } else {
+            requestNotificationPermission();
+        }
+    }
+    
+    // ========== تسجيل الدخول ==========
     function initLogin() {
         document.querySelectorAll('.role-btn').forEach(btn => {
             btn.onclick = function() {
@@ -193,16 +220,10 @@
             document.getElementById('loginOverlay').style.display = 'none';
             showToast('✅ تم تسجيل الدخول بنجاح');
             
-            // ✅ طلب الإذن للإشعارات بعد تسجيل الدخول مباشرة
-            if (window.OneSignalDeferred) {
-                try {
-                    const OneSignal = await window.OneSignalDeferred[0];
-                    if (OneSignal) {
-                        await OneSignal.Slidedown.promptPush();
-                        showToast('🔔 فعل الإشعارات لتصلك التنبيهات');
-                    }
-                } catch(e) { console.log(e); }
-            }
+            // ⭐最重要: طلب الإشعارات فوراً بعد تسجيل الدخول
+            setTimeout(() => {
+                requestNotificationPermission();
+            }, 500);
         };
     }
     
@@ -210,17 +231,26 @@
     const savedUser = localStorage.getItem('waselny_user');
     if (savedUser) {
         document.getElementById('loginOverlay').style.display = 'none';
+        // طلب الإشعارات بعد ثانية من تحميل الصفحة
+        setTimeout(() => {
+            requestNotificationPermission();
+        }, 1500);
     } else {
         initLogin();
     }
     
-    // --- الإعدادات ---
+    // ========== الإعدادات ==========
     document.getElementById('darkModeToggle')?.addEventListener('click', () => {
         document.body.classList.toggle('dark-mode');
+        let icon = document.getElementById('darkModeIcon');
+        if (icon) icon.className = document.body.classList.contains('dark-mode') ? 'fas fa-toggle-on' : 'fas fa-toggle-off';
         localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
     });
+    
     if (localStorage.getItem('darkMode') === 'true') {
         document.body.classList.add('dark-mode');
+        let icon = document.getElementById('darkModeIcon');
+        if (icon) icon.className = 'fas fa-toggle-on';
     }
     
     document.getElementById('settingsLogoutBtn')?.addEventListener('click', () => {
@@ -229,15 +259,15 @@
         setTimeout(() => location.reload(), 1500);
     });
     
-    // --- التنقل ---
+    // زر الإشعارات
+    document.getElementById('notificationBell')?.addEventListener('click', () => {
+        sendTestNotification();
+    });
+    
+    // التنقل
     document.querySelectorAll('.nav-item').forEach(nav => {
         nav.addEventListener('click', () => {
-            const pageId = nav.dataset.page;
-            if (pageId === 'restaurantsPage') {
-                showToast('📱 المطاعم قريباً في التحديث القادم');
-                return;
-            }
-            if (pageId) showPage(pageId);
+            showPage(nav.dataset.page);
         });
     });
     

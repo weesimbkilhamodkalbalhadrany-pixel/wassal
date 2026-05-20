@@ -2,256 +2,45 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>وصّال | Wassal</title>
-    
-    <!-- OneSignal SDK -->
-    <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+    <title>وصّال - تفعيل الإشعارات</title>
+    <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js"></script>
     <script>
         window.OneSignalDeferred = window.OneSignalDeferred || [];
         OneSignalDeferred.push(async function(OneSignal) {
             await OneSignal.init({
                 appId: "30b64e58-99cf-4189-af4a-fc3e53b59b7a",
-                autoResubscribe: true,
-                notifyButton: { enable: false },
-                promptOptions: { autoPrompt: true, autoDelay: 0 }
             });
-            console.log("✅ OneSignal initialized");
+            
+            // التحقق من الحالة
+            const permission = await OneSignal.Notifications.permission;
+            if (permission === "granted") {
+                document.getElementById('status').innerHTML = '✅ الإشعارات مفعلة';
+                document.getElementById('status').style.color = 'green';
+            } else {
+                document.getElementById('status').innerHTML = '⚠️ الإشعارات غير مفعلة';
+                document.getElementById('subscribeBtn').style.display = 'block';
+            }
         });
+        
+        function subscribe() {
+            window.OneSignalDeferred.push(async function(OneSignal) {
+                await OneSignal.Slidedown.promptPush();
+            });
+        }
     </script>
-    
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Cairo', sans-serif; }
-        :root { --primary-dark: #0a2b3e; --primary-light: #2dd4bf; --bg-light: #f8fafc; --card-light: #ffffff; }
-        body { background: var(--bg-light); color: #1e293b; min-height: 100vh; }
-        .app-header { background: linear-gradient(135deg, var(--primary-dark), #1a4f6e); color: white; padding: 20px 24px 32px; border-radius: 0 0 48px 48px; text-align: center; }
-        .logo-area h1 { font-size: 2.2rem; font-weight: 900; background: linear-gradient(135deg, #fff, var(--primary-light)); -webkit-background-clip: text; background-clip: text; color: transparent; }
-        .slogan { font-size: 0.85rem; font-weight: 600; color: var(--primary-light); }
-        main { padding: 20px 16px 80px; }
-        .services-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; margin: 10px 0; }
-        .service-card { background: var(--card-light); border-radius: 28px; padding: 24px 12px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; cursor: pointer; transition: transform 0.1s; }
-        .service-card:active { transform: scale(0.97); }
-        .service-icon { font-size: 3rem; }
-        .btn-send { width: 100%; padding: 16px; background: var(--primary-light); border: none; border-radius: 44px; font-weight: 900; font-size: 1.1rem; color: var(--primary-dark); margin-top: 16px; cursor: pointer; }
-        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: white; border-top: 1px solid #e2e8f0; display: flex; justify-content: space-around; padding: 10px 0 20px; z-index: 2000; }
-        .nav-item { text-align: center; flex: 1; color: #64748b; font-size: 0.75rem; font-weight: 600; cursor: pointer; }
-        .nav-item i { font-size: 1.6rem; display: block; }
-        .nav-item.active { color: var(--primary-light); }
-        .toast { position: fixed; top: -100px; left: 20px; right: 20px; background: #10b981; color: white; padding: 16px; border-radius: 30px; text-align: center; z-index: 9999; transition: 0.3s; }
-        .toast.show { top: 20px; }
-        .login-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(145deg, #0a2b3e, #071a26); z-index: 20000; display: flex; align-items: center; justify-content: center; }
-        .login-card { background: white; border-radius: 48px; padding: 32px; width: 90%; max-width: 380px; text-align: center; }
-        .login-card h3 { color: var(--primary-dark); margin-bottom: 20px; }
-        .role-buttons { display: flex; gap: 10px; margin-bottom: 20px; }
-        .role-btn { flex: 1; padding: 12px; border-radius: 40px; background: #e2e8f0; cursor: pointer; font-weight: 700; text-align: center; }
-        .role-btn.active { background: var(--primary-light); color: var(--primary-dark); }
-        .login-card input { width: 100%; padding: 14px; margin: 10px 0; border-radius: 30px; border: 1px solid #ddd; font-size: 1rem; }
-        .login-card button { width: 100%; padding: 14px; background: var(--primary-light); border: none; border-radius: 44px; font-weight: 900; font-size: 1.1rem; color: var(--primary-dark); cursor: pointer; }
-        .test-btn { position: fixed; bottom: 100px; right: 20px; background: var(--primary-dark); color: white; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 1000; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
-        .test-btn:active { transform: scale(0.95); }
+        body { font-family: Arial; text-align: center; padding: 50px; background: #0a2b3e; }
+        .card { background: white; border-radius: 30px; padding: 40px; max-width: 400px; margin: auto; }
+        button { background: #2dd4bf; border: none; padding: 15px 30px; border-radius: 50px; font-size: 1.2rem; font-weight: bold; margin: 20px; cursor: pointer; }
+        #subscribeBtn { display: none; background: #f59e0b; }
     </style>
 </head>
 <body>
-
-<div class="test-btn" id="testBtn">
-    <i class="fas fa-bell"></i>
-</div>
-
-<header class="app-header">
-    <div class="logo-area"><h1>وصّال | Wassal</h1><div class="slogan">مشوارك أسرع.. وطلبك أقرب</div></div>
-</header>
-
-<main>
-    <div id="homePage" class="page active-page">
-        <div class="services-grid" id="servicesGrid"></div>
+    <div class="card">
+        <h1>🔔 وصّال</h1>
+        <p id="status">جاري التحميل...</p>
+        <button id="subscribeBtn" onclick="subscribe()">📢 تفعيل الإشعارات</button>
+        <p style="font-size: 0.8rem; margin-top: 20px;">اضغط الزر واختر "سماح"</p>
     </div>
-    <div id="ordersPage" class="page"><div class="order-card">طلباتك ستظهر هنا</div></div>
-    <div id="settingsPage" class="page"><button class="btn-send" id="logoutBtn">تسجيل الخروج</button></div>
-</main>
-
-<nav class="bottom-nav">
-    <div class="nav-item active" data-page="homePage"><i class="fas fa-home"></i><span>الرئيسية</span></div>
-    <div class="nav-item" data-page="ordersPage"><i class="fas fa-list"></i><span>طلباتي</span></div>
-    <div class="nav-item" data-page="settingsPage"><i class="fas fa-cog"></i><span>الإعدادات</span></div>
-</nav>
-
-<div id="toastMsg" class="toast"></div>
-
-<div id="loginOverlay" class="login-overlay">
-    <div class="login-card">
-        <h3>وصّال | Wassal</h3>
-        <div class="role-buttons">
-            <div class="role-btn active" data-role="customer">عميل</div>
-            <div class="role-btn" data-role="driver">مندوب</div>
-        </div>
-        <input type="text" id="customerName" placeholder="الاسم">
-        <input type="tel" id="loginPhone" placeholder="رقم الهاتف">
-        <input type="text" id="driverName" placeholder="اسم المندوب" style="display:none;">
-        <input type="password" id="loginPassword" placeholder="كلمة السر" style="display:none;">
-        <button id="loginBtn">دخول</button>
-    </div>
-</div>
-
-<script>
-    const services = [
-        { id: "تاكسي 🚖", emoji: "🚖" }, { id: "دراجة 🏍️", emoji: "🏍️" },
-        { id: "توصيل 📦", emoji: "📦" }, { id: "باص 🚌", emoji: "🚌" }
-    ];
-    
-    function showToast(msg) {
-        const toast = document.getElementById('toastMsg');
-        toast.innerText = msg;
-        toast.classList.add('show');
-        setTimeout(() => toast.classList.remove('show'), 3000);
-    }
-    
-    function renderServices() {
-        document.getElementById('servicesGrid').innerHTML = services.map(s => `
-            <div class="service-card" onclick="showToast('خدمة ${s.id} - قريباً')">
-                <div class="service-icon">${s.emoji}</div>
-                <h3>${s.id}</h3>
-            </div>
-        `).join('');
-    }
-    
-    function showPage(pageId) {
-        document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
-        document.getElementById(pageId).classList.add('active-page');
-        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-        document.querySelector(`.nav-item[data-page="${pageId}"]`)?.classList.add('active');
-    }
-    
-    // ========== دالة إرسال إشعار (المحدثة لترتبط بسيرفر Vercel الخاص بك) ==========
-    async function sendNotification(title, message, userId = null) {
-        try {
-            const response = await fetch('/api/send-notification', { // التوجيه للـ API الخاص بك
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    title: title,
-                    message: message,
-                    userId: userId // إذا كان فارغاً سيرسل للجميع تلقائياً
-                })
-            });
-            return response.json();
-        } catch (error) {
-            console.error("خطأ في دالة sendNotification:", error);
-        }
-    }
-
-    // ========== إرسال إشعار تجريبي عند الضغط على زر الجرس ==========
-    async function sendTestPushNotification() {
-        showToast("📨 جاري إرسال إشعار تجريبي عبر السيرفر...");
-        
-        try {
-            const response = await fetch('/api/send-notification', { // التوجيه للـ API الخاص بك
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    title: "🧪 وصّال",
-                    message: "إشعار تجريبي! التطبيق يعمل والنظام آمن تماماً ✅"
-                })
-            });
-            
-            const result = await response.json();
-            console.log("استجابة السيرفر الخلفي:", result);
-            
-            if (result.success) {
-                showToast("✅ تم إرسال الإشعار بنجاح عبر Vercel!");
-            } else {
-                showToast("⚠️ خطأ في السيرفر: " + (result.error || "لم يتم الإرسال"));
-            }
-        } catch(error) {
-            console.error(error);
-            showToast("❌ فشل الاتصال بالسيرفر: " + error.message);
-        }
-    }
-    
-    // زر الاختبار
-    document.getElementById('testBtn').onclick = () => {
-        sendTestPushNotification();
-    };
-    
-    // ========== تسجيل الدخول ==========
-    function initLogin() {
-        document.querySelectorAll('.role-btn').forEach(btn => {
-            btn.onclick = function() {
-                document.querySelectorAll('.role-btn').forEach(b => b.classList.remove('active'));
-                this.classList.add('active');
-                let role = this.dataset.role;
-                document.getElementById('driverName').style.display = role === 'driver' ? 'block' : 'none';
-                document.getElementById('loginPassword').style.display = role === 'driver' ? 'block' : 'none';
-            };
-        });
-        
-        document.getElementById('loginBtn').onclick = async () => {
-            let role = document.querySelector('.role-btn.active').dataset.role;
-            let phone = document.getElementById('loginPhone').value.trim();
-            if (!phone) return showToast('أدخل رقم الهاتف');
-            
-            if (role === 'driver') {
-                let password = document.getElementById('loginPassword').value;
-                if (password !== "weesim73741") return showToast('كلمة سر خاطئة');
-                let name = document.getElementById('driverName').value.trim();
-                if (!name) return showToast('أدخل اسمك');
-                localStorage.setItem('waselny_user', JSON.stringify({ role: 'driver', phone, name }));
-            } else {
-                let name = document.getElementById('customerName').value.trim();
-                if (!name) return showToast('أدخل اسمك');
-                localStorage.setItem('waselny_user', JSON.stringify({ role: 'customer', phone, name }));
-            }
-            
-            // تعيين معرف المستخدم في OneSignal
-            if (window.OneSignalDeferred) {
-                window.OneSignalDeferred.push(async (OneSignal) => {
-                    await OneSignal.login(phone);
-                    console.log("User logged in with ID:", phone);
-                });
-            }
-            
-            document.getElementById('loginOverlay').style.display = 'none';
-            showToast('✅ تم تسجيل الدخول بنجاح');
-            
-            // طلب الإذن للإشعارات بعد تسجيل الدخول
-            setTimeout(async () => {
-                if (Notification.permission !== "granted") {
-                    const permission = await Notification.requestPermission();
-                    if (permission === "granted") {
-                        showToast("🔔 تم تفعيل الإشعارات!");
-                        sendTestPushNotification();
-                    }
-                } else {
-                    sendTestPushNotification();
-                }
-            }, 2000);
-        };
-    }
-    
-    const savedUser = localStorage.getItem('waselny_user');
-    if (savedUser) {
-        document.getElementById('loginOverlay').style.display = 'none';
-        setTimeout(async () => {
-            if (Notification.permission !== "granted") {
-                await Notification.requestPermission();
-            }
-        }, 1000);
-    } else {
-        initLogin();
-    }
-    
-    document.getElementById('logoutBtn')?.addEventListener('click', () => {
-        localStorage.removeItem('waselny_user');
-        location.reload();
-    });
-    
-    document.querySelectorAll('.nav-item').forEach(nav => {
-        nav.addEventListener('click', () => showPage(nav.dataset.page));
-    });
-    
-    renderServices();
-    showPage('homePage');
-</script>
 </body>
 </html>

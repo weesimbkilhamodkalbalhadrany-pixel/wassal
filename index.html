@@ -139,6 +139,7 @@
         .modal-card { background: var(--card-light); border-radius: 48px; padding: 28px; width: 85%; max-width: 320px; text-align: center; }
         .setting-row { display: flex; justify-content: space-between; align-items: center; padding: 14px; background: var(--bg-light); border-radius: 30px; margin-bottom: 12px; cursor: pointer; }
         .btn-small { padding: 8px 20px; border-radius: 30px; border: none; background: var(--primary-light); margin: 10px 5px; cursor: pointer; font-weight: 700; }
+        .notify-badge { background: var(--primary-light); color: var(--primary-dark); font-size: 0.7rem; padding: 2px 8px; border-radius: 20px; margin-right: 8px; }
     </style>
 </head>
 <body>
@@ -154,7 +155,7 @@
         <button id="trackOrderBtnHome" class="btn-send ripple" style="display: none;" onclick="window.showMyTracking()">📍 تتبع طلبي الحالي</button>
     </div>
     <div id="ordersPage" class="page"><div class="order-card" id="myOrdersContainer"><p style="text-align:center;">لا توجد طلبات</p></div><button id="refreshOrdersBtn" class="btn-send ripple" onclick="window.renderMyOrders()">تحديث</button></div>
-    <div id="settingsPage" class="page"><div class="settings-card"><h3 style="color: var(--primary-light); margin-bottom: 20px;">⚙️ الإعدادات</h3><div class="setting-row ripple" id="darkModeToggle"><span><i class="fas fa-moon"></i> الوضع الليلي</span><i class="fas fa-toggle-off" id="darkModeIcon"></i></div><div class="setting-row ripple" id="whatsappSupport"><span><i class="fab fa-whatsapp"></i> خدمة العملاء</span><i class="fas fa-chevron-left"></i></div><div class="setting-row ripple" id="shareApp"><span><i class="fas fa-share-alt"></i> مشاركة التطبيق</span><i class="fas fa-chevron-left"></i></div><div class="setting-row"><span><i class="fas fa-code-branch"></i> الإصدار</span><span>v6.3.0</span></div><button class="btn-send logout-btn ripple" id="settingsLogoutBtn">تسجيل الخروج</button></div></div>
+    <div id="settingsPage" class="page"><div class="settings-card"><h3 style="color: var(--primary-light); margin-bottom: 20px;">⚙️ الإعدادات</h3><div class="setting-row ripple" id="darkModeToggle"><span><i class="fas fa-moon"></i> الوضع الليلي</span><i class="fas fa-toggle-off" id="darkModeIcon"></i></div><div class="setting-row ripple" id="whatsappSupport"><span><i class="fab fa-whatsapp"></i> خدمة العملاء</span><i class="fas fa-chevron-left"></i></div><div class="setting-row ripple" id="shareApp"><span><i class="fas fa-share-alt"></i> مشاركة التطبيق</span><i class="fas fa-chevron-left"></i></div><div class="setting-row ripple" id="notificationsToggle"><span><i class="fas fa-bell"></i> تفعيل الإشعارات <span class="notify-badge">جديد</span></span><i class="fas fa-chevron-left"></i></div><div class="setting-row"><span><i class="fas fa-code-branch"></i> الإصدار</span><span>v6.3.0</span></div><button class="btn-send logout-btn ripple" id="settingsLogoutBtn">تسجيل الخروج</button></div></div>
     <div id="oPage" class="page"><div class="order-card" id="orderForm"></div></div>
     <div id="restaurantsPage" class="page">
         <div class="categories-scroll" id="catChipsContainer"></div>
@@ -314,6 +315,30 @@
         // إعدادات
         document.getElementById('darkModeToggle').onclick = () => { document.body.classList.toggle('dark-mode'); let icon = document.getElementById('darkModeIcon'); icon.className = document.body.classList.contains('dark-mode') ? 'fas fa-toggle-on' : 'fas fa-toggle-off'; localStorage.setItem('darkMode', document.body.classList.contains('dark-mode')); };
         if (localStorage.getItem('darkMode') === 'true') { document.body.classList.add('dark-mode'); document.getElementById('darkModeIcon').className = 'fas fa-toggle-on'; }
+
+        // زر تفعيل الإشعارات - OneSignal
+        document.getElementById('notificationsToggle').onclick = async () => {
+            try {
+                showToast("⏳ جاري طلب الإذن للإشعارات...");
+                if (window.OneSignalDeferred) {
+                    window.OneSignalDeferred.push(async function(OneSignal) {
+                        const permission = await OneSignal.Notifications.permission;
+                        if (permission === 'default') {
+                            await OneSignal.showSlidedown();
+                        } else if (permission === 'granted') {
+                            showToast("✅ الإشعارات مفعلة بالفعل!");
+                        } else {
+                            showToast("❌ تم رفض الإشعارات، قم بتفعيلها من إعدادات المتصفح");
+                        }
+                    });
+                } else {
+                    showToast("⚠️ جاري تحميل الإشعارات، حاول مرة أخرى");
+                }
+            } catch(e) {
+                console.error(e);
+                showToast("❌ حدث خطأ، حاول مرة أخرى");
+            }
+        };
 
         // تسجيل الدخول
         function initLogin() { document.querySelectorAll('.role-btn').forEach(btn => { btn.onclick = function() { document.querySelectorAll('.role-btn').forEach(b=>b.classList.remove('active')); this.classList.add('active'); let role = this.dataset.role; document.getElementById('driverName').style.display = role==='driver'?'block':'none'; document.getElementById('loginPassword').style.display = role==='driver'?'block':'none'; }; }); document.getElementById('loginBtn').onclick = async () => { let role = document.querySelector('.role-btn.active').dataset.role; let phone = document.getElementById('loginPhone').value.trim(); if (!phone) return showToast('أدخل رقم الهاتف'); if (role === 'driver') { if (document.getElementById('loginPassword').value !== DRIVER_PASSWORD) return showToast('كلمة سر خاطئة'); let name = document.getElementById('driverName').value.trim(); if (!name) return showToast('أدخل اسمك'); await saveUser({ phone, name, role: 'driver', isBusy: false }); currentUser = { role: 'driver', phone, name }; } else { let name = document.getElementById('customerName').value.trim(); if (!name) return showToast('أدخل اسمك'); await saveUser({ phone, name, role: 'customer' }); currentUser = { role: 'customer', phone, name }; } localStorage.setItem('waselny_user', JSON.stringify(currentUser)); document.getElementById('loginOverlay').style.display = 'none'; if (currentUser.role === 'driver') { showPage('driverPage'); refreshDriverPanel(); setInterval(refreshDriverPanel, 5000); } else { showPage('homePage'); setActiveNav('homePage'); renderServices(); } }; }

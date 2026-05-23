@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
     <title>وصّال | Wassal - توصيل ومطاعم</title>
+    <!-- تم إضافة سطر manifest.json المطلوب -->
+    <link rel="manifest" href="/manifest.json">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -11,21 +13,17 @@
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-messaging-compat.js"></script>
     
-    <!-- OneSignal SDK مع تهيئة مناسبة لرابط Vercel -->
-    <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
-    <script>
-      window.OneSignalDeferred = window.OneSignalDeferred || [];
-      window.OneSignalDeferred.push(async function(OneSignal) {
-        await OneSignal.init({
-          appId: "7851bb5c-7373-4e5d-8330-b595732b5807",
-          // السماح بالتسجيل عبر Service Worker الافتراضي
-          serviceWorkerParam: { scope: "/" },
-          serviceWorkerPath: "OneSignalSDKWorker.js"
-        });
-        console.log("OneSignal initialized with Vercel URL support");
-      });
+    <!-- PushAlert Unified Code -->
+    <script type="text/javascript">
+        (function(d, t) {
+            var g = d.createElement(t),
+            s = d.getElementsByTagName(t)[0];
+            g.src = "https://cdn.pushalert.co/unified_515a443a59db04647004635984fda906.js";
+            s.parentNode.insertBefore(g, s);
+        }(document, "script"));
     </script>
-    
+    <!-- End PushAlert Unified Code -->
+
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Cairo', sans-serif; -webkit-tap-highlight-color: transparent; }
         :root { --primary-dark: #0a2b3e; --primary-light: #2dd4bf; --bg-light: #f8fafc; --card-light: #ffffff; --text-light: #1e293b; --text-muted: #64748b; --border-light: #e2e8f0; --bg-dark: #0f172a; --card-dark: #1e293b; --text-dark: #f1f5f9; --border-dark: #334155; --danger: #ef4444; --success: #10b981; --warning: #f59e0b; --restaurant-accent: #f97316; }
@@ -113,7 +111,6 @@
         .action-btn.success { background: var(--success); color: white; }
         .payment-btn { background: var(--bg-light); padding: 8px 15px; border-radius: 40px; display: inline-block; margin: 5px; cursor: pointer; border: 1px solid var(--border-light); }
         .payment-btn.active { background: var(--primary-light); color: white; border-color: var(--primary-light); }
-        .notify-btn { background: var(--primary-light); color: var(--primary-dark); margin-top: 10px; }
     </style>
 </head>
 <body>
@@ -139,7 +136,6 @@
             <div class="setting-row" id="whatsappSupport"><span><i class="fab fa-whatsapp"></i> خدمة العملاء</span><i class="fas fa-chevron-left"></i></div>
             <div class="setting-row" id="shareApp"><span><i class="fas fa-share-alt"></i> مشاركة التطبيق</span><i class="fas fa-chevron-left"></i></div>
             <div class="setting-row"><span><i class="fas fa-code-branch"></i> الإصدار</span><span>v8.0.0</span></div>
-            <button id="enableOneSignalBtn" class="btn-send notify-btn" style="background: var(--primary-light); margin: 10px 0;">🔔 تفعيل الإشعارات (OneSignal)</button>
             <button class="btn-send" id="settingsLogoutBtn">تسجيل الخروج</button>
         </div>
     </div>
@@ -175,7 +171,7 @@
             <div class="modern-tabs"><div class="modern-tab active" id="modernActiveTab" onclick="switchDriverTab('active')"><i class="fas fa-play-circle"></i> طلبي النشط</div><div class="modern-tab" id="modernAvailableTab" onclick="switchDriverTab('available')"><i class="fas fa-list"></i> الطلبات المتاحة</div></div>
             <div id="driverOrdersList"></div>
             <button class="btn-send" id="driverLogoutBtn" style="background: var(--danger); color:white; margin-top:20px;">تسجيل الخروج</button>
-            <button id="enableNotificationsBtn" class="btn-send" style="background: var(--primary-light); margin-top: 10px;">🔔 تفعيل الإشعارات يدوياً (Firebase)</button>
+            <button id="enableNotificationsBtn" class="btn-send" style="background: var(--primary-light); margin-top: 10px;">🔔 تفعيل الإشعارات يدوياً</button>
         </div>
     </div>
     <div id="adminPanelPage" class="page"><div class="admin-panel" id="adminPanel"></div></div>
@@ -244,30 +240,6 @@
         let driverActiveTab = 'active', appSettings = { workStart: "06:00", workEnd: "22:00" };
         let pendingAction = null, trackingInterval = null, currentClientOrderId = null;
 
-        // دالة تفعيل الإشعارات عبر OneSignal (واجهة أمامية فقط)
-        window.enableOneSignalNotifications = async () => {
-            if (typeof OneSignal === 'undefined') {
-                showToast("جاري تحميل الخدمة... حاول مرة أخرى");
-                return;
-            }
-            try {
-                await OneSignal.Slidedown.promptPush();
-                showToast("🔔 تم تفعيل الإشعارات عبر OneSignal");
-            } catch(e) {
-                console.error(e);
-                showToast("لم نتمكن من تفعيل الإشعارات");
-            }
-        };
-
-        // دالة إرسال إشعار للمناديب - سيتم تفعيلها عبر خادم لاحقاً لأسباب أمنية
-        // حالياً نقوم بتسجيل الطلب في Firebase فقط، ويمكن إرسال الإشعار من خادم خارجي
-        function sendOrderToDriversViaOneSignal(orderId, type) {
-            // تمت إزالة REST API من الواجهة الأمامية لأسباب أمنية
-            // سيتم تفعيل الإشعارات عبر استدعاء API من خادم لاحقاً
-            console.log(`[OneSignal] سيتم إخطار المناديب بالطلب #${orderId} من نوع ${type}`);
-            // يمكن إضافة كود لاستدعاء endpoint خاص بالخادم هنا مستقبلاً
-        }
-
         // ------------------- قائمة المطاعم الـ 18 (بالأصناف والصور) -------------------
         const restaurants = [
             { id: 1, name: "مطعم القلعة - Castle", category: "مأكولات متنوعة", img: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400", items: [{name:"بروست مع التوابع",price:1500},{name:"بروست بدون توابع",price:1300},{name:"شبس",price:500},{name:"اصابع دجاج",price:1800},{name:"ذبيحة لحم حنيذ",price:8000},{name:"برمة لحم حنيذ",price:9000},{name:"سلطه",price:1900},{name:"فحسة",price:3200},{name:"دجاج محمر تندوري",price:1200},{name:"دجاج شواية",price:1100},{name:"كباب دجاج",price:2300},{name:"صانونة جمبري",price:3000},{name:"بيتزا بالجبن",price:2500},{name:"بيتزا بالدجاج",price:3500},{name:"عريكه",price:1500},{name:"معصوب",price:1000}] },
@@ -309,7 +281,7 @@
         async function updateUserBusy(phone, isBusy) { await fetch(`${FIREBASE_URL}/users/${phone}.json`, { method: 'PATCH', body: JSON.stringify({ isBusy }) }); }
         function getStatusText(st) { const m = {pending:'قيد المراجعة', on_the_way:'في الطريق', arrived:'وصل الموقع', delivered:'تم التوصيل'}; return m[st] || st; }
 
-        // الإشعارات (Firebase)
+        // الإشعارات
         async function registerServiceWorker() { if (!('serviceWorker' in navigator)) return false; try { await navigator.serviceWorker.register('/firebase-messaging-sw.js'); return true; } catch(e) { return false; } }
         async function requestDriverNotificationPermission() { if (!messaging) { showToast("المتصفح لا يدعم الإشعارات"); return; } const swOk = await registerServiceWorker(); if (!swOk) { showToast("فشل تسجيل Service Worker"); return; } try { const permission = await Notification.requestPermission(); if (permission !== 'granted') { showToast("تم رفض الإشعارات"); return; } const token = await messaging.getToken({ vapidKey: VAPID_KEY }); if (token && currentUser?.phone) { await fetch(`${FIREBASE_URL}/driverTokens/${currentUser.phone}.json`, { method: 'PUT', body: JSON.stringify({ token, updatedAt: Date.now() }) }); showToast("🔔 تم تفعيل التنبيهات"); } else showToast("⚠️ لم نحصل على توكن"); } catch(e) { console.error(e); showToast("خطأ في الإشعارات"); } }
         async function notifyDrivers(orderId, type) { await fetch(`${FIREBASE_URL}/pushNotifications/${orderId}.json`, { method: 'PUT', body: JSON.stringify({ orderId, type, title: "📦 طلب جديد!", body: `طلب ${type} #${orderId}`, timestamp: Date.now(), topic: "drivers" }) }).catch(e=>console.warn); }
@@ -337,7 +309,6 @@
             let msg = `🚖 طلب ${vSel}\n🆔 ${id}\n👤 ${tel}\n💰 ${price} ريال\n💳 ${selectedPayment}\n📍 ${pAddr}\n🏁 ${dAddr}\n📝 ${order.note||'لا توجد'}\n\nعزيزي العميل عد للتطبيق لتتبع حالة طلبك 😊`;
             window.open(`https://wa.me/777215154?text=${encodeURIComponent(msg)}`, '_blank');
             notifyDrivers(id, vSel);
-            sendOrderToDriversViaOneSignal(id, vSel);   // إشعار OneSignal (سيتم تفعيله لاحقاً)
         }
 
         // الخريطة والمطاعم
@@ -351,7 +322,7 @@
         window.addToCart = idx => { const item=currentRestaurant.items[idx]; let existing=cart.find(i=>i.name===item.name); if(existing) existing.qty++; else cart.push({...item, qty:1}); updateCartDisplay(); showToast(`تمت إضافة ${item.name}`); };
         function updateCartDisplay() { const total=cart.reduce((s,i)=>s+(i.price*i.qty),0); document.getElementById('cartCount').innerText=cart.reduce((s,i)=>s+i.qty,0); document.getElementById('cartTotal').innerText=total; document.getElementById('floatCart').style.display=cart.length?'flex':'none'; let html=cart.map(i=>`<div style="display:flex;justify-content:space-between;"><span>${i.name} x${i.qty}</span><span>${i.price*i.qty} ريال</span></div>`).join(''); html+=`<div style="font-weight:bold; margin-top:10px;">الإجمالي: ${total} ريال</div>`; if(deliveryCost) html+=`<div>🚚 التوصيل: ${deliveryCost} ريال</div><div style="color:var(--restaurant-accent);">💰 الإجمالي الكلي: ${total+deliveryCost} ريال</div>`; document.getElementById('cartSummaryRestaurant').innerHTML=html; }
         window.showRestaurantInvoice = () => { if(!customerLocationLatLng&&!customerAddress) return showToast('حدد عنوان التوصيل'); if(!cart.length) return showToast('السلة فارغة'); const totalFood=cart.reduce((s,i)=>s+(i.price*i.qty),0), total=totalFood+deliveryCost; document.getElementById('invoiceContent').innerHTML = cart.map(i=>`<div style="display:flex;justify-content:space-between;"><span>${i.name} x${i.qty}</span><span>${i.price*i.qty} ريال</span></div>`).join('')+`<div style="margin-top:15px; border-top:2px solid #ddd; padding-top:15px;"><span>سعر التوصيل:</span><span>${deliveryCost} ريال</span></div><div style="display:flex; justify-content:space-between; font-size:1.4rem; margin:20px 0; color:var(--restaurant-accent)"><span>الإجمالي:</span><span>${total} ريال</span></div>`; showPage('restaurantInvoicePage'); };
-        window.confirmRestaurantOrder = async () => { if(!customerLocationLatLng&&!customerAddress) return; const totalFood=cart.reduce((s,i)=>s+(i.price*i.qty),0), total=totalFood+deliveryCost, id=Date.now(); const order={ id, type:'restaurant', restaurant:currentRestaurant.name, customerName:currentUser?.name, customerPhone:currentUser?.phone, address:customerAddress, lat:customerLocationLatLng?.lat, lng:customerLocationLatLng?.lng, items:cart.map(i=>({name:i.name,qty:i.qty,price:i.price})), totalFood, deliveryCost, total, status:'pending', createdAt:new Date().toISOString() }; await fetch(`${FIREBASE_URL}/orders/${id}.json`,{method:'PUT',body:JSON.stringify(order)}); localStorage.setItem('currentTrackingOrder',id); currentClientOrderId = id; let msg=`🍽️ طلب من ${currentRestaurant.name}\n🆔 ${id}\n👤 ${currentUser?.name}\n📞 ${currentUser?.phone}\n📍 ${customerAddress}\n\n`; cart.forEach(i=>msg+=`• ${i.name} x${i.qty} = ${i.price*i.qty} ريال\n`); msg+=`\n🚚 التوصيل: ${deliveryCost} ريال\n💰 الإجمالي: ${total} ريال\n\nعزيزي العميل عد للتطبيق لتتبع حالة طلبك 😊`; window.open(`https://wa.me/777215154?text=${encodeURIComponent(msg)}`, '_blank'); showToast('تم إرسال الطلب'); cart=[]; showPage('homePage'); setActiveNav('homePage'); document.getElementById('trackOrderBtnHome').style.display='block'; setTimeout(()=>viewOrderTracking(id),1000); notifyDrivers(id, 'طلب مطعم'); sendOrderToDriversViaOneSignal(id, 'طلب مطعم'); };
+        window.confirmRestaurantOrder = async () => { if(!customerLocationLatLng&&!customerAddress) return; const totalFood=cart.reduce((s,i)=>s+(i.price*i.qty),0), total=totalFood+deliveryCost, id=Date.now(); const order={ id, type:'restaurant', restaurant:currentRestaurant.name, customerName:currentUser?.name, customerPhone:currentUser?.phone, address:customerAddress, lat:customerLocationLatLng?.lat, lng:customerLocationLatLng?.lng, items:cart.map(i=>({name:i.name,qty:i.qty,price:i.price})), totalFood, deliveryCost, total, status:'pending', createdAt:new Date().toISOString() }; await fetch(`${FIREBASE_URL}/orders/${id}.json`,{method:'PUT',body:JSON.stringify(order)}); localStorage.setItem('currentTrackingOrder',id); currentClientOrderId = id; let msg=`🍽️ طلب من ${currentRestaurant.name}\n🆔 ${id}\n👤 ${currentUser?.name}\n📞 ${currentUser?.phone}\n📍 ${customerAddress}\n\n`; cart.forEach(i=>msg+=`• ${i.name} x${i.qty} = ${i.price*i.qty} ريال\n`); msg+=`\n🚚 التوصيل: ${deliveryCost} ريال\n💰 الإجمالي: ${total} ريال\n\nعزيزي العميل عد للتطبيق لتتبع حالة طلبك 😊`; window.open(`https://wa.me/777215154?text=${encodeURIComponent(msg)}`, '_blank'); showToast('تم إرسال الطلب'); cart=[]; showPage('homePage'); setActiveNav('homePage'); document.getElementById('trackOrderBtnHome').style.display='block'; setTimeout(()=>viewOrderTracking(id),1000); notifyDrivers(id, 'طلب مطعم'); };
 
         // تتبع الطلب
         window.viewOrderTracking = async (id) => { await loadOrders(); const order = allOrders.find(o=>o.id==id); if(!order) return; renderTrackingContent(order); document.getElementById('trackFullscreen').style.display='block'; startTrackingListener(id); };
@@ -427,13 +398,12 @@
         loadSettings();
 
         // ربط الأحداث العامة
-        document.getElementById('darkModeToggle').addEventListener('click', () => { document.body.classList.toggle('dark-mode'); let icon = document.getElementById('darkModeIcon'); icon.className = document.body.classList.contains('dark-mode') ? 'fas fa-toggle-on' : 'fas fa-toggle-off'; localStorage.setItem('darkMode', document.body.classList.contains('dark-mode')); });
-        document.getElementById('whatsappSupport').addEventListener('click', () => window.open('https://wa.me/777215154', '_blank'));
-        document.getElementById('shareApp').addEventListener('click', () => { if(navigator.share) navigator.share({title:'وصّال', text:'تطبيق توصيل ومطاعم', url:location.href}); else showToast("المشاركة غير مدعومة"); });
-        document.getElementById('settingsLogoutBtn').addEventListener('click', () => { localStorage.removeItem('waselny_user'); location.reload(); });
-        document.getElementById('driverLogoutBtn').addEventListener('click', () => { localStorage.removeItem('waselny_user'); location.reload(); });
-        document.getElementById('enableNotificationsBtn').addEventListener('click', () => requestDriverNotificationPermission());
-        document.getElementById('enableOneSignalBtn').addEventListener('click', () => window.enableOneSignalNotifications());
+        document.getElementById('darkModeToggle')?.addEventListener('click', () => { document.body.classList.toggle('dark-mode'); let icon = document.getElementById('darkModeIcon'); icon.className = document.body.classList.contains('dark-mode') ? 'fas fa-toggle-on' : 'fas fa-toggle-off'; localStorage.setItem('darkMode', document.body.classList.contains('dark-mode')); });
+        document.getElementById('whatsappSupport')?.addEventListener('click', () => window.open('https://wa.me/777215154', '_blank'));
+        document.getElementById('shareApp')?.addEventListener('click', () => { if(navigator.share) navigator.share({title:'وصّال', text:'تطبيق توصيل ومطاعم', url:location.href}); else showToast("المشاركة غير مدعومة"); });
+        document.getElementById('settingsLogoutBtn')?.addEventListener('click', () => { localStorage.removeItem('waselny_user'); location.reload(); });
+        document.getElementById('driverLogoutBtn')?.addEventListener('click', () => { localStorage.removeItem('waselny_user'); location.reload(); });
+        document.getElementById('enableNotificationsBtn')?.addEventListener('click', () => requestDriverNotificationPermission());
         document.querySelectorAll('.nav-item').forEach(nav => { nav.addEventListener('click', () => { let page = nav.dataset.page; showPage(page); setActiveNav(page); if(page === 'ordersPage' && currentUser?.role === 'customer') window.renderMyOrders(); }); });
         let adminClicks = 0;
         document.getElementById('adminTrigger').addEventListener('click', () => { adminClicks++; setTimeout(() => adminClicks=0, 800); if(adminClicks>=5) { let p = prompt("كلمة السر للإدارة"); if(p === ADMIN_PASSWORD) { currentUser = { role: 'admin' }; localStorage.setItem('waselny_user', JSON.stringify(currentUser)); showPage('adminPanelPage'); loadAdminPanel(); } else showToast("كلمة سر خاطئة"); adminClicks=0; } });
@@ -446,6 +416,40 @@
         renderRestaurants();
         renderServices();
     })();
+</script>
+
+<!-- start webpushr code -->
+<script>(function(w,d, s, id) {if(typeof(w.webpushr)!=='undefined') return;w.webpushr=w.webpushr||function(){(w.webpushr.q=w.webpushr.q||[]).push(arguments)};var js, fjs = d.getElementsByTagName(s)[0];js = d.createElement(s); js.id = id;js.async=1;js.src = "https://cdn.webpushr.com/app.min.js";fjs.parentNode.appendChild(js);}(window,document, 'script', 'webpushr-jssdk'));webpushr('setup',{'key':'BGm2E3kXah3RWguM9lGLSXfwPRLDwULTYUaml28jdI4JkbwqQ9l3qac3sJv3lxN4bahu7hnLH4mKzABEbwOl9Ec' });</script>
+<!-- end webpushr code -->
+
+<!-- دمج طلب الإذن والتأكد من تفعيل الإشعارات فور فتح التطبيق -->
+<script>
+    // دالة لطلب الاشتراك يدوياً داخل التطبيق
+    function askForNotification() {
+        if (typeof webpushr !== 'undefined') {
+            webpushr('subscribe', {
+                'callback': function(result) {
+                    if(result.status === 'success'){
+                        console.log("تم الاشتراك بنجاح من داخل تطبيق وصّال");
+                    }
+                }
+            });
+        }
+    }
+
+    // دمج الكود القديم والجديد في onload واحد
+    window.onload = function() {
+        // الكود الموجود سابقاً لفحص الحالة والاشتراك إذا كان unsubscribed
+        if (typeof webpushr !== 'undefined') {
+            webpushr('fetch_subscription_status', function (status) {
+                if (status === 'unsubscribed') {
+                    webpushr('subscribe');
+                }
+            });
+        }
+        // طلب اشتراك إضافي بعد تأخير بسيط للتأكيد وجلب الإذن إذا لم يظهر
+        setTimeout(askForNotification, 2000);
+    };
 </script>
 
 </body>

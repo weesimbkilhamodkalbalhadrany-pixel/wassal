@@ -11,39 +11,20 @@
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-database-compat.js"></script>
 
-    <!-- Firebase Analytics (كما هو) -->
-    <script type="module">
-      import { initializeApp } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js";
-      import { getAnalytics, logEvent } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-analytics.js";
-      const firebaseConfigAnalytics = {
-        apiKey: "AIzaSyBvnmHgIm4Xs-d-LBQo02BTPGxm_FZsrk",
-        authDomain: "wassal-app-final.firebaseapp.com",
-        projectId: "wassal-app-final",
-        storageBucket: "wassal-app-final.firebasestorage.app",
-        messagingSenderId: "110183430414",
-        appId: "1:110183430414:web:e4b8e88e31e91a0f61ff5f",
-        measurementId: "G-0K3TTX2NMC"
-      };
-      const app = initializeApp(firebaseConfigAnalytics);
-      const analytics = getAnalytics(app);
-      logEvent(analytics, 'page_view', { page_title: 'Wassal App - OneSignal', page_location: window.location.href });
-      window.firebaseAnalytics = analytics;
-    </script>
-
-    <!-- OneSignal SDK v16 (الكود الجديد المطلوب) -->
+    <!-- OneSignal SDK v16 -->
     <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
     <script>
       window.OneSignalDeferred = window.OneSignalDeferred || [];
       window.OneSignalDeferred.push(async function(OneSignal) {
         await OneSignal.init({
-          appId: "30b64e58-99cf-4189-af4a-fc3e53b59b7a",
-          safari_web_id: "web.onesignal.auto.2358eea7-3e97-4fb7-b492-b25c712616ac",
+          appId: "8e3f39dc-d2e1-480e-a25b-e0e431792120",
           notifyButton: { enable: true },
+          allowLocalhostAsSecureOrigin: true,
         });
-        window.OneSignal = OneSignal; // حفظ الكائن للاستخدام العالمي
-        console.log("✅ OneSignal initialized with new App ID");
+        window.OneSignal = OneSignal;
+        console.log("✅ OneSignal initialized");
 
-        // ربط External ID إذا كان هناك مستخدم مسجل
+        // محاولة ربط External ID إذا كان المستخدم مسجلاً
         const savedUser = localStorage.getItem('waselny_user');
         if (savedUser) {
           try {
@@ -51,12 +32,18 @@
             if (user.phone) {
               await OneSignal.login(user.phone);
               console.log("✅ OneSignal External ID set to:", user.phone);
+              // إظهار رسالة للمستخدم أن الإشعارات جاهزة
+              setTimeout(() => {
+                if (Notification.permission === "granted") {
+                  window.showToastTop("🔔 أنت الآن متصل بخدمة الإشعارات");
+                }
+              }, 1000);
             }
           } catch(e) { console.error("خطأ في ربط External ID", e); }
         }
       });
 
-      // دالة لربط المستخدم بعد تسجيل الدخول (تستخدمها دوال التطبيق)
+      // دالة طلب الإذن وربط External ID بعد تسجيل الدخول
       window.setupOneSignalForUser = async (phone) => {
         if (!window.OneSignal) {
           setTimeout(() => window.setupOneSignalForUser(phone), 500);
@@ -67,6 +54,7 @@
           if (Notification.permission !== "granted") {
             await window.OneSignal.Notifications.requestPermission();
           }
+          // ربط External ID
           await window.OneSignal.login(phone);
           console.log("✅ OneSignal linked to phone:", phone);
           window.showToastTop("🔔 تم تفعيل الإشعارات بنجاح!");
@@ -75,33 +63,10 @@
           window.showToastTop("❌ حدث خطأ في تفعيل الإشعارات");
         }
       };
-
-      // دالة يدوية لطلب الإذن (للأزرار)
-      window.requestOneSignalPermission = async () => {
-        if (!window.OneSignal) {
-          window.showToastTop("⏳ جاري تجهيز الإشعارات، حاول مرة أخرى");
-          return;
-        }
-        try {
-          const result = await window.OneSignal.Notifications.requestPermission();
-          if (result) {
-            window.showToastTop("✅ تم تفعيل الإشعارات! سيتم ربط حسابك.");
-            if (currentUser && currentUser.phone) {
-              await window.OneSignal.login(currentUser.phone);
-              window.showToastTop("🔔 تم ربط رقم هاتفك بخدمة الإشعارات");
-            }
-          } else {
-            window.showToastTop("⚠️ لم يتم السماح بالإشعارات");
-          }
-        } catch(e) {
-          console.error(e);
-          window.showToastTop("❌ حدث خطأ، تأكد من أن موقعك يعمل بـ HTTPS");
-        }
-      };
     </script>
 
     <style>
-        /* جميع الأنماط السابقة محفوظة بالكامل (اختصاراً للطول، ولكنها كاملة في الكود النهائي) */
+        /* كل الأنماط السابقة - اختصاراً سأضعها سريعة ولكن كاملة في الرد النهائي */
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Cairo', sans-serif; }
         :root { --primary-dark: #0a2b3e; --primary-light: #2dd4bf; --bg-light: #f8fafc; --card-light: #ffffff; --text-light: #1e293b; --text-muted: #64748b; --border-light: #e2e8f0; --bg-dark: #0f172a; --card-dark: #1e293b; --text-dark: #f1f5f9; --border-dark: #334155; --danger: #ef4444; --success: #10b981; --warning: #f59e0b; --restaurant-accent: #f97316; }
         body { background: var(--bg-light); color: var(--text-light); transition: 0.3s; min-height: 100vh; }
@@ -181,7 +146,6 @@
     </style>
 </head>
 <body>
-    <!-- الهيكل نفسه مع أزرار الإشعارات -->
     <header class="app-header" id="adminTrigger">
         <div class="logo-area"><h1>وصّال | Wassal</h1><div class="slogan">مشوارك أسرع.. وطلبك أقرب</div></div>
         <div class="work-hours"><span id="workHoursDisplay">6:00 صباحاً - 10:00 مساءً</span></div>
@@ -190,7 +154,7 @@
         <div id="homePage" class="page active-page">
             <div class="services-grid" id="servicesGrid"></div>
             <button id="trackOrderBtnHome" class="btn-send" style="display: none;" onclick="window.showMyTracking()">📍 تتبع طلبي الحالي</button>
-            <button id="homeNotificationBtn" class="btn-send" style="margin-top: 10px; background: #f97316; display: none;" onclick="window.requestOneSignalPermission()">🔔 تفعيل الإشعارات</button>
+            <button id="homeNotificationBtn" class="btn-send" style="margin-top: 10px; background: #f97316; display: none;" onclick="window.manualEnableNotifications()">🔔 تفعيل الإشعارات (OneSignal)</button>
         </div>
         <div id="ordersPage" class="page">
             <div class="order-card" id="myOrdersContainer"><p style="text-align:center;">لا توجد طلبات</p></div>
@@ -200,17 +164,16 @@
             <div class="settings-card">
                 <h3 style="color: var(--primary-light); margin-bottom: 20px;">⚙️ الإعدادات</h3>
                 <div class="setting-row" id="darkModeToggle"><span><i class="fas fa-moon"></i> الوضع الليلي</span><i class="fas fa-toggle-off" id="darkModeIcon"></i></div>
-                <div class="setting-row" style="background: var(--primary-light); color: var(--primary-dark); cursor: pointer;" onclick="window.requestOneSignalPermission()">
-                    <span><i class="fas fa-bell"></i> تفعيل الإشعارات</span>
+                <div class="setting-row" style="background: var(--primary-light); color: var(--primary-dark); cursor: pointer;" onclick="window.manualEnableNotifications()">
+                    <span><i class="fas fa-bell"></i> تفعيل الإشعارات (OneSignal)</span>
                     <i class="fas fa-chevron-left"></i>
                 </div>
                 <div class="setting-row" id="whatsappSupport"><span><i class="fab fa-whatsapp"></i> خدمة العملاء</span><i class="fas fa-chevron-left"></i></div>
                 <div class="setting-row" id="shareApp"><span><i class="fas fa-share-alt"></i> مشاركة التطبيق</span><i class="fas fa-chevron-left"></i></div>
-                <div class="setting-row"><span><i class="fas fa-code-branch"></i> الإصدار</span><span>v11.0.0</span></div>
+                <div class="setting-row"><span><i class="fas fa-code-branch"></i> الإصدار</span><span>v10.0.0</span></div>
                 <button class="btn-send" id="settingsLogoutBtn">تسجيل الخروج</button>
             </div>
         </div>
-        <!-- بقية الصفحات (oPage, restaurantsPage, restaurantMenuPage, restaurantInvoicePage, orderDetailPage, driverPage, adminPanelPage) -->
         <div id="oPage" class="page"><div class="order-card" id="orderForm"></div></div>
         <div id="restaurantsPage" class="page"><div class="categories-scroll" id="categoriesContainer"></div><h2 style="margin:20px 0;">🍕 المطاعم</h2><div class="restaurants-grid" id="restaurantsGrid"></div></div>
         <div id="restaurantMenuPage" class="page"><div id="menuContent"></div><div id="cartSummaryRestaurant" style="margin:20px 0;"></div><div class="location-section"><label>📍 عنوان التوصيل</label><div class="geo-btn" onclick="initMapForRestaurant()"><span id="restLocationTxt">حدد موقعك من الخريطة</span><i class="fas fa-map-marker-alt"></i></div><input type="text" id="restaurantAddressManual" class="field-input" placeholder="أو اكتب عنوانك يدوياً" oninput="updateRestaurantAddressManual(this.value)"><div id="deliveryCostDisplay" style="margin-top: 10px; font-weight: bold; color: var(--restaurant-accent); display: none;">🚚 سعر التوصيل: <span id="deliveryCostValue">0</span> ريال</div></div><button class="btn-primary" onclick="showRestaurantInvoice()">🧾 عرض الفاتورة</button><button class="btn-primary" style="background: #64748b; margin-top: 10px;" onclick="showPage('restaurantsPage')">🔙 رجوع للمطاعم</button></div>
@@ -233,7 +196,29 @@
     <div id="confirmationModal" class="confirmation-modal"><div class="modal-card"><h4 id="modalTitle">تأكيد</h4><p id="modalMessage"></p><button id="modalConfirm">نعم</button><button id="modalCancel">إلغاء</button></div></div>
 
     <script>
-        // دالة عرض الرسائل العلوية
+        // دالة الإشعارات اليدوية
+        window.manualEnableNotifications = async () => {
+            if (!window.OneSignal) {
+                window.showToastTop("⏳ جاري تجهيز OneSignal، حاول مرة أخرى بعد ثانية");
+                return;
+            }
+            try {
+                const result = await window.OneSignal.Notifications.requestPermission();
+                if (result) {
+                    window.showToastTop("✅ تم تفعيل الإشعارات! سيتم ربط حسابك الآن.");
+                    if (currentUser && currentUser.phone) {
+                        await window.OneSignal.login(currentUser.phone);
+                        window.showToastTop("🔔 تم ربط رقم هاتفك بخدمة الإشعارات");
+                    }
+                } else {
+                    window.showToastTop("⚠️ لم يتم السماح بالإشعارات");
+                }
+            } catch(e) {
+                console.error(e);
+                window.showToastTop("❌ حدث خطأ، تأكد من أن موقعك يعمل بـ HTTPS");
+            }
+        };
+
         window.showToastTop = function(msg) {
             let t = document.getElementById('toastTopMsg');
             t.innerText = msg;
@@ -242,7 +227,7 @@
         };
         window.showToast = window.showToastTop;
 
-        // باقي كود التطبيق الأساسي (جميع الدوال السابقة كما هي)
+        // باقي كود التطبيق الأساسي (نفس الكود السابق مع الحفاظ على جميع الوظائف)
         const FIREBASE_DB_URL = "https://waselny-2812b-default-rtdb.firebaseio.com";
         const DRIVER_PASSWORD = "weesim73741";
         const ADMIN_PASSWORD = "weesim73741";
@@ -435,7 +420,7 @@
                     if (localStorage.getItem('currentTrackingOrder')) document.getElementById('trackOrderBtnHome').style.display = 'block';
                     const homeNoti = document.getElementById('homeNotificationBtn');
                     if (homeNoti) homeNoti.style.display = 'block';
-                    // ربط OneSignal بعد تسجيل الدخول
+                    // ربط OneSignal تلقائياً بعد تسجيل الدخول
                     if (window.setupOneSignalForUser) {
                         window.setupOneSignalForUser(phone);
                     }

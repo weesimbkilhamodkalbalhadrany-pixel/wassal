@@ -11,15 +11,18 @@
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-messaging-compat.js"></script>
     
-    <!-- OneSignal SDK - التهيئة الجديدة -->
+    <!-- OneSignal SDK مع تهيئة مناسبة لرابط Vercel -->
     <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
     <script>
       window.OneSignalDeferred = window.OneSignalDeferred || [];
-      OneSignalDeferred.push(async function(OneSignal) {
+      window.OneSignalDeferred.push(async function(OneSignal) {
         await OneSignal.init({
-          appId: "1c02a6ae-8464-4dba-be27-aac33c32ca88",
+          appId: "7851bb5c-7373-4e5d-8330-b595732b5807",
+          // السماح بالتسجيل عبر Service Worker الافتراضي
+          serviceWorkerParam: { scope: "/" },
+          serviceWorkerPath: "OneSignalSDKWorker.js"
         });
-        console.log("OneSignal initialized with new app ID");
+        console.log("OneSignal initialized with Vercel URL support");
       });
     </script>
     
@@ -244,7 +247,7 @@
         // دالة تفعيل الإشعارات عبر OneSignal (واجهة أمامية فقط)
         window.enableOneSignalNotifications = async () => {
             if (typeof OneSignal === 'undefined') {
-                showToast("جاري تحميل خدمة الإشعارات... حاول مرة أخرى");
+                showToast("جاري تحميل الخدمة... حاول مرة أخرى");
                 return;
             }
             try {
@@ -255,6 +258,15 @@
                 showToast("لم نتمكن من تفعيل الإشعارات");
             }
         };
+
+        // دالة إرسال إشعار للمناديب - سيتم تفعيلها عبر خادم لاحقاً لأسباب أمنية
+        // حالياً نقوم بتسجيل الطلب في Firebase فقط، ويمكن إرسال الإشعار من خادم خارجي
+        function sendOrderToDriversViaOneSignal(orderId, type) {
+            // تمت إزالة REST API من الواجهة الأمامية لأسباب أمنية
+            // سيتم تفعيل الإشعارات عبر استدعاء API من خادم لاحقاً
+            console.log(`[OneSignal] سيتم إخطار المناديب بالطلب #${orderId} من نوع ${type}`);
+            // يمكن إضافة كود لاستدعاء endpoint خاص بالخادم هنا مستقبلاً
+        }
 
         // ------------------- قائمة المطاعم الـ 18 (بالأصناف والصور) -------------------
         const restaurants = [
@@ -325,6 +337,7 @@
             let msg = `🚖 طلب ${vSel}\n🆔 ${id}\n👤 ${tel}\n💰 ${price} ريال\n💳 ${selectedPayment}\n📍 ${pAddr}\n🏁 ${dAddr}\n📝 ${order.note||'لا توجد'}\n\nعزيزي العميل عد للتطبيق لتتبع حالة طلبك 😊`;
             window.open(`https://wa.me/777215154?text=${encodeURIComponent(msg)}`, '_blank');
             notifyDrivers(id, vSel);
+            sendOrderToDriversViaOneSignal(id, vSel);   // إشعار OneSignal (سيتم تفعيله لاحقاً)
         }
 
         // الخريطة والمطاعم
@@ -338,7 +351,7 @@
         window.addToCart = idx => { const item=currentRestaurant.items[idx]; let existing=cart.find(i=>i.name===item.name); if(existing) existing.qty++; else cart.push({...item, qty:1}); updateCartDisplay(); showToast(`تمت إضافة ${item.name}`); };
         function updateCartDisplay() { const total=cart.reduce((s,i)=>s+(i.price*i.qty),0); document.getElementById('cartCount').innerText=cart.reduce((s,i)=>s+i.qty,0); document.getElementById('cartTotal').innerText=total; document.getElementById('floatCart').style.display=cart.length?'flex':'none'; let html=cart.map(i=>`<div style="display:flex;justify-content:space-between;"><span>${i.name} x${i.qty}</span><span>${i.price*i.qty} ريال</span></div>`).join(''); html+=`<div style="font-weight:bold; margin-top:10px;">الإجمالي: ${total} ريال</div>`; if(deliveryCost) html+=`<div>🚚 التوصيل: ${deliveryCost} ريال</div><div style="color:var(--restaurant-accent);">💰 الإجمالي الكلي: ${total+deliveryCost} ريال</div>`; document.getElementById('cartSummaryRestaurant').innerHTML=html; }
         window.showRestaurantInvoice = () => { if(!customerLocationLatLng&&!customerAddress) return showToast('حدد عنوان التوصيل'); if(!cart.length) return showToast('السلة فارغة'); const totalFood=cart.reduce((s,i)=>s+(i.price*i.qty),0), total=totalFood+deliveryCost; document.getElementById('invoiceContent').innerHTML = cart.map(i=>`<div style="display:flex;justify-content:space-between;"><span>${i.name} x${i.qty}</span><span>${i.price*i.qty} ريال</span></div>`).join('')+`<div style="margin-top:15px; border-top:2px solid #ddd; padding-top:15px;"><span>سعر التوصيل:</span><span>${deliveryCost} ريال</span></div><div style="display:flex; justify-content:space-between; font-size:1.4rem; margin:20px 0; color:var(--restaurant-accent)"><span>الإجمالي:</span><span>${total} ريال</span></div>`; showPage('restaurantInvoicePage'); };
-        window.confirmRestaurantOrder = async () => { if(!customerLocationLatLng&&!customerAddress) return; const totalFood=cart.reduce((s,i)=>s+(i.price*i.qty),0), total=totalFood+deliveryCost, id=Date.now(); const order={ id, type:'restaurant', restaurant:currentRestaurant.name, customerName:currentUser?.name, customerPhone:currentUser?.phone, address:customerAddress, lat:customerLocationLatLng?.lat, lng:customerLocationLatLng?.lng, items:cart.map(i=>({name:i.name,qty:i.qty,price:i.price})), totalFood, deliveryCost, total, status:'pending', createdAt:new Date().toISOString() }; await fetch(`${FIREBASE_URL}/orders/${id}.json`,{method:'PUT',body:JSON.stringify(order)}); localStorage.setItem('currentTrackingOrder',id); currentClientOrderId = id; let msg=`🍽️ طلب من ${currentRestaurant.name}\n🆔 ${id}\n👤 ${currentUser?.name}\n📞 ${currentUser?.phone}\n📍 ${customerAddress}\n\n`; cart.forEach(i=>msg+=`• ${i.name} x${i.qty} = ${i.price*i.qty} ريال\n`); msg+=`\n🚚 التوصيل: ${deliveryCost} ريال\n💰 الإجمالي: ${total} ريال\n\nعزيزي العميل عد للتطبيق لتتبع حالة طلبك 😊`; window.open(`https://wa.me/777215154?text=${encodeURIComponent(msg)}`, '_blank'); showToast('تم إرسال الطلب'); cart=[]; showPage('homePage'); setActiveNav('homePage'); document.getElementById('trackOrderBtnHome').style.display='block'; setTimeout(()=>viewOrderTracking(id),1000); notifyDrivers(id, 'طلب مطعم'); };
+        window.confirmRestaurantOrder = async () => { if(!customerLocationLatLng&&!customerAddress) return; const totalFood=cart.reduce((s,i)=>s+(i.price*i.qty),0), total=totalFood+deliveryCost, id=Date.now(); const order={ id, type:'restaurant', restaurant:currentRestaurant.name, customerName:currentUser?.name, customerPhone:currentUser?.phone, address:customerAddress, lat:customerLocationLatLng?.lat, lng:customerLocationLatLng?.lng, items:cart.map(i=>({name:i.name,qty:i.qty,price:i.price})), totalFood, deliveryCost, total, status:'pending', createdAt:new Date().toISOString() }; await fetch(`${FIREBASE_URL}/orders/${id}.json`,{method:'PUT',body:JSON.stringify(order)}); localStorage.setItem('currentTrackingOrder',id); currentClientOrderId = id; let msg=`🍽️ طلب من ${currentRestaurant.name}\n🆔 ${id}\n👤 ${currentUser?.name}\n📞 ${currentUser?.phone}\n📍 ${customerAddress}\n\n`; cart.forEach(i=>msg+=`• ${i.name} x${i.qty} = ${i.price*i.qty} ريال\n`); msg+=`\n🚚 التوصيل: ${deliveryCost} ريال\n💰 الإجمالي: ${total} ريال\n\nعزيزي العميل عد للتطبيق لتتبع حالة طلبك 😊`; window.open(`https://wa.me/777215154?text=${encodeURIComponent(msg)}`, '_blank'); showToast('تم إرسال الطلب'); cart=[]; showPage('homePage'); setActiveNav('homePage'); document.getElementById('trackOrderBtnHome').style.display='block'; setTimeout(()=>viewOrderTracking(id),1000); notifyDrivers(id, 'طلب مطعم'); sendOrderToDriversViaOneSignal(id, 'طلب مطعم'); };
 
         // تتبع الطلب
         window.viewOrderTracking = async (id) => { await loadOrders(); const order = allOrders.find(o=>o.id==id); if(!order) return; renderTrackingContent(order); document.getElementById('trackFullscreen').style.display='block'; startTrackingListener(id); };

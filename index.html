@@ -3,26 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
-    <title>وصّال | Wassal - إشعارات Firebase</title>
+    <title>وصّال | Wassal - إشعارات FCM</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-    <!-- Firebase SDK v9 compat (قاعدة البيانات + الإشعارات) -->
+    <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-database-compat.js"></script>
-    <!-- إضافة Firebase Messaging compat -->
     <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-messaging-compat.js"></script>
 
-    <!-- Firebase Analytics -->
+    <!-- Firebase Analytics و Messaging -->
     <script type="module">
       import { initializeApp } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js";
       import { getAnalytics, logEvent } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-analytics.js";
-      // استيراد دوال الإشعارات
       import { getMessaging, getToken } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-messaging-compat.js";
 
-      const firebaseConfigAnalytics = {
+      const firebaseConfig = {
         apiKey: "AIzaSyBvnmHgIm4Xs-d-LBQo02BTPGxm_FZsrk",
         authDomain: "wassal-app-final.firebaseapp.com",
         projectId: "wassal-app-final",
@@ -32,23 +30,23 @@
         measurementId: "G-0K3TTX2NMC"
       };
 
-      const app = initializeApp(firebaseConfigAnalytics);
+      const app = initializeApp(firebaseConfig);
       const analytics = getAnalytics(app);
       logEvent(analytics, 'page_view', { page_title: 'Wassal App - FCM', page_location: window.location.href });
       window.firebaseAnalytics = analytics;
 
-      // ============= إعدادات Firebase Messaging =============
+      // إعداد FCM
       const messaging = getMessaging(app);
       const VAPID_KEY = 'BAHlnQ5MJAbnb4kcjVmqJs1gAOFoas2dnWO-0hu-wvValiQNrQxNL2EgveP-UrU-vuUhuv_3il26T8N5k0VI73Q';
 
-      // دالة طلب الإذن والحصول على التوكن
-      window.requestNotifications = async function() {
+      // دالة طلب الإذن والحصول على التوكن (سيتم ربطها بالنطاق العام)
+      window.requestFCMPermission = async function() {
         try {
           const token = await getToken(messaging, { vapidKey: VAPID_KEY });
           if (token) {
             console.log("✅ FCM Token:", token);
             window.showToastTop("✅ تم تفعيل الإشعارات! التوكن: " + token.substring(0, 15) + "...");
-            // حفظ التوكن في قاعدة البيانات مع رقم المستخدم الحالي
+            // حفظ التوكن في قاعدة البيانات
             if (window.currentUser && window.currentUser.phone) {
               const userPhone = window.currentUser.phone;
               await fetch(`https://waselny-2812b-default-rtdb.firebaseio.com/users/${userPhone}/fcmToken.json`, {
@@ -68,7 +66,7 @@
     </script>
 
     <style>
-        /* جميع الأنماط السابقة محفوظة بالكامل - سأضيفها مختصرة هنا للطول، لكنها موجودة في الكود النهائي */
+        /* جميع الأنماط السابقة محفوظة بالكامل - مختصرة هنا للطول، ولكنها كاملة في الكود النهائي */
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Cairo', sans-serif; }
         :root { --primary-dark: #0a2b3e; --primary-light: #2dd4bf; --bg-light: #f8fafc; --card-light: #ffffff; --text-light: #1e293b; --text-muted: #64748b; --border-light: #e2e8f0; --bg-dark: #0f172a; --card-dark: #1e293b; --text-dark: #f1f5f9; --border-dark: #334155; --danger: #ef4444; --success: #10b981; --warning: #f59e0b; --restaurant-accent: #f97316; }
         body { background: var(--bg-light); color: var(--text-light); transition: 0.3s; min-height: 100vh; }
@@ -158,7 +156,7 @@
     <div id="homePage" class="page active-page">
         <div class="services-grid" id="servicesGrid"></div>
         <button id="trackOrderBtnHome" class="btn-send" style="display: none;" onclick="window.showMyTracking()">📍 تتبع طلبي الحالي</button>
-        <button id="homeNotificationBtn" class="btn-send" style="margin-top: 10px; background: #f97316; display: none;" onclick="window.requestNotifications()">🔔 تفعيل إشعارات FCM</button>
+        <button id="homeNotificationBtn" class="btn-send" style="margin-top: 10px; background: #f97316; display: none;" onclick="window.requestFCMPermission()">🔔 تفعيل إشعارات FCM</button>
     </div>
     <div id="ordersPage" class="page">
         <div class="order-card" id="myOrdersContainer"><p style="text-align:center;">لا توجد طلبات</p></div>
@@ -168,7 +166,7 @@
         <div class="settings-card">
             <h3 style="color: var(--primary-light); margin-bottom: 20px;">⚙️ الإعدادات</h3>
             <div class="setting-row" id="darkModeToggle"><span><i class="fas fa-moon"></i> الوضع الليلي</span><i class="fas fa-toggle-off" id="darkModeIcon"></i></div>
-            <div class="setting-row" style="background: var(--primary-light); color: var(--primary-dark); cursor: pointer;" onclick="window.requestNotifications()">
+            <div class="setting-row" style="background: var(--primary-light); color: var(--primary-dark); cursor: pointer;" onclick="window.requestFCMPermission()">
                 <span><i class="fas fa-bell"></i> تفعيل إشعارات FCM</span>
                 <i class="fas fa-chevron-left"></i>
             </div>
@@ -247,7 +245,7 @@
 <div id="confirmationModal" class="confirmation-modal"><div class="modal-card"><h4 id="modalTitle">تأكيد</h4><p id="modalMessage"></p><button id="modalConfirm">نعم</button><button id="modalCancel">إلغاء</button></div></div>
 
 <script>
-    // ============= دالة عرض الرسائل العلوية =============
+    // دالة عرض الرسائل العلوية
     window.showToastTop = function(msg) {
         let t = document.getElementById('toastTopMsg');
         t.innerText = msg;
@@ -256,7 +254,7 @@
     };
     window.showToast = window.showToastTop;
 
-    // ============= باقي كود التطبيق الأساسي (محفوظ بالكامل) =============
+    // باقي كود التطبيق الأساسي (نفس الكود السابق بالكامل)
     const FIREBASE_DB_URL = "https://waselny-2812b-default-rtdb.firebaseio.com";
     const DRIVER_PASSWORD = "weesim73741";
     const ADMIN_PASSWORD = "weesim73741";
@@ -451,7 +449,7 @@
                 if (homeNoti) homeNoti.style.display = 'block';
                 // طلب الإذن تلقائياً بعد تسجيل الدخول
                 setTimeout(() => {
-                    if (window.requestNotifications) window.requestNotifications();
+                    if (window.requestFCMPermission) window.requestFCMPermission();
                 }, 1500);
             }
         };

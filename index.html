@@ -14,8 +14,8 @@
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-database-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-messaging-compat.js"></script>
 
-    <!-- Firebase Analytics و Messaging -->
     <script type="module">
+      // استيراد الدوال الضرورية من Firebase
       import { initializeApp } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js";
       import { getAnalytics, logEvent } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-analytics.js";
       import { getMessaging, getToken } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-messaging-compat.js";
@@ -39,13 +39,14 @@
       const messaging = getMessaging(app);
       const VAPID_KEY = 'BAHlnQ5MJAbnb4kcjVmqJs1gAOFoas2dnWO-0hu-wvValiQNrQxNL2EgveP-UrU-vuUhuv_3il26T8N5k0VI73Q';
 
-      // دالة طلب الإذن والحصول على التوكن (سيتم ربطها بالنطاق العام)
-      window.requestFCMPermission = async function() {
+      // دالة طلب الإذن - تعريفها في النطاق العام
+      window.requestNotifications = async function() {
+        console.log("✅ تم الضغط على زر الإشعارات");
         try {
           const token = await getToken(messaging, { vapidKey: VAPID_KEY });
           if (token) {
             console.log("✅ FCM Token:", token);
-            window.showToastTop("✅ تم تفعيل الإشعارات! التوكن: " + token.substring(0, 15) + "...");
+            alert("تم تفعيل الإشعارات! التوكن: " + token.substring(0, 20) + "...");
             // حفظ التوكن في قاعدة البيانات
             if (window.currentUser && window.currentUser.phone) {
               const userPhone = window.currentUser.phone;
@@ -53,20 +54,20 @@
                 method: 'PUT',
                 body: JSON.stringify(token)
               });
-              window.showToastTop("💾 تم حفظ التوكن في حسابك");
+              console.log("✅ تم حفظ التوكن في قاعدة البيانات");
             }
           } else {
-            window.showToastTop("⚠️ لم يتم الحصول على التوكن");
+            alert("⚠️ لم يتم الحصول على التوكن");
           }
         } catch (err) {
-          console.error("خطأ في طلب الإذن:", err);
-          window.showToastTop("❌ حدث خطأ: تأكد من أن الموقع يعمل بـ HTTPS وأنك سمحت بالإشعارات");
+          console.error("❌ خطأ في طلب الإذن:", err);
+          alert("❌ حدث خطأ: " + err.message + "\nتأكد من أن الموقع يعمل بـ HTTPS وأن الخدمات المتاحة.");
         }
       };
     </script>
 
     <style>
-        /* جميع الأنماط السابقة محفوظة بالكامل - مختصرة هنا للطول، ولكنها كاملة في الكود النهائي */
+        /* جميع الأنماط السابقة محفوظة بالكامل */
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Cairo', sans-serif; }
         :root { --primary-dark: #0a2b3e; --primary-light: #2dd4bf; --bg-light: #f8fafc; --card-light: #ffffff; --text-light: #1e293b; --text-muted: #64748b; --border-light: #e2e8f0; --bg-dark: #0f172a; --card-dark: #1e293b; --text-dark: #f1f5f9; --border-dark: #334155; --danger: #ef4444; --success: #10b981; --warning: #f59e0b; --restaurant-accent: #f97316; }
         body { background: var(--bg-light); color: var(--text-light); transition: 0.3s; min-height: 100vh; }
@@ -156,7 +157,7 @@
     <div id="homePage" class="page active-page">
         <div class="services-grid" id="servicesGrid"></div>
         <button id="trackOrderBtnHome" class="btn-send" style="display: none;" onclick="window.showMyTracking()">📍 تتبع طلبي الحالي</button>
-        <button id="homeNotificationBtn" class="btn-send" style="margin-top: 10px; background: #f97316; display: none;" onclick="window.requestFCMPermission()">🔔 تفعيل إشعارات FCM</button>
+        <button id="homeNotificationBtn" class="btn-send" style="margin-top: 10px; background: #f97316; display: none;" onclick="window.requestNotifications()">🔔 تفعيل إشعارات FCM</button>
     </div>
     <div id="ordersPage" class="page">
         <div class="order-card" id="myOrdersContainer"><p style="text-align:center;">لا توجد طلبات</p></div>
@@ -166,7 +167,7 @@
         <div class="settings-card">
             <h3 style="color: var(--primary-light); margin-bottom: 20px;">⚙️ الإعدادات</h3>
             <div class="setting-row" id="darkModeToggle"><span><i class="fas fa-moon"></i> الوضع الليلي</span><i class="fas fa-toggle-off" id="darkModeIcon"></i></div>
-            <div class="setting-row" style="background: var(--primary-light); color: var(--primary-dark); cursor: pointer;" onclick="window.requestFCMPermission()">
+            <div class="setting-row" style="background: var(--primary-light); color: var(--primary-dark); cursor: pointer;" onclick="window.requestNotifications()">
                 <span><i class="fas fa-bell"></i> تفعيل إشعارات FCM</span>
                 <i class="fas fa-chevron-left"></i>
             </div>
@@ -254,7 +255,7 @@
     };
     window.showToast = window.showToastTop;
 
-    // باقي كود التطبيق الأساسي (نفس الكود السابق بالكامل)
+    // باقي كود التطبيق الأساسي (نفس الكود السابق مع الحفاظ على جميع الوظائف)
     const FIREBASE_DB_URL = "https://waselny-2812b-default-rtdb.firebaseio.com";
     const DRIVER_PASSWORD = "weesim73741";
     const ADMIN_PASSWORD = "weesim73741";
@@ -449,7 +450,7 @@
                 if (homeNoti) homeNoti.style.display = 'block';
                 // طلب الإذن تلقائياً بعد تسجيل الدخول
                 setTimeout(() => {
-                    if (window.requestFCMPermission) window.requestFCMPermission();
+                    if (window.requestNotifications) window.requestNotifications();
                 }, 1500);
             }
         };

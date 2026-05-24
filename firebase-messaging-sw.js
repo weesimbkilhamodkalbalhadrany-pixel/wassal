@@ -2,7 +2,7 @@ importScripts('https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js'
 importScripts('https://www.gstatic.com/firebasejs/9.15.0/firebase-messaging-compat.js');
 
 firebase.initializeApp({
-  apiKey: "AIzaSyCMb07oP2PMUdTlffJjYkbfThC34x1dbtU",
+  apiKey: "AIzaSyBvnmHgIm4Xs-d-LBQo02BTPGxm_FZsrk",
   authDomain: "wassal-app-final.firebaseapp.com",
   projectId: "wassal-app-final",
   storageBucket: "wassal-app-final.firebasestorage.app",

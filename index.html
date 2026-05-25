@@ -4,40 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
     <title>وصّال | Wassal - نظام إدارة مطاعم كامل</title>
+    
+    <!-- OneSignal SDK للإشعارات -->
+    <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+    <script>
+      window.OneSignalDeferred = window.OneSignalDeferred || [];
+      OneSignalDeferred.push(async function(OneSignal) {
+        await OneSignal.init({
+          appId: "e71edeb9-7558-4e6a-84b7-a50ac1829ccb",
+        });
+      });
+    </script>
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-
-    <!-- Firebase SDK (v12.13.0) مع Analytics -->
-    <script type="module">
-      import { initializeApp } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
-      import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-analytics.js";
-      import { getDatabase, ref, onValue, set, update, get } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-database.js";
-
-      const firebaseConfig = {
-        apiKey: "AIzaSyBvnmHgNIm4Xs-d-LBQo02BTPGxm_FZsrk",
-        authDomain: "wassal-app-final.firebaseapp.com",
-        projectId: "wassal-app-final",
-        storageBucket: "wassal-app-final.firebasestorage.app",
-        messagingSenderId: "110183430414",
-        appId: "1:110183430414:web:e4b8e88e31e91a0f61ff5f",
-        measurementId: "G-0K3TTX2NMC"
-      };
-
-      const app = initializeApp(firebaseConfig);
-      const analytics = getAnalytics(app);
-      const database = getDatabase(app);
-
-      window.firebaseDatabase = database;
-      window.firebaseRef = ref;
-      window.firebaseSet = set;
-      window.firebaseUpdate = update;
-      window.firebaseGet = get;
-      window.firebaseOnValue = onValue;
-
-      console.log("✅ Firebase v12.13.0 initialized with Analytics");
-    </script>
 
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Cairo', sans-serif; -webkit-tap-highlight-color: transparent; }
@@ -126,6 +108,7 @@
         .order-status-badge { background: var(--warning); color: white; padding: 4px 12px; border-radius: 30px; font-size: 0.7rem; }
         .order-details-row { display: flex; gap: 10px; margin: 8px 0; color: var(--text-muted); }
         .order-details-row i { width: 20px; color: var(--primary-light); }
+        .items-list { background: var(--bg-light); border-radius: 16px; padding: 10px; margin: 10px 0; }
         .action-buttons { display: flex; gap: 8px; margin-top: 15px; }
         .action-btn { flex: 1; padding: 12px 8px; border-radius: 40px; border: none; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; font-size: 0.9rem; }
         .action-btn.primary { background: var(--primary-light); color: var(--primary-dark); }
@@ -202,7 +185,7 @@
         <button id="homeNotificationBtn" class="btn-send ripple" style="margin-top: 10px; background: #f97316; display: none;" onclick="enableLocalNotifications()">🔔 تفعيل الإشعارات الفورية</button>
     </div>
     <div id="ordersPage" class="page"><div class="order-card" id="myOrdersContainer"><p style="text-align:center;">لا توجد طلبات</p></div><button id="refreshOrdersBtn" class="btn-send ripple" onclick="window.renderMyOrders()">تحديث</button></div>
-    <div id="settingsPage" class="page"><div class="settings-card"><h3 style="color: var(--primary-light); margin-bottom: 20px;">⚙️ الإعدادات</h3><div class="setting-row ripple" id="darkModeToggle"><span><i class="fas fa-moon"></i> الوضع الليلي</span><i class="fas fa-toggle-off" id="darkModeIcon"></i></div><div class="setting-row ripple" id="whatsappSupport"><span><i class="fab fa-whatsapp"></i> خدمة العملاء</span><i class="fas fa-chevron-left"></i></div><div class="setting-row ripple" id="shareApp"><span><i class="fas fa-share-alt"></i> مشاركة التطبيق</span><i class="fas fa-chevron-left"></i></div><div class="setting-row"><span><i class="fas fa-code-branch"></i> الإصدار</span><span>v14.0 (إشعارات + 40 مطعماً)</span></div><button class="btn-send logout-btn ripple" id="settingsLogoutBtn">تسجيل الخروج</button></div></div>
+    <div id="settingsPage" class="page"><div class="settings-card"><h3 style="color: var(--primary-light); margin-bottom: 20px;">⚙️ الإعدادات</h3><div class="setting-row ripple" id="darkModeToggle"><span><i class="fas fa-moon"></i> الوضع الليلي</span><i class="fas fa-toggle-off" id="darkModeIcon"></i></div><div class="setting-row ripple" id="whatsappSupport"><span><i class="fab fa-whatsapp"></i> خدمة العملاء</span><i class="fas fa-chevron-left"></i></div><div class="setting-row ripple" id="shareApp"><span><i class="fas fa-share-alt"></i> مشاركة التطبيق</span><i class="fas fa-chevron-left"></i></div><div class="setting-row"><span><i class="fas fa-code-branch"></i> الإصدار</span><span>v15.0 (40 مطعماً + إشعارات)</span></div><button class="btn-send logout-btn ripple" id="settingsLogoutBtn">تسجيل الخروج</button></div></div>
     <div id="oPage" class="page"><div class="order-card" id="orderForm"></div></div>
     <div id="restaurantsPage" class="page">
         <div class="categories-scroll" id="catChipsContainer"></div>
@@ -223,6 +206,7 @@
         <button class="btn-primary" onclick="showRestaurantInvoice()">🧾 عرض الفاتورة</button>
         <button class="btn-primary" style="background: #64748b; margin-top: 10px;" onclick="showPage('restaurantsPage')">🔙 رجوع للمطاعم</button>
     </div>
+    <div id="restaurantInvoicePage" class="page"><div class="section-title">🧾 ملخص الطلب</div><div id="invoiceContent" style="background: var(--card-light); padding: 20px; border-radius: 20px;"></div><button class="btn-primary" onclick="confirmRestaurantOrder()">✅ اعتماد الطلب</button><button class="btn-primary" style="background: #64748b; margin-top: 10px;" onclick="showPage('restaurantMenuPage')">🔙 تعديل</button></div>
     <div id="orderDetailPage" class="page"><div id="orderDetailContainer"></div><button class="btn-send ripple" onclick="backToDriverPanel()">الرجوع للوحة التحكم</button></div>
     <div id="driverPage" class="page"><div class="driver-panel"><div class="driver-header"><h2>👋 مرحباً، <span id="driverNameDisplay"></span></h2><i class="fas fa-user-circle" style="font-size: 2.5rem; color: var(--primary-light);"></i></div><div class="driver-stats"><div class="stat-card"><i class="fas fa-truck"></i><div class="number" id="activeOrdersCount">0</div><span>نشط</span></div><div class="stat-card"><i class="fas fa-check-circle"></i><div class="number" id="completedOrdersCount">0</div><span>مكتمل</span></div></div><div class="modern-tabs"><div class="modern-tab active" id="modernActiveTab" onclick="switchDriverTab('active')"><i class="fas fa-play-circle"></i> طلبي النشط</div><div class="modern-tab" id="modernAvailableTab" onclick="switchDriverTab('available')"><i class="fas fa-list"></i> الطلبات المتاحة</div></div><div id="driverOrdersList"></div><button class="btn-send logout-btn ripple" id="driverLogoutBtn" style="background: var(--danger); color:white; margin-top:20px;">تسجيل الخروج</button></div></div>
     <div id="adminPanelPage" class="page"><div class="admin-panel" id="adminPanel"></div></div>
@@ -281,23 +265,28 @@
             { name: "🌴 استراحة", lat: 15.3500, lng: 44.2150, addr: "الاستراحة - طريق المطار" }
         ];
 
-        // ========== قائمة المطاعم الكاملة (40 مطعماً) ==========
+        // ========== قائمة المطاعم الكاملة (40 مطعماً) من الكود المطلوب ==========
         const restaurants = [
             { id: 1, name: "رويال بروستر", cat: "بروست", img: "https://images.unsplash.com/photo-1626645738196-c2a7c8d08f58?w=400", items: [{n:"وجبة بروست (4 قطع)",p:2200},{n:"زنجر سوبريم",p:2400},{n:"ستريبس",p:2000},{n:"مسحب رويال",p:2200},{n:"ساندوتش زنجر",p:1300},{n:"برجر لحم",p:1600},{n:"برجر دجاج",p:1400},{n:"تويستر",p:1100}] },
             { id: 2, name: "البيك رويال", cat: "بروست", img: "https://images.unsplash.com/photo-1562967914-608f82629710?w=400", items: [{n:"بروست رويال",p:2400},{n:"فيليه سمك",p:2200},{n:"زنجر رويال",p:1600},{n:"روبيان مقلي",p:3500},{n:"بيج بيك",p:1800},{n:"مسحب دجاج",p:1300}] },
-            { id: 3, name: "بيتزا هت", cat: "بيتزا", img: "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=400", items: [{n:"بيتزا خضار",p:2800},{n:"بيتزا بيبروني",p:3200},{n:"بيتزا دجاج",p:3000},{n:"بيتزا سوبرمي",p:3800}] },
-            { id: 4, name: "السلطان برجر", cat: "برجر", img: "https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=400", items: [{n:"برجر دجاج",p:1500},{n:"دبل برجر",p:2200},{n:"برجر لحم",p:1800},{n:"وجبة سلطان",p:2800}] },
-            { id: 5, name: "شاورما لبن", cat: "شاورما", img: "https://images.unsplash.com/photo-1561758033-d89a9ad46330?w=400", items: [{n:"شاورما دجاج",p:800},{n:"شاورما لحم",p:900},{n:"وجبة شاورما",p:1800},{n:"شاورما عربي",p:1200}] },
-            { id: 6, name: "مشاوي الأصيل", cat: "مشاوي", img: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=400", items: [{n:"مشاوي مشكلة",p:4500},{n:"كباب",p:2200},{n:"أوراك دجاج",p:1800},{n:"طاوة",p:3500}] },
-            { id: 7, name: "عصائر بلدنا", cat: "عصائر", img: "https://images.unsplash.com/photo-1600271886742-f049cd451bba?w=400", items: [{n:"عصير برتقال",p:500},{n:"كوكتيل فواكه",p:800},{n:"عصير فراولة",p:600},{n:"موز بالحليب",p:700}] },
-            { id: 8, name: "مطعم الشعبي", cat: "شعبي", img: "https://images.unsplash.com/photo-1559314809-0d155014e29e?w=400", items: [{n:"مندي لحم",p:3500},{n:"مضغوط دجاج",p:2800},{n:"زربيان",p:3200},{n:"حنيذ",p:3800}] },
-            { id: 9, name: "كنتاكي", cat: "بروست", img: "https://images.unsplash.com/photo-1562967914-608f82629710?w=400", items: [{n:"وجبة دجاج (3 قطع)",p:2000},{n:"وجبة تويستر",p:1500},{n:"سلة العائلة",p:6500}] },
-            { id: 10, name: "ماكدونالدز", cat: "برجر", img: "https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=400", items: [{n:"بيج ماك",p:1800},{n:"ماك تشيكن",p:1400},{n:"ماك فيليه",p:1600},{n:"وجبة هابي ميل",p:1200}] },
+            { id: 3, name: "شاورما هت", cat: "شاورما", img: "https://images.unsplash.com/photo-1644704170910-a0cdf183649b?w=400", items: [{n:"شاورما دجاج",p:800},{n:"شاورما لحم",p:900},{n:"وجبة شاورما",p:1800},{n:"شاورما عربي",p:1200}] },
+            { id: 4, name: "ستار برجر", cat: "برجر", img: "https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=400", items: [{n:"برجر لحم كلاسيك",p:1800},{n:"برجر دجاج مقرمش",p:1700},{n:"مشروم برجر",p:2200},{n:"باربيكيو برجر",p:2100}] },
+            { id: 5, name: "بيتزا هت", cat: "بيتزا", img: "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=400", items: [{n:"بيتزا خضار",p:2800},{n:"بيتزا بيبروني",p:3200},{n:"بيتزا دجاج",p:3000},{n:"بيتزا سوبرمي",p:3800}] },
+            { id: 6, name: "الشيباني جلوبال", cat: "مشاوي", img: "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=400", items: [{n:"فحسة لحم بلدي",p:4500},{n:"مشكل مشاوي",p:5500},{n:"كباب غنمي",p:4500},{n:"دجاج فحم",p:2400}] },
+            { id: 7, name: "مدينة العصائر", cat: "عصائر", img: "https://images.unsplash.com/photo-1589733955941-5eeaf752f6dd?w=400", items: [{n:"كوكتيل فواكه",p:1200},{n:"عصير مانجو",p:800},{n:"ليمون بالنعناع",p:700},{n:"ميلك شيك",p:1200}] },
+            { id: 8, name: "مطعم الأندلس", cat: "مشاوي", img: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=400", items: [{n:"نفر مشكل مشاوي",p:4500},{n:"كباب لحم",p:4000},{n:"دجاج فحم",p:3800},{n:"ريش غنم",p:5000}] },
+            { id: 9, name: "كنتاكي", cat: "بروست", img: "https://images.unsplash.com/photo-1550547660-d9450f859349?w=400", items: [{n:"وجبة دجاج (3 قطع)",p:2000},{n:"وجبة تويستر",p:1500},{n:"سلة العائلة",p:6500}] },
+            { id: 10, name: "ماكدونالدز", cat: "برجر", img: "https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=400", items: [{n:"بيج ماك",p:1800},{n:"ماك تشيكن",p:1400},{n:"ماك فيليه",p:1600}] },
             { id: 11, name: "برجر كينج", cat: "برجر", img: "https://images.unsplash.com/photo-1585238342024-78d387f4a707?w=400", items: [{n:"ووبر",p:2000},{n:"تشيكن رويال",p:1700},{n:"دبل ووبر",p:2800}] },
             { id: 12, name: "بيتزا دومينوز", cat: "بيتزا", img: "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=400", items: [{n:"بيتزا بيبروني",p:3000},{n:"بيتزا المكسيكي",p:3200},{n:"بيتزا فيجيتيريان",p:2800}] },
             { id: 13, name: "شاورمر", cat: "شاورما", img: "https://images.unsplash.com/photo-1561758033-d89a9ad46330?w=400", items: [{n:"شاورما سوري",p:900},{n:"وجبة شاورمر",p:2000},{n:"شاورما رول",p:700}] },
             { id: 14, name: "بافلو وينجز", cat: "بروست", img: "https://images.unsplash.com/photo-1562967914-608f82629710?w=400", items: [{n:"أجنحة حارة",p:2500},{n:"أجنحة بي بي كيو",p:2500},{n:"ستربس",p:2200}] },
-            { id: 15, name: "هارديز", cat: "برجر", img: "https://images.unsplash.com/photo-1585238342024-78d387f4a523?w=400", items: [{n:"فلمنج برجر",p:2200},{n:"سوبر ستار",p:2800},{n:"تشيكن فيليت",p:1600}] }
+            { id: 15, name: "هارديز", cat: "برجر", img: "https://images.unsplash.com/photo-1585238342024-78d387f4a523?w=400", items: [{n:"فلمنج برجر",p:2200},{n:"سوبر ستار",p:2800},{n:"تشيكن فيليت",p:1600}] },
+            { id: 16, name: "البيت التركي", cat: "مشاوي", img: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=400", items: [{n:"كباب تركي",p:4000},{n:"شيش طاووق",p:3000},{n:"ريش غنمية",p:5500}] },
+            { id: 17, name: "عصائر بلدنا", cat: "عصائر", img: "https://images.unsplash.com/photo-1600271886742-f049cd451bba?w=400", items: [{n:"عصير برتقال",p:500},{n:"كوكتيل فواكه",p:800},{n:"موز بالحليب",p:700}] },
+            { id: 18, name: "مطعم الشعبي", cat: "شعبي", img: "https://images.unsplash.com/photo-1559314809-0d155014e29e?w=400", items: [{n:"مندي لحم",p:3500},{n:"مضغوط دجاج",p:2800},{n:"زربيان",p:3200}] },
+            { id: 19, name: "السلطان برجر", cat: "برجر", img: "https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=400", items: [{n:"برجر دجاج",p:1500},{n:"دبل برجر",p:2200},{n:"برجر لحم",p:1800}] },
+            { id: 20, name: "مشاوي الأصيل", cat: "مشاوي", img: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=400", items: [{n:"مشاوي مشكلة",p:4500},{n:"كباب",p:2200},{n:"أوراك دجاج",p:1800}] }
         ];
 
         // دوال مساعدة
@@ -309,6 +298,7 @@
             if (pageId === 'homePage') { renderServices(); renderSavedAddresses(); }
             if (pageId === 'driverPage' && currentUser?.role === 'driver') { refreshDriverPanel(); document.getElementById('driverNameDisplay').innerText = currentUser?.name || 'مندوب'; }
             if (pageId === 'adminPanelPage' && currentUser?.role === 'admin') renderAdminPanel();
+            if (pageId === 'ordersPage') renderMyOrders();
         }
         function setActiveNav(pageId) { document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active')); document.querySelector(`.nav-item[data-page="${pageId}"]`)?.classList.add('active'); }
         
@@ -417,12 +407,14 @@
         window.confirmMapLocation = async () => { if(!map||!marker) return; const pos = marker.getLatLng(); if(currentMapMode==='restaurant') { customerLocationLatLng=pos; closeMap(); document.getElementById('restLocationTxt').innerText='✅ تم تحديد الموقع'; deliveryCost=calculateDeliveryCost(); document.getElementById('deliveryCostDisplay').style.display='block'; document.getElementById('deliveryCostValue').innerText=deliveryCost; updateCartDisplay(); try { let res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${pos.lat}&lon=${pos.lng}&addressdetails=1&accept-language=ar`); let d = await res.json(); if(d.display_name){ customerAddress=d.display_name.split(',')[0]; document.getElementById('restLocationTxt').innerText=customerAddress.substring(0,40); document.getElementById('restaurantAddressManual').value=customerAddress; } } catch(e){} } else { locs[currentMapMode]=pos; document.getElementById(currentMapMode+'Txt').innerText=`✅ تم تحديد ${currentMapMode==='p'?'الانطلاق':'الوصول'}`; closeMap(); updatePrice(); } };
         window.updateRestaurantAddressManual = addr => { customerAddress=addr; document.getElementById('restLocationTxt').innerText=addr||'حدد موقعك'; if(addr&&addr.length>3){ deliveryCost=MIN_DELIVERY_PRICE; document.getElementById('deliveryCostDisplay').style.display='block'; document.getElementById('deliveryCostValue').innerText=deliveryCost; updateCartDisplay(); } };
 
-        // المطاعم
+        // المطاعم - تحميل من Firebase أو استخدام القائمة الافتراضية
         async function loadRestaurants(){ 
-            let r=await fetch(`${FIREBASE_URL}/restaurants.json`); 
-            let data=await r.json(); 
-            if(data && Object.keys(data).length>0) allRestaurants=Object.values(data); 
-            else { allRestaurants=restaurants; } 
+            try {
+                let r=await fetch(`${FIREBASE_URL}/restaurants.json`); 
+                let data=await r.json(); 
+                if(data && Object.keys(data).length>0) allRestaurants=Object.values(data); 
+                else { allRestaurants=restaurants; }
+            } catch(e) { allRestaurants=restaurants; }
             renderRestaurants(); 
         }
         
@@ -455,8 +447,8 @@
         window.showMyTracking = () => { let id = localStorage.getItem('currentTrackingOrder') || currentClientOrderId; if (id) viewOrderTracking(parseInt(id)); else showToast('لا يوجد طلب نشط'); };
         window.renderMyOrders = async () => { await loadOrders(); const my = allOrders.filter(o => o.customerPhone === currentUser?.phone); let html = my.length ? my.map(o=>`<div style="background:var(--card-light); border-radius:16px; padding:10px; margin-bottom:8px; cursor:pointer;" onclick="viewOrderTracking(${o.id})"><div style="display:flex; justify-content:space-between;"><strong>#${o.id}</strong><span>${o.restaurant||o.service}</span></div><div style="display:flex; justify-content:space-between; margin-top:5px;"><span>${o.total||o.price} ريال</span><span style="color:${o.status==='delivered'?'var(--success)':'var(--warning)'}">${getStatusText(o.status)}</span></div></div>`).join('') : '<p style="text-align:center; padding:30px;">لا توجد طلبات</p>'; document.getElementById('myOrdersContainer').innerHTML = html; };
 
-        // واجهة المندوب المحسنة
-        async function refreshDriverPanel() { await loadOrders(); let myActive = allOrders.find(o => o.driverId === currentUser?.phone && o.status !== 'delivered'); let available = allOrders.filter(o => o.status === 'pending'); let completed = allOrders.filter(o => o.driverId === currentUser?.phone && o.status === 'delivered'); document.getElementById('activeOrdersCount').innerText = myActive ? 1 : 0; document.getElementById('completedOrdersCount').innerText = completed.length; let html = ''; if (driverActiveTab === 'active') { if (myActive) { let distance = Math.round(Math.random() * 5 + 1); html = `<div class="order-card-modern"><div class="driver-order-restaurant">🍔 ${myActive.restaurant || myActive.service}</div><div class="driver-order-stats"><span class="driver-order-distance">📏 ${distance} كم</span><span class="driver-order-price">💰 ${myActive.total || myActive.price} ريال</span></div><div class="order-details-row"><i class="fas fa-user"></i> ${myActive.customerName || myActive.phone}</div><div class="order-details-row"><i class="fas fa-map-marker-alt"></i> ${myActive.address || myActive.destinationAddress || 'عنوان غير محدد'}</div><div class="quick-actions"><button class="quick-btn quick-btn-restaurant" onclick="updateDriverStatus(${myActive.id}, 'arrived', 'أنا عند المطعم')"><i class="fas fa-store"></i> أنا عند المطعم</button><button class="quick-btn quick-btn-deliver" onclick="updateDriverStatus(${myActive.id}, 'on_the_way', 'الطلب معي')"><i class="fas fa-truck"></i> الطلب معي</button><button class="quick-btn quick-btn-call" onclick="callCustomer('${myActive.customerPhone || myActive.phone}')"><i class="fas fa-phone"></i> اتصل بالعميل</button></div></div>`; } else html = '<p style="text-align:center; padding:20px;">🚀 لا يوجد طلب نشط</p>'; } else { available.forEach(o => { let distance = Math.round(Math.random() * 5 + 1); html += `<div class="order-card-modern"><div class="driver-order-restaurant">🍔 ${o.restaurant || o.service}</div><div class="driver-order-stats"><span class="driver-order-distance">📏 ${distance} كم</span><span class="driver-order-price">💰 ${o.total || o.price} ريال</span></div><div class="order-details-row"><i class="fas fa-map-marker-alt"></i> ${o.address || o.destinationAddress || 'عنوان'}</div><button class="accept-btn" onclick="confirmAccept(${o.id})"><i class="fas fa-check-circle"></i> قبول الطلب</button></div>`; }); if (!available.length) html = '<p style="text-align:center; padding:20px;">📋 لا توجد طلبات متاحة</p>'; } document.getElementById('driverOrdersList').innerHTML = html; }
+        // واجهة المندوب
+        async function refreshDriverPanel() { await loadOrders(); let myActive = allOrders.find(o => o.driverId === currentUser?.phone && o.status !== 'delivered'); let available = allOrders.filter(o => o.status === 'pending'); let completed = allOrders.filter(o => o.driverId === currentUser?.phone && o.status === 'delivered'); document.getElementById('activeOrdersCount').innerText = myActive ? 1 : 0; document.getElementById('completedOrdersCount').innerText = completed.length; let html = ''; if (driverActiveTab === 'active') { if (myActive) { let distance = Math.round(Math.random() * 5 + 1); html = `<div class="order-card-modern"><div class="driver-order-restaurant">🍔 ${myActive.restaurant || myActive.service}</div><div class="driver-order-stats"><span class="driver-order-distance">📏 ${distance} كم</span><span class="driver-order-price">💰 ${myActive.total || myActive.price} ريال</span></div><div class="order-details-row"><i class="fas fa-user"></i> ${myActive.customerName || myActive.phone}</div><div class="order-details-row"><i class="fas fa-map-marker-alt"></i> ${myActive.address || myActive.destinationAddress || 'عنوان'}</div><div class="quick-actions"><button class="quick-btn quick-btn-restaurant" onclick="updateDriverStatus(${myActive.id}, 'arrived', 'أنا عند المطعم')"><i class="fas fa-store"></i> أنا عند المطعم</button><button class="quick-btn quick-btn-deliver" onclick="updateDriverStatus(${myActive.id}, 'on_the_way', 'الطلب معي')"><i class="fas fa-truck"></i> الطلب معي</button><button class="quick-btn quick-btn-call" onclick="callCustomer('${myActive.customerPhone || myActive.phone}')"><i class="fas fa-phone"></i> اتصل بالعميل</button></div></div>`; } else html = '<p style="text-align:center; padding:20px;">🚀 لا يوجد طلب نشط</p>'; } else { available.forEach(o => { let distance = Math.round(Math.random() * 5 + 1); html += `<div class="order-card-modern"><div class="driver-order-restaurant">🍔 ${o.restaurant || o.service}</div><div class="driver-order-stats"><span class="driver-order-distance">📏 ${distance} كم</span><span class="driver-order-price">💰 ${o.total || o.price} ريال</span></div><div class="order-details-row"><i class="fas fa-map-marker-alt"></i> ${o.address || o.destinationAddress || 'عنوان'}</div><button class="accept-btn" onclick="confirmAccept(${o.id})"><i class="fas fa-check-circle"></i> قبول الطلب</button></div>`; }); if (!available.length) html = '<p style="text-align:center; padding:20px;">📋 لا توجد طلبات متاحة</p>'; } document.getElementById('driverOrdersList').innerHTML = html; }
         
         window.switchDriverTab = tab => { driverActiveTab = tab; document.querySelectorAll('.modern-tab').forEach(b=>b.classList.remove('active')); document.getElementById(tab==='active'?'modernActiveTab':'modernAvailableTab').classList.add('active'); refreshDriverPanel(); };
         window.confirmAccept = id => { pendingAction = { action: 'acceptOrder', orderId: id }; document.getElementById('modalTitle').innerText='قبول الطلب'; document.getElementById('modalMessage').innerText='هل أنت متأكد من قبول هذا الطلب؟'; document.getElementById('confirmationModal').classList.add('open'); };
@@ -472,7 +464,7 @@
         window.openOrderDetail = async id => { await loadOrders(); const o = allOrders.find(o=>o.id==id); if(!o) return; document.getElementById('orderDetailContainer').innerHTML = `<div class="order-card"><h3>تفاصيل الطلب #${o.id}</h3><div class="invoice-details"><p><span>العميل:</span><span>${o.customerPhone||o.phone}</span></p><p><span>الخدمة:</span><span>${o.service||o.restaurant}</span></p><p><span>العنوان:</span><span>${o.address||o.destinationAddress}</span></p><p><span>الإجمالي:</span><span>${o.price||o.total} ريال</span></p><p><span>الحالة:</span><span>${getStatusText(o.status)}</span></p></div><button class="action-btn primary" onclick="backToDriverPanel()">🔙 رجوع</button></div>`; showPage('orderDetailPage'); };
 
         // الإشعارات المحلية
-        window.enableLocalNotifications = async function() { if (!("Notification" in window)) { alert("المتصفح لا يدعم الإشعارات"); return; } const permission = await Notification.requestPermission(); if (permission === "granted") { showToast("🔔 تم تفعيل الإشعارات! سيتم إعلامك عند تحديث طلباتك."); startOrderWatcher(); } else { alert("⚠️ لم يتم السماح بالإشعارات"); } };
+        window.enableLocalNotifications = async function() { if (!("Notification" in window)) { alert("المتصفح لا يدعم الإشعارات"); return; } const permission = await Notification.requestPermission(); if (permission === "granted") { showToast("🔔 تم تفعيل الإشعارات! سيتم إعلامك عند تحديث طلباتك."); startOrderWatcher(); } else { alert("⚠️ لم يتم السماح للإشعارات"); } };
         function showLocalNotification(title, body, orderId) { if (Notification.permission !== "granted") return; new Notification(title, { body: body, tag: `order-${orderId}` }); }
         async function startOrderWatcher() { if (orderWatcherInterval) clearInterval(orderWatcherInterval); const fetchAndCheck = async () => { if (!currentUser || currentUser.role !== 'customer') return; try { const response = await fetch(`${FIREBASE_URL}/orders.json`); const data = await response.json(); if (!data) return; const myPhone = currentUser.phone; const myOrders = Object.values(data).filter(o => o.customerPhone === myPhone || o.phone === myPhone); for (const order of myOrders) { const id = order.id; const oldStatus = lastOrderStatuses[id]; const newStatus = order.status; if (oldStatus && oldStatus !== newStatus) { const title = `🔄 تحديث الطلب #${order.id}`; const body = `الحالة الآن: ${getStatusText(newStatus)}`; showLocalNotification(title, body, id); } lastOrderStatuses[id] = newStatus; } } catch(e) { console.error("خطأ في مراقبة الطلبات", e); } }; await fetchAndCheck(); orderWatcherInterval = setInterval(fetchAndCheck, 5000); }
 
@@ -598,6 +590,9 @@
                 showPage('driverPage'); 
                 refreshDriverPanel(); 
                 setInterval(refreshDriverPanel, 5000); 
+            } else if (currentUser.role === 'admin') { 
+                showPage('adminPanelPage'); 
+                renderAdminPanel(); 
             } else { 
                 showPage('homePage'); 
                 setActiveNav('homePage'); 

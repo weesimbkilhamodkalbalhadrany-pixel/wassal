@@ -108,8 +108,6 @@
         .setting-row:hover { background: var(--primary-light); color: white; }
         .settings-section { background: var(--card-light); border-radius: 20px; padding: 16px; margin-bottom: 20px; border: 1px solid var(--border-light); }
         .settings-section-title { font-size: 1rem; font-weight: 800; margin-bottom: 15px; color: var(--primary-light); border-right: 3px solid var(--primary-light); padding-right: 10px; }
-        .price-setting { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 12px; }
-        .price-setting input { flex: 1; padding: 10px; border-radius: 20px; border: 1px solid var(--border-light); background: var(--bg-light); }
         .delivery-cost-card { background: linear-gradient(135deg, var(--primary-dark), #1a4f6e); border-radius: 20px; padding: 15px; margin: 15px 0; color: white; display: flex; justify-content: space-between; align-items: center; }
         .delivery-cost-value { font-size: 1.8rem; font-weight: 900; color: #fbbf24; }
         .checkout-details { background: var(--card-light); border-radius: 20px; padding: 20px; margin-bottom: 20px; }
@@ -148,6 +146,12 @@
         .super-admin-title { font-size: 1.5rem; font-weight: 900; color: var(--primary-dark); margin-bottom: 20px; border-right: 4px solid var(--primary-light); padding-right: 15px; }
         .delivery-calc-card { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; border-radius: 20px; padding: 20px; margin-bottom: 20px; }
         .distance-result { font-size: 2rem; font-weight: 900; color: #ffd700; }
+        .restaurant-location-card { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); border-radius: 20px; padding: 15px; margin-bottom: 15px; }
+        .restaurant-map-btn { background: rgba(255,255,255,0.2); border: none; padding: 10px; border-radius: 15px; color: white; cursor: pointer; margin-top: 10px; width: 100%; }
+        .restaurant-map-btn:hover { background: rgba(255,255,255,0.3); }
+        .selected-location { font-size: 0.8rem; margin-top: 5px; color: #ffd700; }
+        .history-back-btn { position: fixed; bottom: 80px; right: 20px; background: var(--primary-dark); color: white; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 1500; box-shadow: 0 4px 15px rgba(0,0,0,0.2); transition: 0.2s; }
+        .history-back-btn:hover { transform: scale(1.1); background: var(--primary-light); color: var(--primary-dark); }
     </style>
 </head>
 <body>
@@ -173,12 +177,6 @@
                 <button class="btn-send ripple" onclick="enableNotifications()" style="background:#f97316; color:white;">🔔 تفعيل الإشعارات</button>
             </div>
             <div class="settings-section">
-                <div class="settings-section-title"><i class="fas fa-truck"></i> أسعار التوصيل (ريال/كم)</div>
-                <div class="price-setting"><span style="min-width:100px;">🚖 سيارة:</span><input type="number" id="carPricePerKm" value="175" onchange="updateDeliveryPrices()"></div>
-                <div class="price-setting"><span style="min-width:100px;">🏍️ دراجة:</span><input type="number" id="bikePricePerKm" value="100" onchange="updateDeliveryPrices()"></div>
-                <div class="price-setting"><span style="min-width:100px;">📦 خدمات عامة:</span><input type="number" id="generalPricePerKm" value="120" onchange="updateDeliveryPrices()"></div>
-            </div>
-            <div class="settings-section">
                 <div class="settings-section-title"><i class="fas fa-palette"></i> المظهر</div>
                 <div class="setting-row" id="darkModeToggle"><span><i class="fas fa-moon"></i> الوضع الليلي</span><i class="fas fa-toggle-off" id="darkModeIcon"></i></div>
             </div>
@@ -189,7 +187,7 @@
             </div>
             <div class="settings-section">
                 <div class="settings-section-title"><i class="fas fa-info-circle"></i> معلومات</div>
-                <div class="setting-row" id="versionRow"><span><i class="fas fa-code-branch"></i> الإصدار</span><span id="versionNumber" style="cursor: pointer;">v18.0</span></div>
+                <div class="setting-row" id="versionRow"><span><i class="fas fa-code-branch"></i> الإصدار</span><span id="versionNumber" style="cursor: pointer;">v19.0</span></div>
             </div>
             <button class="btn-send logout-btn" id="settingsLogoutBtn" style="background:var(--danger); color:white;">تسجيل الخروج</button>
         </div>
@@ -242,6 +240,11 @@
     <div class="nav-item" data-page="settingsPage"><i class="fas fa-cog"></i><span>الإعدادات</span></div>
 </nav>
 
+<!-- زر الرجوع للخلف -->
+<div class="history-back-btn" id="historyBackBtn" onclick="goBack()" style="display: none;">
+    <i class="fas fa-arrow-right fa-2x"></i>
+</div>
+
 <div id="toastMsg" class="toast"></div>
 <div id="loginOverlay" class="login-overlay">
     <div class="login-card">
@@ -269,7 +272,16 @@
         <input type="text" id="restName" class="field-input" placeholder="اسم المطعم">
         <input type="text" id="restCat" class="field-input" placeholder="التصنيف">
         <input type="text" id="restImg" class="field-input" placeholder="رابط الصورة">
-        <div><label>📍 موقع المطعم</label><div class="geo-btn" onclick="initMapForRestaurant()"><span id="restLocationTxt">🗺️ حدد من الخريطة</span><i class="fas fa-map-marker-alt"></i></div><input type="hidden" id="restLat" value="15.3694"><input type="hidden" id="restLng" value="44.1910"></div>
+        <div class="restaurant-location-card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 15px; border-radius: 15px; margin-bottom: 15px;">
+            <label><i class="fas fa-map-marker-alt"></i> 📍 موقع المطعم</label>
+            <div class="geo-btn" onclick="initMapForRestaurantAdmin()" style="background: rgba(255,255,255,0.2); color: white; border: none;">
+                <span id="restLocationTxt">🗺️ اختر موقع المطعم من الخريطة</span>
+                <i class="fas fa-map-marker-alt"></i>
+            </div>
+            <div id="restCoordinatesDisplay" class="selected-location" style="font-size: 0.8rem; margin-top: 8px;">لم يتم اختيار موقع بعد</div>
+            <input type="hidden" id="restLat" value="15.3694">
+            <input type="hidden" id="restLng" value="44.1910">
+        </div>
         <h4>🍽️ الأصناف</h4><div id="itemsList"></div>
         <button class="btn-send" onclick="addItemRow()" style="margin:8px 0; font-size:0.7rem;">+ إضافة صنف</button>
         <button class="btn-primary" onclick="saveRestaurantModal()" style="font-size:0.8rem;">💾 حفظ</button>
@@ -367,6 +379,7 @@
     let orderDestLoc = null;
     let deliveryCalcRestLocation = null;
     let deliveryCalcCustomerLocation = null;
+    let pageHistory = ['homePage']; // سجل الصفحات للرجوع للخلف
     
     let deliveryPrices = { car: 175, bike: 100, general: 120 };
     
@@ -393,6 +406,18 @@
         t.classList.add('show');
         setTimeout(() => t.classList.remove('show'), 3000);
     }
+    
+    // وظيفة الرجوع للخلف
+    window.goBack = function() {
+        if (pageHistory.length > 1) {
+            pageHistory.pop();
+            let previousPage = pageHistory[pageHistory.length - 1];
+            showPage(previousPage);
+            setActiveNav(previousPage);
+        } else {
+            showToast('لا توجد صفحة سابقة');
+        }
+    };
     
     async function loadRestaurants() {
         try {
@@ -475,16 +500,18 @@
                 <div class="address-chip" onclick="setCheckoutLocation(15.3850, 44.2050, 'العمل')">💼 العمل</div>
             `;
         }
-        // إخفاء شريط السلة في صفحة الدفع
+        // إخفاء شريط السلة بعد الضغط عليه
         let floatCart = document.getElementById('floatCart');
-        if (floatCart) floatCart.classList.add('hidden');
+        if (floatCart) floatCart.style.display = 'none';
     };
     
     window.goBackToMenu = function() {
         showPage('restaurantMenuPage');
-        // إظهار شريط السلة مرة أخرى
-        let floatCart = document.getElementById('floatCart');
-        if (floatCart && cart.length) floatCart.classList.remove('hidden');
+        // إظهار شريط السلة مرة أخرى إذا كان فيه أطعمة
+        if (cart.length) {
+            let floatCart = document.getElementById('floatCart');
+            if (floatCart) floatCart.style.display = 'flex';
+        }
     };
     
     function updateCheckoutSummary() {
@@ -570,8 +597,8 @@
         }, 100);
     };
     
-    window.initMapForRestaurant = function() {
-        currentMapMode = 'restaurant';
+    window.initMapForRestaurantAdmin = function() {
+        currentMapMode = 'restaurant_admin';
         let mapDiv = document.getElementById('map-overlay');
         if (mapDiv) mapDiv.style.display = 'flex';
         setTimeout(() => {
@@ -643,9 +670,9 @@
         showToast('✅ تم إرسال الطلب، بانتظار إسناد مندوب');
         cart = [];
         customerLocation = null;
-        // إظهار شريط السلة مرة أخرى
+        // إخفاء شريط السلة بعد إتمام الطلب
         let floatCart = document.getElementById('floatCart');
-        if (floatCart) floatCart.classList.remove('hidden');
+        if (floatCart) floatCart.style.display = 'none';
         showPage('homePage');
         setActiveNav('homePage');
         let trackBtn = document.getElementById('trackOrderBtnHome');
@@ -759,11 +786,13 @@
             let imgInput = document.getElementById('restImg');
             let latInput = document.getElementById('restLat');
             let lngInput = document.getElementById('restLng');
+            let coordsDisplay = document.getElementById('restCoordinatesDisplay');
             if (nameInput) nameInput.value = res.name;
             if (catInput) catInput.value = res.cat;
             if (imgInput) imgInput.value = res.img;
             if (latInput) latInput.value = res.restaurantLat || 15.3694;
             if (lngInput) lngInput.value = res.restaurantLng || 44.1910;
+            if (coordsDisplay) coordsDisplay.innerHTML = `📍 الإحداثيات الحالية: ${res.restaurantLat || 15.3694}, ${res.restaurantLng || 44.1910}`;
             res.items.forEach(item => addItemRow(item.n, item.p));
         } else {
             let editId = document.getElementById('editRestId');
@@ -771,9 +800,11 @@
             let nameInput = document.getElementById('restName');
             let catInput = document.getElementById('restCat');
             let imgInput = document.getElementById('restImg');
+            let coordsDisplay = document.getElementById('restCoordinatesDisplay');
             if (nameInput) nameInput.value = '';
             if (catInput) catInput.value = '';
             if (imgInput) imgInput.value = '';
+            if (coordsDisplay) coordsDisplay.innerHTML = 'لم يتم اختيار موقع بعد';
             addItemRow();
         }
     };
@@ -971,19 +1002,6 @@
         }, 5000);
     }
     
-    window.updateDeliveryPrices = async function() {
-        let carInput = document.getElementById('carPricePerKm');
-        let bikeInput = document.getElementById('bikePricePerKm');
-        let generalInput = document.getElementById('generalPricePerKm');
-        deliveryPrices = {
-            car: (carInput && carInput.value) ? parseInt(carInput.value) : 175,
-            bike: (bikeInput && bikeInput.value) ? parseInt(bikeInput.value) : 100,
-            general: (generalInput && generalInput.value) ? parseInt(generalInput.value) : 120
-        };
-        await fetch(`${FIREBASE_URL}/settings/deliveryPrices.json`, { method: 'PUT', body: JSON.stringify(deliveryPrices) });
-        showToast("تم تحديث الأسعار");
-    };
-    
     window.updateSuperDeliveryPrices = async function() {
         let carInput = document.getElementById('superCarPrice');
         let bikeInput = document.getElementById('superBikePrice');
@@ -994,7 +1012,7 @@
             general: (generalInput && generalInput.value) ? parseInt(generalInput.value) : 120
         };
         await fetch(`${FIREBASE_URL}/settings/deliveryPrices.json`, { method: 'PUT', body: JSON.stringify(deliveryPrices) });
-        showToast("تم تحديث الأسعار في النظام");
+        showToast("تم تحديث أسعار التوصيل في النظام");
     };
     
     window.updateSuperMinPrice = async function() {
@@ -1010,15 +1028,9 @@
             let data = await res.json();
             if (data) {
                 deliveryPrices = data;
-                let carInput = document.getElementById('carPricePerKm');
-                let bikeInput = document.getElementById('bikePricePerKm');
-                let generalInput = document.getElementById('generalPricePerKm');
                 let superCar = document.getElementById('superCarPrice');
                 let superBike = document.getElementById('superBikePrice');
                 let superGeneral = document.getElementById('superGeneralPrice');
-                if (carInput) carInput.value = deliveryPrices.car;
-                if (bikeInput) bikeInput.value = deliveryPrices.bike;
-                if (generalInput) generalInput.value = deliveryPrices.general;
                 if (superCar) superCar.value = deliveryPrices.car;
                 if (superBike) superBike.value = deliveryPrices.bike;
                 if (superGeneral) superGeneral.value = deliveryPrices.general;
@@ -1176,13 +1188,15 @@
                     if (addressInput) addressInput.value = addr;
                 }
             } catch(e) {}
-        } else if (currentMapMode === 'restaurant') {
+        } else if (currentMapMode === 'restaurant_admin') {
             let latInput = document.getElementById('restLat');
             let lngInput = document.getElementById('restLng');
             let locSpan = document.getElementById('restLocationTxt');
+            let coordsDisplay = document.getElementById('restCoordinatesDisplay');
             if (latInput) latInput.value = pos.lat;
             if (lngInput) lngInput.value = pos.lng;
-            if (locSpan) locSpan.innerHTML = `📍 ${pos.lat.toFixed(4)}, ${pos.lng.toFixed(4)}`;
+            if (locSpan) locSpan.innerHTML = `✅ تم تحديد الموقع`;
+            if (coordsDisplay) coordsDisplay.innerHTML = `📍 الإحداثيات: ${pos.lat.toFixed(6)}, ${pos.lng.toFixed(6)}`;
             closeMap();
             showToast("تم تحديد موقع المطعم");
         } else if (currentMapMode === 'delivery_restaurant') {
@@ -1224,12 +1238,28 @@
     function updateHeaderVisibility(pageId) {
         if (pageId === 'homePage') document.body.classList.add('home-active');
         else document.body.classList.remove('home-active');
+        
+        // إظهار/إخفاء زر الرجوع
+        let backBtn = document.getElementById('historyBackBtn');
+        if (backBtn) {
+            if (pageHistory.length > 1 && pageId !== 'homePage') {
+                backBtn.style.display = 'flex';
+            } else {
+                backBtn.style.display = 'none';
+            }
+        }
     }
     
     window.showPage = function(pageId) {
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
         let targetPage = document.getElementById(pageId);
         if (targetPage) targetPage.classList.add('active-page');
+        
+        // إضافة الصفحة للسجل إذا لم تكن آخر صفحة
+        if (pageHistory[pageHistory.length - 1] !== pageId) {
+            pageHistory.push(pageId);
+        }
+        
         if (pageId === 'homePage') { renderServices(); let savedDiv = document.getElementById('savedAddressesContainer'); if (savedDiv) savedDiv.innerHTML = '<div class="address-chip">🏠 المنزل</div><div class="address-chip">💼 العمل</div>'; }
         if (pageId === 'restaurantsPage') renderRestaurants();
         if (pageId === 'driverPage' && currentUser?.role === 'driver') { refreshDriverPanel(); let nameSpan = document.getElementById('driverNameDisplay'); if (nameSpan) nameSpan.innerText = currentUser?.name || ''; }

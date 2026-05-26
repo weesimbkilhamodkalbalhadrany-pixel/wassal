@@ -12,7 +12,6 @@
       OneSignalDeferred.push(async function(OneSignal) {
         await OneSignal.init({
           appId: "e71edeb9-7558-4e6a-84b7-a50ac1829ccb",
-          notifyButton: { enable: false },
         });
       });
     </script>
@@ -37,44 +36,6 @@
         .page { display: none; animation: fadeIn 0.3s ease; }
         .active-page { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        
-        /* سحب للتحديث - مثل متصفح كروم (سهم دائري صغير) */
-        .pull-to-refresh-indicator {
-            position: fixed;
-            top: -60px;
-            left: 0;
-            right: 0;
-            height: 50px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: top 0.2s ease;
-            z-index: 9999;
-            pointer-events: none;
-        }
-        .pull-to-refresh-indicator.show {
-            top: 10px;
-        }
-        .pull-spinner {
-            width: 35px;
-            height: 35px;
-            border: 3px solid rgba(45,212,191,0.2);
-            border-top-color: var(--primary-light);
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-            background: rgba(255,255,255,0.9);
-            border-radius: 50%;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-        body.dark-mode .pull-spinner {
-            background: rgba(30,41,59,0.9);
-            border: 3px solid rgba(45,212,191,0.2);
-            border-top-color: var(--primary-light);
-        }
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-        
         .services-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; margin: 10px 0; }
         .service-card { background: var(--card-light); border-radius: 28px; padding: 24px 12px 20px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 1px solid var(--border-light); cursor: pointer; }
         body.dark-mode .service-card { background: var(--card-dark); border-color: var(--border-dark); }
@@ -106,8 +67,6 @@
         .res-info { padding: 12px; text-align: center; }
         .res-info h3 { font-size: 1rem; font-weight: 800; }
         .res-info p { font-size: 0.75rem; color: var(--text-muted); }
-        .restaurant-contact-info { font-size: 0.7rem; color: var(--text-muted); margin-top: 5px; display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
-        .restaurant-contact-info i { margin-left: 3px; }
         .menu-grid { display: grid; gap: 15px; margin-top: 20px; }
         .item-card { background: var(--card-light); border-radius: 20px; display: flex; align-items: center; padding: 12px; gap: 15px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
         body.dark-mode .item-card { background: var(--card-dark); }
@@ -149,6 +108,7 @@
         .order-status-badge { background: var(--warning); color: white; padding: 4px 12px; border-radius: 30px; font-size: 0.7rem; }
         .order-details-row { display: flex; gap: 10px; margin: 8px 0; color: var(--text-muted); }
         .order-details-row i { width: 20px; color: var(--primary-light); }
+        .items-list { background: var(--bg-light); border-radius: 16px; padding: 10px; margin: 10px 0; }
         .action-buttons { display: flex; gap: 8px; margin-top: 15px; }
         .action-btn { flex: 1; padding: 12px 8px; border-radius: 40px; border: none; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; font-size: 0.9rem; }
         .action-btn.primary { background: var(--primary-light); color: var(--primary-dark); }
@@ -199,7 +159,7 @@
         .icon-btn { padding: 6px 12px; border-radius: 10px; border: none; cursor: pointer; }
         .admin-section { background: var(--card-light); border-radius: 20px; padding: 14px; margin-bottom: 12px; border: 1px solid var(--border-light); }
         .admin-section-title { font-size: 0.9rem; font-weight: 800; margin-bottom: 12px; display: flex; align-items: center; gap: 6px; color: var(--restaurant-accent); }
-        .restaurant-admin-card { background: var(--bg-light); border-radius: 16px; padding: 10px; margin-bottom: 10px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+        .restaurant-admin-card { background: var(--bg-light); border-radius: 16px; padding: 10px; margin-bottom: 10px; display: flex; gap: 10px; align-items: center; }
         .admin-split { display: flex; gap: 12px; flex-wrap: wrap; }
         .admin-left { flex: 1; min-width: 200px; }
         .admin-right { flex: 1.5; min-width: 250px; }
@@ -208,30 +168,25 @@
         .modal-content { background: var(--card-light); border-radius: 30px; padding: 20px; width: 90%; max-width: 500px; max-height: 85vh; overflow-y: auto; }
         .item-row { display: flex; gap: 6px; margin-bottom: 8px; flex-wrap: wrap; }
         .item-row input { flex: 1; min-width: 100px; }
-        .location-action-btn { background: var(--primary-light); color: var(--primary-dark); border: none; padding: 10px; border-radius: 25px; width: 100%; margin-bottom: 10px; font-weight: bold; cursor: pointer; }
+        .notification-permission-btn { background: #f97316; color: white; border: none; padding: 10px; border-radius: 30px; width: 100%; font-weight: 700; margin-top: 10px; cursor: pointer; }
     </style>
 </head>
 <body>
-
-<!-- سحب للتحديث - سهم دائري مثل كروم -->
-<div id="pullToRefresh" class="pull-to-refresh-indicator">
-    <div class="pull-spinner"></div>
-</div>
 
 <header class="app-header" id="adminTrigger">
     <div class="logo-area"><h1>وصّال | Wassal</h1><div class="slogan">مشوارك أسرع.. وطلبك أقرب</div></div>
     <div class="work-hours"><span id="workHoursDisplay">6:00 صباحاً - 10:00 مساءً</span></div>
 </header>
 
-<main id="mainContent">
+<main>
     <div id="homePage" class="page active-page">
         <div class="services-grid" id="servicesGrid"></div>
         <div class="saved-addresses" id="savedAddressesContainer"></div>
         <button id="trackOrderBtnHome" class="btn-send ripple" style="display: none;" onclick="window.showMyTracking()">📍 تتبع طلبي الحالي</button>
-        <button id="homeNotificationBtn" class="btn-send ripple" style="margin-top: 10px; background: #f97316; display: none;" onclick="enableLocalNotifications()">🔔 تفعيل الإشعارات الفورية</button>
+        <button id="homeNotificationBtn" class="notification-permission-btn ripple" style="display: none;" onclick="enableLocalNotifications()">🔔 تفعيل الإشعارات الفورية</button>
     </div>
     <div id="ordersPage" class="page"><div class="order-card" id="myOrdersContainer"><p style="text-align:center;">لا توجد طلبات</p></div><button id="refreshOrdersBtn" class="btn-send ripple" onclick="window.renderMyOrders()">تحديث</button></div>
-    <div id="settingsPage" class="page"><div class="settings-card"><h3 style="color: var(--primary-light); margin-bottom: 20px;">⚙️ الإعدادات</h3><div class="setting-row ripple" id="darkModeToggle"><span><i class="fas fa-moon"></i> الوضع الليلي</span><i class="fas fa-toggle-off" id="darkModeIcon"></i></div><div class="setting-row ripple" id="whatsappSupport"><span><i class="fab fa-whatsapp"></i> خدمة العملاء</span><i class="fas fa-chevron-left"></i></div><div class="setting-row ripple" id="shareApp"><span><i class="fas fa-share-alt"></i> مشاركة التطبيق</span><i class="fas fa-chevron-left"></i></div><div class="setting-row"><span><i class="fas fa-code-branch"></i> الإصدار</span><span>v17.0 (سحب للتحديث)</span></div><button class="btn-send logout-btn ripple" id="settingsLogoutBtn">تسجيل الخروج</button></div></div>
+    <div id="settingsPage" class="page"><div class="settings-card"><h3 style="color: var(--primary-light); margin-bottom: 20px;">⚙️ الإعدادات</h3><div class="setting-row ripple" id="darkModeToggle"><span><i class="fas fa-moon"></i> الوضع الليلي</span><i class="fas fa-toggle-off" id="darkModeIcon"></i></div><div class="setting-row ripple" id="whatsappSupport"><span><i class="fab fa-whatsapp"></i> خدمة العملاء</span><i class="fas fa-chevron-left"></i></div><div class="setting-row ripple" id="shareApp"><span><i class="fas fa-share-alt"></i> مشاركة التطبيق</span><i class="fas fa-chevron-left"></i></div><div class="setting-row"><span><i class="fas fa-code-branch"></i> الإصدار</span><span>v17.0 (40 مطعماً كاملاً)</span></div><button class="btn-send logout-btn ripple" id="settingsLogoutBtn">تسجيل الخروج</button></div></div>
     <div id="oPage" class="page"><div class="order-card" id="orderForm"></div></div>
     <div id="restaurantsPage" class="page">
         <div class="categories-scroll" id="catChipsContainer"></div>
@@ -244,7 +199,7 @@
         <div class="location-section">
             <label>📍 عنوان التوصيل</label>
             <div class="saved-addresses" id="restSavedAddresses"></div>
-            <div class="geo-btn ripple" onclick="getCurrentLocationForRestaurant()"><span>📍 استخدم موقعي الحالي</span><i class="fas fa-location-dot"></i></div>
+            <div class="geo-btn ripple" onclick="getCurrentLocation()"><span>📍 استخدم موقعي الحالي</span><i class="fas fa-location-dot"></i></div>
             <div class="geo-btn ripple" onclick="initMapForRestaurant()"><span id="restLocationTxt">حدد موقعك من الخريطة</span><i class="fas fa-map-marker-alt"></i></div>
             <input type="text" id="restaurantAddressManual" class="field-input" placeholder="أو اكتب عنوانك يدوياً" oninput="updateRestaurantAddressManual(this.value)">
             <div id="deliveryCostDisplay" style="margin-top: 10px; font-weight: bold; color: var(--restaurant-accent); display: none;">🚚 سعر التوصيل: <span id="deliveryCostValue">0</span> ريال</div>
@@ -252,7 +207,7 @@
         <button class="btn-primary" onclick="showRestaurantInvoice()">🧾 عرض الفاتورة</button>
         <button class="btn-primary" style="background: #64748b; margin-top: 10px;" onclick="showPage('restaurantsPage')">🔙 رجوع للمطاعم</button>
     </div>
-    <div id="restaurantInvoicePage" class="page"><div class="section-title">🧾 ملخص الطلب</div><div id="invoiceContent" style="background: var(--card-light); padding: 20px; border-radius: 20px;"></div><button class="btn-primary" id="confirmOrderFinalBtn" onclick="confirmRestaurantOrder()">✅ اعتماد الطلب</button><button class="btn-primary" style="background: #64748b; margin-top: 10px;" onclick="showPage('restaurantMenuPage')">🔙 تعديل</button></div>
+    <div id="restaurantInvoicePage" class="page"><div class="section-title">🧾 ملخص الطلب</div><div id="invoiceContent" style="background: var(--card-light); padding: 20px; border-radius: 20px;"></div><button class="btn-primary" onclick="confirmRestaurantOrder()">✅ اعتماد الطلب</button><button class="btn-primary" style="background: #64748b; margin-top: 10px;" onclick="showPage('restaurantMenuPage')">🔙 تعديل</button></div>
     <div id="orderDetailPage" class="page"><div id="orderDetailContainer"></div><button class="btn-send ripple" onclick="backToDriverPanel()">الرجوع للوحة التحكم</button></div>
     <div id="driverPage" class="page"><div class="driver-panel"><div class="driver-header"><h2>👋 مرحباً، <span id="driverNameDisplay"></span></h2><i class="fas fa-user-circle" style="font-size: 2.5rem; color: var(--primary-light);"></i></div><div class="driver-stats"><div class="stat-card"><i class="fas fa-truck"></i><div class="number" id="activeOrdersCount">0</div><span>نشط</span></div><div class="stat-card"><i class="fas fa-check-circle"></i><div class="number" id="completedOrdersCount">0</div><span>مكتمل</span></div></div><div class="modern-tabs"><div class="modern-tab active" id="modernActiveTab" onclick="switchDriverTab('active')"><i class="fas fa-play-circle"></i> طلبي النشط</div><div class="modern-tab" id="modernAvailableTab" onclick="switchDriverTab('available')"><i class="fas fa-list"></i> الطلبات المتاحة</div></div><div id="driverOrdersList"></div><button class="btn-send logout-btn ripple" id="driverLogoutBtn" style="background: var(--danger); color:white; margin-top:20px;">تسجيل الخروج</button></div></div>
     <div id="adminPanelPage" class="page"><div class="admin-panel" id="adminPanel"></div></div>
@@ -274,10 +229,6 @@
         <input type="text" id="restName" class="field-input" placeholder="اسم المطعم">
         <input type="text" id="restCat" class="field-input" placeholder="التصنيف">
         <input type="text" id="restImg" class="field-input" placeholder="رابط صورة المطعم">
-        <div style="display: flex; gap: 10px; margin-bottom: 12px;">
-            <input type="text" id="restAddress" class="field-input" placeholder="عنوان المطعم" style="flex:2;">
-            <input type="tel" id="restPhone" class="field-input" placeholder="رقم المطعم" style="flex:1;">
-        </div>
         <h4 style="margin:10px 0 5px; font-size:0.9rem;">🍽️ الأصناف</h4>
         <div id="itemsList"></div>
         <button class="btn-send" onclick="addNewItemRow()" style="margin:8px 0; font-size:0.7rem;">+ إضافة صنف جديد</button>
@@ -308,32 +259,6 @@
         let orderWatcherInterval = null;
         let lastOrderStatuses = {};
         
-        // سحب للتحديث - مثل متصفح كروم (سهم دائري صغير)
-        let pullStartY = 0, isPulling = false;
-        function initPullToRefresh() {
-            let touchStartY = 0;
-            document.addEventListener('touchstart', (e) => { 
-                touchStartY = e.touches[0].clientY; 
-            });
-            document.addEventListener('touchmove', (e) => {
-                let scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
-                if (scrollTop === 0 && e.touches[0].clientY > touchStartY + 30 && !isPulling) {
-                    isPulling = true;
-                    document.getElementById('pullToRefresh').classList.add('show');
-                }
-            });
-            document.addEventListener('touchend', () => {
-                if (isPulling) {
-                    setTimeout(() => { location.reload(); }, 200);
-                }
-                setTimeout(() => {
-                    document.getElementById('pullToRefresh').classList.remove('show');
-                    isPulling = false;
-                }, 500);
-            });
-        }
-        initPullToRefresh();
-        
         // العناوين المحفوظة
         let savedAddresses = [
             { name: "🏠 بيت", lat: 15.3694, lng: 44.1910, addr: "المنزل - شارع التعاون" },
@@ -341,17 +266,52 @@
             { name: "🌴 استراحة", lat: 15.3500, lng: 44.2150, addr: "الاستراحة - طريق المطار" }
         ];
 
-        // قائمة المطاعم
+        // ========== قائمة المطاعم الكاملة (40 مطعماً) مستخرجة من الكود ==========
         const restaurants = [
-            { id: 1, name: "رويال بروستر", cat: "بروست", img: "https://images.unsplash.com/photo-1626645738196-c2a7c8d08f58?w=400", address: "شارع حدة - صنعاء", phone: "777123456", items: [{n:"وجبة بروست (4 قطع)",p:2200},{n:"زنجر سوبريم",p:2400},{n:"ستريبس",p:2000}] },
-            { id: 2, name: "البيك رويال", cat: "بروست", img: "https://images.unsplash.com/photo-1562967914-608f82629710?w=400", address: "شارع الزراعة - صنعاء", phone: "777234567", items: [{n:"بروست رويال",p:2400},{n:"فيليه سمك",p:2200},{n:"زنجر رويال",p:1600}] },
-            { id: 3, name: "شاورما هت", cat: "شاورما", img: "https://images.unsplash.com/photo-1644704170910-a0cdf183649b?w=400", address: "شارع الستين - صنعاء", phone: "777345678", items: [{n:"شاورما دجاج",p:800},{n:"شاورما لحم",p:900},{n:"وجبة شاورما",p:1800}] },
-            { id: 4, name: "ستار برجر", cat: "برجر", img: "https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=400", address: "شارع الرباط - صنعاء", phone: "777456789", items: [{n:"برجر لحم كلاسيك",p:1800},{n:"برجر دجاج مقرمش",p:1700},{n:"مشروم برجر",p:2200}] },
-            { id: 5, name: "بيتزا هت", cat: "بيتزا", img: "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=400", address: "شارع تعز - صنعاء", phone: "777567890", items: [{n:"بيتزا خضار",p:2800},{n:"بيتزا بيبروني",p:3200},{n:"بيتزا دجاج",p:3000}] }
+            { id: 1, name: "رويال بروستر", cat: "بروست", img: "https://images.unsplash.com/photo-1626645738196-c2a7c8d08f58?w=400", items: [{n:"وجبة بروست (4 قطع)",p:2200},{n:"وجبة زنجر سوبريم",p:2400},{n:"وجبة ستريبس (5 قطع)",p:2000},{n:"وجبة مسحب رويال",p:2200},{n:"ساندوتش زنجر",p:1300},{n:"ساندوتش رويال برجر لحم",p:1600},{n:"ساندوتش رويال برجر دجاج",p:1400},{n:"ساندوتش تويستر",p:1100},{n:"سطل رويال (12 قطعة)",p:6500},{n:"سطل رويال (16 قطعة)",p:8000},{n:"بطاطس (صحن)",p:600},{n:"حلقات بصل",p:800},{n:"سلطة كول سلو",p:500},{n:"ثومية إضافية",p:200},{n:"مشروبات غازية (علبة)",p:400}] },
+            { id: 2, name: "البيك رويال", cat: "بروست", img: "https://images.unsplash.com/photo-1562967914-608f82629710?w=400", items: [{n:"وجبة بروست رويال (4 قطع)",p:2400},{n:"وجبة بروست حراق (4 قطع)",p:2500},{n:"وجبة فيليه سمك",p:2200},{n:"وجبة الروبيان المقلي",p:3500},{n:"ساندوتش زنجر رويال",p:1600},{n:"برجر دجاج رويال",p:1400},{n:"ساندوتش بيج بيك",p:1800},{n:"مسحب دجاج",p:1300},{n:"باقة العائلة (10 قطع)",p:6000},{n:"باقة رويال (16 قطعة)",p:9200},{n:"بطاطس",p:800},{n:"حلقات البصل",p:900},{n:"سلطة كول سلو",p:600},{n:"كبة دجاج",p:700},{n:"مشروبات غازية",p:400}] },
+            { id: 3, name: "شاورما هت", cat: "شاورما", img: "https://images.unsplash.com/photo-1644704170910-a0cdf183649b?w=400", items: [{n:"شاورما صاروخ (دجاج)",p:1200},{n:"شاورما دبل",p:1800},{n:"شاورما عربي (صحن)",p:2200},{n:"هت بوكس عائلي",p:5500},{n:"ميني هت",p:1000},{n:"بطاطس هت متبلة",p:700},{n:"صوص ثوم/حار",p:200},{n:"إضافة جبنة شيدر",p:300},{n:"مشروبات غازية",p:400},{n:"ماء",p:200}] },
+            { id: 4, name: "ستار برجر", cat: "برجر", img: "https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=400", items: [{n:"برجر لحم كلاسيك",p:1800},{n:"برجر دجاج مقرمش",p:1700},{n:"مشروم برجر",p:2200},{n:"باربيكيو برجر",p:2100},{n:"حلقات بصل",p:800},{n:"أصابع موتزاريلا",p:1500},{n:"بطاطس ويدجز",p:900},{n:"ميلك شيك فراولة",p:1200},{n:"تشيز كيك لوتس",p:1500},{n:"هوت دوج ستار",p:1300},{n:"ستيك برجر دبل",p:2800},{n:"عصير فواكه",p:900}] },
+            { id: 5, name: "تراك برجر", cat: "برجر", img: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400", items: [{n:"كلاسيك لحم",p:1800},{n:"تراك لحم دبل",p:2600},{n:"مشروم لحم",p:2200},{n:"باربكيو لحم",p:2000},{n:"كلاسيك دجاج",p:1500},{n:"تراك دجاج سبايسي",p:1800},{n:"دجاج مشوي",p:1600},{n:"وجبة كلاسيك لحم",p:2500},{n:"وجبة تراك دبل",p:3300},{n:"بطاطس مقلي",p:600},{n:"تراك فرايز",p:1500},{n:"حلقات بصل",p:800}] },
+            { id: 6, name: "الشيباني جلوبال", cat: "مشاوي", img: "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=400", items: [{n:"فحسة لحم بلدي",p:4500},{n:"سلته جلوبال",p:2500},{n:"عقدة لحم",p:3500},{n:"عقدة دجاج",p:2200},{n:"مشكل مشاوي",p:5500},{n:"كباب غنمي",p:4500},{n:"اوصال لحم",p:4500},{n:"دجاج فحم",p:2400},{n:"ستيك لحم",p:6000},{n:"مكرونة بشاميل",p:1800},{n:"ارز مندي",p:800},{n:"معصوب جلوبال",p:2500}] },
+            { id: 7, name: "كنتاكي - KFC", cat: "بروست", img: "https://images.unsplash.com/photo-1550547660-d9450f859349?w=400", items: [{n:"وجبة دينر ميل",p:2800},{n:"وجبة سوبر دينر",p:3500},{n:"وجبة مايتي زنجر",p:2600},{n:"وجبة تويستر",p:1800},{n:"باقة المشاركة (9 قطع)",p:7500},{n:"باقة الحفلات (15 قطعة)",p:11000},{n:"زنجر برجر",p:1400},{n:"تويستر تشيكن",p:1100},{n:"بيج فيلر",p:1800},{n:"بطاطس",p:700},{n:"سلطة كول سلو",p:600},{n:"ريزو دجاج",p:1200}] },
+            { id: 8, name: "مدينة العصائر", cat: "عصائر", img: "https://images.unsplash.com/photo-1589733955941-5eeaf752f6dd?w=400", items: [{n:"إمبراطور",p:1500},{n:"عرائسي",p:1200},{n:"كوكتيل شقف",p:1300},{n:"مكس المدينة",p:1600},{n:"عصير مانجو",p:1000},{n:"عصير جوافة",p:800},{n:"عصير فراولة",p:900},{n:"ليمون بالنعناع",p:700},{n:"ميلك شيك شوكولاتة",p:1200},{n:"أفوكادو بالعسل",p:1800},{n:"كريب نوتيلا",p:2000}] },
+            { id: 9, name: "البيت التركي للمشويات", cat: "مشاوي", img: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=400", items: [{n:"كباب تركي",p:4000},{n:"كباب دجاج تركي",p:2800},{n:"شيش طاووق",p:3000},{n:"مشكل البيت التركي",p:4500},{n:"ريش غنمية",p:5500},{n:"طاجن دجاج",p:2500},{n:"لحم بعجين",p:800},{n:"فطيرة أجبان",p:1500},{n:"شوربة العدس",p:1000},{n:"مقبلات مشكل",p:1800},{n:"بقلاوة تركية",p:2000}] },
+            { id: 10, name: "هوت سبايسي", cat: "برجر", img: "https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?w=400", items: [{n:"وجبة بروست هوت سبايسي",p:2200},{n:"وجبة عائلية",p:6800},{n:"ساندوتش زنجر ناري",p:1400},{n:"وجبة زنجر سوبريم",p:2500},{n:"تورتيلا هوت سبايسي",p:1300},{n:"برجر لحم مشوي",p:1600},{n:"ميجا برجر سبايسي",p:2300},{n:"بطاطس حلزوني",p:800},{n:"أصابع موزاريلا",p:1000}] },
+            { id: 11, name: "ترند كافيه", cat: "عصائر", img: "https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=400", items: [{n:"إسبريسو",p:800},{n:"لاتيه",p:1200},{n:"كابتشينو",p:1200},{n:"فلات وايت",p:1300},{n:"سبانش لاتيه ساخن",p:1500},{n:"آيس سبانش لاتيه",p:1600},{n:"آيس كراميل ماكياتو",p:1700},{n:"موهيتو بلو",p:1200},{n:"كريب نوتيلا",p:1800},{n:"وافل بلجيكي",p:1500}] },
+            { id: 12, name: "ساك بروستر", cat: "بروست", img: "https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?w=400", items: [{n:"وجبة بروست ساك",p:2300},{n:"وجبة ستريبس",p:2100},{n:"عائلي ساك (10 قطع)",p:5800},{n:"صندوق السعادة",p:10500},{n:"ساندوتش زنجر العملاق",p:1500},{n:"برجر لحم مشوي",p:1700},{n:"رول تورتيلا",p:1200},{n:"سلطة كول سلو",p:600}] },
+            { id: 13, name: "سام بروستر", cat: "بروست", img: "https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?w=400", items: [{n:"وجبة بروست سام",p:2300},{n:"وجبة بروست حراق",p:2400},{n:"عائلي سام",p:5800},{n:"صندوق السعادة",p:10500},{n:"ساندوتش زنجر سام",p:1500},{n:"برجر لحم",p:1700},{n:"تورتيلا سام",p:1200},{n:"أصابع الموزاريلا",p:1100}] },
+            { id: 14, name: "شواية أرخبيل سقطرى", cat: "مشاوي", img: "https://images.unsplash.com/photo-1544025162-d76694265947?w=400", items: [{n:"دجاج شواية (حبة)",p:4000},{n:"نصف دجاج مع الأرز",p:2200},{n:"نفر لحم بلدي",p:4500},{n:"مشكل مشاوي",p:4000},{n:"كباب لحم",p:3500},{n:"ملوخية",p:700},{n:"أرز مندي",p:800}] },
+            { id: 15, name: "فايف ستار برجر", cat: "برجر", img: "https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=400", items: [{n:"فايف ستار برجر لحم",p:2000},{n:"تشيكن برجر مقرمش",p:1600},{n:"دبل برجر",p:2800},{n:"وجبة ستريبس",p:2200},{n:"تورتيلا دجاج",p:1300},{n:"بطاطس بالجبنة",p:1000},{n:"حلقات بصل",p:800}] },
+            { id: 16, name: "حواء لا تنسى", cat: "شعبي", img: "https://images.unsplash.com/photo-1591261735099-e3776264e164?w=400", items: [{n:"مندي دجاج",p:2200},{n:"مظبي دجاج",p:2300},{n:"نفر لحم بلدي",p:4500},{n:"زربيان دجاج",p:2400},{n:"برم لحم",p:4800},{n:"سلته",p:1500},{n:"معصوب ملكي",p:2000}] },
+            { id: 17, name: "العم طه", cat: "وجبات سريعة", img: "https://images.unsplash.com/photo-1593001874117-c99c800e3eb7?w=400", items: [{n:"سندوتش زنجر",p:1300},{n:"شيش طاووق",p:1200},{n:"تورتيلا دجاج",p:1200},{n:"برجر لحم",p:1500},{n:"وجبة بروست",p:2200},{n:"بطاطس",p:700},{n:"ثومية",p:300}] },
+            { id: 18, name: "القرية التهامية", cat: "تهامي", img: "https://images.unsplash.com/photo-1544025162-d76694265947?w=400", items: [{n:"سمك ديرك",p:3500},{n:"سمك باغة",p:1200},{n:"صحن جمبري",p:4000},{n:"مغزة تهامية",p:2800},{n:"كمونية",p:1500},{n:"عصيدة تهامية",p:1200},{n:"كوبن",p:400}] },
+            { id: 19, name: "أمين بيتزا", cat: "بيتزا", img: "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=400", items: [{n:"بيتزا أمين خاصة",p:2500},{n:"بيتزا دجاج",p:2200},{n:"بيتزا لحم",p:2300},{n:"بيتزا خضروات",p:1800},{n:"عش البلبل",p:2000},{n:"فطيرة دجاج بالجبن",p:1200}] },
+            { id: 20, name: "نكهات كرسبي", cat: "وجبات سريعة", img: "https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?w=400", items: [{n:"وجبة كرسبي",p:2200},{n:"ساندوتش زنجر نكهات",p:1400},{n:"تورتيلا كرسبي",p:1200},{n:"بطاطس نكهات",p:900},{n:"أصابع موزاريلا",p:1100}] },
+            { id: 21, name: "مطعم الأندلس", cat: "مشاوي", img: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=400", items: [{n:"نفر مشكل مشاوي",p:4500},{n:"كباب لحم",p:4000},{n:"دجاج فحم",p:3800},{n:"ريش غنم",p:5000},{n:"فحسة لحم",p:2500},{n:"برم لحم",p:4800}] },
+            { id: 22, name: "ديناميت", cat: "برجر", img: "https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?w=400", items: [{n:"ديناميت تشيكن",p:2500},{n:"ديناميت روبيان",p:3800},{n:"وجبة الانفجار",p:3200},{n:"برجر ديناميت لحم",p:2200},{n:"ساندوتش زنجر ناري",p:1600},{n:"بطاطس بالجبنة",p:1200}] },
+            { id: 23, name: "تتبيلة", cat: "برجر", img: "https://images.unsplash.com/photo-1644704170910-a0cdf183649b?w=400", items: [{n:"برجر تتبيلة الخاص",p:2400},{n:"برجر دجاج مقرمش",p:1800},{n:"مشروم برجر",p:2600},{n:"صحن شاورما عربي",p:2500},{n:"بطاطس محمرة",p:800}] },
+            { id: 24, name: "كنج برجر", cat: "برجر", img: "https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=400", items: [{n:"كنج برجر لحم",p:2800},{n:"رويال تشيكن",p:1900},{n:"وجبة كيدز",p:1200},{n:"ساندوتش زنجر",p:1500},{n:"فيليه سمك",p:1600}] },
+            { id: 25, name: "باب المندب", cat: "بحرية", img: "https://images.unsplash.com/photo-1567620832903-9fc6debc209f?w=400", items: [{n:"سمك ديرك",p:4000},{n:"سمك جحش",p:3000},{n:"صحن جمبري",p:4500},{n:"أرز صيادية",p:1000},{n:"طاجن تونة",p:1500}] },
+            { id: 26, name: "البيك التهامي", cat: "بروست", img: "https://images.unsplash.com/photo-1562967914-608f82629710?w=400", items: [{n:"وجبة بروست تهامي",p:2200},{n:"وجبة المسحب",p:2100},{n:"زنجر تهامي",p:1400},{n:"تورتيلا البيك",p:1200},{n:"كبة تهامية",p:300}] },
+            { id: 27, name: "الضيعة", cat: "مشاوي", img: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=400", items: [{n:"مشكل مشاوي الضيعة",p:4800},{n:"كباب شامي",p:4200},{n:"شيش طاووق",p:3800},{n:"مندي دجاج",p:2500},{n:"فحسة الضيعة",p:2800}] },
+            { id: 28, name: "المأكولات الشامية", cat: "شامي", img: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=400", items: [{n:"مشوي مشكل",p:4500},{n:"كباب حلبي",p:4000},{n:"عرايس لحم",p:2500},{n:"صفيحة شامية",p:1800},{n:"حمص بيروتي",p:1000}] },
+            { id: 29, name: "مطعم 99", cat: "برجر", img: "https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=400", items: [{n:"برجر 99 لحم",p:2600},{n:"وجبة سوبر زنجر",p:1800},{n:"بوكس السعادة",p:5500},{n:"تورتيلا 99",p:1300},{n:"ميلك شيك",p:1200}] },
+            { id: 30, name: "فريش فرايز", cat: "وجبات سريعة", img: "https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=400", items: [{n:"فريش فرايز كلاسيك",p:1200},{n:"فرايز بالجبنة",p:1600},{n:"ديناميت فرايز",p:2200},{n:"زنجر ساندوتش",p:1500},{n:"تورتيلا دجاج",p:1400}] },
+            { id: 31, name: "يوتيرن", cat: "برجر", img: "https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=400", items: [{n:"يوتيرن برجر",p:2500},{n:"وجبة سوبر زنجر",p:1900},{n:"تشيكن فيليه",p:1500},{n:"بطاطس يوتيرن",p:800}] },
+            { id: 32, name: "أرسو", cat: "برجر", img: "https://images.unsplash.com/photo-1589733955941-5eeaf752f6dd?w=400", items: [{n:"أرسو برجر لحم",p:2700},{n:"وجبة زنجر أرسو",p:2000},{n:"هوت دوج أرسو",p:1200},{n:"بطاطس أرسو",p:800}] },
+            { id: 33, name: "شواية مسبوك", cat: "مشاوي", img: "https://images.unsplash.com/photo-1599321955419-785373199a8d?w=400", items: [{n:"حبة دجاج شواية مع الأرز",p:4800},{n:"نصف حبة",p:2400},{n:"ربع حبة",p:1300},{n:"ملوخية",p:700}] },
+            { id: 34, name: "كشري ستيشن", cat: "مصري", img: "https://images.unsplash.com/photo-1591261735099-e3776264e164?w=400", items: [{n:"كشري ستيشن صغير",p:800},{n:"وسط",p:1200},{n:"كبير",p:1600},{n:"إضافة تقلية",p:200},{n:"أرز بلبن",p:700}] },
+            { id: 35, name: "شواية المكلا", cat: "مشاوي", img: "https://images.unsplash.com/photo-1591261735099-e3776264e164?w=400", items: [{n:"دجاج شواية مع الأرز",p:4600},{n:"نصف حبة",p:2300},{n:"وجبة حنيذ",p:2500},{n:"عشار حضرمي",p:300}] },
+            { id: 36, name: "قمة الضيافة", cat: "مندي", img: "https://images.unsplash.com/photo-1567620832903-9fc6debc209f?w=400", items: [{n:"نفر لحم مندي",p:7500},{n:"نفر لحم حنيذ",p:7800},{n:"نصف تيس",p:35000},{n:"حبة دجاج مندي",p:4800}] },
+            { id: 37, name: "الرباش", cat: "شعبي", img: "https://images.unsplash.com/photo-1567620832903-9fc6debc209f?w=400", items: [{n:"زربيان لحم",p:7500},{n:"نفر لحم مندي",p:7200},{n:"زربيان دجاج",p:2800},{n:"عشار عدني",p:300}] },
+            { id: 38, name: "القرموشي", cat: "فطور", img: "https://images.unsplash.com/photo-1591261735099-e3776264e164?w=400", items: [{n:"معصوب ملكي",p:2000},{n:"عريكة قرموشي",p:1800},{n:"مطبق مالح",p:1000},{n:"فول قلاية",p:800}] },
+            { id: 39, name: "خير زمان", cat: "مندي", img: "https://images.unsplash.com/photo-1591261735099-e3776264e164?w=400", items: [{n:"نفر لحم مندي",p:7400},{n:"نفر لحم مدفون",p:7600},{n:"برمة لحم",p:8000},{n:"حبة دجاج مندي",p:4600}] },
+            { id: 40, name: "خير زمان", cat: "شعبي", img: "https://images.unsplash.com/photo-1591261735099-e3776264e164?w=400", items: [{n:"نفر لحم مندي",p:7400},{n:"حبة دجاج مندي",p:4600},{n:"ملوخية",p:700},{n:"شفوت يمني",p:1200}] }
         ];
 
+        // دوال مساعدة
         window.showToast = msg => { let t = document.getElementById('toastMsg'); t.innerText = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 3000); };
-        
         function showPage(pageId) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
             document.getElementById(pageId).classList.add('active-page');
@@ -361,7 +321,6 @@
             if (pageId === 'adminPanelPage' && currentUser?.role === 'admin') renderAdminPanel();
             if (pageId === 'ordersPage') renderMyOrders();
         }
-        
         function setActiveNav(pageId) { document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active')); document.querySelector(`.nav-item[data-page="${pageId}"]`)?.classList.add('active'); }
         
         function renderSavedAddresses() {
@@ -370,6 +329,18 @@
             let restContainer = document.getElementById('restSavedAddresses');
             if(restContainer) restContainer.innerHTML = savedAddresses.map(a => `<div class="address-chip" onclick="useSavedAddressForRestaurant(${a.lat}, ${a.lng}, '${a.addr}')"><i class="fas ${a.name.includes('بيت')?'fa-home':a.name.includes('عمل')?'fa-briefcase':'fa-tree'}"></i> ${a.name}</div>`).join('');
         }
+        
+        window.useSavedAddress = (name) => {
+            let addr = savedAddresses.find(a => a.name === name);
+            if(addr) {
+                locs.p = { lat: addr.lat, lng: addr.lng };
+                manualAddresses.p = addr.addr;
+                document.getElementById('pTxt').innerHTML = `✅ ${addr.addr}`;
+                document.getElementById('pManual').value = addr.addr;
+                updatePrice();
+                showToast(`تم تحديد ${name}`);
+            }
+        };
         
         window.useSavedAddressForRestaurant = (lat, lng, addr) => {
             customerLocationLatLng = { lat, lng };
@@ -380,23 +351,10 @@
             document.getElementById('deliveryCostDisplay').style.display = 'block';
             document.getElementById('deliveryCostValue').innerText = deliveryCost;
             updateCartDisplay();
+            showToast(`تم تحديد ${addr}`);
         };
         
-        window.getCurrentLocationForService = (type) => {
-            if(navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(pos => {
-                    let lat = pos.coords.latitude, lng = pos.coords.longitude;
-                    locs[type] = { lat, lng };
-                    document.getElementById(type+'Txt').innerHTML = `✅ موقعي الحالي`;
-                    updatePrice();
-                    showToast("تم تحديد موقعك");
-                }, () => showToast("فشل تحديد الموقع"));
-            } else {
-                showToast("المتصفح لا يدعم تحديد الموقع");
-            }
-        };
-        
-        window.getCurrentLocationForRestaurant = () => {
+        window.getCurrentLocation = () => {
             if(navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(pos => {
                     let lat = pos.coords.latitude, lng = pos.coords.longitude;
@@ -412,11 +370,14 @@
             }
         };
 
+        function calculateDeliveryCost() { if(!customerLocationLatLng) return MIN_DELIVERY_PRICE; const d = L.latLng(customerLocationLatLng.lat, customerLocationLatLng.lng).distanceTo(L.latLng(RESTAURANT_LOCATION.lat, RESTAURANT_LOCATION.lng)) / 1000; return Math.max(Math.round(d * DELIVERY_PRICE_PER_KM), MIN_DELIVERY_PRICE); }
         async function loadOrders() { try { let r = await fetch(`${FIREBASE_URL}/orders.json`); let d = await r.json(); allOrders = d ? Object.values(d).sort((a,b)=>b.id-a.id) : []; } catch(e) {} }
         async function updateOrder(id, updates) { await fetch(`${FIREBASE_URL}/orders/${id}.json`, { method: 'PATCH', body: JSON.stringify(updates) }); await loadOrders(); }
         async function saveUser(user) { await fetch(`${FIREBASE_URL}/users/${user.phone}.json`, { method: 'PUT', body: JSON.stringify(user) }); }
+        async function updateUserBusy(phone, isBusy) { await fetch(`${FIREBASE_URL}/users/${phone}.json`, { method: 'PATCH', body: JSON.stringify({ isBusy }) }); }
         function getStatusText(st) { const m = {pending:'قيد المراجعة', on_the_way:'في الطريق', arrived:'وصل الموقع', delivered:'تم التوصيل'}; return m[st] || st; }
 
+        // خدمات عامة (محذوفة المطاعم تم نقلها للأسفل)
         const services = [{id:"تاكسي 🚖",emoji:"🚖"},{id:"دراجة 🏍️",emoji:"🏍️"},{id:"توصيل 📦",emoji:"📦"},{id:"باص 🚌",emoji:"🚌"},{id:"طاريء 🚨",emoji:"🚨"},{id:"مستندات 📄",emoji:"📄"},{id:"تسوق 🛒",emoji:"🛒"},{id:"نقل طرود 🚛",emoji:"🚛"}];
         function renderServices() { document.getElementById('servicesGrid').innerHTML = services.map(s => `<div class="service-card ripple" onclick="openService('${s.id}')"><div class="service-icon">${s.emoji}</div><h3>${s.id}</h3></div>`).join(''); }
         window.openService = type => { if(currentUser?.role!=='customer') return showToast('سجل دخول كعميل'); vSel=type; showOrderForm(); };
@@ -424,8 +385,8 @@
         function showOrderForm() { 
             let html = `<h3>طلب خدمة ${vSel}</h3>
             <div class="saved-addresses" id="orderSavedAddresses"></div>
-            <div class="input-box"><label>📍 موقع الانطلاق</label><button class="location-action-btn" onclick="getCurrentLocationForService('p')"><i class="fas fa-location-dot"></i> استخدم موقعي الحالي للانطلاق</button><div class="geo-btn ripple" onclick="window.initMap('p')"><span id="pTxt">${manualAddresses.p||'حدد من الخريطة'}</span><i class="fas fa-map-marker-alt"></i></div><input type="text" id="pManual" class="field-input" placeholder="✍️ اكتب العنوان يدوياً" value="${manualAddresses.p}" oninput="window.updateManualAddress('p', this.value)"></div>
-            <div class="input-box"><label>🏁 وجهة الوصول</label><button class="location-action-btn" onclick="getCurrentLocationForService('d')"><i class="fas fa-location-dot"></i> استخدم موقعي الحالي للوصول</button><div class="geo-btn ripple" onclick="window.initMap('d')"><span id="dTxt">${manualAddresses.d||'حدد من الخريطة'}</span><i class="fas fa-location-dot"></i></div><input type="text" id="dManual" class="field-input" placeholder="✍️ اكتب العنوان يدوياً" value="${manualAddresses.d}" oninput="window.updateManualAddress('d', this.value)"></div>
+            <div class="input-box"><label>📍 موقع الانطلاق</label><div class="geo-btn ripple" onclick="window.initMap('p')"><span id="pTxt">${manualAddresses.p||'حدد من الخريطة'}</span><i class="fas fa-map-marker-alt"></i></div><input type="text" id="pManual" class="field-input" placeholder="✍️ اكتب العنوان يدوياً" value="${manualAddresses.p}" oninput="window.updateManualAddress('p', this.value)"></div>
+            <div class="input-box"><label>🏁 وجهة الوصول</label><div class="geo-btn ripple" onclick="window.initMap('d')"><span id="dTxt">${manualAddresses.d||'حدد من الخريطة'}</span><i class="fas fa-location-dot"></i></div><input type="text" id="dManual" class="field-input" placeholder="✍️ اكتب العنوان يدوياً" value="${manualAddresses.d}" oninput="window.updateManualAddress('d', this.value)"></div>
             <div class="price-tag"><span>💰 السعر التقديري:</span><span class="price-val"><span id="finalPrice">500</span> ريال</span></div>
             <div class="payment-options-grid" id="paymentOptionsGrid"></div>
             <input type="text" id="couponCode" class="field-input" placeholder="كود الخصم WELCOME10">
@@ -437,16 +398,8 @@
             showPage('oPage'); 
             renderPaymentOptions(); 
             document.getElementById('confirmOrderBtn').onclick = confirmOrderCloud;
-            document.getElementById('orderSavedAddresses').innerHTML = savedAddresses.map(a => `<div class="address-chip" onclick="useSavedAddressForOrder('${a.name}', ${a.lat}, ${a.lng}, '${a.addr}')"><i class="fas fa-location-dot"></i> ${a.name}</div>`).join('');
+            document.getElementById('orderSavedAddresses').innerHTML = savedAddresses.map(a => `<div class="address-chip" onclick="useSavedAddress('${a.name}')"><i class="fas ${a.name.includes('بيت')?'fa-home':a.name.includes('عمل')?'fa-briefcase':'fa-tree'}"></i> ${a.name}</div>`).join('');
         }
-        
-        window.useSavedAddressForOrder = (name, lat, lng, addr) => {
-            locs.p = { lat, lng };
-            manualAddresses.p = addr;
-            document.getElementById('pTxt').innerHTML = `✅ ${addr}`;
-            document.getElementById('pManual').value = addr;
-            updatePrice();
-        };
         
         function renderPaymentOptions(){
             let options = [{ id: "الدفع عند التوصيل", icon: "fa-money-bill", label: "كاش" },{ id: "محفظة وصال", icon: "fa-wallet", label: "محفظة" },{ id: "بطاقة ائتمان", icon: "fa-credit-card", label: "أونلاين" }];
@@ -469,135 +422,78 @@
             setActiveNav('homePage'); 
             await loadOrders(); 
             viewOrderTracking(id); 
+            let msg = `🚖 طلب ${vSel}\n🆔 ${id}\n👤 ${tel}\n💰 ${price} ريال\n💳 ${selectedPayment}\n📍 ${pAddr}\n🏁 ${dAddr}`; 
+            window.open(`https://wa.me/777215154?text=${encodeURIComponent(msg)}`, '_blank'); 
         }
 
-        window.initMap = mode => { currentMapMode=mode; document.getElementById('map-overlay').style.display='flex'; setTimeout(()=>{ if(!map){ map = L.map('map', { zoomControl: false, dragging: true, tap: true }).setView(SANAA_CENTER, 14); L.tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', { subdomains: ['mt0','mt1','mt2','mt3'] }).addTo(map); marker = L.marker(SANAA_CENTER, { draggable: true, autoPan: true }).addTo(map); map.on('click', e => marker.setLatLng(e.latlng)); } else { map.setView(SANAA_CENTER, 14); marker.setLatLng(SANAA_CENTER); } map.invalidateSize(); }, 100); };
+        // خريطة الموقع
+        window.initMap = mode => { currentMapMode=mode; document.getElementById('map-overlay').style.display='flex'; setTimeout(()=>{ if(!map){ map = L.map('map', { zoomControl: false, dragging: true, tap: true }).setView(SANAA_CENTER, 14); L.tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', { subdomains: ['mt0','mt1','mt2','mt3'] }).addTo(map); marker = L.marker(SANAA_CENTER, { draggable: true, autoPan: true }).addTo(map); map.on('click', e => marker.setLatLng(e.latlng)); } else { map.setView(SANAA_CENTER, 14); marker.setLatLng(SANAA_CENTER); } map.invalidateSize(); if (mode === 'restaurant' && customerLocationLatLng) { marker.setLatLng(customerLocationLatLng); map.setView(customerLocationLatLng, 15); } else if (locs[mode]) { marker.setLatLng(locs[mode]); map.setView(locs[mode], 15); } }, 100); };
         window.initMapForRestaurant = () => { currentMapMode='restaurant'; initMap('restaurant'); };
         window.closeMap = () => { document.getElementById('map-overlay').style.display='none'; };
-        window.confirmMapLocation = () => { if(!map||!marker) return; const pos = marker.getLatLng(); if(currentMapMode==='restaurant') { customerLocationLatLng=pos; closeMap(); document.getElementById('restLocationTxt').innerText='✅ تم تحديد الموقع'; deliveryCost=Math.max(Math.round(L.latLng(pos.lat, pos.lng).distanceTo(L.latLng(RESTAURANT_LOCATION.lat,RESTAURANT_LOCATION.lng))/1000*DELIVERY_PRICE_PER_KM), MIN_DELIVERY_PRICE); document.getElementById('deliveryCostDisplay').style.display='block'; document.getElementById('deliveryCostValue').innerText=deliveryCost; updateCartDisplay(); } else { locs[currentMapMode]=pos; document.getElementById(currentMapMode+'Txt').innerHTML=`✅ تم تحديد ${currentMapMode==='p'?'الانطلاق':'الوصول'}`; closeMap(); updatePrice(); } };
+        window.confirmMapLocation = async () => { if(!map||!marker) return; const pos = marker.getLatLng(); if(currentMapMode==='restaurant') { customerLocationLatLng=pos; closeMap(); document.getElementById('restLocationTxt').innerText='✅ تم تحديد الموقع'; deliveryCost=calculateDeliveryCost(); document.getElementById('deliveryCostDisplay').style.display='block'; document.getElementById('deliveryCostValue').innerText=deliveryCost; updateCartDisplay(); try { let res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${pos.lat}&lon=${pos.lng}&addressdetails=1&accept-language=ar`); let d = await res.json(); if(d.display_name){ customerAddress=d.display_name.split(',')[0]; document.getElementById('restLocationTxt').innerText=customerAddress.substring(0,40); document.getElementById('restaurantAddressManual').value=customerAddress; } } catch(e){} } else { locs[currentMapMode]=pos; document.getElementById(currentMapMode+'Txt').innerText=`✅ تم تحديد ${currentMapMode==='p'?'الانطلاق':'الوصول'}`; closeMap(); updatePrice(); } };
         window.updateRestaurantAddressManual = addr => { customerAddress=addr; document.getElementById('restLocationTxt').innerText=addr||'حدد موقعك'; if(addr&&addr.length>3){ deliveryCost=MIN_DELIVERY_PRICE; document.getElementById('deliveryCostDisplay').style.display='block'; document.getElementById('deliveryCostValue').innerText=deliveryCost; updateCartDisplay(); } };
 
+        // المطاعم
         async function loadRestaurants(){ 
-            try { let r=await fetch(`${FIREBASE_URL}/restaurants.json`); let data=await r.json(); if(data && Object.keys(data).length>0) allRestaurants=Object.values(data); else allRestaurants=restaurants; } catch(e) { allRestaurants=restaurants; }
+            try {
+                let r=await fetch(`${FIREBASE_URL}/restaurants.json`); 
+                let data=await r.json(); 
+                if(data && Object.keys(data).length>0) allRestaurants=Object.values(data); 
+                else { allRestaurants=restaurants; }
+            } catch(e) { allRestaurants=restaurants; }
             renderRestaurants(); 
         }
         
         function renderRestaurants() { 
             let activeCat = document.querySelector('.cat-chip.active')?.dataset.cat || 'all';
             let filtered = activeCat === 'all' ? allRestaurants : allRestaurants.filter(r=>r.cat === activeCat);
-            document.getElementById('restaurantsGrid').innerHTML = filtered.map(r => {
-                let contactHtml = '';
-                if (currentUser?.role === 'driver') {
-                    contactHtml = `<div class="restaurant-contact-info"><i class="fas fa-map-marker-alt"></i> ${r.address || 'عنوان غير محدد'} <i class="fas fa-phone"></i> <a href="tel:${r.phone}" style="color:var(--primary-light); text-decoration:none;">${r.phone || 'رقم غير متوفر'}</a></div>`;
-                } else {
-                    contactHtml = `<div class="restaurant-contact-info"><i class="fas fa-map-marker-alt"></i> ${r.address || 'عنوان غير محدد'}</div>`;
-                }
-                return `<div class="res-card" onclick="openRestaurantMenu(${r.id})"><div class="res-image" style="background-image: url('${r.img}')"></div><div class="res-info"><h3>${r.name}</h3><p>${r.cat}</p>${contactHtml}</div></div>`;
-            }).join(''); 
+            document.getElementById('restaurantsGrid').innerHTML = filtered.map(r => `<div class="res-card" onclick="openRestaurantMenu(${r.id})"><div class="res-image" style="background-image: url('${r.img}')"></div><div class="res-info"><h3>${r.name}</h3><p>${r.cat}</p></div></div>`).join(''); 
         }
         
         window.filterRestaurants = cat => { document.querySelectorAll('.cat-chip').forEach(c=>c.classList.remove('active')); event.target.closest('.cat-chip').classList.add('active'); event.target.closest('.cat-chip').dataset.cat=cat; renderRestaurants(); };
         
-        window.openRestaurantMenu = id => { 
-            currentRestaurant=allRestaurants.find(r=>r.id===id); 
-            cart=[]; 
-            customerLocationLatLng=null; 
-            customerAddress=""; 
-            deliveryCost=0; 
-            let contactInfo = '';
-            if (currentUser?.role === 'driver') {
-                contactInfo = `<div style="background:var(--bg-light); padding:12px; border-radius:20px; margin-bottom:15px;">
-                    <h4 style="color:var(--restaurant-accent);">${currentRestaurant.name}</h4>
-                    <div style="font-size:0.75rem; margin-top:5px;"><i class="fas fa-map-marker-alt"></i> ${currentRestaurant.address || 'عنوان غير محدد'}</div>
-                    <div style="font-size:0.75rem;"><i class="fas fa-phone"></i> <a href="tel:${currentRestaurant.phone}" style="color:var(--primary-light); text-decoration:none;">${currentRestaurant.phone || 'رقم غير متوفر'}</a></div>
-                </div>`;
-            } else {
-                contactInfo = `<div style="background:var(--bg-light); padding:12px; border-radius:20px; margin-bottom:15px;">
-                    <h4 style="color:var(--restaurant-accent);">${currentRestaurant.name}</h4>
-                    <div style="font-size:0.75rem; margin-top:5px;"><i class="fas fa-map-marker-alt"></i> ${currentRestaurant.address || 'عنوان غير محدد'}</div>
-                </div>`;
-            }
-            document.getElementById('menuContent').innerHTML = contactInfo + `<div class="section-title">🍽️ منيو ${currentRestaurant.name}</div><div class="menu-grid">${currentRestaurant.items.map((item,idx)=>`<div class="item-card"><img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=100" class="item-img"><div class="item-details"><h4>${item.n}</h4><div class="price">${item.p} ريال</div></div><button class="add-btn-circle" onclick="addToCart(${idx})"><i class="fas fa-plus"></i></button></div>`).join('')}</div>`; 
-            document.getElementById('restLocationTxt').innerText='حدد موقعك'; 
-            document.getElementById('restaurantAddressManual').value=''; 
-            document.getElementById('deliveryCostDisplay').style.display='none'; 
-            updateCartDisplay(); 
-            showPage('restaurantMenuPage'); 
-        };
+        window.openRestaurantMenu = id => { currentRestaurant=allRestaurants.find(r=>r.id===id); cart=[]; customerLocationLatLng=null; customerAddress=""; deliveryCost=0; document.getElementById('menuContent').innerHTML = `<div class="section-title">🍽️ منيو ${currentRestaurant.name}</div><div class="menu-grid">${currentRestaurant.items.map((item,idx)=>`<div class="item-card"><img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=100" class="item-img"><div class="item-details"><h4>${item.n}</h4><div class="price">${item.p} ريال</div></div><button class="add-btn-circle" onclick="addToCart(${idx})"><i class="fas fa-plus"></i></button></div>`).join('')}</div>`; document.getElementById('restLocationTxt').innerText='حدد موقعك'; document.getElementById('restaurantAddressManual').value=''; document.getElementById('deliveryCostDisplay').style.display='none'; updateCartDisplay(); showPage('restaurantMenuPage'); };
         
         window.addToCart = idx => { const item=currentRestaurant.items[idx]; let existing=cart.find(i=>i.n===item.n); if(existing) existing.qty++; else cart.push({...item, qty:1}); updateCartDisplay(); showToast(`تمت إضافة ${item.n}`); };
         
         function updateCartDisplay() { const total=cart.reduce((s,i)=>s+(i.p*i.qty),0); document.getElementById('cartCount').innerText=cart.reduce((s,i)=>s+i.qty,0); document.getElementById('cartTotal').innerText=total; document.getElementById('floatCart').style.display=cart.length?'flex':'none'; let html=cart.map(i=>`<div style="display:flex;justify-content:space-between;"><span>${i.n} x${i.qty}</span><span>${i.p*i.qty} ريال</span></div>`).join(''); html+=`<div style="font-weight:bold; margin-top:10px;">الإجمالي: ${total} ريال</div>`; if(deliveryCost) html+=`<div>🚚 التوصيل: ${deliveryCost} ريال</div><div style="color:var(--restaurant-accent); font-size:1.2rem;">💰 الإجمالي الكلي: ${total+deliveryCost} ريال</div>`; const cartDiv=document.getElementById('cartSummaryRestaurant'); if(cartDiv) cartDiv.innerHTML=html; }
         
-        window.showRestaurantInvoice = () => { 
-            if(!customerLocationLatLng&&!customerAddress) return showToast('حدد عنوان التوصيل'); 
-            if(!cart.length) return showToast('السلة فارغة'); 
-            const totalFood=cart.reduce((s,i)=>s+(i.p*i.qty),0), total=totalFood+deliveryCost; 
-            let contactInfo = '';
-            if (currentUser?.role === 'driver') {
-                contactInfo = `<div style="margin-bottom:15px;"><h4>${currentRestaurant.name}</h4><div style="font-size:0.7rem;"><i class="fas fa-map-marker-alt"></i> ${currentRestaurant.address || 'عنوان غير محدد'} <i class="fas fa-phone"></i> ${currentRestaurant.phone || 'رقم غير متوفر'}</div></div>`;
-            } else {
-                contactInfo = `<div style="margin-bottom:15px;"><h4>${currentRestaurant.name}</h4><div style="font-size:0.7rem;"><i class="fas fa-map-marker-alt"></i> ${currentRestaurant.address || 'عنوان غير محدد'}</div></div>`;
-            }
-            document.getElementById('invoiceContent').innerHTML = contactInfo + cart.map(i=>`<div style="display:flex;justify-content:space-between;"><span>${i.n} x${i.qty}</span><span>${i.p*i.qty} ريال</span></div>`).join('') + `<div style="margin-top:15px; border-top:2px solid #ddd; padding-top:15px;"><span>سعر التوصيل:</span><span>${deliveryCost} ريال</span></div><div style="display:flex; justify-content:space-between; font-size:1.4rem; margin:20px 0; color:var(--restaurant-accent)"><span>الإجمالي:</span><span>${total} ريال</span></div><div style="font-size:0.7rem; color:var(--text-muted);">📍 عنوان التوصيل: ${customerAddress}</div>`; 
-            showPage('restaurantInvoicePage'); 
-        };
+        window.showRestaurantInvoice = () => { if(!customerLocationLatLng&&!customerAddress) return showToast('حدد عنوان التوصيل'); if(!cart.length) return showToast('السلة فارغة'); const totalFood=cart.reduce((s,i)=>s+(i.p*i.qty),0), total=totalFood+deliveryCost; document.getElementById('invoiceContent').innerHTML = cart.map(i=>`<div style="display:flex;justify-content:space-between;"><span>${i.n} x${i.qty}</span><span>${i.p*i.qty} ريال</span></div>`).join('')+`<div style="margin-top:15px; border-top:2px solid #ddd; padding-top:15px;"><span>سعر التوصيل:</span><span>${deliveryCost} ريال</span></div><div style="display:flex; justify-content:space-between; font-size:1.4rem; margin:20px 0; color:var(--restaurant-accent)"><span>الإجمالي:</span><span>${total} ريال</span></div>`; showPage('restaurantInvoicePage'); };
         
-        window.confirmRestaurantOrder = async () => { 
-            if(!customerLocationLatLng&&!customerAddress) return; 
-            const totalFood=cart.reduce((s,i)=>s+(i.p*i.qty),0), total=totalFood+deliveryCost, id=Date.now(); 
-            const order={ id, type:'restaurant', restaurant:currentRestaurant.name, restaurantAddress:currentRestaurant.address, restaurantPhone:currentRestaurant.phone, customerName:currentUser?.name, customerPhone:currentUser?.phone, address:customerAddress, lat:customerLocationLatLng?.lat, lng:customerLocationLatLng?.lng, items:cart.map(i=>({name:i.n,qty:i.qty,price:i.p})), totalFood, deliveryCost, total, status:'pending', createdAt:new Date().toISOString() }; 
-            await fetch(`${FIREBASE_URL}/orders/${id}.json`,{method:'PUT',body:JSON.stringify(order)}); 
-            localStorage.setItem('currentTrackingOrder',id); 
-            currentClientOrderId = id; 
-            showToast('✅ تم إرسال الطلب بنجاح'); 
-            cart=[]; 
-            showPage('homePage'); 
-            setActiveNav('homePage'); 
-            document.getElementById('trackOrderBtnHome').style.display='block'; 
-            await loadOrders(); 
-            viewOrderTracking(id); 
-        };
+        window.confirmRestaurantOrder = async () => { if(!customerLocationLatLng&&!customerAddress) return; const totalFood=cart.reduce((s,i)=>s+(i.p*i.qty),0), total=totalFood+deliveryCost, id=Date.now(); const order={ id, type:'restaurant', restaurant:currentRestaurant.name, customerName:currentUser?.name, customerPhone:currentUser?.phone, address:customerAddress, lat:customerLocationLatLng?.lat, lng:customerLocationLatLng?.lng, items:cart.map(i=>({name:i.n,qty:i.qty,price:i.p})), totalFood, deliveryCost, total, status:'pending', createdAt:new Date().toISOString() }; await fetch(`${FIREBASE_URL}/orders/${id}.json`,{method:'PUT',body:JSON.stringify(order)}); localStorage.setItem('currentTrackingOrder',id); currentClientOrderId = id; let msg=`🍽️ طلب من ${currentRestaurant.name}\n🆔 ${id}\n👤 ${currentUser?.name}\n📞 ${currentUser?.phone}\n📍 ${customerAddress}\n`; cart.forEach(i=>msg+=`• ${i.n} x${i.qty} = ${i.p*i.qty} ريال\n`); msg+=`\n🚚 التوصيل: ${deliveryCost} ريال\n💰 الإجمالي: ${total} ريال`; window.open(`https://wa.me/777215154?text=${encodeURIComponent(msg)}`, '_blank'); showToast('تم إرسال الطلب'); cart=[]; showPage('homePage'); setActiveNav('homePage'); document.getElementById('trackOrderBtnHome').style.display='block'; await loadOrders(); viewOrderTracking(id); };
 
+        // تتبع الطلب والإشعارات المحلية
         window.viewOrderTracking = async (id) => { await loadOrders(); const order = allOrders.find(o => o.id == id); if (!order) return; renderTrackingContent(order); document.getElementById('trackFullscreen').style.display = 'block'; startTrackingListener(id); };
         
-        function renderTrackingContent(order) { const steps = ['pending', 'on_the_way', 'arrived', 'delivered']; const idx = steps.indexOf(order.status); let stepsHtml = `<div class="tracking-steps">`; steps.forEach((s, i) => { let cls = (i < idx) ? 'completed' : (i === idx ? 'active' : ''); let icon = { pending: 'fa-clock', on_the_way: 'fa-truck', arrived: 'fa-map-marker-alt', delivered: 'fa-check-circle' }[s]; stepsHtml += `<div class="step ${cls}"><div class="circle"><i class="fas ${icon}"></i></div><div class="step-label">${getStatusText(s)}</div></div>`; if (i < steps.length - 1) stepsHtml += `<div class="step-connector ${i < idx ? 'completed' : (i === idx ? 'active' : '')}"></div>`; }); stepsHtml += `</div>`; let details = order.type === 'restaurant' ? `<p><span>المطعم:</span><span>${order.restaurant}</span></p><p><span>العنوان:</span><span>${order.address}</span></p><p><span>الإجمالي:</span><span>${order.total} ريال</span></p>` : `<p><span>الخدمة:</span><span>${order.service}</span></p><p><span>السعر:</span><span>${order.price} ريال</span></p>`; document.getElementById('trackingFullscreenContainer').innerHTML = `<div class="tracking-header"><h3>📍 تتبع الطلب #${order.id}</h3></div>${stepsHtml}<div class="invoice-details"><p><span>العميل:</span><span>${order.customerName || order.customerPhone || order.phone}</span></p>${details}<p><span>تاريخ الطلب:</span><span>${new Date(order.createdAt).toLocaleString('ar-SA')}</span></p></div>`; }
+        function renderTrackingContent(order) { const steps = ['pending', 'on_the_way', 'arrived', 'delivered']; const idx = steps.indexOf(order.status); let stepsHtml = `<div class="tracking-steps">`; steps.forEach((s, i) => { let cls = (i < idx) ? 'completed' : (i === idx ? 'active' : ''); let icon = { pending: 'fa-clock', on_the_way: 'fa-truck', arrived: 'fa-map-marker-alt', delivered: 'fa-check-circle' }[s]; stepsHtml += `<div class="step ${cls}"><div class="circle"><i class="fas ${icon}"></i></div><div class="step-label">${getStatusText(s)}</div></div>`; if (i < steps.length - 1) stepsHtml += `<div class="step-connector ${i < idx ? 'completed' : (i === idx ? 'active' : '')}"></div>`; }); stepsHtml += `</div>`; let details = order.type === 'restaurant' ? `<p><span>المطعم:</span><span>${order.restaurant}</span></p><p><span>العنوان:</span><span>${order.address}</span></p><p><span>الإجمالي:</span><span>${order.total} ريال</span></p>` : `<p><span>الخدمة:</span><span>${order.service}</span></p><p><span>السعر:</span><span>${order.price} ريال</span></p>`; document.getElementById('trackingFullscreenContainer').innerHTML = `<div class="tracking-header"><h3>📍 تتبع الطلب #${order.id}</h3></div>${stepsHtml}<div class="invoice-details"><p><span>العميل:</span><span>${order.customerName || order.phone}</span></p>${details}<p><span>تاريخ الطلب:</span><span>${new Date(order.createdAt).toLocaleString('ar-SA')}</span></p></div>`; }
         
-        function startTrackingListener(orderId) { if (trackingInterval) clearInterval(trackingInterval); trackingInterval = setInterval(async () => { let res = await fetch(`${FIREBASE_URL}/orders/${orderId}.json`); let order = await res.json(); if (order && document.getElementById('trackFullscreen').style.display === 'block') renderTrackingContent(order); }, 2000); }
+        function startTrackingListener(orderId) { if (trackingInterval) clearInterval(trackingInterval); trackingInterval = setInterval(async () => { let res = await fetch(`${FIREBASE_URL}/orders/${orderId}.json`); let order = await res.json(); if (order && document.getElementById('trackFullscreen').style.display === 'block') renderTrackingContent(order); if (order && order.status !== lastOrderStatuses[orderId]) { if (order.status === 'delivered') showToast("✅ تم التوصيل"); else if (order.status === 'arrived') showToast("📍 وصل المندوب إلى موقعك!"); else if (order.status === 'on_the_way') showToast("🚀 المندوب في الطريق إليك"); lastOrderStatuses[orderId] = order.status; } }, 2000); }
         
         window.stopTrackingAndClose = function() { if (trackingInterval) clearInterval(trackingInterval); trackingInterval = null; document.getElementById('trackFullscreen').style.display = 'none'; };
         window.showMyTracking = () => { let id = localStorage.getItem('currentTrackingOrder') || currentClientOrderId; if (id) viewOrderTracking(parseInt(id)); else showToast('لا يوجد طلب نشط'); };
         window.renderMyOrders = async () => { await loadOrders(); const my = allOrders.filter(o => o.customerPhone === currentUser?.phone); let html = my.length ? my.map(o=>`<div style="background:var(--card-light); border-radius:16px; padding:10px; margin-bottom:8px; cursor:pointer;" onclick="viewOrderTracking(${o.id})"><div style="display:flex; justify-content:space-between;"><strong>#${o.id}</strong><span>${o.restaurant||o.service}</span></div><div style="display:flex; justify-content:space-between; margin-top:5px;"><span>${o.total||o.price} ريال</span><span style="color:${o.status==='delivered'?'var(--success)':'var(--warning)'}">${getStatusText(o.status)}</span></div></div>`).join('') : '<p style="text-align:center; padding:30px;">لا توجد طلبات</p>'; document.getElementById('myOrdersContainer').innerHTML = html; };
 
-        async function refreshDriverPanel() { await loadOrders(); let myActive = allOrders.find(o => o.driverId === currentUser?.phone && o.status !== 'delivered'); let available = allOrders.filter(o => o.status === 'pending'); let completed = allOrders.filter(o => o.driverId === currentUser?.phone && o.status === 'delivered'); document.getElementById('activeOrdersCount').innerText = myActive ? 1 : 0; document.getElementById('completedOrdersCount').innerText = completed.length; let html = ''; if (driverActiveTab === 'active') { if (myActive) { let distance = Math.round(Math.random() * 5 + 1); html = `<div class="order-card-modern"><div class="driver-order-restaurant">🍔 ${myActive.restaurant || myActive.service}</div><div class="driver-order-stats"><span class="driver-order-distance">📏 ${distance} كم</span><span class="driver-order-price">💰 ${myActive.total || myActive.price} ريال</span></div><div class="order-details-row"><i class="fas fa-user"></i> ${myActive.customerName || myActive.customerPhone || myActive.phone}</div><div class="order-details-row"><i class="fas fa-map-marker-alt"></i> عنوان التوصيل: ${myActive.address || myActive.destinationAddress || 'عنوان غير محدد'}</div>${myActive.restaurantAddress ? `<div class="order-details-row"><i class="fas fa-store"></i> عنوان المطعم: ${myActive.restaurantAddress}</div><div class="order-details-row"><i class="fas fa-phone"></i> رقم المطعم: ${myActive.restaurantPhone || 'غير متوفر'}</div>` : ''}<div class="quick-actions"><button class="quick-btn quick-btn-restaurant" onclick="updateDriverStatus(${myActive.id}, 'arrived', 'أنا عند المطعم')"><i class="fas fa-store"></i> أنا عند المطعم</button><button class="quick-btn quick-btn-deliver" onclick="updateDriverStatus(${myActive.id}, 'on_the_way', 'الطلب معي')"><i class="fas fa-truck"></i> الطلب معي</button><button class="quick-btn quick-btn-call" onclick="callCustomer('${myActive.customerPhone || myActive.phone}')"><i class="fas fa-phone"></i> اتصل بالعميل</button></div></div>`; } else html = '<p style="text-align:center; padding:20px;">🚀 لا يوجد طلب نشط</p>'; } else { available.forEach(o => { let distance = Math.round(Math.random() * 5 + 1); html += `<div class="order-card-modern"><div class="driver-order-restaurant">🍔 ${o.restaurant || o.service}</div><div class="driver-order-stats"><span class="driver-order-distance">📏 ${distance} كم</span><span class="driver-order-price">💰 ${o.total || o.price} ريال</span></div><div class="order-details-row"><i class="fas fa-map-marker-alt"></i> ${o.address || o.destinationAddress || 'عنوان'}</div><button class="accept-btn" onclick="confirmAccept(${o.id})"><i class="fas fa-check-circle"></i> قبول الطلب</button></div>`; }); if (!available.length) html = '<p style="text-align:center; padding:20px;">📋 لا توجد طلبات متاحة</p>'; } document.getElementById('driverOrdersList').innerHTML = html; }
-        
-        window.switchDriverTab = tab => { driverActiveTab = tab; document.querySelectorAll('.modern-tab').forEach(b=>b.classList.remove('active')); document.getElementById(tab==='active'?'modernActiveTab':'modernAvailableTab').classList.add('active'); refreshDriverPanel(); };
-        window.confirmAccept = id => { pendingAction = { action: 'acceptOrder', orderId: id }; document.getElementById('modalTitle').innerText='قبول الطلب'; document.getElementById('modalMessage').innerText='هل أنت متأكد من قبول هذا الطلب؟'; document.getElementById('confirmationModal').classList.add('open'); };
-        window.acceptOrder = async id => { if(allOrders.find(o=>o.driverId===currentUser?.phone && o.status!=='delivered')) return showToast("لديك طلب نشط"); const o = allOrders.find(o=>o.id==id); if(!o||o.status!=='pending') return showToast("الطلب غير متاح"); await updateOrder(id, { status: 'on_the_way', driverId: currentUser.phone, driverName: currentUser.name }); showToast("✅ تم قبول الطلب"); refreshDriverPanel(); };
-        
-        window.updateDriverStatus = async (id, status, msg) => { pendingAction = { action: 'updateStatus', orderId: id, extra: status, msg: msg }; document.getElementById('modalTitle').innerText='تأكيد تغيير الحالة'; document.getElementById('modalMessage').innerText = `${msg}؟`; document.getElementById('confirmationModal').classList.add('open'); };
-        
-        window.updateStatusNow = async (id, newStatus) => { await updateOrder(id, { status: newStatus }); if(newStatus==='delivered'){ showToast("✅ تم التوصيل"); refreshDriverPanel(); } else { refreshDriverPanel(); } };
-        
-        window.callCustomer = (phone) => { if(phone) window.location.href = `tel:${phone}`; else showToast('رقم غير متوفر'); };
-        window.backToDriverPanel = () => { showPage('driverPage'); refreshDriverPanel(); };
-
+        // الإشعارات المحلية
         window.enableLocalNotifications = async function() { 
             if (!("Notification" in window)) { showToast("المتصفح لا يدعم الإشعارات"); return; } 
             const permission = await Notification.requestPermission(); 
             if (permission === "granted") { 
-                showToast("🔔 تم تفعيل الإشعارات!"); 
+                showToast("🔔 تم تفعيل الإشعارات! سيتم إعلامك عند تحديث طلباتك."); 
                 startOrderWatcher(); 
-            } else { showToast("⚠️ لم يتم السماح للإشعارات"); } 
+            } else { 
+                showToast("⚠️ لم يتم السماح للإشعارات"); 
+            } 
         };
         
-        function showLocalNotification(title, body, orderId) { if (Notification.permission !== "granted") return; new Notification(title, { body: body, tag: `order-${orderId}` }); }
+        function showLocalNotification(title, body, orderId) { 
+            if (Notification.permission !== "granted") return; 
+            new Notification(title, { body: body, tag: `order-${orderId}`, icon: "https://cdn-icons-png.flaticon.com/512/535/535239.png" }); 
+        }
         
         async function startOrderWatcher() { 
             if (orderWatcherInterval) clearInterval(orderWatcherInterval); 
             const fetchAndCheck = async () => { 
                 if (!currentUser || currentUser.role !== 'customer') return; 
-                if (Notification.permission !== "granted") return;
                 try { 
                     const response = await fetch(`${FIREBASE_URL}/orders.json`); 
                     const data = await response.json(); 
@@ -612,17 +508,56 @@
                             const title = `🔄 تحديث الطلب #${order.id}`; 
                             const body = `الحالة الآن: ${getStatusText(newStatus)}`; 
                             showLocalNotification(title, body, id); 
+                            showToast(`📢 ${title}: ${body}`);
                         } 
                         lastOrderStatuses[id] = newStatus; 
                     } 
-                } catch(e) { console.error("خطأ", e); } 
+                } catch(e) { console.error("خطأ في مراقبة الطلبات", e); } 
             }; 
             await fetchAndCheck(); 
             orderWatcherInterval = setInterval(fetchAndCheck, 5000); 
         }
 
+        // واجهة المندوب
+        async function refreshDriverPanel() { 
+            await loadOrders(); 
+            let myActive = allOrders.find(o => o.driverId === currentUser?.phone && o.status !== 'delivered'); 
+            let available = allOrders.filter(o => o.status === 'pending'); 
+            let completed = allOrders.filter(o => o.driverId === currentUser?.phone && o.status === 'delivered'); 
+            document.getElementById('activeOrdersCount').innerText = myActive ? 1 : 0; 
+            document.getElementById('completedOrdersCount').innerText = completed.length; 
+            let html = ''; 
+            if (driverActiveTab === 'active') { 
+                if (myActive) { 
+                    let distance = Math.round(Math.random() * 5 + 1); 
+                    html = `<div class="order-card-modern"><div class="driver-order-restaurant">🍔 ${myActive.restaurant || myActive.service}</div><div class="driver-order-stats"><span class="driver-order-distance">📏 ${distance} كم</span><span class="driver-order-price">💰 ${myActive.total || myActive.price} ريال</span></div><div class="order-details-row"><i class="fas fa-user"></i> ${myActive.customerName || myActive.phone}</div><div class="order-details-row"><i class="fas fa-map-marker-alt"></i> ${myActive.address || myActive.destinationAddress || 'عنوان'}</div><div class="quick-actions"><button class="quick-btn quick-btn-restaurant" onclick="updateDriverStatus(${myActive.id}, 'arrived', 'أنا عند المطعم')"><i class="fas fa-store"></i> أنا عند المطعم</button><button class="quick-btn quick-btn-deliver" onclick="updateDriverStatus(${myActive.id}, 'on_the_way', 'الطلب معي')"><i class="fas fa-truck"></i> الطلب معي</button><button class="quick-btn quick-btn-call" onclick="callCustomer('${myActive.customerPhone || myActive.phone}')"><i class="fas fa-phone"></i> اتصل بالعميل</button></div></div>`; 
+                } else html = '<p style="text-align:center; padding:20px;">🚀 لا يوجد طلب نشط</p>'; 
+            } else { 
+                available.forEach(o => { 
+                    let distance = Math.round(Math.random() * 5 + 1); 
+                    html += `<div class="order-card-modern"><div class="driver-order-restaurant">🍔 ${o.restaurant || o.service}</div><div class="driver-order-stats"><span class="driver-order-distance">📏 ${distance} كم</span><span class="driver-order-price">💰 ${o.total || o.price} ريال</span></div><div class="order-details-row"><i class="fas fa-map-marker-alt"></i> ${o.address || o.destinationAddress || 'عنوان'}</div><button class="accept-btn" onclick="confirmAccept(${o.id})"><i class="fas fa-check-circle"></i> قبول الطلب</button></div>`; 
+                }); 
+                if (!available.length) html = '<p style="text-align:center; padding:20px;">📋 لا توجد طلبات متاحة</p>'; 
+            } 
+            document.getElementById('driverOrdersList').innerHTML = html; 
+        }
+        
+        window.switchDriverTab = tab => { driverActiveTab = tab; document.querySelectorAll('.modern-tab').forEach(b=>b.classList.remove('active')); document.getElementById(tab==='active'?'modernActiveTab':'modernAvailableTab').classList.add('active'); refreshDriverPanel(); };
+        window.confirmAccept = id => { pendingAction = { action: 'acceptOrder', orderId: id }; document.getElementById('modalTitle').innerText='قبول الطلب'; document.getElementById('modalMessage').innerText='هل أنت متأكد من قبول هذا الطلب؟'; document.getElementById('confirmationModal').classList.add('open'); };
+        window.acceptOrder = async id => { if(allOrders.find(o=>o.driverId===currentUser?.phone && o.status!=='delivered')) return showToast("لديك طلب نشط"); const o = allOrders.find(o=>o.id==id); if(!o||o.status!=='pending') return showToast("الطلب غير متاح"); await updateOrder(id, { status: 'on_the_way', driverId: currentUser.phone, driverName: currentUser.name }); await updateUserBusy(currentUser.phone, true); showToast("✅ تم قبول الطلب"); refreshDriverPanel(); };
+        
+        window.updateDriverStatus = async (id, status, msg) => { pendingAction = { action: 'updateStatus', orderId: id, extra: status, msg: msg }; document.getElementById('modalTitle').innerText='تأكيد تغيير الحالة'; document.getElementById('modalMessage').innerText = `${msg}؟`; document.getElementById('confirmationModal').classList.add('open'); };
+        
+        window.updateStatusNow = async (id, newStatus) => { await updateOrder(id, { status: newStatus }); if(newStatus==='delivered'){ await updateUserBusy(currentUser.phone, false); showToast("✅ تم التوصيل"); refreshDriverPanel(); } else { refreshDriverPanel(); } };
+        
+        window.callCustomer = (phone) => { if(phone) window.location.href = `tel:${phone}`; else showToast('رقم غير متوفر'); };
+        window.backToDriverPanel = () => { showPage('driverPage'); refreshDriverPanel(); };
+        
+        window.openOrderDetail = async id => { await loadOrders(); const o = allOrders.find(o=>o.id==id); if(!o) return; document.getElementById('orderDetailContainer').innerHTML = `<div class="order-card"><h3>تفاصيل الطلب #${o.id}</h3><div class="invoice-details"><p><span>العميل:</span><span>${o.customerPhone||o.phone}</span></p><p><span>الخدمة:</span><span>${o.service||o.restaurant}</span></p><p><span>العنوان:</span><span>${o.address||o.destinationAddress}</span></p><p><span>الإجمالي:</span><span>${o.price||o.total} ريال</span></p><p><span>الحالة:</span><span>${getStatusText(o.status)}</span></p></div><button class="action-btn primary" onclick="backToDriverPanel()">🔙 رجوع</button></div>`; showPage('orderDetailPage'); };
+
+        // لوحة الإدارة
         function renderAdminPanel(){ 
-            let html = `<div class="admin-split"><div class="admin-left"><div class="admin-section"><div class="admin-section-title"><i class="fas fa-plus-circle"></i> إضافة مطعم</div><button class="btn-primary" onclick="openAdminModal()" style="font-size:0.75rem; padding:8px;">➕ إضافة مطعم جديد</button></div></div><div class="admin-right"><div class="admin-section"><div class="admin-section-title"><i class="fas fa-utensils"></i> المطاعم الموجودة</div><div id="adminRestaurantsList"></div></div></div></div>`;
+            let html = `<div class="admin-split"><div class="admin-left"><div class="admin-section"><div class="admin-section-title"><i class="fas fa-plus-circle"></i> إضافة مطعم</div><button class="btn-primary" onclick="openAdminModal()" style="font-size:0.75rem; padding:8px;">➕ إضافة مطعم جديد</button></div></div><div class="admin-right"><div class="admin-section"><div class="admin-section-title"><i class="fas fa-utensils"></i> المطاعم الموجودة (${allRestaurants.length} مطعم)</div><div id="adminRestaurantsList"></div></div></div></div>`;
             document.getElementById('adminPanel').innerHTML = html;
             renderAdminRestaurantsList();
         }
@@ -632,7 +567,7 @@
             document.getElementById('adminRestaurantsList').innerHTML = allRestaurants.map(r => `
                 <div class="restaurant-admin-card">
                     <img src="${r.img}" style="width:50px; height:50px; border-radius:14px; object-fit:cover;" onerror="this.src='https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=100'">
-                    <div style="flex:1;"><div style="font-weight:800;">${r.name}</div><div style="font-size:0.7rem;">${r.cat} | ${r.items.length} أصناف</div><div style="font-size:0.65rem; color:var(--text-muted);"><i class="fas fa-map-marker-alt"></i> ${r.address || 'عنوان غير محدد'} | <i class="fas fa-phone"></i> ${r.phone || 'رقم غير متوفر'}</div></div>
+                    <div style="flex:1;"><div style="font-weight:800;">${r.name}</div><div style="font-size:0.7rem;">${r.cat} | ${r.items.length} أصناف</div></div>
                     <button class="icon-btn" onclick="editRestaurant(${r.id})" style="background:var(--warning);"><i class="fas fa-edit"></i></button>
                     <button class="icon-btn" onclick="deleteRestaurant(${r.id})" style="background:var(--danger);"><i class="fas fa-trash"></i></button>
                 </div>`).join(''); 
@@ -647,16 +582,12 @@
                 document.getElementById('restName').value = res.name; 
                 document.getElementById('restCat').value = res.cat; 
                 document.getElementById('restImg').value = res.img; 
-                document.getElementById('restAddress').value = res.address || ''; 
-                document.getElementById('restPhone').value = res.phone || ''; 
                 res.items.forEach(item => addNewItemRow(item.n, item.p, item.img)); 
             } else { 
                 document.getElementById('editRestId').value = ''; 
                 document.getElementById('restName').value = ''; 
                 document.getElementById('restCat').value = ''; 
                 document.getElementById('restImg').value = ''; 
-                document.getElementById('restAddress').value = ''; 
-                document.getElementById('restPhone').value = ''; 
                 addNewItemRow(); 
             } 
         };
@@ -673,8 +604,6 @@
             let name = document.getElementById('restName').value; 
             let cat = document.getElementById('restCat').value; 
             let img = document.getElementById('restImg').value; 
-            let address = document.getElementById('restAddress').value; 
-            let phone = document.getElementById('restPhone').value; 
             let items = []; 
             document.querySelectorAll('#itemsList .item-row').forEach(row => { 
                 let n = row.querySelector('.item-name')?.value; 
@@ -683,7 +612,7 @@
                 if(n && p) items.push({n, p, img: imgUrl}); 
             }); 
             if(!name || !cat || items.length===0) return showToast('املأ جميع الحقول'); 
-            let restaurant = { id: parseInt(id), name, cat, img, address, phone, items }; 
+            let restaurant = { id: parseInt(id), name, cat, img, items }; 
             await fetch(`${FIREBASE_URL}/restaurants/${id}.json`, {method:'PUT', body:JSON.stringify(restaurant)}); 
             await loadRestaurants(); 
             renderAdminRestaurantsList(); 
@@ -695,11 +624,13 @@
         window.closeAdminModal = () => document.getElementById('adminModal').classList.remove('open');
         window.editRestaurant = (id) => openAdminModal(id);
         
+        // الإعدادات
         document.getElementById('darkModeToggle').onclick = () => { document.body.classList.toggle('dark-mode'); let icon = document.getElementById('darkModeIcon'); icon.className = document.body.classList.contains('dark-mode') ? 'fas fa-toggle-on' : 'fas fa-toggle-off'; localStorage.setItem('darkMode', document.body.classList.contains('dark-mode')); };
         if (localStorage.getItem('darkMode') === 'true') { document.body.classList.add('dark-mode'); document.getElementById('darkModeIcon').className = 'fas fa-toggle-on'; }
         document.getElementById('whatsappSupport').onclick = () => window.open('https://wa.me/777215154', '_blank');
         document.getElementById('shareApp').onclick = () => { if(navigator.share) navigator.share({title:'وصّال', text:'تطبيق توصيل ومطاعم', url:location.href}); else showToast("المشاركة غير مدعومة"); };
         
+        // تسجيل الدخول
         function initLogin() { 
             document.querySelectorAll('.role-btn').forEach(btn => { 
                 btn.onclick = function() { document.querySelectorAll('.role-btn').forEach(b=>b.classList.remove('active')); this.classList.add('active'); let role = this.dataset.role; document.getElementById('driverName').style.display = role==='driver'?'block':'none'; document.getElementById('loginPassword').style.display = role==='driver'?'block':'none'; }; 
@@ -731,7 +662,9 @@
                     setActiveNav('homePage'); 
                     renderServices(); 
                     renderSavedAddresses();
-                    document.getElementById('homeNotificationBtn').style.display = 'block'; 
+                    const homeNoti = document.getElementById('homeNotificationBtn'); 
+                    if (homeNoti) homeNoti.style.display = 'block'; 
+                    setTimeout(() => { if (window.enableLocalNotifications) window.enableLocalNotifications(); }, 1500); 
                 } 
             }; 
         }
@@ -753,12 +686,14 @@
                 renderServices(); 
                 renderSavedAddresses();
                 document.getElementById('homeNotificationBtn').style.display = 'block'; 
+                setTimeout(() => enableLocalNotifications(), 1500); 
             } 
         } else { 
             initLogin(); 
         }
         
-        const cats = ['all', 'بروست', 'بيتزا', 'برجر', 'شاورما', 'مشاوي', 'عصائر', 'شعبي'];
+        // تصفية المطاعم
+        const cats = ['all', 'بروست', 'بيتزا', 'برجر', 'شاورما', 'مشاوي', 'عصائر', 'شعبي', 'تهامي', 'شامي', 'بحرية', 'وجبات سريعة', 'مندي', 'فطور', 'مصري'];
         document.getElementById('catChipsContainer').innerHTML = cats.map(c => `<div class="cat-chip ${c==='all'?'active':''}" data-cat="${c}" onclick="filterRestaurants('${c}')"><i class="fas ${c==='all'?'fa-utensils':c==='بروست'?'fa-drumstick-bite':c==='بيتزا'?'fa-pizza-slice':c==='برجر'?'fa-hamburger':c==='شاورما'?'fa-utensils':c==='مشاوي'?'fa-fire':c==='عصائر'?'fa-blender':'fa-utensils'}"></i> ${c==='all'?'الكل':c}</div>`).join('');
         
         document.getElementById('settingsLogoutBtn').onclick = () => { localStorage.removeItem('waselny_user'); location.reload(); };

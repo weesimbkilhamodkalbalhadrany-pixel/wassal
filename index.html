@@ -27,7 +27,8 @@
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         
         .services-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; margin: 10px 0; }
-        .service-card { background: var(--card-light); border-radius: 28px; padding: 24px 12px 20px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 1px solid var(--border-light); cursor: pointer; }
+        .service-card { background: var(--card-light); border-radius: 28px; padding: 24px 12px 20px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 1px solid var(--border-light); cursor: pointer; transition: transform 0.2s; }
+        .service-card:hover { transform: scale(1.02); }
         body.dark-mode .service-card { background: var(--card-dark); border-color: var(--border-dark); }
         .service-icon { font-size: 3rem; margin-bottom: 10px; }
         .service-card h3 { font-size: 1.2rem; font-weight: 800; margin: 8px 0 4px; }
@@ -38,28 +39,35 @@
         .btn-send { width: 100%; padding: 16px; background: var(--primary-light); border: none; border-radius: 44px; font-weight: 900; font-size: 1.1rem; color: var(--primary-dark); margin-top: 16px; cursor: pointer; transition: 0.2s; }
         .btn-primary { background: var(--restaurant-accent); color: white; border: none; padding: 16px; border-radius: 44px; width: 100%; font-weight: 900; font-size: 1.1rem; margin-top: 20px; cursor: pointer; }
         .field-input { width: 100%; padding: 14px 18px; border-radius: 28px; border: 1px solid var(--border-light); background: var(--bg-light); font-size: 1rem; margin-bottom: 12px; }
-        .geo-btn { background: var(--bg-light); border: 1px solid var(--border-light); border-radius: 28px; padding: 14px 18px; display: flex; justify-content: space-between; font-weight: 600; width: 100%; cursor: pointer; margin-bottom: 10px; }
-        .back-button { background: var(--bg-light); border: 1px solid var(--border-light); border-radius: 30px; padding: 8px 16px; margin-bottom: 20px; display: inline-flex; align-items: center; gap: 8px; cursor: pointer; font-weight: 600; }
+        .geo-btn { background: var(--bg-light); border: 1px solid var(--border-light); border-radius: 28px; padding: 14px 18px; display: flex; justify-content: space-between; font-weight: 600; width: 100%; cursor: pointer; margin-bottom: 10px; transition: 0.2s; }
+        .geo-btn:hover { background: var(--primary-light); color: white; }
+        .back-button { background: var(--bg-light); border: 1px solid var(--border-light); border-radius: 30px; padding: 10px 20px; margin-bottom: 20px; display: inline-flex; align-items: center; gap: 8px; cursor: pointer; font-weight: 600; transition: 0.2s; }
+        .back-button:hover { background: var(--primary-light); color: white; border-color: var(--primary-light); }
         .categories-scroll { display: flex; gap: 12px; overflow-x: auto; padding: 15px 20px; scrollbar-width: none; margin-top: -30px; position: relative; z-index: 20; }
         .categories-scroll::-webkit-scrollbar { display: none; }
-        .cat-chip { background: var(--card-light); padding: 12px 25px; border-radius: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); white-space: nowrap; font-weight: 700; display: flex; align-items: center; gap: 8px; cursor: pointer; border: 2px solid transparent; }
+        .cat-chip { background: var(--card-light); padding: 12px 25px; border-radius: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); white-space: nowrap; font-weight: 700; display: flex; align-items: center; gap: 8px; cursor: pointer; border: 2px solid transparent; transition: 0.2s; }
         .cat-chip.active { border-color: var(--restaurant-accent); color: var(--restaurant-accent); }
         .restaurants-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin: 10px 0; }
-        .res-card { background: var(--card-light); border-radius: 25px; overflow: hidden; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1); cursor: pointer; }
+        .res-card { background: var(--card-light); border-radius: 25px; overflow: hidden; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1); cursor: pointer; transition: transform 0.2s; }
+        .res-card:hover { transform: translateY(-5px); }
         .res-image { height: 120px; background-size: cover; background-position: center; position: relative; }
         .res-info { padding: 12px; text-align: center; }
         .res-info h3 { font-size: 1rem; font-weight: 800; }
         .menu-grid { display: grid; gap: 15px; margin-top: 20px; }
-        .item-card { background: var(--card-light); border-radius: 20px; display: flex; align-items: center; padding: 12px; gap: 15px; }
+        .item-card { background: var(--card-light); border-radius: 20px; display: flex; align-items: center; padding: 12px; gap: 15px; transition: 0.2s; }
+        .item-card:hover { transform: scale(1.01); }
         body.dark-mode .item-card { background: var(--card-dark); }
         .item-img { width: 80px; height: 80px; border-radius: 15px; object-fit: cover; }
         .item-details { flex: 1; }
         .item-details h4 { font-weight: 700; }
         .item-details .price { color: var(--restaurant-accent); font-weight: 900; }
-        .add-btn-circle { background: var(--restaurant-accent); color: white; width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; cursor: pointer; border: none; font-size: 1.2rem; }
-        .float-cart { position: fixed; bottom: 100px; left: 20px; right: 20px; background: linear-gradient(135deg, var(--primary-dark), #1a4f6e); color: white; padding: 15px 25px; border-radius: 20px; display: flex; justify-content: space-between; align-items: center; z-index: 1000; display: none; cursor: pointer; }
+        .add-btn-circle { background: var(--restaurant-accent); color: white; width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; cursor: pointer; border: none; font-size: 1.2rem; transition: 0.2s; }
+        .add-btn-circle:hover { transform: scale(1.1); background: var(--primary-dark); }
+        .float-cart { position: fixed; bottom: 100px; left: 20px; right: 20px; background: linear-gradient(135deg, var(--primary-dark), #1a4f6e); color: white; padding: 15px 25px; border-radius: 20px; display: flex; justify-content: space-between; align-items: center; z-index: 1000; cursor: pointer; transition: 0.2s; }
+        .float-cart:hover { transform: scale(1.02); }
+        .float-cart.hidden { display: none; }
         .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: var(--card-light); border-top: 2px solid var(--primary-light); display: flex; justify-content: space-around; padding: 8px 0 calc(12px + env(safe-area-inset-bottom)); z-index: 2000; }
-        .nav-item { text-align: center; flex: 1; color: var(--text-muted); font-size: 0.75rem; font-weight: 600; cursor: pointer; padding: 5px 0; border-radius: 30px; margin: 0 5px; }
+        .nav-item { text-align: center; flex: 1; color: var(--text-muted); font-size: 0.75rem; font-weight: 600; cursor: pointer; padding: 5px 0; border-radius: 30px; margin: 0 5px; transition: 0.2s; }
         .nav-item i { font-size: 1.6rem; display: block; margin-bottom: 4px; }
         .nav-item.active { color: var(--primary-light); background: rgba(45,212,191,0.1); }
         .tracking-fullscreen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-light); z-index: 15000; overflow-y: auto; padding: 20px; }
@@ -79,7 +87,8 @@
         .stat-card .number { font-size: 1.8rem; font-weight: 900; }
         .order-card-modern { background: var(--card-light); border-radius: 24px; padding: 16px; margin-bottom: 15px; border: 1px solid var(--border-light); }
         .quick-actions { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
-        .quick-btn { flex: 1; padding: 10px; border-radius: 20px; font-size: 0.75rem; border: none; cursor: pointer; font-weight: 700; }
+        .quick-btn { flex: 1; padding: 10px; border-radius: 20px; font-size: 0.75rem; border: none; cursor: pointer; font-weight: 700; transition: 0.2s; }
+        .quick-btn:hover { opacity: 0.8; transform: scale(1.02); }
         .quick-btn-call { background: #25D366; color: white; }
         .quick-btn-restaurant { background: var(--warning); color: white; }
         .quick-btn-deliver { background: var(--driver-primary); color: white; }
@@ -93,8 +102,10 @@
         .modal-content { background: var(--card-light); border-radius: 30px; padding: 20px; width: 90%; max-width: 500px; max-height: 85vh; overflow-y: auto; }
         .item-row { display: flex; gap: 6px; margin-bottom: 8px; flex-wrap: wrap; }
         .item-row input { flex: 1; min-width: 100px; }
-        .icon-btn { padding: 6px 12px; border-radius: 10px; border: none; cursor: pointer; }
-        .setting-row { display: flex; justify-content: space-between; align-items: center; padding: 14px; background: var(--bg-light); border-radius: 30px; margin-bottom: 12px; cursor: pointer; }
+        .icon-btn { padding: 6px 12px; border-radius: 10px; border: none; cursor: pointer; transition: 0.2s; }
+        .icon-btn:hover { transform: scale(1.05); }
+        .setting-row { display: flex; justify-content: space-between; align-items: center; padding: 14px; background: var(--bg-light); border-radius: 30px; margin-bottom: 12px; cursor: pointer; transition: 0.2s; }
+        .setting-row:hover { background: var(--primary-light); color: white; }
         .settings-section { background: var(--card-light); border-radius: 20px; padding: 16px; margin-bottom: 20px; border: 1px solid var(--border-light); }
         .settings-section-title { font-size: 1rem; font-weight: 800; margin-bottom: 15px; color: var(--primary-light); border-right: 3px solid var(--primary-light); padding-right: 10px; }
         .price-setting { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 12px; }
@@ -103,29 +114,40 @@
         .delivery-cost-value { font-size: 1.8rem; font-weight: 900; color: #fbbf24; }
         .checkout-details { background: var(--card-light); border-radius: 20px; padding: 20px; margin-bottom: 20px; }
         .checkout-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border-light); }
-        .current-location-btn { background: linear-gradient(135deg, #10b981, #059669); color: white; border: none; padding: 16px 20px; border-radius: 35px; width: 100%; font-weight: 800; font-size: 1rem; margin-bottom: 15px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 12px; }
+        .current-location-btn { background: linear-gradient(135deg, #10b981, #059669); color: white; border: none; padding: 16px 20px; border-radius: 35px; width: 100%; font-weight: 800; font-size: 1rem; margin-bottom: 15px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 12px; transition: 0.2s; }
+        .current-location-btn:hover { transform: scale(1.02); }
         .saved-addresses { display: flex; gap: 8px; margin: 10px 0; flex-wrap: wrap; }
-        .address-chip { padding: 8px 16px; border-radius: 25px; background: var(--card-light); border: 1px solid var(--border-light); cursor: pointer; font-size: 0.7rem; display: flex; align-items: center; gap: 6px; }
+        .address-chip { padding: 8px 16px; border-radius: 25px; background: var(--card-light); border: 1px solid var(--border-light); cursor: pointer; font-size: 0.7rem; display: flex; align-items: center; gap: 6px; transition: 0.2s; }
+        .address-chip:hover { background: var(--primary-light); color: white; }
         .toast { position: fixed; top: -100px; left: 20px; right: 20px; background: var(--success); color: white; padding: 16px 20px; border-radius: 30px; text-align: center; z-index: 999999; opacity: 0; transition: 0.4s; pointer-events: none; }
         .toast.show { top: 20px; opacity: 1; }
         .login-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(145deg, #0a2b3e, #071a26); z-index: 20000; display: flex; align-items: center; justify-content: center; flex-direction: column; }
         .login-card { background: white; border-radius: 48px; padding: 32px; width: 90%; max-width: 380px; text-align: center; }
         body.dark-mode .login-card { background: #1e293b; color: white; }
         .role-buttons { display: flex; gap: 10px; margin-bottom: 20px; justify-content: center; }
-        .role-btn { flex: 1; padding: 10px; border-radius: 40px; background: #e2e8f0; cursor: pointer; font-weight: 700; }
+        .role-btn { flex: 1; padding: 10px; border-radius: 40px; background: #e2e8f0; cursor: pointer; font-weight: 700; transition: 0.2s; }
         .role-btn.active { background: var(--primary-light); color: var(--primary-dark); }
         .login-card input { width: 100%; padding: 14px; margin: 10px 0; border-radius: 30px; border: 1px solid #ddd; background: white; color: black; font-size: 1rem; }
-        .login-card button { width: 100%; padding: 14px; background: var(--primary-light); border: none; border-radius: 44px; font-weight: 900; font-size: 1.1rem; color: var(--primary-dark); cursor: pointer; }
+        .login-card button { width: 100%; padding: 14px; background: var(--primary-light); border: none; border-radius: 44px; font-weight: 900; font-size: 1.1rem; color: var(--primary-dark); cursor: pointer; transition: 0.2s; }
+        .login-card button:hover { transform: scale(1.02); }
         .confirmation-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(8px); z-index: 40000; display: flex; align-items: center; justify-content: center; visibility: hidden; opacity: 0; transition: 0.2s; }
         .confirmation-modal.open { visibility: visible; opacity: 1; }
         .modal-card { background: var(--card-light); border-radius: 48px; padding: 28px; width: 85%; max-width: 320px; text-align: center; }
         .map-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 10000; display: none; flex-direction: column; }
         #map { flex-grow: 1; width: 100%; height: 100%; z-index: 10001; }
         .map-controls { display: flex; background: var(--primary-dark); z-index: 10002; }
-        .map-confirm, .map-back { flex: 1; color: white; padding: 20px; text-align: center; font-weight: 900; cursor: pointer; }
+        .map-confirm, .map-back { flex: 1; color: white; padding: 20px; text-align: center; font-weight: 900; cursor: pointer; transition: 0.2s; }
+        .map-confirm:hover, .map-back:hover { opacity: 0.8; }
         .map-confirm { background: var(--primary-light); color: var(--primary-dark); }
         .loading-spinner { display: inline-block; width: 20px; height: 20px; border: 2px solid #fff; border-radius: 50%; border-top-color: transparent; animation: spin 0.6s linear infinite; margin-right: 8px; }
         @keyframes spin { to { transform: rotate(360deg); } }
+        
+        /* صفحة الإدارة الخاصة */
+        .super-admin-page { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; }
+        .super-admin-card { background: white; border-radius: 30px; padding: 25px; margin-bottom: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
+        .super-admin-title { font-size: 1.5rem; font-weight: 900; color: var(--primary-dark); margin-bottom: 20px; border-right: 4px solid var(--primary-light); padding-right: 15px; }
+        .delivery-calc-card { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; border-radius: 20px; padding: 20px; margin-bottom: 20px; }
+        .distance-result { font-size: 2rem; font-weight: 900; color: #ffd700; }
     </style>
 </head>
 <body>
@@ -167,26 +189,26 @@
             </div>
             <div class="settings-section">
                 <div class="settings-section-title"><i class="fas fa-info-circle"></i> معلومات</div>
-                <div class="setting-row" id="versionRow"><span><i class="fas fa-code-branch"></i> الإصدار</span><span id="versionNumber">v17.0</span></div>
+                <div class="setting-row" id="versionRow"><span><i class="fas fa-code-branch"></i> الإصدار</span><span id="versionNumber" style="cursor: pointer;">v18.0</span></div>
             </div>
             <button class="btn-send logout-btn" id="settingsLogoutBtn" style="background:var(--danger); color:white;">تسجيل الخروج</button>
         </div>
     </div>
     <div id="oPage" class="page"><div class="order-card" id="orderForm"></div></div>
     <div id="restaurantsPage" class="page">
-        <div class="back-button" onclick="showPage('homePage')"><i class="fas fa-arrow-right"></i> رجوع</div>
+        <div class="back-button" onclick="showPage('homePage')"><i class="fas fa-arrow-right"></i> رجوع للرئيسية</div>
         <div class="categories-scroll" id="catChipsContainer"></div>
         <h2 style="margin:20px 0;">🍕 المطاعم</h2>
         <div class="restaurants-grid" id="restaurantsGrid"></div>
     </div>
     <div id="restaurantMenuPage" class="page">
-        <div class="back-button" onclick="showPage('restaurantsPage')"><i class="fas fa-arrow-right"></i> رجوع</div>
+        <div class="back-button" onclick="showPage('restaurantsPage')"><i class="fas fa-arrow-right"></i> رجوع للمطاعم</div>
         <div id="menuContent"></div>
         <div id="cartSummaryRestaurant" style="margin:20px 0;"></div>
         <button class="btn-primary" onclick="goToCheckout()">🛒 الذهاب للدفع</button>
     </div>
     <div id="checkoutPage" class="page">
-        <div class="back-button" onclick="showPage('restaurantMenuPage')"><i class="fas fa-arrow-right"></i> رجوع</div>
+        <div class="back-button" onclick="goBackToMenu()"><i class="fas fa-arrow-right"></i> رجوع للسلة</div>
         <h3 style="margin-bottom:20px;">🧾 تفاصيل الطلب</h3>
         <div id="checkoutOrderSummary" class="checkout-details"></div>
         <div class="location-section">
@@ -227,7 +249,7 @@
         <div class="role-buttons">
             <div class="role-btn active" data-role="customer">عميل</div>
             <div class="role-btn" data-role="driver">مندوب</div>
-            <div class="role-btn" data-role="admin" style="display: none;">مدير</div> <!-- مخفي، للتفعيل بالضغط على الإصدار -->
+            <div class="role-btn" data-role="admin" style="display: none;">مدير</div>
         </div>
         <input type="text" id="loginName" placeholder="الاسم بالعربي">
         <input type="tel" id="loginPhone" placeholder="رقم الهاتف">
@@ -255,13 +277,77 @@
     </div>
 </div>
 
+<!-- صفحة الإدارة الخاصة (سوبر أدمن) -->
+<div id="superAdminPage" class="page">
+    <div class="super-admin-page">
+        <div class="back-button" onclick="showPage('homePage')" style="background: white; color: var(--primary-dark);"><i class="fas fa-arrow-right"></i> رجوع للرئيسية</div>
+        
+        <div class="super-admin-card">
+            <div class="super-admin-title"><i class="fas fa-tachometer-alt"></i> لوحة التحكم المتقدمة</div>
+            
+            <div class="delivery-calc-card">
+                <h3><i class="fas fa-calculator"></i> حاسبة التوصيل الذكية</h3>
+                <div style="margin: 15px 0;">
+                    <label>📍 موقع المطعم:</label>
+                    <div class="geo-btn" onclick="initMapForDeliveryCalc('restaurant')" style="background: rgba(255,255,255,0.2);"><span id="deliveryRestLoc">حدد موقع المطعم</span><i class="fas fa-map-marker-alt"></i></div>
+                    <label style="margin-top: 10px;">📍 موقع العميل:</label>
+                    <div class="geo-btn" onclick="initMapForDeliveryCalc('customer')" style="background: rgba(255,255,255,0.2);"><span id="deliveryCustomerLoc">حدد موقع العميل</span><i class="fas fa-map-marker-alt"></i></div>
+                </div>
+                <button class="btn-primary" onclick="calculateDeliveryDistance()" style="background: #ffd700; color: #333;">💰 حساب سعر التوصيل</button>
+                <div id="deliveryResult" style="margin-top: 20px; text-align: center;">
+                    <div class="distance-result" id="distanceValue">0</div>
+                    <div>كيلومتر</div>
+                    <div class="distance-result" id="deliveryPriceValue" style="font-size: 1.5rem;">0</div>
+                    <div>ريال سعودي</div>
+                </div>
+            </div>
+            
+            <div class="delivery-calc-card" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                <h3><i class="fas fa-chart-line"></i> إحصائيات النظام</h3>
+                <div id="systemStats">
+                    <p>📊 عدد المطاعم: <span id="statsRestaurants">0</span></p>
+                    <p>📦 عدد الطلبات: <span id="statsOrders">0</span></p>
+                    <p>👥 عدد المستخدمين: <span id="statsUsers">0</span></p>
+                    <p>💰 إجمالي المبيعات: <span id="statsRevenue">0</span> ريال</p>
+                </div>
+            </div>
+            
+            <div class="delivery-calc-card" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);">
+                <h3><i class="fas fa-sliders-h"></i> إعدادات التوصيل العامة</h3>
+                <div class="price-setting">
+                    <span>🚖 السعر لكل كيلومتر (سيارة):</span>
+                    <input type="number" id="superCarPrice" value="175" onchange="updateSuperDeliveryPrices()">
+                </div>
+                <div class="price-setting">
+                    <span>🏍️ السعر لكل كيلومتر (دراجة):</span>
+                    <input type="number" id="superBikePrice" value="100" onchange="updateSuperDeliveryPrices()">
+                </div>
+                <div class="price-setting">
+                    <span>📦 السعر لكل كيلومتر (خدمات):</span>
+                    <input type="number" id="superGeneralPrice" value="120" onchange="updateSuperDeliveryPrices()">
+                </div>
+                <div class="price-setting">
+                    <span>💰 الحد الأدنى للتوصيل:</span>
+                    <input type="number" id="superMinPrice" value="550" onchange="updateSuperMinPrice()">
+                </div>
+            </div>
+            
+            <div class="delivery-calc-card" style="background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); color: #333;">
+                <h3><i class="fas fa-database"></i> إدارة قاعدة البيانات</h3>
+                <button class="btn-primary" onclick="exportDatabase()" style="background: #10b981; margin-bottom: 10px;">📥 تصدير قاعدة البيانات</button>
+                <button class="btn-primary" onclick="clearDatabase()" style="background: #ef4444;">🗑️ مسح جميع البيانات</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
 (function() {
     // ======================== الثوابت والإعدادات العامة ========================
     const FIREBASE_URL = "https://waselny-2812b-default-rtdb.firebaseio.com";
     const DRIVER_PASSWORD = "weesim73741";
     const ADMIN_PASSWORD = "weesim73741";
-    const MIN_DELIVERY_PRICE = 550;
+    let MIN_DELIVERY_PRICE = 550;
     
     // المتغيرات العامة للتطبيق
     let currentUser = null;
@@ -279,6 +365,8 @@
     let marker = null;
     let orderPickupLoc = null;
     let orderDestLoc = null;
+    let deliveryCalcRestLocation = null;
+    let deliveryCalcCustomerLocation = null;
     
     let deliveryPrices = { car: 175, bike: 100, general: 120 };
     
@@ -387,6 +475,16 @@
                 <div class="address-chip" onclick="setCheckoutLocation(15.3850, 44.2050, 'العمل')">💼 العمل</div>
             `;
         }
+        // إخفاء شريط السلة في صفحة الدفع
+        let floatCart = document.getElementById('floatCart');
+        if (floatCart) floatCart.classList.add('hidden');
+    };
+    
+    window.goBackToMenu = function() {
+        showPage('restaurantMenuPage');
+        // إظهار شريط السلة مرة أخرى
+        let floatCart = document.getElementById('floatCart');
+        if (floatCart && cart.length) floatCart.classList.remove('hidden');
     };
     
     function updateCheckoutSummary() {
@@ -403,7 +501,7 @@
     function updateDeliveryCost() {
         if (!currentRestaurant || !customerLocation) return;
         let restLoc = { lat: currentRestaurant.restaurantLat || 15.3694, lng: currentRestaurant.restaurantLng || 44.1910 };
-        let distance = Math.sqrt(Math.pow(customerLocation.lat - restLoc.lat, 2) + Math.pow(customerLocation.lng - restLoc.lng, 2)) * 111;
+        let distance = calculateDistance(customerLocation.lat, customerLocation.lng, restLoc.lat, restLoc.lng);
         let cost = Math.max(Math.round(distance * deliveryPrices.general), MIN_DELIVERY_PRICE);
         deliveryCost = cost;
         let costDiv = document.getElementById('deliveryCostDisplay');
@@ -411,6 +509,17 @@
         if (costDiv) costDiv.style.display = 'flex';
         if (costSpan) costSpan.innerText = deliveryCost;
         updateCheckoutSummary();
+    }
+    
+    function calculateDistance(lat1, lon1, lat2, lon2) {
+        const R = 6371;
+        const dLat = (lat2 - lat1) * Math.PI / 180;
+        const dLon = (lon2 - lon1) * Math.PI / 180;
+        const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                  Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                  Math.sin(dLon/2) * Math.sin(dLon/2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        return R * c;
     }
     
     window.setCheckoutLocation = function(lat, lng, addr) {
@@ -476,6 +585,36 @@
         }, 100);
     };
     
+    window.initMapForDeliveryCalc = function(type) {
+        currentMapMode = `delivery_${type}`;
+        let mapDiv = document.getElementById('map-overlay');
+        if (mapDiv) mapDiv.style.display = 'flex';
+        setTimeout(() => {
+            if (!map) {
+                map = L.map('map').setView([15.3694, 44.1910], 14);
+                L.tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', { subdomains: ['mt0','mt1','mt2','mt3'] }).addTo(map);
+                marker = L.marker([15.3694, 44.1910], { draggable: true }).addTo(map);
+                map.on('click', e => marker.setLatLng(e.latlng));
+            }
+            if (map) map.invalidateSize();
+        }, 100);
+    };
+    
+    window.calculateDeliveryDistance = function() {
+        if (!deliveryCalcRestLocation || !deliveryCalcCustomerLocation) {
+            showToast('يرجى تحديد موقع المطعم وموقع العميل أولاً');
+            return;
+        }
+        let distance = calculateDistance(
+            deliveryCalcRestLocation.lat, deliveryCalcRestLocation.lng,
+            deliveryCalcCustomerLocation.lat, deliveryCalcCustomerLocation.lng
+        );
+        let price = Math.max(Math.round(distance * deliveryPrices.general), MIN_DELIVERY_PRICE);
+        document.getElementById('distanceValue').innerHTML = distance.toFixed(2);
+        document.getElementById('deliveryPriceValue').innerHTML = price;
+        showToast(`المسافة: ${distance.toFixed(2)} كم، سعر التوصيل: ${price} ريال`);
+    };
+    
     window.updateCheckoutAddressManual = function(addr) {
         if (addr && addr.length > 3) {
             deliveryCost = MIN_DELIVERY_PRICE;
@@ -504,6 +643,9 @@
         showToast('✅ تم إرسال الطلب، بانتظار إسناد مندوب');
         cart = [];
         customerLocation = null;
+        // إظهار شريط السلة مرة أخرى
+        let floatCart = document.getElementById('floatCart');
+        if (floatCart) floatCart.classList.remove('hidden');
         showPage('homePage');
         setActiveNav('homePage');
         let trackBtn = document.getElementById('trackOrderBtnHome');
@@ -842,6 +984,26 @@
         showToast("تم تحديث الأسعار");
     };
     
+    window.updateSuperDeliveryPrices = async function() {
+        let carInput = document.getElementById('superCarPrice');
+        let bikeInput = document.getElementById('superBikePrice');
+        let generalInput = document.getElementById('superGeneralPrice');
+        deliveryPrices = {
+            car: (carInput && carInput.value) ? parseInt(carInput.value) : 175,
+            bike: (bikeInput && bikeInput.value) ? parseInt(bikeInput.value) : 100,
+            general: (generalInput && generalInput.value) ? parseInt(generalInput.value) : 120
+        };
+        await fetch(`${FIREBASE_URL}/settings/deliveryPrices.json`, { method: 'PUT', body: JSON.stringify(deliveryPrices) });
+        showToast("تم تحديث الأسعار في النظام");
+    };
+    
+    window.updateSuperMinPrice = async function() {
+        let minInput = document.getElementById('superMinPrice');
+        MIN_DELIVERY_PRICE = (minInput && minInput.value) ? parseInt(minInput.value) : 550;
+        await fetch(`${FIREBASE_URL}/settings/minDeliveryPrice.json`, { method: 'PUT', body: JSON.stringify(MIN_DELIVERY_PRICE) });
+        showToast("تم تحديث الحد الأدنى للتوصيل");
+    };
+    
     async function loadDeliveryPrices() {
         try {
             let res = await fetch(`${FIREBASE_URL}/settings/deliveryPrices.json`);
@@ -851,12 +1013,68 @@
                 let carInput = document.getElementById('carPricePerKm');
                 let bikeInput = document.getElementById('bikePricePerKm');
                 let generalInput = document.getElementById('generalPricePerKm');
+                let superCar = document.getElementById('superCarPrice');
+                let superBike = document.getElementById('superBikePrice');
+                let superGeneral = document.getElementById('superGeneralPrice');
                 if (carInput) carInput.value = deliveryPrices.car;
                 if (bikeInput) bikeInput.value = deliveryPrices.bike;
                 if (generalInput) generalInput.value = deliveryPrices.general;
+                if (superCar) superCar.value = deliveryPrices.car;
+                if (superBike) superBike.value = deliveryPrices.bike;
+                if (superGeneral) superGeneral.value = deliveryPrices.general;
+            }
+            let minRes = await fetch(`${FIREBASE_URL}/settings/minDeliveryPrice.json`);
+            let minData = await minRes.json();
+            if (minData) {
+                MIN_DELIVERY_PRICE = minData;
+                let superMin = document.getElementById('superMinPrice');
+                if (superMin) superMin.value = MIN_DELIVERY_PRICE;
             }
         } catch(e) {}
     }
+    
+    async function loadSystemStats() {
+        await loadRestaurants();
+        await loadOrders();
+        await loadUsers();
+        let statsRest = document.getElementById('statsRestaurants');
+        let statsOrders = document.getElementById('statsOrders');
+        let statsUsers = document.getElementById('statsUsers');
+        let statsRevenue = document.getElementById('statsRevenue');
+        if (statsRest) statsRest.innerText = allRestaurants.length;
+        if (statsOrders) statsOrders.innerText = allOrders.length;
+        if (statsUsers) statsUsers.innerText = allUsers.length;
+        let totalRevenue = allOrders.reduce((sum, order) => sum + (order.total || 0), 0);
+        if (statsRevenue) statsRevenue.innerText = totalRevenue;
+    }
+    
+    window.exportDatabase = function() {
+        let data = {
+            restaurants: allRestaurants,
+            orders: allOrders,
+            users: allUsers,
+            settings: { deliveryPrices, minDeliveryPrice: MIN_DELIVERY_PRICE }
+        };
+        let dataStr = JSON.stringify(data, null, 2);
+        let dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+        let exportFileDefaultName = `waselny_database_${new Date().toISOString()}.json`;
+        let linkElement = document.createElement('a');
+        linkElement.setAttribute('href', dataUri);
+        linkElement.setAttribute('download', exportFileDefaultName);
+        linkElement.click();
+        showToast('تم تصدير قاعدة البيانات');
+    };
+    
+    window.clearDatabase = async function() {
+        if (confirm('⚠️ تحذير: هذا الإجراء سيمسح جميع البيانات نهائياً! هل أنت متأكد؟')) {
+            await fetch(`${FIREBASE_URL}/restaurants.json`, { method: 'DELETE' });
+            await fetch(`${FIREBASE_URL}/orders.json`, { method: 'DELETE' });
+            await fetch(`${FIREBASE_URL}/users.json`, { method: 'DELETE' });
+            await fetch(`${FIREBASE_URL}/settings.json`, { method: 'DELETE' });
+            showToast('تم مسح جميع البيانات');
+            setTimeout(() => location.reload(), 1500);
+        }
+    };
     
     function renderServices() {
         let grid = document.getElementById('servicesGrid');
@@ -967,6 +1185,18 @@
             if (locSpan) locSpan.innerHTML = `📍 ${pos.lat.toFixed(4)}, ${pos.lng.toFixed(4)}`;
             closeMap();
             showToast("تم تحديد موقع المطعم");
+        } else if (currentMapMode === 'delivery_restaurant') {
+            deliveryCalcRestLocation = { lat: pos.lat, lng: pos.lng };
+            let locSpan = document.getElementById('deliveryRestLoc');
+            if (locSpan) locSpan.innerHTML = `📍 ${pos.lat.toFixed(4)}, ${pos.lng.toFixed(4)}`;
+            closeMap();
+            showToast("تم تحديد موقع المطعم");
+        } else if (currentMapMode === 'delivery_customer') {
+            deliveryCalcCustomerLocation = { lat: pos.lat, lng: pos.lng };
+            let locSpan = document.getElementById('deliveryCustomerLoc');
+            if (locSpan) locSpan.innerHTML = `📍 ${pos.lat.toFixed(4)}, ${pos.lng.toFixed(4)}`;
+            closeMap();
+            showToast("تم تحديد موقع العميل");
         } else if (currentMapMode === 'order_pickup') {
             orderPickupLoc = pos;
             let pickupSpan = document.getElementById('pickupTxt');
@@ -1005,10 +1235,11 @@
         if (pageId === 'driverPage' && currentUser?.role === 'driver') { refreshDriverPanel(); let nameSpan = document.getElementById('driverNameDisplay'); if (nameSpan) nameSpan.innerText = currentUser?.name || ''; }
         if (pageId === 'adminPanelPage' && currentUser?.role === 'admin') renderAdminPanel();
         if (pageId === 'ordersPage') renderMyOrders();
+        if (pageId === 'superAdminPage') loadSystemStats();
         updateHeaderVisibility(pageId);
     };
     
-    // ======================== دالة تسجيل الدخول الجديدة ========================
+    // ======================== دالة تسجيل الدخول ========================
     function initLogin() {
         const roleBtns = document.querySelectorAll('.role-btn');
         const nameInput = document.getElementById('loginName');
@@ -1016,7 +1247,6 @@
         const passwordInput = document.getElementById('loginPassword');
         const loginBtn = document.getElementById('loginBtn');
         
-        // إظهار/إخفاء حقل كلمة المرور حسب الدور
         roleBtns.forEach(btn => {
             btn.addEventListener('click', function() {
                 roleBtns.forEach(b => b.classList.remove('active'));
@@ -1025,7 +1255,6 @@
                 if (passwordInput) {
                     passwordInput.style.display = (role === 'driver' || role === 'admin') ? 'block' : 'none';
                 }
-                // إظهار/إخفاء حقل المدير (الزر مخفي أصلاً، سيظهر فقط عند تفعيله من الإصدار)
                 if (role === 'admin' && passwordInput) {
                     passwordInput.style.display = 'block';
                 }
@@ -1046,7 +1275,6 @@
                 return;
             }
             
-            // حالة تسجيل الدخول كمدير
             if (role === 'admin') {
                 if (password !== ADMIN_PASSWORD) {
                     showToast('كلمة سر المدير خاطئة');
@@ -1056,7 +1284,6 @@
                     showToast('أدخل اسم المدير');
                     return;
                 }
-                // حفظ المدير
                 await fetch(`${FIREBASE_URL}/users/admin.json`, { method: 'PUT', body: JSON.stringify({ phone, name, role: 'admin', isBusy: false }) });
                 currentUser = { role: 'admin', phone, name };
                 localStorage.setItem('waselny_user', JSON.stringify(currentUser));
@@ -1066,7 +1293,6 @@
                 return;
             }
             
-            // حالة تسجيل الدخول كمندوب
             if (role === 'driver') {
                 if (password !== DRIVER_PASSWORD) {
                     showToast('كلمة سر المندوب خاطئة');
@@ -1086,7 +1312,6 @@
                 return;
             }
             
-            // حالة تسجيل الدخول كعميل (الافتراضي)
             if (!name) {
                 showToast('أدخل اسم العميل');
                 return;
@@ -1099,7 +1324,6 @@
             setActiveNav('homePage');
             renderServices();
             
-            // إظهار زر تتبع الطلب إذا كان هناك طلب نشط
             let trackOrderId = localStorage.getItem('currentTrackingOrder');
             if (trackOrderId) {
                 let trackBtn = document.getElementById('trackOrderBtnHome');
@@ -1133,7 +1357,6 @@
     const driverLogoutBtn = document.getElementById('driverLogoutBtn');
     if (driverLogoutBtn) driverLogoutBtn.onclick = () => { localStorage.removeItem('waselny_user'); location.reload(); };
     
-    // التنقل بين الصفحات
     document.querySelectorAll('.nav-item').forEach(n => {
         n.onclick = () => {
             let p = n.dataset.page;
@@ -1145,7 +1368,7 @@
         };
     });
     
-    // تفعيل وضع المدير بالضغط على الإصدار
+    // تفعيل وضع السوبر أدمن بالضغط على الإصدار
     let versionClicks = 0;
     const versionSpan = document.getElementById('versionNumber');
     if (versionSpan) {
@@ -1153,19 +1376,16 @@
             versionClicks++;
             setTimeout(() => versionClicks = 0, 800);
             if (versionClicks >= 5) {
-                let pwd = prompt("كلمة السر للإدارة");
+                let pwd = prompt("كلمة السر للإدارة المتقدمة");
                 if (pwd === ADMIN_PASSWORD) {
-                    // إظهار زر المدير في واجهة الدخول
-                    let adminBtn = document.querySelector('.role-btn[data-role="admin"]');
-                    if (adminBtn) adminBtn.style.display = 'block';
-                    showToast("تم تفعيل وضع المدير، قم بتسجيل الدخول مجدداً");
+                    showToast("مرحباً أيها المدير العام");
+                    showPage('superAdminPage');
                 } else showToast("كلمة سر خاطئة");
                 versionClicks = 0;
             }
         });
     }
     
-    // فلترة المطاعم
     let cats = ['all', 'بروست', 'بيتزا', 'برجر', 'شاورما', 'مشاوي', 'عصائر'];
     let chipsContainer = document.getElementById('catChipsContainer');
     if (chipsContainer) {
@@ -1178,7 +1398,6 @@
         renderRestaurants();
     };
     
-    // ======================== بدء التطبيق ========================
     let savedUser = localStorage.getItem('waselny_user');
     if (savedUser) {
         currentUser = JSON.parse(savedUser);

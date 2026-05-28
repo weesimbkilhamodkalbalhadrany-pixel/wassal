@@ -38,6 +38,7 @@
         
         .btn-send { width: 100%; padding: 16px; background: var(--primary-light); border: none; border-radius: 44px; font-weight: 900; font-size: 1.1rem; color: var(--primary-dark); margin-top: 16px; cursor: pointer; transition: 0.2s; }
         .btn-primary { background: var(--restaurant-accent); color: white; border: none; padding: 16px; border-radius: 44px; width: 100%; font-weight: 900; font-size: 1.1rem; margin-top: 20px; cursor: pointer; }
+        .btn-secondary { background: var(--primary-dark); color: white; border: none; padding: 12px; border-radius: 30px; font-weight: 700; cursor: pointer; transition: 0.2s; }
         .field-input { width: 100%; padding: 14px 18px; border-radius: 28px; border: 1px solid var(--border-light); background: var(--bg-light); font-size: 1rem; margin-bottom: 12px; }
         .geo-btn { background: var(--bg-light); border: 1px solid var(--border-light); border-radius: 28px; padding: 14px 18px; display: flex; justify-content: space-between; font-weight: 600; width: 100%; cursor: pointer; margin-bottom: 10px; transition: 0.2s; }
         .geo-btn:hover { background: var(--primary-light); color: white; }
@@ -57,7 +58,7 @@
         .item-card { background: var(--card-light); border-radius: 20px; display: flex; align-items: center; padding: 12px; gap: 15px; transition: 0.2s; }
         .item-card:hover { transform: scale(1.01); }
         body.dark-mode .item-card { background: var(--card-dark); }
-        .item-img { width: 80px; height: 80px; border-radius: 15px; object-fit: cover; }
+        .item-img { width: 80px; height: 80px; border-radius: 15px; object-fit: cover; background: #ddd; }
         .item-details { flex: 1; }
         .item-details h4 { font-weight: 700; }
         .item-details .price { color: var(--restaurant-accent); font-weight: 900; }
@@ -99,9 +100,10 @@
         .admin-left, .admin-right { flex: 1; min-width: 250px; }
         .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: none; align-items: center; justify-content: center; z-index: 20000; }
         .modal.open { display: flex; }
-        .modal-content { background: var(--card-light); border-radius: 30px; padding: 20px; width: 90%; max-width: 500px; max-height: 85vh; overflow-y: auto; }
-        .item-row { display: flex; gap: 6px; margin-bottom: 8px; flex-wrap: wrap; }
-        .item-row input { flex: 1; min-width: 100px; }
+        .modal-content { background: var(--card-light); border-radius: 30px; padding: 20px; width: 90%; max-width: 600px; max-height: 85vh; overflow-y: auto; }
+        .item-row { display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; align-items: center; }
+        .item-row input { flex: 1; min-width: 120px; padding: 10px; border-radius: 15px; border: 1px solid var(--border-light); }
+        .item-row .delete-item-btn { background: var(--danger); color: white; border: none; padding: 8px 12px; border-radius: 12px; cursor: pointer; }
         .icon-btn { padding: 6px 12px; border-radius: 10px; border: none; cursor: pointer; transition: 0.2s; }
         .icon-btn:hover { transform: scale(1.05); }
         .setting-row { display: flex; justify-content: space-between; align-items: center; padding: 14px; background: var(--bg-light); border-radius: 30px; margin-bottom: 12px; cursor: pointer; transition: 0.2s; }
@@ -146,12 +148,14 @@
         .super-admin-title { font-size: 1.5rem; font-weight: 900; color: var(--primary-dark); margin-bottom: 20px; border-right: 4px solid var(--primary-light); padding-right: 15px; }
         .delivery-calc-card { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; border-radius: 20px; padding: 20px; margin-bottom: 20px; }
         .distance-result { font-size: 2rem; font-weight: 900; color: #ffd700; }
-        .restaurant-location-card { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); border-radius: 20px; padding: 15px; margin-bottom: 15px; }
+        .restaurant-location-card { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); border-radius: 20px; padding: 15px; margin-bottom: 15px; color: white; }
         .restaurant-map-btn { background: rgba(255,255,255,0.2); border: none; padding: 10px; border-radius: 15px; color: white; cursor: pointer; margin-top: 10px; width: 100%; }
         .restaurant-map-btn:hover { background: rgba(255,255,255,0.3); }
-        .selected-location { font-size: 0.8rem; margin-top: 5px; color: #ffd700; }
+        .selected-location { font-size: 0.8rem; margin-top: 8px; color: #ffd700; }
         .history-back-btn { position: fixed; bottom: 80px; right: 20px; background: var(--primary-dark); color: white; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 1500; box-shadow: 0 4px 15px rgba(0,0,0,0.2); transition: 0.2s; }
         .history-back-btn:hover { transform: scale(1.1); background: var(--primary-light); color: var(--primary-dark); }
+        .category-select { width: 100%; padding: 12px; border-radius: 25px; border: 1px solid var(--border-light); margin-bottom: 12px; }
+        .restaurant-image-preview { width: 100%; height: 150px; object-fit: cover; border-radius: 15px; margin-bottom: 10px; display: none; }
     </style>
 </head>
 <body>
@@ -187,7 +191,7 @@
             </div>
             <div class="settings-section">
                 <div class="settings-section-title"><i class="fas fa-info-circle"></i> معلومات</div>
-                <div class="setting-row" id="versionRow"><span><i class="fas fa-code-branch"></i> الإصدار</span><span id="versionNumber" style="cursor: pointer;">v19.0</span></div>
+                <div class="setting-row" id="versionRow"><span><i class="fas fa-code-branch"></i> الإصدار</span><span id="versionNumber" style="cursor: pointer;">v20.0</span></div>
             </div>
             <button class="btn-send logout-btn" id="settingsLogoutBtn" style="background:var(--danger); color:white;">تسجيل الخروج</button>
         </div>
@@ -265,27 +269,48 @@
 <div id="map-overlay" class="map-overlay"><div id="map"></div><div class="map-controls"><div class="map-back" onclick="closeMap()">↩️ رجوع</div><div class="map-confirm" onclick="confirmMapLocation()">✅ تأكيد الموقع</div></div></div>
 <div id="confirmationModal" class="confirmation-modal"><div class="modal-card"><h4 id="modalTitle">تأكيد</h4><p id="modalMessage"></p><button id="modalConfirm" style="background:var(--success);">نعم</button><button id="modalCancel" style="background:var(--danger);">إلغاء</button></div></div>
 
-<div id="adminModal" class="modal">
+<!-- نافذة إدارة المطاعم المتقدمة -->
+<div id="restaurantManagerModal" class="modal">
     <div class="modal-content">
-        <h3>إدارة المطعم</h3>
+        <h3 id="restaurantModalTitle">➕ إضافة مطعم جديد</h3>
         <input type="hidden" id="editRestId">
-        <input type="text" id="restName" class="field-input" placeholder="اسم المطعم">
-        <input type="text" id="restCat" class="field-input" placeholder="التصنيف">
-        <input type="text" id="restImg" class="field-input" placeholder="رابط الصورة">
+        
+        <input type="text" id="restName" class="field-input" placeholder="اسم المطعم *">
+        <select id="restCat" class="category-select">
+            <option value="بروست">بروست</option>
+            <option value="بيتزا">بيتزا</option>
+            <option value="برجر">برجر</option>
+            <option value="شاورما">شاورما</option>
+            <option value="مشاوي">مشاوي</option>
+            <option value="عصائر">عصائر</option>
+            <option value="حلويات">حلويات</option>
+            <option value="مأكولات بحرية">مأكولات بحرية</option>
+            <option value="مأكولات سريعة">مأكولات سريعة</option>
+        </select>
+        <input type="text" id="restImg" class="field-input" placeholder="رابط صورة المطعم (اختياري)">
+        <img id="restaurantImagePreview" class="restaurant-image-preview" src="" alt="معاينة الصورة">
+        
         <div class="restaurant-location-card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 15px; border-radius: 15px; margin-bottom: 15px;">
-            <label><i class="fas fa-map-marker-alt"></i> 📍 موقع المطعم</label>
-            <div class="geo-btn" onclick="initMapForRestaurantAdmin()" style="background: rgba(255,255,255,0.2); color: white; border: none;">
+            <label><i class="fas fa-map-marker-alt"></i> 📍 موقع المطعم على الخريطة</label>
+            <div class="geo-btn" onclick="initMapForRestaurantManager()" style="background: rgba(255,255,255,0.2); color: white; border: none; margin-top: 8px;">
                 <span id="restLocationTxt">🗺️ اختر موقع المطعم من الخريطة</span>
                 <i class="fas fa-map-marker-alt"></i>
             </div>
-            <div id="restCoordinatesDisplay" class="selected-location" style="font-size: 0.8rem; margin-top: 8px;">لم يتم اختيار موقع بعد</div>
-            <input type="hidden" id="restLat" value="15.3694">
-            <input type="hidden" id="restLng" value="44.1910">
+            <div id="restCoordinatesDisplay" class="selected-location" style="font-size: 0.8rem; margin-top: 8px;">⚠️ لم يتم اختيار موقع بعد (مطلوب)</div>
+            <input type="hidden" id="restLat" value="">
+            <input type="hidden" id="restLng" value="">
         </div>
-        <h4>🍽️ الأصناف</h4><div id="itemsList"></div>
-        <button class="btn-send" onclick="addItemRow()" style="margin:8px 0; font-size:0.7rem;">+ إضافة صنف</button>
-        <button class="btn-primary" onclick="saveRestaurantModal()" style="font-size:0.8rem;">💾 حفظ</button>
-        <button class="btn-send" onclick="closeAdminModal()" style="margin-top:8px;">إلغاء</button>
+        
+        <h4 style="margin: 15px 0 10px;">🍽️ الأصناف والقائمة</h4>
+        <div id="itemsListContainer">
+            <div id="itemsList"></div>
+            <button class="btn-secondary" onclick="addItemRow()" style="width: 100%; margin-top: 10px;">+ إضافة صنف جديد</button>
+        </div>
+        
+        <div style="display: flex; gap: 10px; margin-top: 20px;">
+            <button class="btn-primary" onclick="saveRestaurantFull()" style="flex: 1;">💾 حفظ المطعم</button>
+            <button class="btn-send" onclick="closeRestaurantModal()" style="flex: 1; background: var(--danger); color: white;">إلغاء</button>
+        </div>
     </div>
 </div>
 
@@ -379,11 +404,15 @@
     let orderDestLoc = null;
     let deliveryCalcRestLocation = null;
     let deliveryCalcCustomerLocation = null;
-    let pageHistory = ['homePage']; // سجل الصفحات للرجوع للخلف
+    let pageHistory = ['homePage'];
+    let editingRestaurantId = null;
     
     let deliveryPrices = { car: 175, bike: 100, general: 120 };
     
-    // بيانات افتراضية للمطاعم
+    // الفئات المتاحة للمطاعم
+    const categories = ['بروست', 'بيتزا', 'برجر', 'شاورما', 'مشاوي', 'عصائر', 'حلويات', 'مأكولات بحرية', 'مأكولات سريعة'];
+    
+    // بيانات افتراضية للمطاعم مع مواقع محددة
     const restaurantsData = [
         { id: 1, name: "رويال بروستر", cat: "بروست", img: "https://images.unsplash.com/photo-1626645738196-c2a7c8d08f58?w=400", restaurantLat: 15.3694, restaurantLng: 44.1910, items: [{n:"وجبة بروست (4 قطع)",p:2200},{n:"زنجر سوبريم",p:2400},{n:"ستريبس",p:2000}] },
         { id: 2, name: "البيك رويال", cat: "بروست", img: "https://images.unsplash.com/photo-1562967914-608f82629710?w=400", restaurantLat: 15.3550, restaurantLng: 44.1950, items: [{n:"بروست رويال",p:2400},{n:"فيليه سمك",p:2200}] },
@@ -423,8 +452,18 @@
         try {
             let res = await fetch(`${FIREBASE_URL}/restaurants.json`);
             let data = await res.json();
-            allRestaurants = (data && Object.keys(data).length > 0) ? Object.values(data) : restaurantsData;
-        } catch(e) { allRestaurants = restaurantsData; }
+            if (data && Object.keys(data).length > 0) {
+                allRestaurants = Object.values(data);
+            } else {
+                // حفظ البيانات الافتراضية في Firebase إذا كانت فارغة
+                for (let rest of restaurantsData) {
+                    await fetch(`${FIREBASE_URL}/restaurants/${rest.id}.json`, { method: 'PUT', body: JSON.stringify(rest) });
+                }
+                allRestaurants = restaurantsData;
+            }
+        } catch(e) { 
+            allRestaurants = restaurantsData;
+        }
         renderRestaurants();
     }
     
@@ -436,7 +475,7 @@
         if (grid) {
             grid.innerHTML = filtered.map(r => `
                 <div class="res-card" onclick="openRestaurantMenu(${r.id})">
-                    <div class="res-image" style="background-image: url('${r.img}')"></div>
+                    <div class="res-image" style="background-image: url('${r.img || 'https://via.placeholder.com/400x200?text=مطعم'}')"></div>
                     <div class="res-info"><h3>${r.name}</h3><p>${r.cat}</p></div>
                 </div>
             `).join('');
@@ -445,6 +484,7 @@
     
     window.openRestaurantMenu = function(id) {
         currentRestaurant = allRestaurants.find(r => r.id === id);
+        if (!currentRestaurant) return showToast('المطعم غير موجود');
         cart = [];
         customerLocation = null;
         deliveryCost = 0;
@@ -455,7 +495,7 @@
                 <div class="menu-grid">
                     ${currentRestaurant.items.map((item, idx) => `
                         <div class="item-card">
-                            <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=100" class="item-img">
+                            <img src="${item.img || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=100'}" class="item-img">
                             <div class="item-details">
                                 <h4>${item.n}</h4>
                                 <div class="price">${item.p} ريال</div>
@@ -500,14 +540,12 @@
                 <div class="address-chip" onclick="setCheckoutLocation(15.3850, 44.2050, 'العمل')">💼 العمل</div>
             `;
         }
-        // إخفاء شريط السلة بعد الضغط عليه
         let floatCart = document.getElementById('floatCart');
         if (floatCart) floatCart.style.display = 'none';
     };
     
     window.goBackToMenu = function() {
         showPage('restaurantMenuPage');
-        // إظهار شريط السلة مرة أخرى إذا كان فيه أطعمة
         if (cart.length) {
             let floatCart = document.getElementById('floatCart');
             if (floatCart) floatCart.style.display = 'flex';
@@ -597,8 +635,8 @@
         }, 100);
     };
     
-    window.initMapForRestaurantAdmin = function() {
-        currentMapMode = 'restaurant_admin';
+    window.initMapForRestaurantManager = function() {
+        currentMapMode = 'restaurant_manager';
         let mapDiv = document.getElementById('map-overlay');
         if (mapDiv) mapDiv.style.display = 'flex';
         setTimeout(() => {
@@ -607,6 +645,11 @@
                 L.tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', { subdomains: ['mt0','mt1','mt2','mt3'] }).addTo(map);
                 marker = L.marker([15.3694, 44.1910], { draggable: true }).addTo(map);
                 map.on('click', e => marker.setLatLng(e.latlng));
+            }
+            let latInput = document.getElementById('restLat');
+            let lngInput = document.getElementById('restLng');
+            if (latInput && latInput.value && lngInput && lngInput.value) {
+                marker.setLatLng([parseFloat(latInput.value), parseFloat(lngInput.value)]);
             }
             if (map) map.invalidateSize();
         }, 100);
@@ -670,7 +713,6 @@
         showToast('✅ تم إرسال الطلب، بانتظار إسناد مندوب');
         cart = [];
         customerLocation = null;
-        // إخفاء شريط السلة بعد إتمام الطلب
         let floatCart = document.getElementById('floatCart');
         if (floatCart) floatCart.style.display = 'none';
         showPage('homePage');
@@ -716,7 +758,7 @@
         let html = `<div class="admin-split">
             <div class="admin-left">
                 <div class="admin-section"><div class="admin-section-title"><i class="fas fa-plus-circle"></i> إدارة المطاعم</div>
-                <button class="btn-primary" onclick="openAdminModal()" style="font-size:0.75rem; padding:8px;">➕ إضافة مطعم</button>
+                <button class="btn-primary" onclick="openRestaurantManagerModal()" style="font-size:0.75rem; padding:8px; margin-bottom: 15px;">➕ إضافة مطعم جديد</button>
                 <div id="adminRestaurantsList"></div>
             </div>
             <div class="admin-right">
@@ -752,10 +794,10 @@
         if (restList) {
             restList.innerHTML = allRestaurants.map(r => `
                 <div class="restaurant-admin-card">
-                    <img src="${r.img}" style="width:50px; height:50px; border-radius:14px;">
-                    <div style="flex:1;"><strong>${r.name}</strong><br><small>${r.cat}</small></div>
-                    <button class="icon-btn" onclick="editRestaurant(${r.id})" style="background:var(--warning);">✏️</button>
-                    <button class="icon-btn" onclick="deleteRestaurant(${r.id})" style="background:var(--danger);">🗑️</button>
+                    <img src="${r.img || 'https://via.placeholder.com/50'}" style="width:50px; height:50px; border-radius:14px; object-fit:cover;">
+                    <div style="flex:1;"><strong>${r.name}</strong><br><small>${r.cat}</small><br><small style="color:var(--text-muted);">📍 ${r.restaurantLat?.toFixed(4) || '?'}, ${r.restaurantLng?.toFixed(4) || '?'}</small></div>
+                    <button class="icon-btn" onclick="editRestaurant(${r.id})" style="background:var(--warning);">✏️ تعديل</button>
+                    <button class="icon-btn" onclick="deleteRestaurant(${r.id})" style="background:var(--danger);">🗑️ حذف</button>
                 </div>
             `).join('');
         }
@@ -774,94 +816,146 @@
         }
     };
     
-    window.openAdminModal = function(resId = null) {
-        let modal = document.getElementById('adminModal');
-        if (modal) modal.classList.add('open');
-        let itemsDiv = document.getElementById('itemsList');
-        if (itemsDiv) itemsDiv.innerHTML = '';
-        if (resId) {
-            let res = allRestaurants.find(r => r.id == resId);
-            let nameInput = document.getElementById('restName');
-            let catInput = document.getElementById('restCat');
-            let imgInput = document.getElementById('restImg');
-            let latInput = document.getElementById('restLat');
-            let lngInput = document.getElementById('restLng');
-            let coordsDisplay = document.getElementById('restCoordinatesDisplay');
-            if (nameInput) nameInput.value = res.name;
-            if (catInput) catInput.value = res.cat;
-            if (imgInput) imgInput.value = res.img;
-            if (latInput) latInput.value = res.restaurantLat || 15.3694;
-            if (lngInput) lngInput.value = res.restaurantLng || 44.1910;
-            if (coordsDisplay) coordsDisplay.innerHTML = `📍 الإحداثيات الحالية: ${res.restaurantLat || 15.3694}, ${res.restaurantLng || 44.1910}`;
-            res.items.forEach(item => addItemRow(item.n, item.p));
+    // فتح نافذة إدارة المطعم
+    window.openRestaurantManagerModal = function(restaurantId = null) {
+        editingRestaurantId = restaurantId;
+        let modal = document.getElementById('restaurantManagerModal');
+        let title = document.getElementById('restaurantModalTitle');
+        
+        if (restaurantId) {
+            title.innerHTML = '✏️ تعديل المطعم';
+            let rest = allRestaurants.find(r => r.id === restaurantId);
+            if (rest) {
+                document.getElementById('editRestId').value = rest.id;
+                document.getElementById('restName').value = rest.name;
+                document.getElementById('restCat').value = rest.cat;
+                document.getElementById('restImg').value = rest.img || '';
+                document.getElementById('restLat').value = rest.restaurantLat || '';
+                document.getElementById('restLng').value = rest.restaurantLng || '';
+                let coordsDisplay = document.getElementById('restCoordinatesDisplay');
+                if (rest.restaurantLat && rest.restaurantLng) {
+                    coordsDisplay.innerHTML = `📍 الإحداثيات الحالية: ${rest.restaurantLat.toFixed(6)}, ${rest.restaurantLng.toFixed(6)}`;
+                    document.getElementById('restLocationTxt').innerHTML = '✅ تم تحديد الموقع';
+                } else {
+                    coordsDisplay.innerHTML = '⚠️ لم يتم اختيار موقع بعد (مطلوب)';
+                }
+                // عرض معاينة الصورة
+                let preview = document.getElementById('restaurantImagePreview');
+                if (rest.img) {
+                    preview.src = rest.img;
+                    preview.style.display = 'block';
+                } else {
+                    preview.style.display = 'none';
+                }
+                // عرض الأصناف
+                let itemsList = document.getElementById('itemsList');
+                itemsList.innerHTML = '';
+                if (rest.items && rest.items.length) {
+                    rest.items.forEach(item => addItemRow(item.n, item.p, item.img));
+                } else {
+                    addItemRow();
+                }
+            }
         } else {
-            let editId = document.getElementById('editRestId');
-            if (editId) editId.value = '';
-            let nameInput = document.getElementById('restName');
-            let catInput = document.getElementById('restCat');
-            let imgInput = document.getElementById('restImg');
-            let coordsDisplay = document.getElementById('restCoordinatesDisplay');
-            if (nameInput) nameInput.value = '';
-            if (catInput) catInput.value = '';
-            if (imgInput) imgInput.value = '';
-            if (coordsDisplay) coordsDisplay.innerHTML = 'لم يتم اختيار موقع بعد';
+            title.innerHTML = '➕ إضافة مطعم جديد';
+            document.getElementById('editRestId').value = '';
+            document.getElementById('restName').value = '';
+            document.getElementById('restCat').value = 'بروست';
+            document.getElementById('restImg').value = '';
+            document.getElementById('restLat').value = '';
+            document.getElementById('restLng').value = '';
+            document.getElementById('restCoordinatesDisplay').innerHTML = '⚠️ لم يتم اختيار موقع بعد (مطلوب)';
+            document.getElementById('restLocationTxt').innerHTML = '🗺️ اختر موقع المطعم من الخريطة';
+            document.getElementById('restaurantImagePreview').style.display = 'none';
+            let itemsList = document.getElementById('itemsList');
+            itemsList.innerHTML = '';
             addItemRow();
         }
+        
+        if (modal) modal.classList.add('open');
     };
     
-    window.addItemRow = function(name = '', price = '') {
+    // إضافة صف صنف جديد
+    window.addItemRow = function(name = '', price = '', img = '') {
         let div = document.createElement('div');
         div.className = 'item-row';
-        div.innerHTML = `<input placeholder="اسم الصنف" value="${name}" class="field-input" style="width:40%;"><input placeholder="السعر" value="${price}" class="field-input" style="width:30%;"><button onclick="this.parentElement.remove()" style="background:var(--danger); color:white; padding:10px; border:none; border-radius:10px;">✖</button>`;
-        let itemsDiv = document.getElementById('itemsList');
-        if (itemsDiv) itemsDiv.appendChild(div);
+        div.innerHTML = `
+            <input type="text" placeholder="اسم الصنف *" value="${name}" style="flex: 2;">
+            <input type="number" placeholder="السعر *" value="${price}" style="flex: 1;">
+            <input type="text" placeholder="رابط الصورة (اختياري)" value="${img}" style="flex: 2;">
+            <button class="delete-item-btn" onclick="this.parentElement.remove()"><i class="fas fa-trash"></i></button>
+        `;
+        document.getElementById('itemsList').appendChild(div);
     };
     
-    window.saveRestaurantModal = async function() {
-        let idInput = document.getElementById('editRestId');
-        let id = (idInput && idInput.value) ? parseInt(idInput.value) : Date.now();
-        let nameInput = document.getElementById('restName');
-        let catInput = document.getElementById('restCat');
-        let imgInput = document.getElementById('restImg');
-        let latInput = document.getElementById('restLat');
-        let lngInput = document.getElementById('restLng');
-        let name = nameInput ? nameInput.value : '';
-        let cat = catInput ? catInput.value : '';
-        let img = imgInput ? imgInput.value : '';
-        let restaurantLat = (latInput && latInput.value) ? parseFloat(latInput.value) : 15.3694;
-        let restaurantLng = (lngInput && lngInput.value) ? parseFloat(lngInput.value) : 44.1910;
+    // حفظ المطعم (إضافة أو تعديل)
+    window.saveRestaurantFull = async function() {
+        let id = document.getElementById('editRestId').value;
+        let name = document.getElementById('restName').value.trim();
+        let cat = document.getElementById('restCat').value;
+        let img = document.getElementById('restImg').value.trim();
+        let lat = document.getElementById('restLat').value;
+        let lng = document.getElementById('restLng').value;
+        
+        if (!name) { showToast('يرجى إدخال اسم المطعم'); return; }
+        if (!lat || !lng) { showToast('يرجى تحديد موقع المطعم من الخريطة'); return; }
+        
+        let restaurantLat = parseFloat(lat);
+        let restaurantLng = parseFloat(lng);
+        
         let items = [];
         let itemRows = document.querySelectorAll('#itemsList .item-row');
-        itemRows.forEach(row => {
+        if (itemRows.length === 0) { showToast('يرجى إضافة صنف واحد على الأقل'); return; }
+        
+        for (let row of itemRows) {
             let inputs = row.querySelectorAll('input');
-            if (inputs[0] && inputs[0].value && inputs[1] && inputs[1].value) {
-                items.push({ n: inputs[0].value, p: parseInt(inputs[1].value), img: '' });
-            }
-        });
-        if (!name || !cat || !items.length) return showToast('املأ جميع الحقول');
-        let restaurant = { id: parseInt(id), name, cat, img, items, restaurantLat, restaurantLng };
-        await fetch(`${FIREBASE_URL}/restaurants/${id}.json`, { method: 'PUT', body: JSON.stringify(restaurant) });
+            let itemName = inputs[0]?.value.trim();
+            let itemPrice = parseInt(inputs[1]?.value);
+            let itemImg = inputs[2]?.value.trim();
+            if (!itemName) { showToast('يرجى إدخال اسم الصنف'); return; }
+            if (!itemPrice || isNaN(itemPrice)) { showToast('يرجى إدخال سعر صحيح للصنف'); return; }
+            items.push({ n: itemName, p: itemPrice, img: itemImg || '' });
+        }
+        
+        let restaurantId = id ? parseInt(id) : Date.now();
+        let restaurant = { 
+            id: restaurantId, 
+            name, 
+            cat, 
+            img: img || 'https://via.placeholder.com/400x200?text=' + encodeURIComponent(name),
+            restaurantLat, 
+            restaurantLng, 
+            items 
+        };
+        
+        await fetch(`${FIREBASE_URL}/restaurants/${restaurantId}.json`, { method: 'PUT', body: JSON.stringify(restaurant) });
         await loadRestaurants();
+        closeRestaurantModal();
         if (document.getElementById('adminRestaurantsList')) renderAdminPanel();
-        closeAdminModal();
-        showToast('تم الحفظ');
+        showToast(id ? 'تم تحديث المطعم بنجاح' : 'تم إضافة المطعم بنجاح');
     };
     
+    // حذف مطعم
     window.deleteRestaurant = async function(id) {
-        if (confirm('حذف المطعم؟')) {
+        if (confirm('⚠️ هل أنت متأكد من حذف هذا المطعم؟ سيتم حذف جميع بياناته نهائياً.')) {
             await fetch(`${FIREBASE_URL}/restaurants/${id}.json`, { method: 'DELETE' });
             await loadRestaurants();
             if (document.getElementById('adminRestaurantsList')) renderAdminPanel();
-            showToast('تم الحذف');
+            showToast('تم حذف المطعم بنجاح');
         }
     };
     
-    window.closeAdminModal = function() {
-        let modal = document.getElementById('adminModal');
-        if (modal) modal.classList.remove('open');
+    // تعديل مطعم
+    window.editRestaurant = function(id) {
+        openRestaurantManagerModal(id);
     };
     
-    window.editRestaurant = function(id) { openAdminModal(id); };
+    // إغلاق نافذة إدارة المطعم
+    window.closeRestaurantModal = function() {
+        let modal = document.getElementById('restaurantManagerModal');
+        if (modal) modal.classList.remove('open');
+        editingRestaurantId = null;
+    };
     
     async function refreshDriverPanel() {
         await loadOrders();
@@ -1172,6 +1266,7 @@
     window.confirmMapLocation = async function() {
         if (!map || !marker) return;
         let pos = marker.getLatLng();
+        
         if (currentMapMode === 'checkout') {
             customerLocation = { lat: pos.lat, lng: pos.lng };
             let locationSpan = document.getElementById('checkoutLocationTxt');
@@ -1188,7 +1283,8 @@
                     if (addressInput) addressInput.value = addr;
                 }
             } catch(e) {}
-        } else if (currentMapMode === 'restaurant_admin') {
+        } 
+        else if (currentMapMode === 'restaurant_manager') {
             let latInput = document.getElementById('restLat');
             let lngInput = document.getElementById('restLng');
             let locSpan = document.getElementById('restLocationTxt');
@@ -1199,26 +1295,30 @@
             if (coordsDisplay) coordsDisplay.innerHTML = `📍 الإحداثيات: ${pos.lat.toFixed(6)}, ${pos.lng.toFixed(6)}`;
             closeMap();
             showToast("تم تحديد موقع المطعم");
-        } else if (currentMapMode === 'delivery_restaurant') {
+        }
+        else if (currentMapMode === 'delivery_restaurant') {
             deliveryCalcRestLocation = { lat: pos.lat, lng: pos.lng };
             let locSpan = document.getElementById('deliveryRestLoc');
             if (locSpan) locSpan.innerHTML = `📍 ${pos.lat.toFixed(4)}, ${pos.lng.toFixed(4)}`;
             closeMap();
             showToast("تم تحديد موقع المطعم");
-        } else if (currentMapMode === 'delivery_customer') {
+        }
+        else if (currentMapMode === 'delivery_customer') {
             deliveryCalcCustomerLocation = { lat: pos.lat, lng: pos.lng };
             let locSpan = document.getElementById('deliveryCustomerLoc');
             if (locSpan) locSpan.innerHTML = `📍 ${pos.lat.toFixed(4)}, ${pos.lng.toFixed(4)}`;
             closeMap();
             showToast("تم تحديد موقع العميل");
-        } else if (currentMapMode === 'order_pickup') {
+        }
+        else if (currentMapMode === 'order_pickup') {
             orderPickupLoc = pos;
             let pickupSpan = document.getElementById('pickupTxt');
             if (pickupSpan) pickupSpan.innerHTML = '✅ تم تحديد موقع الانطلاق';
             closeMap();
             let priceSpan = document.getElementById('finalPrice');
             if (priceSpan) priceSpan.innerText = Math.floor(Math.random() * 500) + 500;
-        } else if (currentMapMode === 'order_dest') {
+        }
+        else if (currentMapMode === 'order_dest') {
             orderDestLoc = pos;
             let destSpan = document.getElementById('destTxt');
             if (destSpan) destSpan.innerHTML = '✅ تم تحديد موقع الوصول';
@@ -1228,6 +1328,17 @@
         }
         currentMapMode = null;
     };
+    
+    // معاينة الصورة عند إدخال رابط
+    document.getElementById('restImg')?.addEventListener('input', function() {
+        let preview = document.getElementById('restaurantImagePreview');
+        if (this.value) {
+            preview.src = this.value;
+            preview.style.display = 'block';
+        } else {
+            preview.style.display = 'none';
+        }
+    });
     
     function setActiveNav(pageId) {
         document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
@@ -1239,7 +1350,6 @@
         if (pageId === 'homePage') document.body.classList.add('home-active');
         else document.body.classList.remove('home-active');
         
-        // إظهار/إخفاء زر الرجوع
         let backBtn = document.getElementById('historyBackBtn');
         if (backBtn) {
             if (pageHistory.length > 1 && pageId !== 'homePage') {
@@ -1255,7 +1365,6 @@
         let targetPage = document.getElementById(pageId);
         if (targetPage) targetPage.classList.add('active-page');
         
-        // إضافة الصفحة للسجل إذا لم تكن آخر صفحة
         if (pageHistory[pageHistory.length - 1] !== pageId) {
             pageHistory.push(pageId);
         }
@@ -1416,7 +1525,7 @@
         });
     }
     
-    let cats = ['all', 'بروست', 'بيتزا', 'برجر', 'شاورما', 'مشاوي', 'عصائر'];
+    let cats = ['all', ...categories];
     let chipsContainer = document.getElementById('catChipsContainer');
     if (chipsContainer) {
         chipsContainer.innerHTML = cats.map(c => `<div class="cat-chip ${c === 'all' ? 'active' : ''}" data-cat="${c}" onclick="filterRestaurants('${c}')"><i class="fas fa-utensils"></i> ${c === 'all' ? 'الكل' : c}</div>`).join('');

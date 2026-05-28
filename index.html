@@ -591,7 +591,7 @@
     let chipsContainer = document.getElementById('catChipsContainer'); if(chipsContainer) chipsContainer.innerHTML = cats.map(c=>`<div class="cat-chip ${c==='all'?'active':''}" data-cat="${c}" onclick="filterRestaurants('${c}')"><i class="fas fa-utensils"></i> ${c==='all'?'الكل':c}</div>`).join('');
     window.filterRestaurants = function(cat) { document.querySelectorAll('.cat-chip').forEach(c=>c.classList.remove('active')); let target=event?.target.closest('.cat-chip'); if(target) target.classList.add('active'); renderRestaurants(); };
     
-    // فتح لوحة الإدارة بكلمة المرور (الضغط 5 مرات) مع تحويل مباشر للإدارة
+    // ======================== فتح لوحة الإدارة بكلمة المرور (الضغط 5 مرات) مع تحويل مباشر ========================
     let versionClicks = 0;
     let versionTimer = null;
     function showAdminPasswordModal() {
@@ -605,13 +605,14 @@
             let pwd = document.getElementById('adminPasswordInput').value;
             if(pwd === ADMIN_PASSWORD) {
                 isAdminOverride = true;
-                // إنشاء جلسة مدير إذا لم توجد
+                // إنشاء جلسة مدير
                 if(!currentUser || currentUser.role !== 'admin') {
                     currentUser = { role: 'admin', name: 'المدير العام', phone: 'admin' };
                     localStorage.setItem('waselny_user', JSON.stringify(currentUser));
                 }
-                // إخفاء شاشة التسجيل إذا ظهرت
-                document.getElementById('loginOverlay').style.display = 'none';
+                // إخفاء شاشة التسجيل نهائياً إذا كانت ظاهرة
+                const loginOverlay = document.getElementById('loginOverlay');
+                if(loginOverlay) loginOverlay.style.display = 'none';
                 showPage('adminPanelPage');
                 renderAdminPanel();
                 showToast('مرحباً مدير النظام');
@@ -632,8 +633,67 @@
         versionTimer = setTimeout(() => { versionClicks = 0; }, 1000);
     });
     
-    let savedUser = localStorage.getItem('waselny_user'); if(savedUser){ currentUser=JSON.parse(savedUser); document.getElementById('loginOverlay').style.display='none'; if(currentUser.role==='driver'){ showPage('driverPage'); refreshDriverPanel(); } else if(currentUser.role==='admin' || isAdminOverride){ showPage('adminPanelPage'); renderAdminPanel(); } else { showPage('homePage'); setActiveNav('homePage'); renderServices(); } } else { document.getElementById('loginBtn').addEventListener('click',async()=>{ let role=document.querySelector('.role-btn.active').dataset.role; let name=document.getElementById('loginName').value.trim(); let phone=document.getElementById('loginPhone').value.trim(); let password=document.getElementById('loginPassword').value; if(!phone){showToast('أدخل رقم الهاتف');return;} if(role==='driver'){ if(password!==DRIVER_PASSWORD){showToast('كلمة سر خاطئة');return;} await fetch(`${FIREBASE_URL}/users/${phone}.json`,{method:'PUT',body:JSON.stringify({phone,name,role:'driver',isBusy:false})}); currentUser={role:'driver',phone,name}; localStorage.setItem('waselny_user',JSON.stringify(currentUser)); document.getElementById('loginOverlay').style.display='none'; showPage('driverPage'); refreshDriverPanel(); } else if(role==='admin'){ if(password!==ADMIN_PASSWORD){showToast('كلمة سر المدير خاطئة');return;} await fetch(`${FIREBASE_URL}/users/admin.json`,{method:'PUT',body:JSON.stringify({phone,name,role:'admin',isBusy:false})}); currentUser={role:'admin',phone,name}; localStorage.setItem('waselny_user',JSON.stringify(currentUser)); document.getElementById('loginOverlay').style.display='none'; showPage('adminPanelPage'); renderAdminPanel(); } else { await fetch(`${FIREBASE_URL}/users/${phone}.json`,{method:'PUT',body:JSON.stringify({phone,name,role:'customer',isBusy:false})}); currentUser={role:'customer',phone,name}; localStorage.setItem('waselny_user',JSON.stringify(currentUser)); document.getElementById('loginOverlay').style.display='none'; showPage('homePage'); setActiveNav('homePage'); renderServices(); } }); document.querySelectorAll('.role-btn').forEach(btn=>{ btn.addEventListener('click',function(){ document.querySelectorAll('.role-btn').forEach(b=>b.classList.remove('active')); this.classList.add('active'); let pwd=document.getElementById('loginPassword'); if(this.dataset.role==='driver'||this.dataset.role==='admin') pwd.style.display='block'; else pwd.style.display='none'; }); }); }
-    loadRestaurants(); loadDeliveryPrices(); loadUsers();
+    let savedUser = localStorage.getItem('waselny_user'); 
+    if(savedUser){ 
+        currentUser = JSON.parse(savedUser); 
+        document.getElementById('loginOverlay').style.display='none'; 
+        if(currentUser.role==='driver'){ 
+            showPage('driverPage'); 
+            refreshDriverPanel(); 
+        } else if(currentUser.role==='admin'){ 
+            showPage('adminPanelPage'); 
+            renderAdminPanel(); 
+        } else { 
+            showPage('homePage'); 
+            setActiveNav('homePage'); 
+            renderServices(); 
+        } 
+    } else { 
+        document.getElementById('loginBtn').addEventListener('click',async()=>{ 
+            let role=document.querySelector('.role-btn.active').dataset.role; 
+            let name=document.getElementById('loginName').value.trim(); 
+            let phone=document.getElementById('loginPhone').value.trim(); 
+            let password=document.getElementById('loginPassword').value; 
+            if(!phone){showToast('أدخل رقم الهاتف');return;} 
+            if(role==='driver'){ 
+                if(password!==DRIVER_PASSWORD){showToast('كلمة سر خاطئة');return;} 
+                await fetch(`${FIREBASE_URL}/users/${phone}.json`,{method:'PUT',body:JSON.stringify({phone,name,role:'driver',isBusy:false})}); 
+                currentUser={role:'driver',phone,name}; 
+                localStorage.setItem('waselny_user',JSON.stringify(currentUser)); 
+                document.getElementById('loginOverlay').style.display='none'; 
+                showPage('driverPage'); 
+                refreshDriverPanel(); 
+            } else if(role==='admin'){ 
+                if(password!==ADMIN_PASSWORD){showToast('كلمة سر المدير خاطئة');return;} 
+                await fetch(`${FIREBASE_URL}/users/admin.json`,{method:'PUT',body:JSON.stringify({phone,name,role:'admin',isBusy:false})}); 
+                currentUser={role:'admin',phone,name}; 
+                localStorage.setItem('waselny_user',JSON.stringify(currentUser)); 
+                document.getElementById('loginOverlay').style.display='none'; 
+                showPage('adminPanelPage'); 
+                renderAdminPanel(); 
+            } else { 
+                await fetch(`${FIREBASE_URL}/users/${phone}.json`,{method:'PUT',body:JSON.stringify({phone,name,role:'customer',isBusy:false})}); 
+                currentUser={role:'customer',phone,name}; 
+                localStorage.setItem('waselny_user',JSON.stringify(currentUser)); 
+                document.getElementById('loginOverlay').style.display='none'; 
+                showPage('homePage'); 
+                setActiveNav('homePage'); 
+                renderServices(); 
+            } 
+        }); 
+        document.querySelectorAll('.role-btn').forEach(btn=>{ 
+            btn.addEventListener('click',function(){ 
+                document.querySelectorAll('.role-btn').forEach(b=>b.classList.remove('active')); 
+                this.classList.add('active'); 
+                let pwd=document.getElementById('loginPassword'); 
+                if(this.dataset.role==='driver'||this.dataset.role==='admin') pwd.style.display='block'; 
+                else pwd.style.display='none'; 
+            }); 
+        }); 
+    }
+    loadRestaurants(); 
+    loadDeliveryPrices(); 
+    loadUsers();
     async function loadDeliveryPrices() { try{ let res=await fetch(`${FIREBASE_URL}/settings/deliveryPrices.json`); let data=await res.json(); if(data) deliveryPrices=data; let minRes=await fetch(`${FIREBASE_URL}/settings/minDeliveryPrice.json`); let minData=await minRes.json(); if(minData) MIN_DELIVERY_PRICE=minData; }catch(e){} }
     document.getElementById('confirmOrderBtn')?.addEventListener('click', () => confirmCheckoutOrder());
 })();

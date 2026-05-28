@@ -26,6 +26,19 @@
         .active-page { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         
+        /* قائمة وسائل الدفع الجديدة */
+        .payment-list { display: flex; flex-direction: column; gap: 12px; margin: 15px 0; }
+        .payment-list-item { background: var(--card-light); border: 1px solid var(--border-light); border-radius: 20px; padding: 14px 20px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; transition: 0.2s; }
+        .payment-list-item:hover { background: var(--bg-light); transform: scale(1.01); }
+        .payment-list-item.selected { border: 2px solid var(--success); background: rgba(16,185,129,0.05); }
+        .payment-icon { font-size: 1.6rem; margin-left: 12px; }
+        .payment-name { flex: 1; font-weight: 700; margin-right: 12px; }
+        .payment-arrow { color: var(--text-muted); font-size: 1.2rem; }
+        .payment-account-row { background: var(--bg-light); border-radius: 20px; padding: 15px; margin: 15px 0; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+        .copy-btn { background: var(--primary-light); border: none; padding: 8px 16px; border-radius: 25px; cursor: pointer; font-weight: 700; }
+        .receipt-image { margin: 10px 0; }
+        .receipt-image img { max-width: 100%; max-height: 150px; border-radius: 15px; }
+        
         .services-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; margin: 10px 0; }
         .service-card { background: var(--card-light); border-radius: 28px; padding: 24px 12px 20px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 1px solid var(--border-light); cursor: pointer; transition: transform 0.2s; }
         .service-card:hover { transform: scale(1.02); }
@@ -97,20 +110,12 @@
         .quick-btn-restaurant { background: var(--warning); color: white; }
         .quick-btn-deliver { background: var(--driver-primary); color: white; }
         
-        /* أقسام لوحة الإدارة الجديدة */
+        /* أقسام لوحة الإدارة */
         .admin-tabs { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; border-bottom: 2px solid var(--border-light); padding-bottom: 8px; }
         .admin-tab { padding: 10px 16px; border-radius: 30px; background: var(--bg-light); cursor: pointer; font-weight: 700; transition: 0.2s; }
         .admin-tab.active { background: var(--primary-light); color: var(--primary-dark); }
         .admin-tab-content { display: none; animation: fadeIn 0.2s; }
         .admin-tab-content.active { display: block; }
-        .payment-methods-grid { display: flex; flex-wrap: wrap; gap: 12px; margin: 15px 0; }
-        .payment-card { background: var(--bg-light); border-radius: 20px; padding: 12px; flex: 1 1 120px; text-align: center; cursor: pointer; border: 2px solid transparent; transition: 0.2s; }
-        .payment-card.selected { border-color: var(--success); background: rgba(16,185,129,0.1); }
-        .payment-card i { font-size: 1.5rem; display: block; margin-bottom: 6px; }
-        .payment-account-row { background: var(--bg-light); border-radius: 20px; padding: 12px; margin: 10px 0; display: flex; justify-content: space-between; align-items: center; }
-        .copy-btn { background: var(--primary-light); border: none; padding: 6px 12px; border-radius: 20px; cursor: pointer; }
-        .receipt-image { margin: 10px 0; }
-        .receipt-image img { max-width: 100%; max-height: 150px; border-radius: 15px; }
         .admin-restaurant-item { background: var(--bg-light); border-radius: 20px; padding: 12px; margin-bottom: 12px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
         .admin-restaurant-item img { width: 50px; height: 50px; border-radius: 12px; object-fit: cover; }
         .assign-order-card { background: var(--bg-light); border-radius: 20px; padding: 15px; margin-bottom: 15px; }
@@ -123,7 +128,6 @@
         .loading-spinner { display: inline-block; width: 20px; height: 20px; border: 2px solid #fff; border-radius: 50%; border-top-color: transparent; animation: spin 0.6s linear infinite; margin-right: 8px; }
         @keyframes spin { to { transform: rotate(360deg); } }
         
-        /* باقي الأنماط الاحتياطية */
         .super-admin-page { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; }
         .super-admin-card { background: white; border-radius: 30px; padding: 25px; margin-bottom: 20px; }
         .delivery-calc-card { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; border-radius: 20px; padding: 20px; margin-bottom: 20px; }
@@ -152,6 +156,10 @@
         .item-row { display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; align-items: center; }
         .item-row input { flex: 1; min-width: 120px; padding: 10px; border-radius: 15px; border: 1px solid var(--border-light); }
         .delete-item-btn { background: var(--danger); color: white; border: none; padding: 8px 12px; border-radius: 12px; cursor: pointer; }
+        
+        .settings-section { background: var(--card-light); border-radius: 20px; padding: 16px; margin-bottom: 20px; border: 1px solid var(--border-light); }
+        .settings-section-title { font-size: 1rem; font-weight: 800; margin-bottom: 15px; color: var(--primary-light); border-right: 3px solid var(--primary-light); padding-right: 10px; }
+        .setting-row { display: flex; justify-content: space-between; align-items: center; padding: 14px; background: var(--bg-light); border-radius: 30px; margin-bottom: 12px; cursor: pointer; transition: 0.2s; }
     </style>
 </head>
 <body>
@@ -175,6 +183,7 @@
             <div class="settings-section"><div class="settings-section-title"><i class="fas fa-bell"></i> الإشعارات</div><button class="btn-send ripple" onclick="enableNotifications()" style="background:#f97316; color:white;">🔔 تفعيل الإشعارات</button></div>
             <div class="settings-section"><div class="settings-section-title"><i class="fas fa-palette"></i> المظهر</div><div class="setting-row" id="darkModeToggle"><span><i class="fas fa-moon"></i> الوضع الليلي</span><i class="fas fa-toggle-off" id="darkModeIcon"></i></div></div>
             <div class="settings-section"><div class="settings-section-title"><i class="fas fa-headset"></i> التواصل</div><div class="setting-row" id="whatsappSupport"><span><i class="fab fa-whatsapp"></i> خدمة العملاء</span><i class="fas fa-chevron-left"></i></div><div class="setting-row" id="shareApp"><span><i class="fas fa-share-alt"></i> مشاركة التطبيق</span><i class="fas fa-chevron-left"></i></div></div>
+            <div class="settings-section"><div class="settings-section-title"><i class="fas fa-info-circle"></i> معلومات</div><div class="setting-row" id="versionRow"><span><i class="fas fa-code-branch"></i> الإصدار</span><span id="versionNumber" style="cursor: pointer;">v9.0.0</span></div></div>
             <button class="btn-send logout-btn" id="settingsLogoutBtn" style="background:var(--danger); color:white;">تسجيل الخروج</button>
         </div>
     </div>
@@ -196,12 +205,12 @@
         <h3 style="margin-bottom:20px;">🧾 تفاصيل الطلب</h3>
         <div id="checkoutOrderSummary" class="checkout-details"></div>
         
-        <!-- وسائل الدفع الجديدة -->
+        <!-- وسائل الدفع الجديدة على شكل قائمة -->
         <div class="payment-section" style="margin: 20px 0;">
             <label>💳 وسيلة الدفع</label>
-            <div class="payment-methods-grid" id="paymentMethodsGrid"></div>
+            <div class="payment-list" id="paymentMethodsList"></div>
             <div id="paymentAccountInfo" style="display: none;" class="payment-account-row">
-                <span id="accountNumberSpan"></span>
+                <span>📞 رقم الدفع: <strong id="accountNumberSpan">777215154</strong></span>
                 <button class="copy-btn" onclick="copyAccountNumber()"><i class="fas fa-copy"></i> نسخ الرقم</button>
             </div>
             <div id="receiptUploadArea" style="display: none;">
@@ -218,7 +227,7 @@
             <input type="text" id="checkoutAddressManual" class="field-input" placeholder="✍️ أو اكتب عنوانك يدوياً" oninput="updateCheckoutAddressManual(this.value)">
             <div id="deliveryCostDisplay" class="delivery-cost-card" style="display:none;"><div>🚚 سعر التوصيل</div><div><span class="delivery-cost-value" id="deliveryCostValue">0</span> ريال</div></div>
         </div>
-        <button class="btn-primary" onclick="confirmCheckoutOrder()">✅ تأكيد الطلب</button>
+        <button class="btn-primary" id="confirmOrderBtn">✅ تأكيد الطلب</button>
     </div>
     <div id="orderDetailPage" class="page"><div id="orderDetailContainer"></div><button class="btn-send" onclick="backToDriverPanel()">رجوع</button></div>
     <div id="driverPage" class="page">
@@ -250,7 +259,7 @@
 <div id="map-overlay" class="map-overlay"><div id="map"></div><div class="map-controls"><div class="map-back" onclick="closeMap()">↩️ رجوع</div><div class="map-confirm" onclick="confirmMapLocation()">✅ تأكيد الموقع</div></div></div>
 <div id="confirmationModal" class="confirmation-modal"><div class="modal-card"><h4 id="modalTitle">تأكيد</h4><p id="modalMessage"></p><button id="modalConfirm" style="background:var(--success);">نعم</button><button id="modalCancel" style="background:var(--danger);">إلغاء</button></div></div>
 
-<!-- نافذة إدارة المطاعم المتقدمة -->
+<!-- نافذة إدارة المطاعم -->
 <div id="restaurantManagerModal" class="modal">
     <div class="modal-content">
         <h3 id="restaurantModalTitle">➕ إضافة مطعم جديد</h3>
@@ -290,17 +299,18 @@
     let deliveryPrices = { car: 175, bike: 100, general: 120 };
     
     // بيانات وسائل الدفع
-    const paymentMethods = [
-        { id: 'jib', name: 'محفظة جيب', account: '1234567890' },
-        { id: 'onecash', name: 'ون كاش', account: '0987654321' },
-        { id: 'floosak', name: 'فلوسك', account: '1122334455' },
-        { id: 'jawaly', name: 'جوالي', account: '5566778899' },
-        { id: 'kremi', name: 'الكريمي', account: '6677889900' },
-        { id: 'easy', name: 'إيزي', account: '7788990011' },
-        { id: 'cod', name: 'الدفع عند الاستلام', account: '' }
+    const paymentMethodsList = [
+        { id: 'jib', name: 'محفظة جيب', icon: 'fas fa-wallet' },
+        { id: 'onecash', name: 'ون كاش', icon: 'fas fa-money-bill-wave' },
+        { id: 'floosak', name: 'فلوسك', icon: 'fas fa-coins' },
+        { id: 'jawaly', name: 'جوالي', icon: 'fas fa-mobile-alt' },
+        { id: 'kremi', name: 'الكريمي', icon: 'fas fa-credit-card' },
+        { id: 'easy', name: 'إيزي', icon: 'fas fa-bolt' },
+        { id: 'cod', name: 'الدفع عند الاستلام', icon: 'fas fa-hand-holding-usd' }
     ];
-    let selectedPaymentMethod = paymentMethods[6]; // افتراضي الدفع عند الاستلام
+    let selectedPaymentMethod = paymentMethodsList[6]; // افتراضي الدفع عند الاستلام
     let receiptImageBase64 = null;
+    const SUPPORT_PHONE = "777215154"; // رقم الدعم لواتساب
     
     // البيانات الافتراضية للمطاعم
     const restaurantsData = [
@@ -366,7 +376,7 @@
         if(!cart.length) { showToast('السلة فارغة'); return; }
         showPage('checkoutPage');
         updateCheckoutSummary();
-        renderPaymentMethods();
+        renderPaymentMethodsList();
         document.getElementById('floatCart').style.display = 'none';
     };
     
@@ -395,80 +405,38 @@
         updateCheckoutSummary();
     }
     
-    // تحسين تحديد الموقع: توجيه إلى الخريطة تلقائياً
-    window.showMapForCurrentLocation = function() {
-        if(!navigator.geolocation) { showToast("المتصفح لا يدعم الموقع"); return; }
-        currentMapMode = 'checkout_current';
-        let mapDiv = document.getElementById('map-overlay');
-        if(mapDiv) mapDiv.style.display = 'flex';
-        setTimeout(()=>{
-            if(!map){
-                map = L.map('map').setView([15.3694,44.1910],14);
-                L.tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}',{subdomains:['mt0','mt1','mt2','mt3']}).addTo(map);
-                marker = L.marker([15.3694,44.1910],{draggable:true}).addTo(map);
-                map.on('click',e=>marker.setLatLng(e.latlng));
-            }
-            navigator.geolocation.getCurrentPosition(pos=>{
-                let {latitude,longitude}=pos.coords;
-                marker.setLatLng([latitude,longitude]);
-                map.setView([latitude,longitude],15);
-                showToast("تم تحديد موقعك الحالي، يمكنك تعديله إذا أردت");
-            },()=>showToast("فشل تحديد الموقع"));
-            if(map) map.invalidateSize();
-        },100);
-    };
-    
-    window.initMapForCheckout = function() { currentMapMode='checkout'; document.getElementById('map-overlay').style.display='flex'; setTimeout(()=>{ if(!map) initMap(); if(customerLocation) marker.setLatLng(customerLocation); if(map) map.invalidateSize(); },100); };
-    window.initMapForRestaurantManager = function() { currentMapMode='restaurant_manager'; document.getElementById('map-overlay').style.display='flex'; setTimeout(()=>{ if(!map) initMap(); let lat=document.getElementById('restLat').value; let lng=document.getElementById('restLng').value; if(lat&&lng) marker.setLatLng([parseFloat(lat),parseFloat(lng)]); if(map) map.invalidateSize(); },100); };
-    
-    function initMap() { map = L.map('map').setView([15.3694,44.1910],14); L.tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}',{subdomains:['mt0','mt1','mt2','mt3']}).addTo(map); marker = L.marker([15.3694,44.1910],{draggable:true}).addTo(map); map.on('click',e=>marker.setLatLng(e.latlng)); }
-    
-    window.closeMap = function() { document.getElementById('map-overlay').style.display='none'; };
-    
-    window.confirmMapLocation = function() {
-        if(!map||!marker) return;
-        let pos = marker.getLatLng();
-        if(currentMapMode === 'checkout' || currentMapMode === 'checkout_current') {
-            customerLocation = { lat: pos.lat, lng: pos.lng };
-            document.getElementById('checkoutLocationTxt').innerHTML = '✅ تم تحديد الموقع';
-            updateDeliveryCost();
-            closeMap();
-            fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${pos.lat}&lon=${pos.lng}&accept-language=ar`).then(r=>r.json()).then(data=>{ if(data.display_name) { let addr=data.display_name.split(',')[0]; document.getElementById('checkoutLocationTxt').innerHTML = `✅ ${addr}`; document.getElementById('checkoutAddressManual').value=addr; } }).catch(e=>{});
-        }
-        else if(currentMapMode === 'restaurant_manager') {
-            document.getElementById('restLat').value = pos.lat;
-            document.getElementById('restLng').value = pos.lng;
-            document.getElementById('restLocationTxt').innerHTML = '✅ تم تحديد الموقع';
-            document.getElementById('restCoordinatesDisplay').innerHTML = `📍 الإحداثيات: ${pos.lat.toFixed(6)}, ${pos.lng.toFixed(6)}`;
-            closeMap();
-        }
-        currentMapMode = null;
-    };
-    
-    // وسائل الدفع
-    function renderPaymentMethods() {
-        let grid = document.getElementById('paymentMethodsGrid');
-        if(!grid) return;
-        grid.innerHTML = paymentMethods.map(m=>`<div class="payment-card ${selectedPaymentMethod?.id===m.id?'selected':''}" data-id="${m.id}" onclick="selectPaymentMethod('${m.id}')"><i class="fas ${m.id==='cod'?'fa-money-bill-wave':'fa-wallet'}"></i><span>${m.name}</span></div>`).join('');
+    // قائمة وسائل الدفع الجديدة (نمط الـ List)
+    function renderPaymentMethodsList() {
+        let container = document.getElementById('paymentMethodsList');
+        if(!container) return;
+        container.innerHTML = paymentMethodsList.map(m => `
+            <div class="payment-list-item ${selectedPaymentMethod?.id === m.id ? 'selected' : ''}" data-id="${m.id}" onclick="selectPaymentMethod('${m.id}')">
+                <div class="payment-icon"><i class="${m.icon}"></i></div>
+                <div class="payment-name">${m.name}</div>
+                <div class="payment-arrow"><i class="fas fa-chevron-left"></i></div>
+            </div>
+        `).join('');
     }
+    
     window.selectPaymentMethod = function(methodId) {
-        selectedPaymentMethod = paymentMethods.find(m=>m.id===methodId);
-        renderPaymentMethods();
+        selectedPaymentMethod = paymentMethodsList.find(m=>m.id===methodId);
+        renderPaymentMethodsList();
         let accDiv = document.getElementById('paymentAccountInfo');
         let receiptDiv = document.getElementById('receiptUploadArea');
         if(selectedPaymentMethod.id === 'cod') {
             accDiv.style.display = 'none';
             receiptDiv.style.display = 'none';
         } else {
-            document.getElementById('accountNumberSpan').innerText = selectedPaymentMethod.account;
             accDiv.style.display = 'flex';
             receiptDiv.style.display = 'block';
         }
     };
+    
     window.copyAccountNumber = function() {
-        navigator.clipboard.writeText(selectedPaymentMethod.account);
-        showToast('تم نسخ رقم الحساب');
+        navigator.clipboard.writeText(SUPPORT_PHONE);
+        showToast('تم نسخ رقم الدفع');
     };
+    
     document.getElementById('receiptImageInput')?.addEventListener('change', function(e) {
         let file = e.target.files[0];
         if(file) {
@@ -483,15 +451,17 @@
     
     window.updateCheckoutAddressManual = function(addr) { if(addr.length>3) { deliveryCost = MIN_DELIVERY_PRICE; updateCheckoutSummary(); } };
     
+    // تأكيد الطلب وإرسال واتساب
     window.confirmCheckoutOrder = async function() {
         if(!customerLocation) return showToast('حدد عنوان التوصيل');
         if(!currentUser || currentUser.role !== 'customer') return showToast('يجب تسجيل الدخول كعميل');
         if(selectedPaymentMethod.id !== 'cod' && !receiptImageBase64) { showToast('يرجى رفع صورة الإيصال'); return; }
+        
         let totalFood = cart.reduce((s,i)=>s+(i.p*i.qty),0);
         let total = totalFood + deliveryCost;
-        let id = Date.now();
+        let orderId = Date.now();
         let order = {
-            id, type: 'restaurant', restaurant: currentRestaurant.name,
+            id: orderId, type: 'restaurant', restaurant: currentRestaurant.name,
             customerName: currentUser.name, customerPhone: currentUser.phone,
             address: document.getElementById('checkoutAddressManual').value || 'عنوان محدد',
             lat: customerLocation.lat, lng: customerLocation.lng,
@@ -502,15 +472,38 @@
             paymentMethod: selectedPaymentMethod.name,
             receiptImage: receiptImageBase64 || null
         };
-        await fetch(`${FIREBASE_URL}/orders/${id}.json`, { method:'PUT', body:JSON.stringify(order) });
-        localStorage.setItem('currentTrackingOrder', id);
-        showToast('✅ تم إرسال الطلب، بانتظار إسناد مندوب');
+        
+        // حفظ الطلب في Firebase
+        await fetch(`${FIREBASE_URL}/orders/${orderId}.json`, { method:'PUT', body:JSON.stringify(order) });
+        localStorage.setItem('currentTrackingOrder', orderId);
+        
+        // تحضير رسالة واتساب
+        let itemsText = cart.map(i => `• ${i.n} (x${i.qty}) = ${i.p*i.qty} ريال`).join('%0A');
+        let message = `🧾 *طلب جديد من واصل*%0A` +
+                      `🆔 رقم الطلب: ${orderId}%0A` +
+                      `🍽️ المطعم: ${currentRestaurant.name}%0A` +
+                      `👤 العميل: ${currentUser.name}%0A` +
+                      `📞 الهاتف: ${currentUser.phone}%0A` +
+                      `📍 العنوان: ${order.address}%0A` +
+                      `📦 المنتجات:%0A${itemsText}%0A` +
+                      `🚚 سعر التوصيل: ${deliveryCost} ريال%0A` +
+                      `💰 الإجمالي: ${total} ريال%0A` +
+                      `💳 وسيلة الدفع: ${selectedPaymentMethod.name}%0A` +
+                      `📅 التاريخ: ${new Date().toLocaleString('ar-SA')}%0A%0A` +
+                      `عزيزي العميل، عد للتطبيق لتتبع حالة طلبك 😊`;
+        
+        // فتح رابط واتساب
+        let whatsappUrl = `https://wa.me/${SUPPORT_PHONE}?text=${message}`;
+        window.open(whatsappUrl, '_blank');
+        
+        showToast('✅ تم إرسال الطلب، جارٍ فتح واتساب...');
+        // تنظيف السلة
         cart = []; customerLocation = null; receiptImageBase64 = null;
         document.getElementById('floatCart').style.display = 'none';
         showPage('homePage'); setActiveNav('homePage');
         document.getElementById('trackOrderBtnHome').style.display = 'block';
         await loadOrders();
-        // عرض الفاتورة ثم التتبع
+        // عرض الفاتورة والتتبع
         showInvoiceAndTracking(order);
     };
     
@@ -527,7 +520,7 @@
     async function loadUsers() { try { let res = await fetch(`${FIREBASE_URL}/users.json`); let data = await res.json(); allUsers = data ? Object.values(data) : []; } catch(e){} }
     async function updateUserBusy(phone, isBusy) { await fetch(`${FIREBASE_URL}/users/${phone}.json`, { method:'PATCH', body:JSON.stringify({ isBusy }) }); await loadUsers(); }
     
-    // لوحة الإدارة الجديدة المقسمة
+    // لوحة الإدارة
     async function renderAdminPanel() {
         await loadOrders(); await loadUsers(); await loadRestaurants();
         let pendingOrders = allOrders.filter(o=>o.status==='pending');
@@ -587,7 +580,7 @@
     window.editRestaurantPrices = function(id) { openRestaurantManagerModal(id); };
     window.editRestaurantLocation = function(id) { openRestaurantManagerModal(id); };
     
-    // إدارة المطاعم
+    // إدارة المطاعم (نفس الكود السابق مع تحسينات)
     window.openRestaurantManagerModal = function(restaurantId=null) {
         let modal = document.getElementById('restaurantManagerModal');
         document.getElementById('restaurantModalTitle').innerHTML = restaurantId ? '✏️ تعديل المطعم' : '➕ إضافة مطعم جديد';
@@ -677,6 +670,68 @@
     window.enableNotifications = async function() { if(!("Notification"in window)){showToast("المتصفح لا يدعم");return;} let permission=await Notification.requestPermission(); if(permission==="granted"){showToast("🔔 تم التفعيل");startOrderWatcher();}else showToast("⚠️ لم يتم السماح"); };
     function startOrderWatcher() { setInterval(async()=>{ if(!currentUser||currentUser.role!=='customer')return; try{ let res=await fetch(`${FIREBASE_URL}/orders.json`); let data=await res.json(); if(!data)return; let myOrders=Object.values(data).filter(o=>o.customerPhone===currentUser?.phone); for(let order of myOrders){ let oldStatus=lastOrderStatuses[order.id]; if(oldStatus && oldStatus!==order.status && Notification.permission==="granted"){ let statusText={pending:'قيد المراجعة',on_the_way:'في الطريق',arrived:'وصل',delivered:'تم التوصيل'}[order.status]; new Notification(`تحديث الطلب #${order.id}`,{body:`الحالة: ${statusText}`}); } lastOrderStatuses[order.id]=order.status; } }catch(e){} },5000); }
     
+    // وظيفة فتح لوحة الإدارة بكلمة مرور من الإعدادات
+    function setupAdminLock() {
+        let versionSpan = document.getElementById('versionNumber');
+        if(versionSpan) {
+            versionSpan.addEventListener('click', () => {
+                let pwd = prompt("أدخل كلمة المرور للدخول إلى لوحة الإدارة:");
+                if(pwd === ADMIN_PASSWORD) {
+                    if(currentUser && currentUser.role === 'admin') {
+                        showPage('adminPanelPage');
+                        renderAdminPanel();
+                    } else {
+                        showToast("الرجاء تسجيل الدخول كمدير أولاً");
+                        // يمكن تحويله لتسجيل الدخول كمدير
+                    }
+                } else if(pwd !== null) {
+                    showToast("كلمة مرور خاطئة");
+                }
+            });
+        }
+    }
+    
+    // دوال الخريطة
+    window.showMapForCurrentLocation = function() {
+        if(!navigator.geolocation) { showToast("المتصفح لا يدعم الموقع"); return; }
+        currentMapMode = 'checkout_current';
+        let mapDiv = document.getElementById('map-overlay');
+        if(mapDiv) mapDiv.style.display = 'flex';
+        setTimeout(()=>{
+            if(!map){ initMap(); }
+            navigator.geolocation.getCurrentPosition(pos=>{
+                let {latitude,longitude}=pos.coords;
+                marker.setLatLng([latitude,longitude]);
+                map.setView([latitude,longitude],15);
+                showToast("تم تحديد موقعك الحالي، يمكنك تعديله إذا أردت");
+            },()=>showToast("فشل تحديد الموقع"));
+            if(map) map.invalidateSize();
+        },100);
+    };
+    window.initMapForCheckout = function() { currentMapMode='checkout'; document.getElementById('map-overlay').style.display='flex'; setTimeout(()=>{ if(!map) initMap(); if(customerLocation) marker.setLatLng(customerLocation); if(map) map.invalidateSize(); },100); };
+    window.initMapForRestaurantManager = function() { currentMapMode='restaurant_manager'; document.getElementById('map-overlay').style.display='flex'; setTimeout(()=>{ if(!map) initMap(); let lat=document.getElementById('restLat').value; let lng=document.getElementById('restLng').value; if(lat&&lng) marker.setLatLng([parseFloat(lat),parseFloat(lng)]); if(map) map.invalidateSize(); },100); };
+    function initMap() { map = L.map('map').setView([15.3694,44.1910],14); L.tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}',{subdomains:['mt0','mt1','mt2','mt3']}).addTo(map); marker = L.marker([15.3694,44.1910],{draggable:true}).addTo(map); map.on('click',e=>marker.setLatLng(e.latlng)); }
+    window.closeMap = function() { document.getElementById('map-overlay').style.display='none'; };
+    window.confirmMapLocation = function() {
+        if(!map||!marker) return;
+        let pos = marker.getLatLng();
+        if(currentMapMode === 'checkout' || currentMapMode === 'checkout_current') {
+            customerLocation = { lat: pos.lat, lng: pos.lng };
+            document.getElementById('checkoutLocationTxt').innerHTML = '✅ تم تحديد الموقع';
+            updateDeliveryCost();
+            closeMap();
+            fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${pos.lat}&lon=${pos.lng}&accept-language=ar`).then(r=>r.json()).then(data=>{ if(data.display_name) { let addr=data.display_name.split(',')[0]; document.getElementById('checkoutLocationTxt').innerHTML = `✅ ${addr}`; document.getElementById('checkoutAddressManual').value=addr; } }).catch(e=>{});
+        }
+        else if(currentMapMode === 'restaurant_manager') {
+            document.getElementById('restLat').value = pos.lat;
+            document.getElementById('restLng').value = pos.lng;
+            document.getElementById('restLocationTxt').innerHTML = '✅ تم تحديد الموقع';
+            document.getElementById('restCoordinatesDisplay').innerHTML = `📍 الإحداثيات: ${pos.lat.toFixed(6)}, ${pos.lng.toFixed(6)}`;
+            closeMap();
+        }
+        currentMapMode = null;
+    };
+    
     function setActiveNav(pageId) { document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active')); let activeNav=document.querySelector(`.nav-item[data-page="${pageId}"]`); if(activeNav) activeNav.classList.add('active'); }
     function updateHeaderVisibility(pageId) { if(pageId==='homePage') document.body.classList.add('home-active'); else document.body.classList.remove('home-active'); let backBtn=document.getElementById('historyBackBtn'); if(backBtn) backBtn.style.display=(pageHistory.length>1 && pageId!=='homePage')?'flex':'none'; }
     window.showPage = function(pageId) { document.querySelectorAll('.page').forEach(p=>p.classList.remove('active-page')); document.getElementById(pageId)?.classList.add('active-page'); if(pageHistory[pageHistory.length-1]!==pageId) pageHistory.push(pageId); if(pageId==='homePage'){ renderServices(); document.getElementById('savedAddressesContainer').innerHTML='<div class="address-chip">🏠 المنزل</div><div class="address-chip">💼 العمل</div>'; } if(pageId==='restaurantsPage') renderRestaurants(); if(pageId==='driverPage' && currentUser?.role==='driver'){ refreshDriverPanel(); document.getElementById('driverNameDisplay').innerText=currentUser?.name||''; } if(pageId==='adminPanelPage' && currentUser?.role==='admin') renderAdminPanel(); if(pageId==='ordersPage') renderMyOrders(); updateHeaderVisibility(pageId); };
@@ -687,6 +742,7 @@
     window.initMapForOrder = function(type) { currentMapMode=`order_${type}`; document.getElementById('map-overlay').style.display='flex'; setTimeout(()=>{ if(!map) initMap(); if(map) map.invalidateSize(); },100); };
     async function confirmGeneralOrder(serviceType) { let tel=document.getElementById('userTel').value; let pickupAddr=document.getElementById('pickupManual').value; let destAddr=document.getElementById('destManual').value; if(!tel||(!orderPickupLoc&&!pickupAddr)||(!orderDestLoc&&!destAddr)){showToast('حدد الموقع ورقم الهاتف');return;} let price=parseInt(document.getElementById('finalPrice').innerText); let id=Date.now(); let order={id,type:'general',phone:tel,service:serviceType,price:price,pickupAddress:pickupAddr||'موقع محدد',destinationAddress:destAddr||'موقع محدد',status:'pending',createdAt:new Date().toISOString()}; await fetch(`${FIREBASE_URL}/orders/${id}.json`,{method:'PUT',body:JSON.stringify(order)}); showToast('✅ تم إرسال الطلب'); showPage('homePage'); setActiveNav('homePage'); await loadOrders(); viewOrderTracking(id); }
     
+    // إعدادات المظهر والتطبيق
     const darkModeToggle = document.getElementById('darkModeToggle'); if(darkModeToggle) darkModeToggle.onclick=()=>{ document.body.classList.toggle('dark-mode'); let icon=document.getElementById('darkModeIcon'); if(icon) icon.className=document.body.classList.contains('dark-mode')?'fas fa-toggle-on':'fas fa-toggle-off'; localStorage.setItem('darkMode',document.body.classList.contains('dark-mode')); };
     if(localStorage.getItem('darkMode')==='true') document.body.classList.add('dark-mode');
     document.getElementById('whatsappSupport')?.addEventListener('click',()=>window.open('https://wa.me/777215154','_blank'));
@@ -699,9 +755,13 @@
     let chipsContainer = document.getElementById('catChipsContainer'); if(chipsContainer) chipsContainer.innerHTML = cats.map(c=>`<div class="cat-chip ${c==='all'?'active':''}" data-cat="${c}" onclick="filterRestaurants('${c}')"><i class="fas fa-utensils"></i> ${c==='all'?'الكل':c}</div>`).join('');
     window.filterRestaurants = function(cat) { document.querySelectorAll('.cat-chip').forEach(c=>c.classList.remove('active')); let target=event?.target.closest('.cat-chip'); if(target) target.classList.add('active'); renderRestaurants(); };
     
-    let savedUser = localStorage.getItem('waselny_user'); if(savedUser){ currentUser=JSON.parse(savedUser); document.getElementById('loginOverlay').style.display='none'; if(currentUser.role==='driver'){ showPage('driverPage'); refreshDriverPanel(); setInterval(refreshDriverPanel,5000); } else if(currentUser.role==='admin'){ showPage('adminPanelPage'); renderAdminPanel(); } else { showPage('homePage'); setActiveNav('homePage'); renderServices(); } } else { document.getElementById('loginBtn').addEventListener('click',async()=>{ let role=document.querySelector('.role-btn.active').dataset.role; let name=document.getElementById('loginName').value.trim(); let phone=document.getElementById('loginPhone').value.trim(); let password=document.getElementById('loginPassword').value; if(!phone){showToast('أدخل رقم الهاتف');return;} if(role==='driver'){ if(password!==DRIVER_PASSWORD){showToast('كلمة سر خاطئة');return;} if(!name){showToast('أدخل الاسم');return;} await fetch(`${FIREBASE_URL}/users/${phone}.json`,{method:'PUT',body:JSON.stringify({phone,name,role:'driver',isBusy:false})}); currentUser={role:'driver',phone,name}; localStorage.setItem('waselny_user',JSON.stringify(currentUser)); document.getElementById('loginOverlay').style.display='none'; showPage('driverPage'); refreshDriverPanel(); setInterval(refreshDriverPanel,5000); } else { if(!name){showToast('أدخل اسم العميل');return;} await fetch(`${FIREBASE_URL}/users/${phone}.json`,{method:'PUT',body:JSON.stringify({phone,name,role:'customer',isBusy:false})}); currentUser={role:'customer',phone,name}; localStorage.setItem('waselny_user',JSON.stringify(currentUser)); document.getElementById('loginOverlay').style.display='none'; showPage('homePage'); setActiveNav('homePage'); renderServices(); } }); document.querySelectorAll('.role-btn').forEach(btn=>{ btn.addEventListener('click',function(){ document.querySelectorAll('.role-btn').forEach(b=>b.classList.remove('active')); this.classList.add('active'); let pwd=document.getElementById('loginPassword'); if(this.dataset.role==='driver') pwd.style.display='block'; else pwd.style.display='none'; }); }); }
-    loadRestaurants(); loadDeliveryPrices(); loadUsers();
+    let savedUser = localStorage.getItem('waselny_user'); if(savedUser){ currentUser=JSON.parse(savedUser); document.getElementById('loginOverlay').style.display='none'; if(currentUser.role==='driver'){ showPage('driverPage'); refreshDriverPanel(); setInterval(refreshDriverPanel,5000); } else if(currentUser.role==='admin'){ showPage('adminPanelPage'); renderAdminPanel(); } else { showPage('homePage'); setActiveNav('homePage'); renderServices(); } } else { document.getElementById('loginBtn').addEventListener('click',async()=>{ let role=document.querySelector('.role-btn.active').dataset.role; let name=document.getElementById('loginName').value.trim(); let phone=document.getElementById('loginPhone').value.trim(); let password=document.getElementById('loginPassword').value; if(!phone){showToast('أدخل رقم الهاتف');return;} if(role==='driver'){ if(password!==DRIVER_PASSWORD){showToast('كلمة سر خاطئة');return;} if(!name){showToast('أدخل الاسم');return;} await fetch(`${FIREBASE_URL}/users/${phone}.json`,{method:'PUT',body:JSON.stringify({phone,name,role:'driver',isBusy:false})}); currentUser={role:'driver',phone,name}; localStorage.setItem('waselny_user',JSON.stringify(currentUser)); document.getElementById('loginOverlay').style.display='none'; showPage('driverPage'); refreshDriverPanel(); setInterval(refreshDriverPanel,5000); } else if(role==='admin'){ if(password!==ADMIN_PASSWORD){showToast('كلمة سر المدير خاطئة');return;} if(!name){showToast('أدخل الاسم');return;} await fetch(`${FIREBASE_URL}/users/admin.json`,{method:'PUT',body:JSON.stringify({phone,name,role:'admin',isBusy:false})}); currentUser={role:'admin',phone,name}; localStorage.setItem('waselny_user',JSON.stringify(currentUser)); document.getElementById('loginOverlay').style.display='none'; showPage('adminPanelPage'); renderAdminPanel(); } else { if(!name){showToast('أدخل اسم العميل');return;} await fetch(`${FIREBASE_URL}/users/${phone}.json`,{method:'PUT',body:JSON.stringify({phone,name,role:'customer',isBusy:false})}); currentUser={role:'customer',phone,name}; localStorage.setItem('waselny_user',JSON.stringify(currentUser)); document.getElementById('loginOverlay').style.display='none'; showPage('homePage'); setActiveNav('homePage'); renderServices(); } }); document.querySelectorAll('.role-btn').forEach(btn=>{ btn.addEventListener('click',function(){ document.querySelectorAll('.role-btn').forEach(b=>b.classList.remove('active')); this.classList.add('active'); let pwd=document.getElementById('loginPassword'); if(this.dataset.role==='driver' || this.dataset.role==='admin') pwd.style.display='block'; else pwd.style.display='none'; }); }); }
+    
+    loadRestaurants(); loadDeliveryPrices(); loadUsers(); setupAdminLock();
     async function loadDeliveryPrices() { try{ let res=await fetch(`${FIREBASE_URL}/settings/deliveryPrices.json`); let data=await res.json(); if(data) deliveryPrices=data; let minRes=await fetch(`${FIREBASE_URL}/settings/minDeliveryPrice.json`); let minData=await minRes.json(); if(minData) MIN_DELIVERY_PRICE=minData; }catch(e){} }
+    
+    // ربط زر تأكيد الطلب بالدالة الجديدة
+    document.getElementById('confirmOrderBtn')?.addEventListener('click', () => confirmCheckoutOrder());
 })();
 </script>
 </body>

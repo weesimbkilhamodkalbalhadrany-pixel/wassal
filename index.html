@@ -137,7 +137,7 @@
             <div class="settings-section"><div class="settings-section-title"><i class="fas fa-bell"></i> الإشعارات</div><button class="btn-send" onclick="enableNotifications()" style="background:#f97316; color:white;">🔔 تفعيل الإشعارات</button></div>
             <div class="settings-section"><div class="settings-section-title"><i class="fas fa-palette"></i> المظهر</div><div class="setting-row" id="darkModeToggle"><span><i class="fas fa-moon"></i> الوضع الليلي</span><i class="fas fa-toggle-off" id="darkModeIcon"></i></div></div>
             <div class="settings-section"><div class="settings-section-title"><i class="fas fa-headset"></i> التواصل</div><div class="setting-row" id="whatsappSupport"><span><i class="fab fa-whatsapp"></i> خدمة العملاء</span><i class="fas fa-chevron-left"></i></div><div class="setting-row" id="shareApp"><span><i class="fas fa-share-alt"></i> مشاركة التطبيق</span><i class="fas fa-chevron-left"></i></div></div>
-            <div class="settings-section"><div class="settings-section-title"><i class="fas fa-info-circle"></i> معلومات</div><div class="setting-row" id="versionRow"><span><i class="fas fa-code-branch"></i> الإصدار</span><span id="versionNumber" style="cursor: pointer;">v9.0.0</span></div></div>
+            <div class="settings-section"><div class="settings-section-title"><i class="fas fa-info-circle"></i> معلومات</div><div class="setting-row" id="versionRow"><span><i class="fas fa-code-branch"></i> الإصدار</span><span id="versionNumber" style="cursor: pointer;">v10.0</span></div></div>
             <button class="btn-send logout-btn" id="settingsLogoutBtn" style="background:var(--danger); color:white;">تسجيل الخروج</button>
         </div>
     </div>
@@ -220,7 +220,7 @@
     let currentMapMode = null, map = null, marker = null;
     let pageHistory = ['homePage'];
     let deliveryPrices = { car: 175, bike: 100, general: 120 };
-    let isSuperAdmin = false; // للدخول عبر الإصدار
+    let isSuperAdmin = false;
     
     const paymentMethodsList = [
         { id: 'jib', name: 'محفظة جيب', icon: 'fas fa-wallet', account: '777215154' },
@@ -269,7 +269,7 @@
         showPage('restaurantMenuPage');
     };
     window.addToCart = function(idx) { let item = currentRestaurant.items[idx]; let existing = cart.find(i=>i.n===item.n); if(existing) existing.qty++; else cart.push({...item, qty:1}); updateCartDisplay(); showToast(`تمت إضافة ${item.n}`); };
-    function updateCartDisplay() { let total = cart.reduce((s,i)=>s+(i.p*i.qty),0); document.getElementById('cartCount') && (document.getElementById('cartCount').innerText = cart.reduce((s,i)=>s+i.qty,0)); document.getElementById('cartTotal') && (document.getElementById('cartTotal').innerText = total); let floatCart = document.getElementById('floatCart'); if(floatCart) floatCart.style.display = cart.length ? 'flex' : 'none'; }
+    function updateCartDisplay() { let total = cart.reduce((s,i)=>s+(i.p*i.qty),0); if(document.getElementById('cartCount')) document.getElementById('cartCount').innerText = cart.reduce((s,i)=>s+i.qty,0); if(document.getElementById('cartTotal')) document.getElementById('cartTotal').innerText = total; let floatCart = document.getElementById('floatCart'); if(floatCart) floatCart.style.display = cart.length ? 'flex' : 'none'; }
     window.goToCheckout = function() { if(!cart.length) { showToast('السلة فارغة'); return; } showPage('checkoutPage'); updateCheckoutSummary(); renderPaymentMethods(); document.getElementById('floatCart').style.display = 'none'; };
     window.goBackToMenu = function() { showPage('restaurantMenuPage'); if(cart.length) document.getElementById('floatCart').style.display = 'flex'; };
     
@@ -363,7 +363,6 @@
         let pendingOrders = allOrders.filter(o=>o.status==='pending');
         let availableDrivers = allUsers.filter(u=>u.role==='driver' && !u.isBusy);
         
-        // قسم الإسناد
         let assignHtml = `<div class="admin-section"><div class="admin-section-title">📋 الطلبات الجديدة</div>`;
         if(pendingOrders.length===0) assignHtml += '<p>لا توجد طلبات جديدة</p>';
         else {
@@ -384,7 +383,6 @@
         }
         assignHtml += `<div class="admin-section-title" style="margin-top:20px;">🚚 المندوبين المتاحين</div><div>${availableDrivers.length?availableDrivers.map(d=>`<div>${d.name} - ${d.phone}</div>`).join(''):'<p>لا يوجد مناديب</p>'}</div></div>`;
         
-        // قسم المطاعم والأصناف
         let restaurantsHtml = `<div class="admin-section"><div class="admin-section-title">🍔 إدارة المطاعم والأصناف</div>
             <button class="btn-primary" onclick="openRestaurantManagerModal()" style="font-size:0.8rem; padding:10px; margin-bottom:15px;">➕ إضافة مطعم جديد</button>
             <div id="adminRestaurantsList">`;
@@ -401,7 +399,6 @@
         }
         restaurantsHtml += `</div></div>`;
         
-        // قسم التعديل (الأسعار والمواقع)
         let editHtml = `<div class="admin-section"><div class="admin-section-title">✏️ تعديل الأسعار والمواقع</div>`;
         for(let r of allRestaurants) {
             editHtml += `<div class="restaurant-admin-card">
@@ -452,7 +449,6 @@
         renderAdminPanel();
     };
     
-    // وظائف إدارة المطاعم
     window.openRestaurantManagerModal = function(restaurantId=null) {
         let modal = document.getElementById('restaurantManagerModal');
         document.getElementById('restModalTitle').innerHTML = restaurantId ? '✏️ تعديل المطعم' : '➕ إضافة مطعم جديد';
@@ -643,56 +639,67 @@
             renderServices(); 
         } 
     } else { 
-        document.getElementById('loginBtn').addEventListener('click',async()=>{ 
-            let role=document.querySelector('.role-btn.active').dataset.role; 
-            let name=document.getElementById('loginName').value.trim(); 
-            let phone=document.getElementById('loginPhone').value.trim(); 
-            let password=document.getElementById('loginPassword').value; 
-            if(!phone){showToast('أدخل رقم الهاتف');return;} 
-            if(role==='driver'){ 
-                if(password!==DRIVER_PASSWORD){showToast('كلمة سر خاطئة');return;} 
-                await fetch(`${FIREBASE_URL}/users/${phone}.json`,{method:'PUT',body:JSON.stringify({phone,name,role:'driver',isBusy:false})}); 
-                currentUser={role:'driver',phone,name}; 
-                localStorage.setItem('waselny_user',JSON.stringify(currentUser)); 
-                document.getElementById('loginOverlay').style.display='none'; 
-                showPage('driverPage'); 
-                refreshDriverPanel(); 
-            } else if(role==='admin'){ 
-                if(password!==ADMIN_PASSWORD){showToast('كلمة سر المدير خاطئة');return;} 
-                await fetch(`${FIREBASE_URL}/users/admin.json`,{method:'PUT',body:JSON.stringify({phone,name,role:'admin',isBusy:false})}); 
-                currentUser={role:'admin',phone,name}; 
-                localStorage.setItem('waselny_user',JSON.stringify(currentUser)); 
-                document.getElementById('loginOverlay').style.display='none'; 
-                showPage('adminPanelPage'); 
-                renderAdminPanel(); 
-            } else { 
-                await fetch(`${FIREBASE_URL}/users/${phone}.json`,{method:'PUT',body:JSON.stringify({phone,name,role:'customer',isBusy:false})}); 
-                currentUser={role:'customer',phone,name}; 
-                localStorage.setItem('waselny_user',JSON.stringify(currentUser)); 
-                document.getElementById('loginOverlay').style.display='none'; 
-                showPage('homePage'); 
-                setActiveNav('homePage'); 
-                renderServices(); 
-            } 
-        }); 
-        document.getElementById('guestModeBtn').addEventListener('click', () => {
-            currentUser = { role: 'customer', name: 'زائر', phone: 'guest' };
-            localStorage.setItem('waselny_user', JSON.stringify(currentUser));
-            document.getElementById('loginOverlay').style.display = 'none';
-            showPage('homePage');
-            setActiveNav('homePage');
-            renderServices();
-            showToast('مرحباً بك في وضع الزائر');
-        });
-        document.querySelectorAll('.role-btn').forEach(btn=>{ 
-            btn.addEventListener('click',function(){ 
+        // تأكيد وجود العناصر قبل إضافة الأحداث
+        const loginBtn = document.getElementById('loginBtn');
+        const guestModeBtn = document.getElementById('guestModeBtn');
+        const roleBtns = document.querySelectorAll('.role-btn');
+        
+        if(loginBtn) {
+            loginBtn.addEventListener('click', async () => { 
+                let role = document.querySelector('.role-btn.active').dataset.role; 
+                let name = document.getElementById('loginName').value.trim(); 
+                let phone = document.getElementById('loginPhone').value.trim(); 
+                let password = document.getElementById('loginPassword').value; 
+                if(!phone){ showToast('أدخل رقم الهاتف'); return; } 
+                if(role === 'driver'){ 
+                    if(password !== DRIVER_PASSWORD){ showToast('كلمة سر خاطئة'); return; } 
+                    await fetch(`${FIREBASE_URL}/users/${phone}.json`,{method:'PUT',body:JSON.stringify({phone,name,role:'driver',isBusy:false})}); 
+                    currentUser = { role:'driver', phone, name }; 
+                    localStorage.setItem('waselny_user', JSON.stringify(currentUser)); 
+                    document.getElementById('loginOverlay').style.display = 'none'; 
+                    showPage('driverPage'); 
+                    refreshDriverPanel(); 
+                } else if(role === 'admin'){ 
+                    if(password !== ADMIN_PASSWORD){ showToast('كلمة سر المدير خاطئة'); return; } 
+                    await fetch(`${FIREBASE_URL}/users/admin.json`,{method:'PUT',body:JSON.stringify({phone,name,role:'admin',isBusy:false})}); 
+                    currentUser = { role:'admin', phone, name }; 
+                    localStorage.setItem('waselny_user', JSON.stringify(currentUser)); 
+                    document.getElementById('loginOverlay').style.display = 'none'; 
+                    showPage('adminPanelPage'); 
+                    renderAdminPanel(); 
+                } else { 
+                    await fetch(`${FIREBASE_URL}/users/${phone}.json`,{method:'PUT',body:JSON.stringify({phone,name,role:'customer',isBusy:false})}); 
+                    currentUser = { role:'customer', phone, name }; 
+                    localStorage.setItem('waselny_user', JSON.stringify(currentUser)); 
+                    document.getElementById('loginOverlay').style.display = 'none'; 
+                    showPage('homePage'); 
+                    setActiveNav('homePage'); 
+                    renderServices(); 
+                } 
+            });
+        }
+        
+        if(guestModeBtn) {
+            guestModeBtn.addEventListener('click', () => {
+                currentUser = { role: 'customer', name: 'زائر', phone: 'guest' };
+                localStorage.setItem('waselny_user', JSON.stringify(currentUser));
+                document.getElementById('loginOverlay').style.display = 'none';
+                showPage('homePage');
+                setActiveNav('homePage');
+                renderServices();
+                showToast('مرحباً بك في وضع الزائر');
+            });
+        }
+        
+        roleBtns.forEach(btn => { 
+            btn.addEventListener('click', function(){ 
                 document.querySelectorAll('.role-btn').forEach(b=>b.classList.remove('active')); 
                 this.classList.add('active'); 
-                let pwd=document.getElementById('loginPassword'); 
-                if(this.dataset.role==='driver'||this.dataset.role==='admin') pwd.style.display='block'; 
-                else pwd.style.display='none'; 
+                let pwd = document.getElementById('loginPassword'); 
+                if(this.dataset.role === 'driver' || this.dataset.role === 'admin') pwd.style.display = 'block'; 
+                else pwd.style.display = 'none'; 
             }); 
-        }); 
+        });
     }
     loadRestaurants(); 
     loadDeliveryPrices(); 

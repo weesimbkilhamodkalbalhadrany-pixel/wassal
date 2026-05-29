@@ -81,7 +81,6 @@
         .step-connector { flex: 0.5; height: 4px; background: var(--border-light); border-radius: 10px; margin: 0 5px; }
         .step-connector.completed { background: var(--success); }
         .invoice-details p { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px dashed var(--border-light); }
-        /* تحسين عرض السعر والتوصيل في نفس السطر */
         .price-row { display: flex; justify-content: space-between; align-items: center; gap: 15px; margin-top: 5px; font-size: 1rem; }
         .price-row span:first-child { font-weight: 600; }
         .price-row span:last-child { font-weight: 900; color: var(--restaurant-accent); }
@@ -102,7 +101,6 @@
         .restaurant-admin-card { background: var(--bg-light); border-radius: 16px; padding: 10px; margin-bottom: 10px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
         .admin-split { display: flex; gap: 12px; flex-wrap: wrap; }
         .admin-left, .admin-right { flex: 1; min-width: 250px; }
-        /* علامات تبويب لوحة الإدارة */
         .admin-tabs { display: flex; gap: 5px; margin-bottom: 20px; border-bottom: 2px solid var(--border-light); }
         .tab-btn { padding: 10px 20px; background: transparent; border: none; font-weight: 800; cursor: pointer; transition: 0.2s; color: var(--text-muted); border-radius: 30px 30px 0 0; }
         .tab-btn.active { color: var(--restaurant-accent); border-bottom: 3px solid var(--restaurant-accent); background: rgba(249,115,22,0.1); }
@@ -166,9 +164,15 @@
         .history-back-btn:hover { transform: scale(1.1); background: var(--primary-light); color: var(--primary-dark); }
         .category-select { width: 100%; padding: 12px; border-radius: 25px; border: 1px solid var(--border-light); margin-bottom: 12px; }
         .restaurant-image-preview { width: 100%; height: 150px; object-fit: cover; border-radius: 15px; margin-bottom: 10px; display: none; }
-        /* تنسيق وسائل الدفع */
-        .payment-method { margin: 15px 0; }
-        .payment-select { width: 100%; padding: 12px; border-radius: 30px; border: 1px solid var(--border-light); background: var(--bg-light); font-size: 1rem; margin-bottom: 10px; }
+        /* تنسيق وسائل الدفع الجديد (قائمة) */
+        .payment-list { margin: 15px 0; border: 1px solid var(--border-light); border-radius: 20px; overflow: hidden; background: var(--card-light); }
+        .payment-option { display: flex; align-items: center; padding: 14px 18px; border-bottom: 1px solid var(--border-light); cursor: pointer; transition: 0.2s; gap: 12px; }
+        .payment-option:last-child { border-bottom: none; }
+        .payment-option:hover { background: var(--bg-light); }
+        .payment-option.active { background: rgba(45,212,191,0.1); border-right: 4px solid var(--primary-light); }
+        .payment-icon { width: 40px; font-size: 1.4rem; text-align: center; }
+        .payment-name { flex: 1; font-weight: 600; }
+        .payment-arrow { color: var(--text-muted); font-size: 0.9rem; }
         .account-number { background: #f1f5f9; padding: 12px; border-radius: 25px; display: flex; justify-content: space-between; align-items: center; margin: 10px 0; direction: ltr; text-align: left; font-family: monospace; font-size: 1rem; }
         .copy-btn { background: var(--primary-light); border: none; padding: 6px 12px; border-radius: 20px; cursor: pointer; font-weight: bold; }
         .receipt-upload { margin: 15px 0; }
@@ -238,30 +242,58 @@
             <input type="text" id="checkoutAddressManual" class="field-input" placeholder="✍️ أو اكتب عنوانك يدوياً" oninput="updateCheckoutAddressManual(this.value)">
             <div id="deliveryCostDisplay" class="delivery-cost-card" style="display:none;"><div>🚚 سعر التوصيل</div><div><span class="delivery-cost-value" id="deliveryCostValue">0</span> ريال</div></div>
         </div>
-        <!-- وسائل الدفع -->
+        <!-- وسائل الدفع الجديدة (قائمة) -->
         <div class="payment-method">
             <label>💰 وسيلة الدفع</label>
-            <select id="paymentMethodSelect" class="payment-select" onchange="updatePaymentDetails()">
-                <option value="cash">الدفع عند الاستلام</option>
-                <option value="jeeb">محفظة جيب</option>
-                <option value="onecash">ون كاش</option>
-                <option value="floosak">فلوسك</option>
-                <option value="jawaly">جوالي</option>
-                <option value="kremi">الكريمي</option>
-                <option value="easy">إيزي</option>
-            </select>
-            <div id="accountDetails" style="display: none;">
-                <div class="account-number">
-                    <span id="accountNumberText"></span>
-                    <button class="copy-btn" onclick="copyAccountNumber()">نسخ</button>
+            <div class="payment-list" id="paymentList">
+                <div class="payment-option" data-method="jeeb">
+                    <div class="payment-icon"><i class="fas fa-wallet"></i></div>
+                    <div class="payment-name">محفظة جيب</div>
+                    <div class="payment-arrow"><i class="fas fa-chevron-left"></i></div>
+                </div>
+                <div class="payment-option" data-method="onecash">
+                    <div class="payment-icon"><i class="fas fa-coins"></i></div>
+                    <div class="payment-name">ون كاش</div>
+                    <div class="payment-arrow"><i class="fas fa-chevron-left"></i></div>
+                </div>
+                <div class="payment-option" data-method="floosak">
+                    <div class="payment-icon"><i class="fas fa-money-bill"></i></div>
+                    <div class="payment-name">فلوسك</div>
+                    <div class="payment-arrow"><i class="fas fa-chevron-left"></i></div>
+                </div>
+                <div class="payment-option" data-method="jawaly">
+                    <div class="payment-icon"><i class="fas fa-mobile-alt"></i></div>
+                    <div class="payment-name">جوالي</div>
+                    <div class="payment-arrow"><i class="fas fa-chevron-left"></i></div>
+                </div>
+                <div class="payment-option" data-method="kremi">
+                    <div class="payment-icon"><i class="fas fa-credit-card"></i></div>
+                    <div class="payment-name">الكريمي</div>
+                    <div class="payment-arrow"><i class="fas fa-chevron-left"></i></div>
+                </div>
+                <div class="payment-option" data-method="easy">
+                    <div class="payment-icon"><i class="fas fa-bolt"></i></div>
+                    <div class="payment-name">إيزي</div>
+                    <div class="payment-arrow"><i class="fas fa-chevron-left"></i></div>
+                </div>
+                <div class="payment-option" data-method="cash">
+                    <div class="payment-icon"><i class="fas fa-hand-holding-usd"></i></div>
+                    <div class="payment-name">الدفع عند الاستلام</div>
+                    <div class="payment-arrow"><i class="fas fa-chevron-left"></i></div>
                 </div>
             </div>
-            <div class="receipt-upload" id="receiptUploadDiv" style="display: none;">
-                <label>📎 رفع صورة الإيصال (اختياري)</label>
-                <input type="file" id="receiptImage" accept="image/*" class="field-input">
+            <div id="paymentDetails" style="display: none;">
+                <div class="account-number">
+                    <span id="accountNumberText">777215154</span>
+                    <button class="copy-btn" onclick="copyAccountNumber()">نسخ</button>
+                </div>
+                <div class="receipt-upload">
+                    <label>📎 رفع صورة الإيصال (اختياري)</label>
+                    <input type="file" id="receiptImage" accept="image/*" class="field-input">
+                </div>
             </div>
         </div>
-        <button class="btn-primary" onclick="confirmCheckoutOrder()">✅ تأكيد الطلب</button>
+        <button class="btn-primary" onclick="confirmCheckoutOrder()">✅ تأكيد الطلب وإرسال عبر واتساب</button>
     </div>
     <div id="orderDetailPage" class="page"><div id="orderDetailContainer"></div><button class="btn-send" onclick="backToDriverPanel()">رجوع</button></div>
     <div id="driverPage" class="page">
@@ -449,14 +481,15 @@
     
     let deliveryPrices = { car: 175, bike: 100, general: 120 };
     
-    // بيانات وسائل الدفع
+    // بيانات وسائل الدفع (الأرقام)
     const paymentMethods = {
-        jeeb: { name: "محفظة جيب", number: "1234567890" },
-        onecash: { name: "ون كاش", number: "0987654321" },
-        floosak: { name: "فلوسك", number: "1122334455" },
-        jawaly: { name: "جوالي", number: "5566778899" },
-        kremi: { name: "الكريمي", number: "6677889900" },
-        easy: { name: "إيزي", number: "7788990011" }
+        jeeb: { name: "محفظة جيب", number: "777215154" },
+        onecash: { name: "ون كاش", number: "777215154" },
+        floosak: { name: "فلوسك", number: "777215154" },
+        jawaly: { name: "جوالي", number: "777215154" },
+        kremi: { name: "الكريمي", number: "777215154" },
+        easy: { name: "إيزي", number: "777215154" },
+        cash: { name: "الدفع عند الاستلام", number: "" }
     };
     let selectedPaymentMethod = "cash";
     let receiptBase64 = null;
@@ -500,6 +533,30 @@
         }
     };
     
+    // قفل لوحة الإدارة بكلمة مرور عند الضغط على رقم الإصدار
+    const versionSpan = document.getElementById('versionNumber');
+    if (versionSpan) {
+        versionSpan.addEventListener('click', () => {
+            let pwd = prompt("أدخل كلمة المرور للدخول إلى لوحة الإدارة:");
+            if (pwd === ADMIN_PASSWORD) {
+                if (currentUser && currentUser.role === 'admin') {
+                    showPage('adminPanelPage');
+                    renderAdminPanel();
+                } else {
+                    // تسجيل الدخول كمدير مؤقتاً
+                    currentUser = { role: 'admin', phone: 'admin', name: 'المدير' };
+                    localStorage.setItem('waselny_user', JSON.stringify(currentUser));
+                    document.getElementById('loginOverlay').style.display = 'none';
+                    showPage('adminPanelPage');
+                    renderAdminPanel();
+                }
+                showToast("مرحباً أيها المدير");
+            } else if (pwd !== null) {
+                showToast("كلمة المرور خاطئة");
+            }
+        });
+    }
+    
     async function loadRestaurants() {
         try {
             let res = await fetch(`${FIREBASE_URL}/restaurants.json`);
@@ -507,7 +564,6 @@
             if (data && Object.keys(data).length > 0) {
                 allRestaurants = Object.values(data);
             } else {
-                // حفظ البيانات الافتراضية في Firebase إذا كانت فارغة
                 for (let rest of restaurantsData) {
                     await fetch(`${FIREBASE_URL}/restaurants/${rest.id}.json`, { method: 'PUT', body: JSON.stringify(rest) });
                 }
@@ -609,7 +665,6 @@
         let total = totalFood + deliveryCost;
         let itemsHtml = cart.map(i => `<div class="checkout-item"><span>${i.n} x${i.qty}</span><span>${i.p * i.qty} ريال</span></div>`).join('');
         itemsHtml += `<div class="checkout-item" style="font-weight:bold; border-top:2px solid var(--border-light); margin-top:10px; padding-top:10px;"><span>المجموع</span><span>${totalFood} ريال</span></div>`;
-        // عرض سعر التوصيل والمنتجات في نفس السطر
         itemsHtml += `<div class="price-row"><span>🚚 سعر التوصيل:</span><span>${deliveryCost} ريال</span></div>`;
         itemsHtml += `<div class="price-row" style="color:var(--restaurant-accent); font-size:1.2rem; font-weight:900;"><span>الإجمالي:</span><span>${total} ريال</span></div>`;
         let summaryDiv = document.getElementById('checkoutOrderSummary');
@@ -650,7 +705,6 @@
         showToast(`تم تحديد ${addr}`);
     };
     
-    // تحسين: عند الضغط على "استخدام موقعي الحالي" يتم فتح الخريطة مع تحديد الموقع تلقائياً
     window.getCurrentLocationForCheckout = function() {
         let btn = document.getElementById('currentLocationBtn');
         if (!btn) return;
@@ -659,7 +713,6 @@
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(
                 pos => {
-                    // فتح الخريطة وتعيين الموقع
                     currentMapMode = 'checkout_current';
                     let mapDiv = document.getElementById('map-overlay');
                     if (mapDiv) mapDiv.style.display = 'flex';
@@ -756,22 +809,29 @@
         }
     };
     
-    // دوال وسائل الدفع
-    window.updatePaymentDetails = function() {
-        let select = document.getElementById('paymentMethodSelect');
-        selectedPaymentMethod = select.value;
-        let accountDiv = document.getElementById('accountDetails');
-        let receiptDiv = document.getElementById('receiptUploadDiv');
-        if (selectedPaymentMethod === 'cash') {
-            accountDiv.style.display = 'none';
-            receiptDiv.style.display = 'none';
-        } else {
-            accountDiv.style.display = 'block';
-            receiptDiv.style.display = 'block';
-            let accountNumber = paymentMethods[selectedPaymentMethod]?.number || 'غير متوفر';
-            document.getElementById('accountNumberText').innerText = accountNumber;
-        }
-    };
+    // دوال وسائل الدفع الجديدة (قائمة)
+    function initPaymentList() {
+        const options = document.querySelectorAll('.payment-option');
+        options.forEach(opt => {
+            opt.addEventListener('click', () => {
+                options.forEach(o => o.classList.remove('active'));
+                opt.classList.add('active');
+                const method = opt.dataset.method;
+                selectedPaymentMethod = method;
+                const detailsDiv = document.getElementById('paymentDetails');
+                if (method === 'cash') {
+                    detailsDiv.style.display = 'none';
+                } else {
+                    detailsDiv.style.display = 'block';
+                    document.getElementById('accountNumberText').innerText = paymentMethods[method].number;
+                }
+            });
+        });
+        // تعيين الخيار الافتراضي (الدفع عند الاستلام)
+        document.querySelector('.payment-option[data-method="cash"]').classList.add('active');
+        selectedPaymentMethod = 'cash';
+        document.getElementById('paymentDetails').style.display = 'none';
+    }
     
     window.copyAccountNumber = function() {
         let text = document.getElementById('accountNumberText').innerText;
@@ -793,9 +853,11 @@
         }
     });
     
+    // تأكيد الطلب وإرسال واتساب
     window.confirmCheckoutOrder = async function() {
         if (!customerLocation) return showToast('حدد عنوان التوصيل');
         if (!currentUser || currentUser.role !== 'customer') return showToast('يجب تسجيل الدخول كعميل');
+        
         let totalFood = cart.reduce((s, i) => s + (i.p * i.qty), 0);
         let total = totalFood + deliveryCost;
         let id = Date.now();
@@ -811,9 +873,34 @@
             paymentMethod: selectedPaymentMethod,
             receiptImage: receiptBase64 || null
         };
+        
+        // حفظ الطلب في Firebase
         await fetch(`${FIREBASE_URL}/orders/${id}.json`, { method: 'PUT', body: JSON.stringify(order) });
         localStorage.setItem('currentTrackingOrder', id);
-        showToast('✅ تم إرسال الطلب، بانتظار إسناد مندوب');
+        
+        // إعداد رسالة واتساب
+        let itemsText = cart.map(i => `• ${i.n} x${i.qty} = ${i.p * i.qty} ريال`).join('\n');
+        let paymentMethodName = selectedPaymentMethod === 'cash' ? 'الدفع عند الاستلام' : paymentMethods[selectedPaymentMethod]?.name;
+        let dateTime = new Date().toLocaleString('ar-SA');
+        let message = `🛍️ *طلب جديد من تطبيق وصّال* 🛍️\n\n` +
+                      `🍔 المطعم: ${currentRestaurant.name}\n` +
+                      `👤 الاسم: ${currentUser.name}\n` +
+                      `📞 الجوال: ${currentUser.phone}\n` +
+                      `📍 العنوان: ${order.address}\n\n` +
+                      `*المنتجات:*\n${itemsText}\n\n` +
+                      `🚚 سعر التوصيل: ${deliveryCost} ريال\n` +
+                      `💰 *الإجمالي: ${total} ريال*\n\n` +
+                      `💳 وسيلة الدفع: ${paymentMethodName}\n` +
+                      `📅 التاريخ والوقت: ${dateTime}\n\n` +
+                      `عزيزي العميل، عد للتطبيق لتتبع حالة طلبك 😊`;
+        
+        let encodedMessage = encodeURIComponent(message);
+        let whatsappUrl = `https://wa.me/777215154?text=${encodedMessage}`;
+        
+        // فتح رابط واتساب
+        window.open(whatsappUrl, '_blank');
+        
+        showToast('✅ تم إرسال الطلب عبر واتساب وحفظه، سيتم إشعارك عند قبوله');
         cart = [];
         customerLocation = null;
         receiptBase64 = null;
@@ -824,8 +911,8 @@
         let trackBtn = document.getElementById('trackOrderBtnHome');
         if (trackBtn) trackBtn.style.display = 'block';
         await loadOrders();
-        // عرض الفاتورة ثم التوجيه للتتبع
-        await viewOrderTracking(id);
+        // عرض واجهة التتبع بعد ثواني قليلة
+        setTimeout(() => viewOrderTracking(id), 2000);
     };
     
     async function loadOrders() {
@@ -854,7 +941,7 @@
         await loadUsers();
     }
     
-    // لوحة الإدارة المقسمة
+    // لوحة الإدارة المقسمة (كما هي)
     async function renderAdminPanel() {
         await loadOrders();
         await loadUsers();
@@ -888,7 +975,6 @@
         let panelDiv = document.getElementById('adminPanel');
         if (panelDiv) panelDiv.innerHTML = html;
         
-        // عرض الطلبات الجديدة مع إمكانية الإسناد والسحب
         if (pendingOrders.length) {
             let ordersHtml = '';
             for (let order of pendingOrders) {
@@ -909,7 +995,6 @@
             if (pendingDiv) pendingDiv.innerHTML = ordersHtml;
         }
         
-        // عرض قائمة المطاعم مع إمكانية تعديل الأصناف والصور والمواقع (قسم المطاعم والأصناف)
         let restList = document.getElementById('adminRestaurantsList');
         if (restList) {
             restList.innerHTML = allRestaurants.map(r => `
@@ -922,7 +1007,6 @@
             `).join('');
         }
         
-        // عرض قائمة المطاعم للتعديل السريع (قسم التعديل)
         let editList = document.getElementById('editRestaurantsList');
         if (editList) {
             editList.innerHTML = allRestaurants.map(r => `
@@ -933,7 +1017,6 @@
             `).join('');
         }
         
-        // إضافة وظيفة التبديل بين التبويبات
         document.querySelectorAll('.tab-btn').forEach(btn => {
             btn.addEventListener('click', function() {
                 document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -982,7 +1065,6 @@
         }
     };
     
-    // فتح نافذة إدارة المطعم
     window.openRestaurantManagerModal = function(restaurantId = null) {
         editingRestaurantId = restaurantId;
         let modal = document.getElementById('restaurantManagerModal');
@@ -1005,7 +1087,6 @@
                 } else {
                     coordsDisplay.innerHTML = '⚠️ لم يتم اختيار موقع بعد (مطلوب)';
                 }
-                // عرض معاينة الصورة
                 let preview = document.getElementById('restaurantImagePreview');
                 if (rest.img) {
                     preview.src = rest.img;
@@ -1013,7 +1094,6 @@
                 } else {
                     preview.style.display = 'none';
                 }
-                // عرض الأصناف
                 let itemsList = document.getElementById('itemsList');
                 itemsList.innerHTML = '';
                 if (rest.items && rest.items.length) {
@@ -1041,7 +1121,6 @@
         if (modal) modal.classList.add('open');
     };
     
-    // إضافة صف صنف جديد
     window.addItemRow = function(name = '', price = '', img = '') {
         let div = document.createElement('div');
         div.className = 'item-row';
@@ -1054,7 +1133,6 @@
         document.getElementById('itemsList').appendChild(div);
     };
     
-    // حفظ المطعم (إضافة أو تعديل)
     window.saveRestaurantFull = async function() {
         let id = document.getElementById('editRestId').value;
         let name = document.getElementById('restName').value.trim();
@@ -1101,7 +1179,6 @@
         showToast(id ? 'تم تحديث المطعم بنجاح' : 'تم إضافة المطعم بنجاح');
     };
     
-    // حذف مطعم
     window.deleteRestaurant = async function(id) {
         if (confirm('⚠️ هل أنت متأكد من حذف هذا المطعم؟ سيتم حذف جميع بياناته نهائياً.')) {
             await fetch(`${FIREBASE_URL}/restaurants/${id}.json`, { method: 'DELETE' });
@@ -1111,12 +1188,10 @@
         }
     };
     
-    // تعديل مطعم
     window.editRestaurant = function(id) {
         openRestaurantManagerModal(id);
     };
     
-    // إغلاق نافذة إدارة المطعم
     window.closeRestaurantModal = function() {
         let modal = document.getElementById('restaurantManagerModal');
         if (modal) modal.classList.remove('open');
@@ -1697,23 +1772,8 @@
         };
     });
     
-    // تفعيل وضع السوبر أدمن بالضغط على الإصدار
-    let versionClicks = 0;
-    const versionSpan = document.getElementById('versionNumber');
-    if (versionSpan) {
-        versionSpan.addEventListener('click', () => {
-            versionClicks++;
-            setTimeout(() => versionClicks = 0, 800);
-            if (versionClicks >= 5) {
-                let pwd = prompt("كلمة السر للإدارة المتقدمة");
-                if (pwd === ADMIN_PASSWORD) {
-                    showToast("مرحباً أيها المدير العام");
-                    showPage('superAdminPage');
-                } else showToast("كلمة سر خاطئة");
-                versionClicks = 0;
-            }
-        });
-    }
+    // إزالة زر الإصدار القديم لأنه تم نقله للإعدادات
+    // تفعيل وضع السوبر أدمن بالضغط على الإصدار في الإعدادات (تم بالفعل)
     
     let cats = ['all', ...categories];
     let chipsContainer = document.getElementById('catChipsContainer');
@@ -1743,8 +1803,8 @@
     loadDeliveryPrices();
     loadUsers();
     
-    // إعداد وسائل الدفع
-    updatePaymentDetails();
+    // تهيئة قائمة وسائل الدفع
+    initPaymentList();
 })();
 </script>
 </body>

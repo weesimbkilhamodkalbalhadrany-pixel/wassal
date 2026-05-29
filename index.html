@@ -539,17 +539,12 @@
         versionSpan.addEventListener('click', () => {
             let pwd = prompt("أدخل كلمة المرور للدخول إلى لوحة الإدارة:");
             if (pwd === ADMIN_PASSWORD) {
-                if (currentUser && currentUser.role === 'admin') {
-                    showPage('adminPanelPage');
-                    renderAdminPanel();
-                } else {
-                    // تسجيل الدخول كمدير مؤقتاً
-                    currentUser = { role: 'admin', phone: 'admin', name: 'المدير' };
-                    localStorage.setItem('waselny_user', JSON.stringify(currentUser));
-                    document.getElementById('loginOverlay').style.display = 'none';
-                    showPage('adminPanelPage');
-                    renderAdminPanel();
-                }
+                // تعيين المستخدم كمدير مباشرة
+                currentUser = { role: 'admin', phone: 'admin', name: 'المدير' };
+                localStorage.setItem('waselny_user', JSON.stringify(currentUser));
+                document.getElementById('loginOverlay').style.display = 'none';
+                showPage('adminPanelPage');
+                renderAdminPanel();
                 showToast("مرحباً أيها المدير");
             } else if (pwd !== null) {
                 showToast("كلمة المرور خاطئة");
@@ -1643,7 +1638,7 @@
         updateHeaderVisibility(pageId);
     };
     
-    // ======================== دالة تسجيل الدخول ========================
+    // ======================== دالة تسجيل الدخول (تم إصلاحها) ========================
     function initLogin() {
         const roleBtns = document.querySelectorAll('.role-btn');
         const nameInput = document.getElementById('loginName');
@@ -1716,6 +1711,7 @@
                 return;
             }
             
+            // customer
             if (!name) {
                 showToast('أدخل اسم العميل');
                 return;
@@ -1771,9 +1767,6 @@
             if (p === 'driverPage' && currentUser?.role === 'driver') refreshDriverPanel();
         };
     });
-    
-    // إزالة زر الإصدار القديم لأنه تم نقله للإعدادات
-    // تفعيل وضع السوبر أدمن بالضغط على الإصدار في الإعدادات (تم بالفعل)
     
     let cats = ['all', ...categories];
     let chipsContainer = document.getElementById('catChipsContainer');

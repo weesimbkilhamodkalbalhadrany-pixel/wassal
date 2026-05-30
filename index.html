@@ -13,17 +13,9 @@
         :root { --primary-dark: #0a2b3e; --primary-light: #2dd4bf; --bg-light: #f8fafc; --card-light: #ffffff; --text-light: #1e293b; --text-muted: #64748b; --border-light: #e2e8f0; --bg-dark: #0f172a; --card-dark: #1e293b; --text-dark: #f1f5f9; --border-dark: #334155; --danger: #ef4444; --success: #10b981; --warning: #f59e0b; --restaurant-accent: #f97316; }
         body { background: var(--bg-light); color: var(--text-light); transition: background 0.3s, color 0.3s; min-height: 100vh; }
         body.dark-mode { background: var(--bg-dark); color: var(--text-dark); }
-        /* تحسين الأزرار للويب */
         .ripple { position: relative; overflow: hidden; cursor: pointer; transition: all 0.2s ease; }
         .ripple:hover { opacity: 0.9; transform: translateY(-1px); }
         .ripple:active { transform: translateY(1px); }
-        .btn-send, .btn-primary, .btn-secondary, .geo-btn, .current-location-btn, .quick-btn, .icon-btn, .copy-btn, .tab-btn {
-            transition: all 0.2s ease;
-        }
-        .btn-send:hover, .btn-primary:hover, .btn-secondary:hover, .geo-btn:hover, .current-location-btn:hover, .quick-btn:hover, .icon-btn:hover, .copy-btn:hover, .tab-btn:hover {
-            filter: brightness(0.95);
-            transform: translateY(-1px);
-        }
         .app-header { background: linear-gradient(135deg, var(--primary-dark), #1a4f6e); color: white; padding: 20px 24px 32px; border-radius: 0 0 48px 48px; text-align: center; transition: all 0.3s; }
         body:not(.home-active) .app-header .logo-area, body:not(.home-active) .app-header .slogan, body:not(.home-active) .app-header .work-hours { display: none; }
         body:not(.home-active) .app-header { padding: 12px 24px; border-radius: 0 0 24px 24px; }
@@ -57,7 +49,7 @@
         .restaurants-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin: 10px 0; }
         .res-card { background: var(--card-light); border-radius: 25px; overflow: hidden; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1); cursor: pointer; transition: 0.2s; }
         .res-card:hover { transform: translateY(-3px); }
-        .res-image { height: 120px; background-size: cover; background-position: center; position: relative; }
+        .res-image { height: 140px; background-size: cover; background-position: center; background-repeat: no-repeat; width: 100%; }
         .res-info { padding: 12px; text-align: center; }
         .res-info h3 { font-size: 1rem; font-weight: 800; }
         .menu-grid { display: grid; gap: 15px; margin-top: 20px; }
@@ -113,7 +105,7 @@
         .item-row { display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; align-items: center; }
         .item-row input { flex: 1; min-width: 120px; padding: 10px; border-radius: 15px; border: 1px solid var(--border-light); }
         .item-row .delete-item-btn { background: var(--danger); color: white; border: none; padding: 8px 12px; border-radius: 12px; cursor: pointer; }
-        .icon-btn { padding: 6px 12px; border-radius: 10px; border: none; cursor: pointer; transition: 0.2s; }
+        .icon-btn { padding: 6px 12px; border-radius: 10px; border: none; cursor: pointer; transition: 0.2s; background: var(--primary-light); color: var(--primary-dark); font-weight: bold; }
         .setting-row { display: flex; justify-content: space-between; align-items: center; padding: 14px; background: var(--bg-light); border-radius: 30px; margin-bottom: 12px; cursor: pointer; transition: 0.2s; }
         .settings-section { background: var(--card-light); border-radius: 20px; padding: 16px; margin-bottom: 20px; border: 1px solid var(--border-light); }
         .settings-section-title { font-size: 1rem; font-weight: 800; margin-bottom: 15px; color: var(--primary-light); border-right: 3px solid var(--primary-light); padding-right: 10px; }
@@ -152,10 +144,15 @@
         .payment-icon { width: 40px; font-size: 1.4rem; text-align: center; }
         .payment-name { flex: 1; font-weight: 600; }
         .account-number { background: #f1f5f9; padding: 12px; border-radius: 25px; display: flex; justify-content: space-between; align-items: center; margin: 10px 0; direction: ltr; text-align: left; font-family: monospace; }
-        /* تحسين شكل الأزرار للويب */
-        button, .ripple, .nav-item, .cat-chip, .res-card, .service-card, .address-chip {
-            cursor: pointer;
-            user-select: none;
+        /* تحسين صور المطاعم */
+        .res-image {
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            transition: transform 0.3s ease;
+        }
+        .res-card:hover .res-image {
+            transform: scale(1.02);
         }
     </style>
 </head>
@@ -250,7 +247,7 @@
         </div>
     </div>
     <div id="adminPanelPage" class="page"><div class="admin-panel" id="adminPanel"></div></div>
-    <!-- لوحة الإدارة المتقدمة الجديدة -->
+    <!-- لوحة الإدارة المتقدمة -->
     <div id="advancedAdminPage" class="page">
         <div class="admin-panel">
             <div class="back-button ripple" onclick="window.showPage('homePage')"><i class="fas fa-arrow-right"></i> رجوع للرئيسية</div>
@@ -274,7 +271,7 @@
                     <button class="btn-primary ripple" onclick="window.addNewRestaurant()">➕ إضافة مطعم</button>
                 </div>
                 <div class="admin-section">
-                    <div class="admin-section-title"><i class="fas fa-edit"></i> قائمة المطاعم</div>
+                    <div class="admin-section-title"><i class="fas fa-edit"></i> قائمة المطاعم (اضغط على أيقونة الموقع لتعديل موقع المطعم)</div>
                     <div id="adminRestaurantsList"></div>
                 </div>
             </div>
@@ -306,7 +303,7 @@
             </div>
             <div class="tab-content" id="tab-settings">
                 <div class="admin-section">
-                    <div class="admin-section-title"><i class="fas fa-tachometer-alt"></i> إعدادات التوصيل</div>
+                    <div class="admin-section-title"><i class="fas fa-tachometer-alt"></i> إعدادات التوصيل (مخفية عن العملاء)</div>
                     <div class="price-setting"><span>🚖 سعر الكيلومتر (ريال):</span><input type="number" id="adminPricePerKm" value="180" onchange="window.updateDeliverySettings()"></div>
                     <div class="price-setting"><span>💰 الحد الأدنى للتوصيل (ريال):</span><input type="number" id="adminMinDelivery" value="550" onchange="window.updateDeliverySettings()"></div>
                     <button class="btn-primary ripple" onclick="window.saveDeliverySettings()">💾 حفظ الإعدادات</button>
@@ -372,6 +369,7 @@
         window.currentMapMode = null;
         window.map = null;
         window.marker = null;
+        window.editingRestaurantLocationId = null; // لتعديل موقع مطعم
         
         const paymentMethods = {
             jeeb: { name: "محفظة جيب", number: "777215154" },
@@ -404,7 +402,7 @@
             return R * c;
         }
         
-        // تحديث سعر التوصيل بناءً على المسافة
+        // تحديث سعر التوصيل (مخفي عن العميل تفاصيل السعر لكل كيلو)
         window.updateDeliveryCost = function() {
             if (!window.currentRestaurant || !window.customerLocation) return;
             let restLoc = {lat: window.currentRestaurant.restaurantLat || 15.3694, lng: window.currentRestaurant.restaurantLng || 44.1910};
@@ -422,7 +420,7 @@
             let totalFood = window.cart.reduce((s,i)=>s+(i.p*i.qty),0);
             let total = totalFood + window.deliveryCost;
             let itemsHtml = window.cart.map(i=>`<div class="checkout-item"><span>${i.n} x${i.qty}</span><span>${i.p*i.qty} ريال</span></div>`).join('');
-            itemsHtml += `<div class="checkout-item" style="font-weight:bold;border-top:2px solid var(--border-light);margin-top:10px;padding-top:10px;"><span>المجموع</span><span>${totalFood} ريال</span></div><div class="price-row"><span>🚚 سعر التوصيل (${PRICE_PER_KM} ريال/كم):</span><span>${window.deliveryCost} ريال</span></div><div class="price-row" style="color:var(--restaurant-accent);font-size:1.2rem;font-weight:900;"><span>الإجمالي:</span><span>${total} ريال</span></div>`;
+            itemsHtml += `<div class="checkout-item" style="font-weight:bold;border-top:2px solid var(--border-light);margin-top:10px;padding-top:10px;"><span>المجموع</span><span>${totalFood} ريال</span></div><div class="price-row"><span>🚚 سعر التوصيل:</span><span>${window.deliveryCost} ريال</span></div><div class="price-row" style="color:var(--restaurant-accent);font-size:1.2rem;font-weight:900;"><span>الإجمالي:</span><span>${total} ريال</span></div>`;
             let summaryDiv = document.getElementById('checkoutOrderSummary');
             if (summaryDiv) summaryDiv.innerHTML = `<h4>🍽️ ${window.currentRestaurant.name}</h4>${itemsHtml}`;
         };
@@ -454,7 +452,7 @@
             let activeCat = activeCatElem ? activeCatElem.dataset.cat : 'all';
             let filtered = activeCat === 'all' ? window.allRestaurants : window.allRestaurants.filter(r=>r.cat===activeCat);
             let grid = document.getElementById('restaurantsGrid');
-            if (grid) grid.innerHTML = filtered.map(r=>`<div class="res-card" onclick="window.openRestaurantMenu(${r.id})"><div class="res-image" style="background-image:url('${r.img||'https://via.placeholder.com/400x200?text=مطعم'}')"></div><div class="res-info"><h3>${r.name}</h3><p>${r.cat}</p></div></div>`).join('');
+            if (grid) grid.innerHTML = filtered.map(r=>`<div class="res-card" onclick="window.openRestaurantMenu(${r.id})"><div class="res-image" style="background-image:url('${r.img||'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400'}'); background-size:cover; background-position:center;"></div><div class="res-info"><h3>${r.name}</h3><p>${r.cat}</p></div></div>`).join('');
         }
         
         window.openRestaurantMenu = function(id) {
@@ -534,8 +532,9 @@
             },100);
         };
         
-        window.initMapForAdminRestaurant = function() {
+        window.initMapForAdminRestaurant = function(restId = null) {
             window.currentMapMode = 'admin_restaurant';
+            window.editingRestaurantLocationId = restId;
             document.getElementById('map-overlay').style.display = 'flex';
             setTimeout(() => {
                 if (!window.map) {
@@ -544,15 +543,23 @@
                     window.marker = L.marker([15.3694,44.1910], {draggable:true}).addTo(window.map);
                     window.map.on('click', e => window.marker.setLatLng(e.latlng));
                 }
+                if (restId) {
+                    let rest = window.allRestaurants.find(r => r.id == restId);
+                    if (rest && rest.restaurantLat && rest.restaurantLng) {
+                        window.marker.setLatLng([rest.restaurantLat, rest.restaurantLng]);
+                        window.map.setView([rest.restaurantLat, rest.restaurantLng], 15);
+                    }
+                }
                 window.map.invalidateSize();
             },100);
         };
         
         window.closeMap = function() {
             document.getElementById('map-overlay').style.display = 'none';
+            window.editingRestaurantLocationId = null;
         };
         
-        window.confirmMapLocation = function() {
+        window.confirmMapLocation = async function() {
             if (!window.map || !window.marker) return;
             let pos = window.marker.getLatLng();
             if (window.currentMapMode === 'checkout') {
@@ -561,13 +568,27 @@
                 window.updateDeliveryCost();
                 window.closeMap();
             } else if (window.currentMapMode === 'admin_restaurant') {
-                document.getElementById('adminRestLat').value = pos.lat;
-                document.getElementById('adminRestLng').value = pos.lng;
-                document.getElementById('adminRestLocationTxt').innerHTML = `✅ ${pos.lat.toFixed(4)}, ${pos.lng.toFixed(4)}`;
+                if (window.editingRestaurantLocationId) {
+                    // تعديل موقع مطعم موجود
+                    let rest = window.allRestaurants.find(r => r.id == window.editingRestaurantLocationId);
+                    if (rest) {
+                        rest.restaurantLat = pos.lat;
+                        rest.restaurantLng = pos.lng;
+                        await fetch(`${FIREBASE_URL}/restaurants/${rest.id}.json`, {method:'PUT', body:JSON.stringify(rest)});
+                        await loadRestaurants();
+                        window.showToast(`تم تحديث موقع مطعم ${rest.name}`);
+                    }
+                } else {
+                    // إضافة مطعم جديد
+                    document.getElementById('adminRestLat').value = pos.lat;
+                    document.getElementById('adminRestLng').value = pos.lng;
+                    document.getElementById('adminRestLocationTxt').innerHTML = `✅ ${pos.lat.toFixed(4)}, ${pos.lng.toFixed(4)}`;
+                    window.showToast("تم تحديد موقع المطعم");
+                }
                 window.closeMap();
-                window.showToast("تم تحديد موقع المطعم");
             }
             window.currentMapMode = null;
+            window.editingRestaurantLocationId = null;
         };
         
         window.confirmCheckoutOrder = async function() {
@@ -589,7 +610,7 @@
             await fetch(`${FIREBASE_URL}/orders/${id}.json`, {method:'PUT', body:JSON.stringify(order)});
             localStorage.setItem('currentTrackingOrder', id);
             let itemsText = window.cart.map(i=>`• ${i.n} x${i.qty} = ${i.p*i.qty} ريال`).join('\n');
-            let message = `🛍️ *طلب جديد من تطبيق وصّال* 🛍️\n\n🍔 المطعم: ${window.currentRestaurant.name}\n👤 الاسم: ${window.currentUser.name}\n📞 الجوال: ${window.currentUser.phone}\n📍 العنوان: ${order.address}\n\n*المنتجات:*\n${itemsText}\n\n🚚 سعر التوصيل (${PRICE_PER_KM} ريال/كم): ${window.deliveryCost} ريال\n💰 *الإجمالي: ${total} ريال*\n\n📅 التاريخ: ${new Date().toLocaleString('ar-SA')}`;
+            let message = `🛍️ *طلب جديد من تطبيق وصّال* 🛍️\n\n🍔 المطعم: ${window.currentRestaurant.name}\n👤 الاسم: ${window.currentUser.name}\n📞 الجوال: ${window.currentUser.phone}\n📍 العنوان: ${order.address}\n\n*المنتجات:*\n${itemsText}\n\n🚚 سعر التوصيل: ${window.deliveryCost} ريال\n💰 *الإجمالي: ${total} ريال*\n\n📅 التاريخ: ${new Date().toLocaleString('ar-SA')}`;
             window.open(`https://wa.me/777215154?text=${encodeURIComponent(message)}`, '_blank');
             window.showToast('✅ تم إرسال الطلب');
             window.cart = []; window.customerLocation = null;
@@ -667,13 +688,18 @@
             if (!container) return;
             container.innerHTML = window.allRestaurants.map(r => `
                 <div class="restaurant-admin-card">
-                    <img src="${r.img || 'https://via.placeholder.com/50'}" style="width:50px;height:50px;border-radius:14px;">
+                    <img src="${r.img || 'https://via.placeholder.com/50'}" style="width:50px;height:50px;border-radius:14px;object-fit:cover;">
                     <div><strong>${r.name}</strong><br><small>${r.cat}</small><br><small>📍 ${r.restaurantLat?.toFixed(4) || '?'}, ${r.restaurantLng?.toFixed(4) || '?'}</small></div>
+                    <button class="icon-btn" onclick="window.openEditRestaurantLocation(${r.id})"><i class="fas fa-map-marker-alt"></i> تعديل الموقع</button>
                     <button class="icon-btn" onclick="window.deleteRestaurantFromAdmin(${r.id})">🗑️ حذف</button>
-                    <button class="icon-btn" onclick="window.editRestaurantItems(${r.id})">✏️ تعديل الأصناف</button>
+                    <button class="icon-btn" onclick="window.editRestaurantItems(${r.id})">✏️ الأصناف</button>
                 </div>
             `).join('');
         }
+        
+        window.openEditRestaurantLocation = function(restId) {
+            window.initMapForAdminRestaurant(restId);
+        };
         
         window.addNewRestaurant = async function() {
             let name = document.getElementById('adminRestName').value.trim();
@@ -683,7 +709,7 @@
             let lng = document.getElementById('adminRestLng').value;
             if (!name || !lat || !lng) { window.showToast('يرجى إدخال اسم المطعم وتحديد الموقع'); return; }
             let id = Date.now();
-            let newRest = { id, name, cat, img: img || 'https://via.placeholder.com/400x200', restaurantLat: parseFloat(lat), restaurantLng: parseFloat(lng), items: [] };
+            let newRest = { id, name, cat, img: img || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400', restaurantLat: parseFloat(lat), restaurantLng: parseFloat(lng), items: [] };
             await fetch(`${FIREBASE_URL}/restaurants/${id}.json`, {method:'PUT', body:JSON.stringify(newRest)});
             await loadRestaurants();
             document.getElementById('adminRestName').value = '';
@@ -717,7 +743,7 @@
             let container = document.getElementById('adminItemsList');
             container.innerHTML = rest.items.map((item, idx) => `
                 <div class="item-row">
-                    <span>${item.n}</span>
+                    <span style="flex:2;">${item.n}</span>
                     <input type="number" id="itemPrice_${idx}" value="${item.p}" style="width:100px;">
                     <button class="icon-btn" onclick="window.updateItemPrice(${rest.id}, ${idx}, document.getElementById('itemPrice_${idx}').value)">💾 حفظ</button>
                     <button class="icon-btn" onclick="window.deleteItemFromAdmin(${rest.id}, ${idx})">🗑️</button>
@@ -837,7 +863,7 @@
             window.showToast('تم حفظ إعدادات التوصيل');
         };
         
-        // تفعيل الإدارة بالضغط على رقم الإصدار 5 مرات
+        // تفعيل الإدارة بالضغط على رقم الإصدار 5 مرات (بدون رسائل الضغطات)
         let clickCount = 0;
         let versionSpan = document.getElementById('versionNumber');
         if (versionSpan) {
@@ -858,9 +884,8 @@
                         window.showToast("مرحباً أيها المدير");
                     } else if (pwd !== null) window.showToast("كلمة المرور خاطئة");
                     clickCount = 0;
-                } else {
-                    window.showToast(`الضغطات المتبقية: ${5-clickCount}`);
                 }
+                // لا توجد رسالة "الضغطات المتبقية"
             };
         }
         

@@ -480,14 +480,20 @@
     function updateHeaderVisibility(pageId){ if(pageId==='homePage') document.body.classList.add('home-active'); else document.body.classList.remove('home-active'); let backBtn=document.getElementById('historyBackBtn'); if(backBtn){ if(pageHistory.length>1&&pageId!=='homePage') backBtn.style.display='flex'; else backBtn.style.display='none'; } }
     window.showPage = function(pageId){ document.querySelectorAll('.page').forEach(p=>p.classList.remove('active-page')); let targetPage=document.getElementById(pageId); if(targetPage) targetPage.classList.add('active-page'); if(pageHistory[pageHistory.length-1]!==pageId) pageHistory.push(pageId); if(pageId==='homePage'){ renderServices(); let savedDiv=document.getElementById('savedAddressesContainer'); if(savedDiv) savedDiv.innerHTML='<div class="address-chip">🏠 المنزل</div><div class="address-chip">💼 العمل</div>'; } if(pageId==='restaurantsPage') renderRestaurants(); if(pageId==='driverPage'&¤tUser?.role==='driver'){ refreshDriverPanel(); let nameSpan=document.getElementById('driverNameDisplay'); if(nameSpan) nameSpan.innerText=currentUser?.name||''; } if(pageId==='adminPanelPage'&¤tUser?.role==='admin') renderAdminPanel(); if(pageId==='ordersPage') renderMyOrders(); if(pageId==='superAdminPage') loadSystemStats(); updateHeaderVisibility(pageId); };
     
-    // إصلاح تسجيل الدخول بشكل كامل
+    // ========= إصلاح مشكلة تسجيل الدخول بشكل كامل =========
     function initLogin() {
+        console.log("تم تهيئة شاشة الدخول");
         const roleBtns = document.querySelectorAll('.role-btn');
         const passwordInput = document.getElementById('loginPassword');
         const loginBtn = document.getElementById('loginBtn');
         
-        // تحديث واجهة كلمة السر عند تغيير الدور
-        function updatePasswordVisibility() {
+        if (!loginBtn) {
+            console.error("زر الدخول غير موجود!");
+            return;
+        }
+        
+        // التحكم في ظهور حقل كلمة السر
+        function updatePasswordField() {
             const activeRole = document.querySelector('.role-btn.active')?.dataset.role;
             if (passwordInput) {
                 passwordInput.style.display = (activeRole === 'driver') ? 'block' : 'none';
@@ -495,25 +501,29 @@
             }
         }
         
+        // إضافة حدث لكل أزرار الدور
         roleBtns.forEach(btn => {
             btn.onclick = function(e) {
                 roleBtns.forEach(b => b.classList.remove('active'));
                 this.classList.add('active');
-                updatePasswordVisibility();
+                updatePasswordField();
             };
         });
         
-        // التأكد من ظهور كلمة السر فقط للمندوب
-        updatePasswordVisibility();
+        // تطبيق الحالة الأولية
+        updatePasswordField();
         
-        // حدث تسجيل الدخول
+        // إزالة أي مستمعات سابقة وإضافة المستمع الجديد
         loginBtn.onclick = async function(e) {
             e.preventDefault();
+            console.log("تم النقر على زر الدخول");
+            
             const activeRoleBtn = document.querySelector('.role-btn.active');
             if (!activeRoleBtn) {
                 showToast('اختر نوع المستخدم');
                 return;
             }
+            
             const role = activeRoleBtn.dataset.role;
             const nameInput = document.getElementById('loginName');
             const phoneInput = document.getElementById('loginPhone');
@@ -535,7 +545,7 @@
                     showToast('أدخل اسم المندوب');
                     return;
                 }
-                // تسجيل مندوب
+                // حفظ بيانات المندوب
                 await fetch(`${FIREBASE_URL}/users/${phone}.json`, { 
                     method: 'PUT', 
                     body: JSON.stringify({ phone, name, role: 'driver', isBusy: false }) 

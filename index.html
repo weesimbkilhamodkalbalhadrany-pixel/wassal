@@ -480,49 +480,85 @@
     function updateHeaderVisibility(pageId){ if(pageId==='homePage') document.body.classList.add('home-active'); else document.body.classList.remove('home-active'); let backBtn=document.getElementById('historyBackBtn'); if(backBtn){ if(pageHistory.length>1&&pageId!=='homePage') backBtn.style.display='flex'; else backBtn.style.display='none'; } }
     window.showPage = function(pageId){ document.querySelectorAll('.page').forEach(p=>p.classList.remove('active-page')); let targetPage=document.getElementById(pageId); if(targetPage) targetPage.classList.add('active-page'); if(pageHistory[pageHistory.length-1]!==pageId) pageHistory.push(pageId); if(pageId==='homePage'){ renderServices(); let savedDiv=document.getElementById('savedAddressesContainer'); if(savedDiv) savedDiv.innerHTML='<div class="address-chip">🏠 المنزل</div><div class="address-chip">💼 العمل</div>'; } if(pageId==='restaurantsPage') renderRestaurants(); if(pageId==='driverPage'&¤tUser?.role==='driver'){ refreshDriverPanel(); let nameSpan=document.getElementById('driverNameDisplay'); if(nameSpan) nameSpan.innerText=currentUser?.name||''; } if(pageId==='adminPanelPage'&¤tUser?.role==='admin') renderAdminPanel(); if(pageId==='ordersPage') renderMyOrders(); if(pageId==='superAdminPage') loadSystemStats(); updateHeaderVisibility(pageId); };
     
-    // إصلاح تسجيل الدخول
+    // إصلاح تسجيل الدخول بشكل كامل
     function initLogin() {
         const roleBtns = document.querySelectorAll('.role-btn');
-        const nameInput = document.getElementById('loginName');
-        const phoneInput = document.getElementById('loginPhone');
         const passwordInput = document.getElementById('loginPassword');
         const loginBtn = document.getElementById('loginBtn');
         
+        // تحديث واجهة كلمة السر عند تغيير الدور
+        function updatePasswordVisibility() {
+            const activeRole = document.querySelector('.role-btn.active')?.dataset.role;
+            if (passwordInput) {
+                passwordInput.style.display = (activeRole === 'driver') ? 'block' : 'none';
+                if (activeRole !== 'driver') passwordInput.value = ''; // مسح القيمة
+            }
+        }
+        
         roleBtns.forEach(btn => {
-            btn.onclick = function() {
+            btn.onclick = function(e) {
                 roleBtns.forEach(b => b.classList.remove('active'));
                 this.classList.add('active');
-                const role = this.dataset.role;
-                if (passwordInput) {
-                    passwordInput.style.display = (role === 'driver') ? 'block' : 'none';
-                }
+                updatePasswordVisibility();
             };
         });
         
-        loginBtn.onclick = async function() {
+        // التأكد من ظهور كلمة السر فقط للمندوب
+        updatePasswordVisibility();
+        
+        // حدث تسجيل الدخول
+        loginBtn.onclick = async function(e) {
+            e.preventDefault();
             const activeRoleBtn = document.querySelector('.role-btn.active');
-            if (!activeRoleBtn) return showToast('اختر نوع المستخدم');
+            if (!activeRoleBtn) {
+                showToast('اختر نوع المستخدم');
+                return;
+            }
             const role = activeRoleBtn.dataset.role;
+            const nameInput = document.getElementById('loginName');
+            const phoneInput = document.getElementById('loginPhone');
             const name = nameInput ? nameInput.value.trim() : '';
             const phone = phoneInput ? phoneInput.value.trim() : '';
             const password = passwordInput ? passwordInput.value : '';
-            if (!phone) { showToast('أدخل رقم الهاتف'); return; }
+            
+            if (!phone) {
+                showToast('أدخل رقم الهاتف');
+                return;
+            }
             
             if (role === 'driver') {
-                if (password !== DRIVER_PASSWORD) { showToast('كلمة سر المندوب خاطئة'); return; }
-                if (!name) { showToast('أدخل اسم المندوب'); return; }
-                await fetch(`${FIREBASE_URL}/users/${phone}.json`, { method: 'PUT', body: JSON.stringify({ phone, name, role: 'driver', isBusy: false }) });
+                if (password !== DRIVER_PASSWORD) {
+                    showToast('كلمة سر المندوب خاطئة');
+                    return;
+                }
+                if (!name) {
+                    showToast('أدخل اسم المندوب');
+                    return;
+                }
+                // تسجيل مندوب
+                await fetch(`${FIREBASE_URL}/users/${phone}.json`, { 
+                    method: 'PUT', 
+                    body: JSON.stringify({ phone, name, role: 'driver', isBusy: false }) 
+                });
                 currentUser = { role: 'driver', phone, name };
                 localStorage.setItem('waselny_user', JSON.stringify(currentUser));
                 document.getElementById('loginOverlay').style.display = 'none';
                 showPage('driverPage');
                 refreshDriverPanel();
                 setInterval(refreshDriverPanel, 5000);
+                showToast(`مرحباً مندوب ${name}`);
                 return;
             }
-            // customer
-            if (!name) { showToast('أدخل اسم العميل'); return; }
-            await fetch(`${FIREBASE_URL}/users/${phone}.json`, { method: 'PUT', body: JSON.stringify({ phone, name, role: 'customer', isBusy: false }) });
+            
+            // عميل
+            if (!name) {
+                showToast('أدخل اسم العميل');
+                return;
+            }
+            await fetch(`${FIREBASE_URL}/users/${phone}.json`, { 
+                method: 'PUT', 
+                body: JSON.stringify({ phone, name, role: 'customer', isBusy: false }) 
+            });
             currentUser = { role: 'customer', phone, name };
             localStorage.setItem('waselny_user', JSON.stringify(currentUser));
             document.getElementById('loginOverlay').style.display = 'none';
@@ -530,7 +566,11 @@
             setActiveNav('homePage');
             renderServices();
             let trackOrderId = localStorage.getItem('currentTrackingOrder');
-            if (trackOrderId) { let trackBtn = document.getElementById('trackOrderBtnHome'); if(trackBtn) trackBtn.style.display = 'block'; }
+            if (trackOrderId) {
+                let trackBtn = document.getElementById('trackOrderBtnHome');
+                if(trackBtn) trackBtn.style.display = 'block';
+            }
+            showToast(`مرحباً ${name}`);
         };
     }
     
@@ -550,22 +590,47 @@
     if(chipsContainer){ chipsContainer.innerHTML=cats.map(c=>`<div class="cat-chip ${c==='all'?'active':''}" data-cat="${c}" onclick="filterRestaurants('${c}')"><i class="fas fa-utensils"></i> ${c==='all'?'الكل':c}</div>`).join(''); }
     window.filterRestaurants=function(cat){ document.querySelectorAll('.cat-chip').forEach(c=>c.classList.remove('active')); let target=event?event.target.closest('.cat-chip'):document.querySelector(`.cat-chip[data-cat="${cat}"]`); if(target) target.classList.add('active'); renderRestaurants(); };
     
-    let savedUser=localStorage.getItem('waselny_user');
+    // بدء التطبيق: التحقق من وجود مستخدم مسجل أو عرض شاشة الدخول
+    let savedUser = localStorage.getItem('waselny_user');
     if(savedUser){
-        currentUser=JSON.parse(savedUser);
-        let loginOverlay=document.getElementById('loginOverlay');
-        if(loginOverlay) loginOverlay.style.display='none';
-        if(currentUser.role==='driver'){ showPage('driverPage'); refreshDriverPanel(); setInterval(refreshDriverPanel,5000); }
-        else if(currentUser.role==='admin'){ showPage('adminPanelPage'); renderAdminPanel(); }
-        else{ showPage('homePage'); setActiveNav('homePage'); renderServices(); }
+        try {
+            currentUser = JSON.parse(savedUser);
+            let loginOverlay = document.getElementById('loginOverlay');
+            if(loginOverlay) loginOverlay.style.display = 'none';
+            if(currentUser.role === 'driver'){ 
+                showPage('driverPage'); 
+                refreshDriverPanel(); 
+                setInterval(refreshDriverPanel,5000);
+            }
+            else if(currentUser.role === 'admin'){ 
+                showPage('adminPanelPage'); 
+                renderAdminPanel();
+            }
+            else{ 
+                showPage('homePage'); 
+                setActiveNav('homePage'); 
+                renderServices();
+                let trackOrderId = localStorage.getItem('currentTrackingOrder');
+                if (trackOrderId) {
+                    let trackBtn = document.getElementById('trackOrderBtnHome');
+                    if(trackBtn) trackBtn.style.display = 'block';
+                }
+            }
+        } catch(e) { console.log(e); initLogin(); }
     } else {
         initLogin();
     }
     
+    // تحميل البيانات الأساسية
     loadRestaurants();
     loadDeliveryPrices();
     loadUsers();
     initPaymentList();
+    // إظهار زر تتبع الطلب إذا كان هناك طلب سابق
+    if(localStorage.getItem('currentTrackingOrder')) {
+        let trackBtn = document.getElementById('trackOrderBtnHome');
+        if(trackBtn && currentUser && currentUser.role === 'customer') trackBtn.style.display = 'block';
+    }
 })();
 </script>
 </body>

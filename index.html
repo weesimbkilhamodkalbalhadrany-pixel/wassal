@@ -3,11 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
-    <title>وصّال | Wassal - توصيل طعام</title>
+    <title>وصّال | Wassal - تطبيق توصيل الطعام</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <style>
         * {
             margin: 0;
@@ -26,36 +24,22 @@
             --text-dark: #1e293b;
             --text-muted: #64748b;
             --border-light: #eef2f6;
-            --bg-dark: #0f172a;
-            --card-dark: #1e293b;
-            --text-light: #f1f5f9;
-            --border-dark: #334155;
-            --danger: #ef4444;
-            --success: #10b981;
-            --warning: #f59e0b;
-            --restaurant-accent: #f97316;
             --star-gold: #fbbf24;
         }
 
         body {
             background: var(--bg-light);
             color: var(--text-dark);
-            transition: background 0.3s, color 0.3s;
             min-height: 100vh;
+            padding-bottom: 75px;
         }
 
-        body.dark-mode {
-            background: var(--bg-dark);
-            color: var(--text-light);
-        }
-
-        /* تنسيق الهيدر الجديد */
-        .app-header-new {
+        /* Header Teal */
+        .app-header {
             background: linear-gradient(135deg, var(--primary-teal), var(--primary-teal-dark));
             padding: 20px 20px 28px;
             border-radius: 0 0 40px 40px;
             color: white;
-            transition: all 0.3s;
         }
 
         .header-top {
@@ -66,7 +50,7 @@
         }
 
         .logo h1 {
-            font-size: 1.7rem;
+            font-size: 1.8rem;
             font-weight: 900;
             background: linear-gradient(135deg, #fff, var(--primary-teal-light));
             -webkit-background-clip: text;
@@ -78,8 +62,8 @@
         .logo span {
             font-size: 0.7rem;
             color: var(--primary-teal-light);
-            display: block;
             font-weight: 600;
+            display: block;
         }
 
         .header-icons {
@@ -93,26 +77,19 @@
             transition: 0.2s;
         }
 
-        .header-icons i:hover {
-            transform: scale(1.05);
-            color: var(--primary-teal-light);
-        }
-
-        /* شريط البحث */
         .search-bar {
             background: rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(12px);
             border-radius: 60px;
             padding: 12px 20px;
             display: flex;
             align-items: center;
             gap: 12px;
-            margin-top: 12px;
             border: 1px solid rgba(255, 255, 255, 0.3);
         }
 
         .search-bar i {
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             color: var(--primary-teal-light);
         }
 
@@ -126,43 +103,42 @@
         }
 
         .search-bar input::placeholder {
-            color: rgba(255, 255, 255, 0.8);
+            color: rgba(255, 255, 255, 0.85);
             font-weight: 500;
         }
 
-        /* بار التصنيفات (أيقونات خطية) */
-        .categories-bar {
-            display: flex;
-            gap: 24px;
+        /* Categories Bar - minimalist linear icons */
+        .categories-container {
+            padding: 20px 16px 8px;
             overflow-x: auto;
-            padding: 20px 20px 15px;
             scrollbar-width: none;
-            background: transparent;
-            margin-top: -10px;
-            position: relative;
-            z-index: 10;
+            white-space: nowrap;
         }
 
-        .categories-bar::-webkit-scrollbar {
+        .categories-container::-webkit-scrollbar {
             display: none;
         }
 
-        .cat-icon-item {
+        .categories-wrapper {
             display: flex;
+            gap: 28px;
+            justify-content: space-around;
+        }
+
+        .cat-item {
+            display: inline-flex;
             flex-direction: column;
             align-items: center;
             gap: 8px;
-            min-width: 70px;
             cursor: pointer;
             transition: 0.2s;
-            padding: 8px 0;
-            border-radius: 30px;
+            min-width: 70px;
         }
 
-        .cat-icon-item .icon-circle {
+        .cat-icon {
             width: 60px;
             height: 60px;
-            background: var(--card-light);
+            background: white;
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -170,48 +146,64 @@
             font-size: 1.8rem;
             color: var(--primary-teal);
             box-shadow: 0 6px 14px rgba(0, 0, 0, 0.05);
-            transition: 0.2s;
             border: 1px solid var(--border-light);
+            transition: all 0.2s;
         }
 
-        body.dark-mode .cat-icon-item .icon-circle {
-            background: var(--card-dark);
-            border-color: var(--border-dark);
-            color: var(--primary-teal-light);
-        }
-
-        .cat-icon-item span {
+        .cat-item span {
             font-size: 0.8rem;
             font-weight: 700;
             color: var(--text-muted);
         }
 
-        .cat-icon-item.active .icon-circle {
+        .cat-item.active .cat-icon {
             background: var(--primary-teal-light);
             color: white;
             box-shadow: 0 8px 20px rgba(15, 118, 110, 0.3);
         }
 
-        .cat-icon-item.active span {
+        .cat-item.active span {
             color: var(--primary-teal);
             font-weight: 800;
         }
 
-        /* بطاقات المطاعم */
+        /* Section header */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            padding: 16px 16px 8px;
+        }
+
+        .section-header h2 {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--text-dark);
+        }
+
+        .section-header a {
+            color: var(--primary-teal);
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        /* Restaurant Cards */
+        .restaurants-grid {
+            padding: 8px 16px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
         .restaurant-card {
             background: var(--card-light);
             border-radius: 28px;
             overflow: hidden;
-            margin-bottom: 20px;
             box-shadow: 0 10px 25px -8px rgba(0, 0, 0, 0.08);
             transition: 0.25s ease;
             border: 1px solid var(--border-light);
             cursor: pointer;
-        }
-
-        body.dark-mode .restaurant-card {
-            background: var(--card-dark);
-            border-color: var(--border-dark);
         }
 
         .restaurant-card:hover {
@@ -219,29 +211,25 @@
             box-shadow: 0 20px 30px -12px rgba(0, 0, 0, 0.12);
         }
 
-        .restaurant-img {
+        .card-img {
             width: 100%;
             height: 180px;
             object-fit: cover;
-            transition: transform 0.3s;
+            display: block;
         }
 
-        .restaurant-card:hover .restaurant-img {
-            transform: scale(1.02);
-        }
-
-        .restaurant-info {
+        .card-info {
             padding: 16px;
         }
 
-        .restaurant-title {
+        .title-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 8px;
         }
 
-        .restaurant-title h3 {
+        .title-row h3 {
             font-size: 1.2rem;
             font-weight: 800;
         }
@@ -260,53 +248,44 @@
             margin-left: 4px;
         }
 
-        .restaurant-meta {
+        .meta-details {
             display: flex;
             gap: 16px;
             margin: 12px 0;
             font-size: 0.75rem;
             color: var(--text-muted);
-            flex-wrap: wrap;
         }
 
-        .restaurant-meta span i {
+        .meta-details span i {
             margin-left: 5px;
         }
 
-        .restaurant-cat {
-            background: var(--bg-light);
+        .category-badge {
+            background: #f1f5f9;
             display: inline-block;
             padding: 4px 12px;
             border-radius: 30px;
             font-size: 0.7rem;
             font-weight: 700;
+            color: var(--primary-teal);
         }
 
-        body.dark-mode .restaurant-cat {
-            background: var(--bg-dark);
-        }
-
-        /* شريط التنقل السفلي */
-        .bottom-nav-new {
+        /* Bottom Navigation */
+        .bottom-nav {
             position: fixed;
             bottom: 0;
             left: 0;
             width: 100%;
-            background: var(--card-light);
+            background: white;
             border-top: 1px solid var(--border-light);
             display: flex;
             justify-content: space-around;
-            padding: 8px 0 18px;
-            z-index: 2000;
+            padding: 8px 0 20px;
+            z-index: 1000;
             backdrop-filter: blur(10px);
         }
 
-        body.dark-mode .bottom-nav-new {
-            background: var(--card-dark);
-            border-color: var(--border-dark);
-        }
-
-        .nav-item-new {
+        .nav-item {
             text-align: center;
             flex: 1;
             color: var(--text-muted);
@@ -318,423 +297,290 @@
             border-radius: 30px;
         }
 
-        .nav-item-new i {
+        .nav-item i {
             font-size: 1.5rem;
             display: block;
             margin-bottom: 4px;
         }
 
-        .nav-item-new.active {
+        .nav-item.active {
             color: var(--primary-teal-light);
             background: rgba(20, 184, 166, 0.1);
         }
 
-        main {
-            padding: 20px 16px 90px;
-        }
-
-        .page {
-            display: none;
-            animation: fadeIn 0.25s ease;
-        }
-
-        .active-page {
-            display: block;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(8px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* تنسيقات عامة للعناصر القديمة المخفية / محسنة */
-        .back-button {
-            background: var(--card-light);
-            border: 1px solid var(--border-light);
-            border-radius: 40px;
-            padding: 10px 20px;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            cursor: pointer;
-            margin-bottom: 20px;
-            font-weight: 700;
-        }
-
-        .btn-primary {
-            background: var(--primary-teal);
-            color: white;
-            border: none;
-            padding: 16px;
-            border-radius: 44px;
-            width: 100%;
-            font-weight: 900;
-            font-size: 1rem;
-        }
-
-        .order-card, .driver-panel, .admin-panel {
-            background: var(--card-light);
-            border-radius: 28px;
-            padding: 20px;
-            margin-bottom: 20px;
-            border: 1px solid var(--border-light);
-        }
-
-        /* إخفاء العناصر القديمة غير المرغوب فيها في الصفحة الرئيسية الجديدة */
-        .services-grid, .work-hours, .saved-addresses, #trackOrderBtnHome, #homeNotificationBtn {
-            display: none;
-        }
-
-        .float-cart {
-            display: none;
-        }
-
+        /* Toast message */
         .toast {
             position: fixed;
-            top: -100px;
+            bottom: 90px;
             left: 20px;
             right: 20px;
-            background: var(--success);
+            background: #1e293b;
             color: white;
-            padding: 16px;
-            border-radius: 30px;
+            padding: 12px 20px;
+            border-radius: 40px;
             text-align: center;
-            z-index: 999999;
+            z-index: 2000;
             opacity: 0;
             transition: 0.3s;
             pointer-events: none;
-        }
-
-        .toast.show {
-            top: 20px;
-            opacity: 1;
-        }
-
-        /* تحسين النصوص والتباعد */
-        h2 {
-            font-size: 1.4rem;
-            font-weight: 800;
-            margin: 20px 0 12px 0;
-        }
-
-        .section-title {
-            display: flex;
-            justify-content: space-between;
-            align-items: baseline;
-            margin: 16px 0 12px;
-        }
-
-        .section-title a {
-            color: var(--primary-teal);
-            font-size: 0.8rem;
             font-weight: 600;
-            text-decoration: none;
+        }
+        .toast.show {
+            opacity: 1;
+            bottom: 100px;
         }
     </style>
 </head>
 <body>
 
-<!-- هيدر جديد للصفحة الرئيسية فقط (يظهر في homePage) -->
-<div id="dynamicHeader" class="app-header-new" style="display: block;">
+<!-- Header -->
+<header class="app-header">
     <div class="header-top">
         <div class="logo">
             <h1>وصّال | Wassal</h1>
             <span>توصيل سريع وآمن</span>
         </div>
         <div class="header-icons">
-            <i class="far fa-bell" onclick="window.showToast('🔔 الإشعارات قريباً')"></i>
-            <i class="fas fa-shopping-bag" onclick="window.goToCheckoutFromHeader()"></i>
+            <i class="far fa-bell" id="notifyIcon"></i>
+            <i class="fas fa-shopping-bag" id="cartIcon"></i>
         </div>
     </div>
     <div class="search-bar">
         <i class="fas fa-search"></i>
         <input type="text" id="searchInput" placeholder="ابحث عن مطعم أو وجبة...">
     </div>
-</div>
+</header>
 
 <main>
-    <!-- الصفحة الرئيسية المعاد تصميمها -->
-    <div id="homePage" class="page active-page">
-        <div class="categories-bar" id="categoriesBarModern"></div>
-        <div class="section-title">
-            <h2>🍽️ أقرب المطاعم</h2>
-            <a href="#" id="viewAllRestaurantsLink">عرض الكل <i class="fas fa-chevron-left"></i></a>
+    <!-- Categories (minimal icons, no bananas) -->
+    <div class="categories-container">
+        <div class="categories-wrapper" id="categoriesList">
+            <!-- generated via js -->
         </div>
-        <div id="restaurantsModernGrid" class="restaurants-modern-grid"></div>
     </div>
 
-    <!-- باقي الصفحات (طلباتي، إعدادات، الخ) تبقى كما هي مع تعديلات بسيطة -->
-    <div id="ordersPage" class="page"><div class="order-card" id="myOrdersContainer"><p style="text-align:center;">لا توجد طلبات</p></div><button class="btn-primary" onclick="window.renderMyOrders()">تحديث</button></div>
-    <div id="settingsPage" class="page"><div style="background:var(--card-light);border-radius:28px;padding:24px;"><h3 style="color:var(--primary-teal);">⚙️ الإعدادات</h3><div class="setting-row" onclick="document.body.classList.toggle('dark-mode'); localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));"><span><i class="fas fa-moon"></i> الوضع الليلي</span><i class="fas fa-toggle-off" id="darkModeIcon"></i></div><div class="setting-row" onclick="window.open('https://wa.me/777215154','_blank');"><span><i class="fab fa-whatsapp"></i> خدمة العملاء</span><i class="fas fa-chevron-left"></i></div><button class="btn-primary logout-btn" style="background:var(--danger); margin-top:20px;" onclick="localStorage.removeItem('waselny_user'); location.reload();">تسجيل الخروج</button></div></div>
-    <div id="oPage" class="page"><div class="order-card" id="orderForm"></div></div>
-    <div id="restaurantsPage" class="page"><div class="back-button" onclick="window.showPage('homePage')"><i class="fas fa-arrow-right"></i> رجوع</div><div id="fullRestaurantsList"></div></div>
-    <div id="restaurantMenuPage" class="page"><div class="back-button" onclick="window.showPage('restaurantsPage')"><i class="fas fa-arrow-right"></i> رجوع</div><div id="menuContent"></div><div id="cartSummaryRestaurant"></div><button class="btn-primary" onclick="window.goToCheckout()">🛒 الذهاب للدفع</button></div>
-    <div id="checkoutPage" class="page"><div class="back-button" onclick="window.showPage('restaurantMenuPage')"><i class="fas fa-arrow-right"></i> رجوع</div><h3>🧾 تفاصيل الطلب</h3><div id="checkoutOrderSummary"></div><button class="btn-primary" onclick="window.confirmCheckoutOrder()">تأكيد الطلب</button></div>
-    <div id="driverPage" class="page"><div class="driver-panel"><h2>لوحة المندوب</h2><div id="driverOrdersList"></div><button class="btn-primary" onclick="localStorage.removeItem('waselny_user'); location.reload();">تسجيل خروج</button></div></div>
-    <div id="advancedAdminPage" class="page"><div class="admin-panel"><div class="back-button" onclick="window.showPage('homePage')">رجوع</div><h2>لوحة الإدارة</h2><div id="adminRestaurantsList"></div></div></div>
+    <!-- Restaurants section -->
+    <div class="section-header">
+        <h2>🍽️ المطاعم القريبة</h2>
+        <a href="#" id="viewAllLink">عرض الكل <i class="fas fa-chevron-left"></i></a>
+    </div>
+    <div class="restaurants-grid" id="restaurantsGrid"></div>
 </main>
 
-<!-- شريط التنقل السفلي الجديد -->
-<nav class="bottom-nav-new">
-    <div class="nav-item-new active" data-page="homePage"><i class="fas fa-home"></i><span>الرئيسية</span></div>
-    <div class="nav-item-new" data-page="ordersPage"><i class="fas fa-clipboard-list"></i><span>طلباتي</span></div>
-    <div class="nav-item-new" id="walletNav"><i class="fas fa-wallet"></i><span>المحفظة</span></div>
-    <div class="nav-item-new" data-page="settingsPage"><i class="fas fa-user-circle"></i><span>الملف الشخصي</span></div>
+<!-- Bottom Navigation -->
+<nav class="bottom-nav">
+    <div class="nav-item active" data-nav="home"><i class="fas fa-home"></i><span>الرئيسية</span></div>
+    <div class="nav-item" data-nav="orders"><i class="fas fa-clipboard-list"></i><span>طلباتي</span></div>
+    <div class="nav-item" data-nav="wallet"><i class="fas fa-wallet"></i><span>المحفظة</span></div>
+    <div class="nav-item" data-nav="profile"><i class="fas fa-user-circle"></i><span>الملف الشخصي</span></div>
 </nav>
 
 <div id="toastMsg" class="toast"></div>
 
-<!-- شاشة تسجيل الدخول -->
-<div id="loginOverlay" style="position:fixed; top:0; left:0; width:100%; height:100%; background:#0a2b3e; z-index:100000; display:flex; align-items:center; justify-content:center;">
-    <div style="background:white; border-radius:48px; padding:32px; width:90%; max-width:380px; text-align:center;">
-        <h3 style="color:var(--primary-teal);">وصّال | Wassal</h3>
-        <div style="display:flex; gap:10px; margin:20px 0;">
-            <div id="roleCustomer" style="flex:1; padding:10px; border-radius:40px; background:#e2e8f0; cursor:pointer; font-weight:700;" class="active">عميل</div>
-            <div id="roleDriver" style="flex:1; padding:10px; border-radius:40px; background:#e2e8f0; cursor:pointer; font-weight:700;">مندوب</div>
-        </div>
-        <input type="text" id="loginName" placeholder="الاسم" style="width:100%; padding:14px; margin:10px 0; border-radius:30px; border:1px solid #ddd;">
-        <input type="tel" id="loginPhone" placeholder="رقم الهاتف" style="width:100%; padding:14px; margin:10px 0; border-radius:30px; border:1px solid #ddd;">
-        <input type="password" id="loginPassword" placeholder="كلمة السر (للمندوب)" style="display:none; width:100%; padding:14px; margin:10px 0; border-radius:30px;">
-        <button id="loginBtn" style="width:100%; padding:14px; background:var(--primary-teal); border:none; border-radius:44px; color:white; font-weight:900;">دخول</button>
-    </div>
-</div>
-
 <script>
-    (function() {
-        // Firebase config
-        const FIREBASE_URL = "https://waselny-2812b-default-rtdb.firebaseio.com";
-        const DRIVER_PASSWORD = "weesim73741";
-        const ADMIN_PASSWORD = "weesim73741";
-        
-        window.currentUser = null;
-        window.allRestaurants = [];
-        window.cart = [];
-        window.currentRestaurant = null;
-        window.customerLocation = null;
-        window.deliveryCost = 0;
-        
-        // البيانات الأولية للمطاعم (بدون شخصيات موز)
-        const defaultRestaurants = [
-            { id: 1, name: "رويال بروست", cat: "بروست", img: "https://images.unsplash.com/photo-1626645738196-c2a7c8d08f58?w=600&h=400&fit=crop", rating: 4.8, time: "30-40 دقيقة", distance: "1.2 كم", items: [{n:"وجبة بروست (4 قطع)",p:2200},{n:"زنجر سوبريم",p:2400},{n:"ستريبس",p:2000}], restaurantLat:15.3694, restaurantLng:44.1910 },
-            { id: 2, name: "شاورما هت", cat: "شاورما", img: "https://images.unsplash.com/photo-1644704170910-a0cdf183649b?w=600&h=400&fit=crop", rating: 4.7, time: "25-35 دقيقة", distance: "0.9 كم", items: [{n:"شاورما دجاج",p:800},{n:"شاورما لحم",p:900}], restaurantLat:15.3780, restaurantLng:44.2000 },
-            { id: 3, name: "البيك رويال", cat: "بروست", img: "https://images.unsplash.com/photo-1562967914-608f82629710?w=600&h=400&fit=crop", rating: 4.9, time: "35-45 دقيقة", distance: "2.0 كم", items: [{n:"بروست دجاج",p:2400},{n:"فيليه سمك",p:2200}], restaurantLat:15.3550, restaurantLng:44.1950 }
-        ];
-        
-        async function loadRestaurants() {
-            try {
-                let res = await fetch(`${FIREBASE_URL}/restaurants.json`);
-                let data = await res.json();
-                if (data && Object.keys(data).length > 0) {
-                    window.allRestaurants = Object.values(data);
-                } else {
-                    window.allRestaurants = defaultRestaurants;
-                    for (let r of defaultRestaurants) {
-                        await fetch(`${FIREBASE_URL}/restaurants/${r.id}.json`, {method:'PUT', body:JSON.stringify(r)});
-                    }
-                }
-                renderModernHomePage();
-            } catch(e) { console.error(e); window.allRestaurants = defaultRestaurants; renderModernHomePage(); }
+    // ------------------------------
+    // Mock data (restaurants with high-res food images, no bananas)
+    // ------------------------------
+    const restaurantsData = [
+        {
+            id: 1,
+            name: "رويال بروست",
+            cat: "بروست",
+            img: "https://images.unsplash.com/photo-1626645738196-c2a7c8d08f58?w=600&h=400&fit=crop",
+            rating: 4.8,
+            time: "30-40 دقيقة",
+            distance: "1.2 كم",
+            items: [{ name: "وجبة بروست (4 قطع)", price: 22 }, { name: "زنجر سوبريم", price: 24 }]
+        },
+        {
+            id: 2,
+            name: "شاورما هت",
+            cat: "شاورما",
+            img: "https://images.unsplash.com/photo-1644704170910-a0cdf183649b?w=600&h=400&fit=crop",
+            rating: 4.6,
+            time: "25-35 دقيقة",
+            distance: "0.9 كم",
+            items: [{ name: "شاورما دجاج", price: 8 }, { name: "شاورما لحم", price: 9 }]
+        },
+        {
+            id: 3,
+            name: "البيك رويال",
+            cat: "بروست",
+            img: "https://images.unsplash.com/photo-1562967914-608f82629710?w=600&h=400&fit=crop",
+            rating: 4.9,
+            time: "35-45 دقيقة",
+            distance: "2.0 كم",
+            items: [{ name: "بروست دجاج", price: 24 }, { name: "فيليه سمك", price: 22 }]
         }
-        
-        // عرض التصنيفات بأيقونات خطية (بدون موز)
-        function renderCategoriesBar() {
-            const categories = [
-                { id: "بروست", name: "بروست", icon: "fas fa-drumstick-bite" },
-                { id: "بيتزا", name: "بيتزا", icon: "fas fa-pizza-slice" },
-                { id: "برجر", name: "برجر", icon: "fas fa-hamburger" },
-                { id: "شاورما", name: "شاورما", icon: "fas fa-utensils" },
-                { id: "عصائر", name: "عصائر", icon: "fas fa-wine-glass-alt" }
-            ];
-            let container = document.getElementById('categoriesBarModern');
-            if (!container) return;
-            container.innerHTML = categories.map(cat => `
-                <div class="cat-icon-item" data-cat="${cat.id}">
-                    <div class="icon-circle"><i class="${cat.icon}"></i></div>
-                    <span>${cat.name}</span>
-                </div>
-            `).join('');
-            document.querySelectorAll('.cat-icon-item').forEach(el => {
-                el.addEventListener('click', () => {
-                    document.querySelectorAll('.cat-icon-item').forEach(c=>c.classList.remove('active'));
-                    el.classList.add('active');
-                    filterRestaurantsByCategory(el.dataset.cat);
-                });
-            });
-            // تفعيل الكل افتراضياً
-            if(document.querySelector('.cat-icon-item')) document.querySelector('.cat-icon-item').classList.add('active');
-            filterRestaurantsByCategory('بروست');
-        }
-        
-        function filterRestaurantsByCategory(cat) {
-            let filtered = cat === 'بروست' ? window.allRestaurants.filter(r => r.cat === cat) : window.allRestaurants.filter(r => r.cat === cat);
-            if (filtered.length === 0) filtered = window.allRestaurants.slice(0,3);
-            renderRestaurantsGrid(filtered);
-        }
-        
-        function renderRestaurantsGrid(restaurantsList) {
-            let grid = document.getElementById('restaurantsModernGrid');
-            if (!grid) return;
-            grid.innerHTML = restaurantsList.map(r => `
-                <div class="restaurant-card" onclick="window.openRestaurantMenu(${r.id})">
-                    <img class="restaurant-img" src="${r.img}" alt="${r.name}" onerror="this.src='https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400'">
-                    <div class="restaurant-info">
-                        <div class="restaurant-title">
-                            <h3>${r.name}</h3>
-                            <div class="rating"><i class="fas fa-star"></i> ${r.rating || '4.8'}</div>
-                        </div>
-                        <div class="restaurant-meta">
-                            <span><i class="far fa-clock"></i> ${r.time || '30-40 min'}</span>
-                            <span><i class="fas fa-map-marker-alt"></i> ${r.distance || '1.2 كم'}</span>
-                        </div>
-                        <div class="restaurant-cat">${r.cat}</div>
-                    </div>
-                </div>
-            `).join('');
-        }
-        
-        function renderModernHomePage() {
-            renderCategoriesBar();
-            // عرض كل المطاعم في البداية
-            renderRestaurantsGrid(window.allRestaurants.slice(0,3));
-        }
-        
-        // فتح قائمة المطعم
-        window.openRestaurantMenu = function(id) {
-            window.currentRestaurant = window.allRestaurants.find(r => r.id === id);
-            if (!window.currentRestaurant) return;
-            window.cart = [];
-            window.customerLocation = null;
-            window.deliveryCost = 0;
-            let menuDiv = document.getElementById('menuContent');
-            if (menuDiv) menuDiv.innerHTML = `<h3>🍽️ منيو ${window.currentRestaurant.name}</h3><div class="menu-grid" style="display:flex; flex-direction:column; gap:15px;">${window.currentRestaurant.items.map((item,idx)=>`<div class="item-card" style="display:flex; gap:15px; background:var(--card-light); padding:12px; border-radius:20px;"><div style="flex:1;"><strong>${item.n}</strong><div>${item.p} ريال</div></div><button class="add-btn" style="background:var(--primary-teal); border:none; padding:8px 16px; border-radius:30px; color:white;" onclick="window.addToCartFromMenu(${idx})">+ أضف</button></div>`).join('')}</div>`;
-            window.updateCartDisplay();
-            window.showPage('restaurantMenuPage');
-        };
-        
-        window.addToCartFromMenu = function(idx) {
-            let item = window.currentRestaurant.items[idx];
-            let existing = window.cart.find(i=>i.n===item.n);
-            if(existing) existing.qty++;
-            else window.cart.push({...item, qty:1});
-            window.updateCartDisplay();
-            window.showToast(`تمت إضافة ${item.n}`);
-        };
-        
-        window.updateCartDisplay = function() {
-            let total = window.cart.reduce((s,i)=>s+(i.p*i.qty),0);
-            let cartBtn = document.querySelector('.header-icons .fa-shopping-bag');
-            if(cartBtn && total>0) cartBtn.style.color = '#fbbf24';
-        };
-        
-        window.goToCheckoutFromHeader = function() {
-            if(!window.cart.length) { window.showToast('السلة فارغة'); return; }
-            window.goToCheckout();
-        };
-        
-        window.goToCheckout = function() {
-            if(!window.cart.length) { window.showToast('لا توجد أصناف'); return; }
-            window.showPage('checkoutPage');
-            let totalFood = window.cart.reduce((s,i)=>s+(i.p*i.qty),0);
-            window.deliveryCost = 500;
-            let total = totalFood + window.deliveryCost;
-            let itemsHtml = window.cart.map(i=>`<div class="checkout-item" style="display:flex; justify-content:space-between;">${i.n} x${i.qty} <span>${i.p*i.qty} ريال</span></div>`).join('');
-            document.getElementById('checkoutOrderSummary').innerHTML = `<div>${itemsHtml}</div><div>سعر التوصيل: ${window.deliveryCost} ريال</div><div style="font-weight:800;">الإجمالي: ${total} ريال</div>`;
-        };
-        
-        window.confirmCheckoutOrder = async function() {
-            if(!window.currentUser || window.currentUser.role !== 'customer') { window.showToast('سجل دخول كعميل أولاً'); return; }
-            let totalFood = window.cart.reduce((s,i)=>s+(i.p*i.qty),0);
-            let total = totalFood + window.deliveryCost;
-            let order = {
-                id: Date.now(), type:'restaurant', restaurant: window.currentRestaurant.name, customerName: window.currentUser.name,
-                customerPhone: window.currentUser.phone, address: "عنوان تلقائي", total, items: window.cart.map(i=>({name:i.n, qty:i.qty, price:i.p})),
-                status:'pending', createdAt: new Date().toISOString()
-            };
-            await fetch(`${FIREBASE_URL}/orders/${order.id}.json`, {method:'PUT', body:JSON.stringify(order)});
-            window.showToast('تم إرسال الطلب بنجاح');
-            window.cart = [];
-            window.updateCartDisplay();
-            window.showPage('homePage');
-            renderModernHomePage();
-        };
-        
-        window.renderMyOrders = async function() {
-            let res = await fetch(`${FIREBASE_URL}/orders.json`);
-            let data = await res.json();
-            let orders = data ? Object.values(data).filter(o=>o.customerPhone === window.currentUser?.phone) : [];
-            document.getElementById('myOrdersContainer').innerHTML = orders.map(o=>`<div style="padding:10px; border-bottom:1px solid var(--border-light);">#${o.id} - ${o.restaurant} - ${o.total} ريال</div>`).join('') || '<p>لا توجد طلبات</p>';
-        };
-        
-        window.showPage = function(pageId) {
-            document.querySelectorAll('.page').forEach(p=>p.classList.remove('active-page'));
-            document.getElementById(pageId).classList.add('active-page');
-            document.querySelectorAll('.nav-item-new').forEach(nav=>nav.classList.remove('active'));
-            let activeNav = document.querySelector(`.nav-item-new[data-page="${pageId}"]`);
-            if(activeNav) activeNav.classList.add('active');
-            if(pageId === 'homePage') {
-                document.getElementById('dynamicHeader').style.display = 'block';
-                renderModernHomePage();
-            } else {
-                document.getElementById('dynamicHeader').style.display = 'none';
-            }
-            if(pageId === 'restaurantsPage') {
-                let fullList = document.getElementById('fullRestaurantsList');
-                if(fullList) fullList.innerHTML = window.allRestaurants.map(r=>`<div class="restaurant-card" onclick="window.openRestaurantMenu(${r.id})"><img src="${r.img}" style="width:100%; height:160px; object-fit:cover;"><div><h3>${r.name}</h3><p>${r.cat}</p></div></div>`).join('');
-            }
-            if(pageId === 'ordersPage' && window.currentUser) window.renderMyOrders();
-        };
-        
-        window.showToast = function(msg) { let t=document.getElementById('toastMsg'); if(t){ t.innerText=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),3000); } };
-        
-        // تسجيل الدخول
-        function initLogin() {
-            let roleCustomer = document.getElementById('roleCustomer'), roleDriver = document.getElementById('roleDriver'), pwdField = document.getElementById('loginPassword');
-            roleCustomer.onclick = ()=>{ roleCustomer.classList.add('active'); roleDriver.classList.remove('active'); pwdField.style.display='none'; };
-            roleDriver.onclick = ()=>{ roleDriver.classList.add('active'); roleCustomer.classList.remove('active'); pwdField.style.display='block'; };
-            document.getElementById('loginBtn').onclick = async () => {
-                let isDriver = roleDriver.classList.contains('active');
-                let name = document.getElementById('loginName').value.trim();
-                let phone = document.getElementById('loginPhone').value.trim();
-                let password = document.getElementById('loginPassword').value;
-                if(!name || !phone) { window.showToast('أدخل الاسم والهاتف'); return; }
-                if(isDriver && password !== DRIVER_PASSWORD) { window.showToast('كلمة سر المندوب خاطئة'); return; }
-                let role = isDriver ? 'driver' : 'customer';
-                await fetch(`${FIREBASE_URL}/users/${phone}.json`, {method:'PUT', body:JSON.stringify({phone, name, role, isBusy: false})});
-                window.currentUser = {role, phone, name};
-                localStorage.setItem('waselny_user', JSON.stringify(window.currentUser));
-                document.getElementById('loginOverlay').style.display = 'none';
-                if(role === 'driver') window.showPage('driverPage');
-                else window.showPage('homePage');
-                window.showToast(`مرحباً ${name}`);
-            };
-        }
-        
-        let saved = localStorage.getItem('waselny_user');
-        if(saved) { window.currentUser = JSON.parse(saved); document.getElementById('loginOverlay').style.display = 'none'; window.showPage('homePage'); }
-        else initLogin();
-        
-        // الأحداث
-        document.querySelectorAll('.nav-item-new').forEach(nav => {
-            nav.addEventListener('click', (e) => {
-                let page = nav.dataset.page;
-                if(page) window.showPage(page);
-                else if(nav.id === 'walletNav') window.showToast('المحفظة قيد التطوير');
+    ];
+
+    // categories with linear icons (no banana)
+    const categories = [
+        { id: "بروست", name: "بروست", icon: "fas fa-drumstick-bite" },
+        { id: "بيتزا", name: "بيتزا", icon: "fas fa-pizza-slice" },
+        { id: "برجر", name: "برجر", icon: "fas fa-hamburger" },
+        { id: "عصائر", name: "عصائر", icon: "fas fa-wine-glass-alt" }
+    ];
+
+    let currentCategory = "بروست";
+    let cart = [];
+
+    // Helper: show toast
+    function showToast(message) {
+        const toast = document.getElementById('toastMsg');
+        toast.innerText = message;
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 2500);
+    }
+
+    // Render categories bar
+    function renderCategories() {
+        const container = document.getElementById('categoriesList');
+        if (!container) return;
+        container.innerHTML = categories.map(cat => `
+            <div class="cat-item ${cat.id === currentCategory ? 'active' : ''}" data-cat="${cat.id}">
+                <div class="cat-icon"><i class="${cat.icon}"></i></div>
+                <span>${cat.name}</span>
+            </div>
+        `).join('');
+
+        // attach click events
+        document.querySelectorAll('.cat-item').forEach(el => {
+            el.addEventListener('click', () => {
+                const catId = el.dataset.cat;
+                currentCategory = catId;
+                renderCategories();      // re-render to update active state
+                filterAndRenderRestaurants();
             });
         });
-        document.getElementById('viewAllRestaurantsLink')?.addEventListener('click', (e) => { e.preventDefault(); window.showPage('restaurantsPage'); });
-        document.getElementById('darkModeIcon')?.setAttribute('class', localStorage.getItem('darkMode') === 'true' ? 'fas fa-toggle-on' : 'fas fa-toggle-off');
-        if(localStorage.getItem('darkMode') === 'true') document.body.classList.add('dark-mode');
-        
-        loadRestaurants();
-        // تحديث السلة في الهيدر
-        setInterval(() => { if(window.cart.length) window.updateCartDisplay(); }, 1000);
-    })();
+    }
+
+    // Filter restaurants based on current category
+    function filterAndRenderRestaurants() {
+        let filtered = restaurantsData.filter(r => r.cat === currentCategory);
+        if (filtered.length === 0) filtered = restaurantsData.slice(0, 2); // fallback
+        renderRestaurants(filtered);
+    }
+
+    // Render restaurant cards
+    function renderRestaurants(restaurants) {
+        const grid = document.getElementById('restaurantsGrid');
+        if (!grid) return;
+        if (restaurants.length === 0) {
+            grid.innerHTML = `<div style="text-align:center; padding:40px;">لا توجد مطاعم في هذا التصنيف</div>`;
+            return;
+        }
+        grid.innerHTML = restaurants.map(rest => `
+            <div class="restaurant-card" data-id="${rest.id}">
+                <img class="card-img" src="${rest.img}" alt="${rest.name}" loading="lazy" onerror="this.src='https://placehold.co/600x400?text=طعام'">
+                <div class="card-info">
+                    <div class="title-row">
+                        <h3>${rest.name}</h3>
+                        <div class="rating"><i class="fas fa-star"></i> ${rest.rating}</div>
+                    </div>
+                    <div class="meta-details">
+                        <span><i class="far fa-clock"></i> ${rest.time}</span>
+                        <span><i class="fas fa-map-marker-alt"></i> ${rest.distance}</span>
+                    </div>
+                    <div class="category-badge">${rest.cat}</div>
+                </div>
+            </div>
+        `).join('');
+
+        // add click listeners to cards
+        document.querySelectorAll('.restaurant-card').forEach(card => {
+            card.addEventListener('click', (e) => {
+                const id = parseInt(card.dataset.id);
+                const restaurant = restaurantsData.find(r => r.id === id);
+                if (restaurant) {
+                    showToast(`تم فتح قائمة ${restaurant.name} (تجريبي)`);
+                    // يمكن إضافة نافذة منبثقة أو توجيه لقائمة الطعام
+                    // لكن حسب الصورة، هذا هو الحدث الأساسي
+                }
+            });
+        });
+    }
+
+    // Handle view all (show all restaurants)
+    function viewAllRestaurants() {
+        renderRestaurants(restaurantsData);
+        // reset active category highlight visually but keep state
+        currentCategory = null;
+        document.querySelectorAll('.cat-item').forEach(el => el.classList.remove('active'));
+        showToast("جميع المطاعم");
+    }
+
+    // Bottom navigation interaction (simulate pages)
+    function setupBottomNav() {
+        const navItems = document.querySelectorAll('.nav-item');
+        navItems.forEach(item => {
+            item.addEventListener('click', () => {
+                const navType = item.dataset.nav;
+                navItems.forEach(nav => nav.classList.remove('active'));
+                item.classList.add('active');
+                if (navType === 'home') {
+                    // reset to main view
+                    currentCategory = "بروست";
+                    renderCategories();
+                    filterAndRenderRestaurants();
+                    showToast("الرئيسية");
+                } else if (navType === 'orders') {
+                    showToast("طلباتي: لا توجد طلبات حالياً");
+                } else if (navType === 'wallet') {
+                    showToast("المحفظة: قريباً");
+                } else if (navType === 'profile') {
+                    showToast("الملف الشخصي: قيد التطوير");
+                }
+            });
+        });
+    }
+
+    // Search functionality (basic)
+    function setupSearch() {
+        const searchInput = document.getElementById('searchInput');
+        if (!searchInput) return;
+        searchInput.addEventListener('input', (e) => {
+            const query = e.target.value.trim().toLowerCase();
+            if (query === "") {
+                filterAndRenderRestaurants();
+                return;
+            }
+            const filtered = restaurantsData.filter(r => r.name.includes(query) || r.cat.includes(query));
+            renderRestaurants(filtered);
+        });
+    }
+
+    // Header icons interactions
+    function setupHeaderIcons() {
+        const bell = document.getElementById('notifyIcon');
+        const cart = document.getElementById('cartIcon');
+        if (bell) bell.addEventListener('click', () => showToast("🔔 لا توجد إشعارات جديدة"));
+        if (cart) cart.addEventListener('click', () => {
+            if (cart.length === 0) showToast("السلة فارغة");
+            else showToast(`السلة تحتوي على ${cart.length} أصناف (تجريبي)`);
+        });
+    }
+
+    // Initialize page
+    function init() {
+        renderCategories();
+        filterAndRenderRestaurants();  // shows default category "بروست"
+        setupBottomNav();
+        setupSearch();
+        setupHeaderIcons();
+
+        // view all link
+        const viewAll = document.getElementById('viewAllLink');
+        if (viewAll) {
+            viewAll.addEventListener('click', (e) => {
+                e.preventDefault();
+                viewAllRestaurants();
+            });
+        }
+    }
+
+    // run when DOM ready
+    document.addEventListener('DOMContentLoaded', init);
 </script>
 </body>
 </html>

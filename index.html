@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
-    <title>وصل | WASAL - تطبيق توصيل متكامل</title>
+    <title>وصل | WASAL - توصيل سريع</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -260,26 +260,10 @@
     <div id="settingsPage" class="page">
         <div style="background:var(--white); border-radius:14px; padding:14px;">
             <h3 style="margin-bottom:12px;">⚙️ الإعدادات</h3>
-            <!-- المظهر -->
-            <div class="setting-row" id="darkModeToggle" style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid var(--gray-light); cursor:pointer;">
-                <span><i class="fas fa-moon"></i> الوضع الليلي</span>
-                <span id="darkModeIcon">⚫</span>
-            </div>
-            <!-- التواصل -->
-            <div class="setting-row" id="whatsappSupport" style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid var(--gray-light); cursor:pointer;">
-                <span><i class="fab fa-whatsapp"></i> خدمة العملاء</span>
-                <span>⬅️</span>
-            </div>
-            <div class="setting-row" id="shareApp" style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid var(--gray-light); cursor:pointer;">
-                <span><i class="fas fa-share-alt"></i> مشاركة التطبيق</span>
-                <span>⬅️</span>
-            </div>
-            <!-- معلومات -->
-            <div class="setting-row" id="versionRow" style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid var(--gray-light); cursor:pointer;">
-                <span><i class="fas fa-code-branch"></i> الإصدار</span>
-                <span id="versionNumber">v8.0</span>
-            </div>
-            <!-- تسجيل الخروج -->
+            <div id="darkModeToggle" style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid var(--gray-light); cursor:pointer;"><span><i class="fas fa-moon"></i> الوضع الليلي</span><span id="darkModeIcon">⚫</span></div>
+            <div id="whatsappSupport" style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid var(--gray-light); cursor:pointer;"><span><i class="fab fa-whatsapp"></i> خدمة العملاء</span><span>⬅️</span></div>
+            <div id="shareApp" style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid var(--gray-light); cursor:pointer;"><span><i class="fas fa-share-alt"></i> مشاركة التطبيق</span><span>⬅️</span></div>
+            <div id="versionRow" style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid var(--gray-light); cursor:pointer;"><span><i class="fas fa-code-branch"></i> الإصدار</span><span id="versionNumber">v8.0</span></div>
             <button id="settingsLogoutBtn" class="btn-primary" style="background:var(--danger); margin-top:12px;">تسجيل الخروج</button>
         </div>
     </div>
@@ -291,10 +275,8 @@
     <div id="adminPage" class="page"><div style="background:var(--white); border-radius:14px; padding:14px;"><div class="back-btn" onclick="showPage('homePage')">🔙 رجوع</div><h2 style="color:var(--primary); margin:10px 0; font-size:1rem;">👨‍💼 لوحة الإدارة</h2><div class="admin-tabs" id="adminTabs"><button class="tab-btn active" data-tab="restaurants">🍔 المطاعم</button><button class="tab-btn" data-tab="items">🍽️ الأصناف</button><button class="tab-btn" data-tab="orders">📦 الطلبات</button><button class="tab-btn" data-tab="users">👥 المستخدمين</button><button class="tab-btn" data-tab="settings">⚙️ الإعدادات</button></div><div class="tab-content active-tab" id="tab-restaurants"><div class="admin-section"><h4>إضافة مطعم</h4><input type="text" id="adminRestName" class="field-input" placeholder="اسم المطعم"><select id="adminRestCat" class="field-input"><option>بروست</option><option>بيتزا</option><option>برجر</option><option>شاورما</option></select><input type="text" id="adminRestImg" class="field-input" placeholder="رابط الصورة"><div class="geo-btn" onclick="initMapForAdmin()" style="background:var(--bg-light); padding:8px; border-radius:30px; text-align:center; margin-bottom:8px; cursor:pointer;">🗺️ اختر موقع المطعم</div><input type="hidden" id="adminRestLat"><input type="hidden" id="adminRestLng"><button class="btn-primary" onclick="addNewRestaurant()">➕ إضافة</button></div><div class="admin-section"><h4>قائمة المطاعم</h4><div id="adminRestaurantsList"></div></div></div><div class="tab-content" id="tab-items"><div class="admin-section"><select id="adminItemRestaurantSelect" class="field-input"></select><div id="adminItemsList"></div><div style="margin-top:10px;"><input type="text" id="newItemName" class="field-input" placeholder="اسم الصنف"><input type="number" id="newItemPrice" class="field-input" placeholder="السعر"><button class="btn-primary" onclick="addNewItem()">+ إضافة صنف</button></div></div></div><div class="tab-content" id="tab-orders"><div class="admin-section"><div id="adminOrdersList"></div></div></div><div class="tab-content" id="tab-users"><div class="admin-section"><div id="adminUsersList"></div></div></div><div class="tab-content" id="tab-settings"><div class="admin-section"><div><span>🚖 سعر الكيلومتر:</span><input type="number" id="adminPricePerKm" value="180" class="field-input"></div><div><span>💰 الحد الأدنى:</span><input type="number" id="adminMinDelivery" value="550" class="field-input"></div><button class="btn-primary" onclick="saveDeliverySettings()">💾 حفظ</button></div></div></div></div>
 </div>
 
-<!-- عربة التسوق العائمة -->
+<!-- السلة -->
 <div id="floatCart" class="float-cart" onclick="goToCheckout()"><div><span id="cartCount">0</span> أصناف | <span id="cartTotal">0</span> ريال</div><div>عرض السلة <i class="fas fa-chevron-left"></i></div></div>
-
-<!-- السلة الجانبية -->
 <div class="cart-sidebar" id="cartSidebar"><div class="cart-header"><span>🛒 سلة الطلبات</span><span class="cart-close" onclick="toggleCart()">✕</span></div><div class="cart-items" id="cartItemsList"></div><div class="cart-footer"><div class="cart-total"><span>الإجمالي</span><span id="cartTotalPrice">0 ريال</span></div><button class="checkout-btn" onclick="proceedToCheckout()">إتمام الطلب</button></div></div>
 
 <nav class="bottom-nav">
@@ -310,8 +292,8 @@
 <div id="map-overlay" class="map-overlay"><div id="map"></div><div class="map-controls"><div class="map-back" onclick="closeMap()">↩️ رجوع</div><div class="map-confirm" onclick="confirmMapLocation()">✅ تأكيد</div></div></div>
 
 <script>
-// ==================== قائمة المطاعم (40 مطعماً مستخرجة من الكود الأصلي) ====================
-const restaurantsList = [
+// ==================== قائمة المطاعم الـ 40 كاملة (مستخرجة من الكود الأصلي) ====================
+const allRestaurantsData = [
     { id: 1, name: "رويال بروستر", cat: "بروست - وجبات سريعة", img: "https://images.unsplash.com/photo-1626645738196-c2a7c8d08f58?w=400", items: [{n:"وجبة بروست (4 قطع)",p:2200},{n:"وجبة زنجر سوبريم",p:2400},{n:"وجبة ستريبس (5 قطع)",p:2000},{n:"وجبة مسحب رويال",p:2200},{n:"ساندوتش زنجر",p:1300},{n:"ساندوتش رويال برجر لحم",p:1600},{n:"ساندوتش رويال برجر دجاج",p:1400},{n:"ساندوتش تويستر",p:1100},{n:"سطل رويال (12 قطعة)",p:6500},{n:"سطل رويال (16 قطعة)",p:8000},{n:"بطاطس (صحن)",p:600},{n:"حلقات بصل",p:800},{n:"سلطة كول سلو",p:500},{n:"ثومية إضافية",p:200},{n:"مشروبات غازية (علبة)",p:400}] },
     { id: 2, name: "البيك رويال", cat: "بروست - وجبات سريعة", img: "https://images.unsplash.com/photo-1562967914-608f82629710?w=400", items: [{n:"وجبة بروست رويال (4 قطع)",p:2400},{n:"وجبة بروست حراق (4 قطع)",p:2500},{n:"وجبة فيليه سمك",p:2200},{n:"وجبة الروبيان المقلي",p:3500},{n:"ساندوتش زنجر رويال",p:1600},{n:"برجر دجاج رويال",p:1400},{n:"ساندوتش بيج بيك",p:1800},{n:"مسحب دجاج",p:1300},{n:"باقة العائلة (10 قطع)",p:6000},{n:"باقة رويال (16 قطعة)",p:9200},{n:"بطاطس",p:800},{n:"حلقات البصل",p:900},{n:"سلطة كول سلو",p:600},{n:"كبة دجاج",p:700},{n:"مشروبات غازية",p:400}] },
     { id: 3, name: "شاورما هت", cat: "شاورما", img: "https://images.unsplash.com/photo-1644704170910-a0cdf183649b?w=400", items: [{n:"شاورما صاروخ (دجاج)",p:1200},{n:"شاورما دبل",p:1800},{n:"شاورما عربي (صحن)",p:2200},{n:"هت بوكس عائلي",p:5500},{n:"ميني هت",p:1000},{n:"بطاطس هت متبلة",p:700},{n:"صوص ثوم/حار",p:200},{n:"إضافة جبنة شيدر",p:300},{n:"مشروبات غازية",p:400},{n:"ماء",p:200}] },
@@ -370,7 +352,7 @@ window.deliveryCost = 0;
 let map, marker, currentMapMode = null;
 let selectedPaymentMethod = 'cash';
 let receiptBase64 = null;
-let allRestaurants = restaurantsList;
+let allRestaurants = allRestaurantsData;
 let editingRestaurantId = null;
 
 const paymentMethods = {
@@ -390,7 +372,6 @@ const mainCategories = [
     { id: "pharmacy", name: "صيدليات", icon: "💊", desc: "صحتك تهمنا" }
 ];
 
-// صور السلايدر
 const sliderImages = [
     { image: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800", title: "🔥 عروض المطاعم", desc: "خصم يصل إلى 40%" },
     { image: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=800", title: "🚚 توصيل مجاني", desc: "لفترة محدودة" },
@@ -422,7 +403,6 @@ function updateCheckoutSummary() {
     if(summaryDiv) summaryDiv.innerHTML = `<h4 style="margin-bottom:6px;">🍽️ ${window.currentRestaurant.name}</h4>${itemsHtml}`;
 }
 
-// ==================== تحميل البيانات ====================
 async function loadOrders() { try { let res = await fetch(`${FIREBASE_URL}/orders.json`); let data = await res.json(); window.allOrders = data ? Object.values(data).sort((a,b)=>b.id-a.id) : []; } catch(e){} }
 async function loadUsers() { try { let res = await fetch(`${FIREBASE_URL}/users.json`); let data = await res.json(); window.allUsers = data ? Object.values(data) : []; } catch(e){} }
 async function loadDeliverySettings() { try { let res = await fetch(`${FIREBASE_URL}/settings/delivery.json`); let data = await res.json(); if(data){ PRICE_PER_KM = data.pricePerKm || 180; MIN_DELIVERY_PRICE = data.minDelivery || 550; } } catch(e){} }
@@ -483,7 +463,7 @@ function startCarouselAuto() { if(carouselInterval) clearInterval(carouselInterv
 window.changeCarouselSlide = function(d) { carouselIndex = (carouselIndex+d+sliderImages.length)%sliderImages.length; updateCarousel(); startCarouselAuto(); };
 window.goToCarouselSlide = function(i) { carouselIndex = i; updateCarousel(); startCarouselAuto(); };
 
-// ==================== صفحة المطاعم (تم إصلاحها) ====================
+// ==================== صفحة المطاعم ====================
 let currentFilter = "all";
 function renderFilters() {
     const filters = ['الكل','بروست','برجر','شاورما','بيتزا','مشاوي','عصائر','مندي','شعبي'];
@@ -499,10 +479,10 @@ function renderRestaurantsList() {
     container.innerHTML = filtered.map(r=>`<div class="restaurant-item" onclick="openRestaurantMenu(${r.id})"><div class="restaurant-item-img" style="background-image:url('${r.img}')"></div><div class="restaurant-item-info"><div class="restaurant-item-name">${r.name}</div><div class="restaurant-item-cat">${r.cat}</div><div class="restaurant-item-stats"><span>⭐ ${(Math.random()*1+4).toFixed(1)}</span><span>📍 ${(Math.random()*5+2).toFixed(1)} كيلو</span></div></div><div class="restaurant-item-price"><div class="price">${r.items[0]?.p || 25}</div><div>ريال</div></div></div>`).join('');
 }
 
-// ==================== منيو المطعم والسلة ====================
+// ==================== منيو المطعم والسلة (تم إصلاح openRestaurantMenu) ====================
 window.openRestaurantMenu = function(id) {
     window.currentRestaurant = allRestaurants.find(r=>r.id===id);
-    if(!window.currentRestaurant) return;
+    if(!window.currentRestaurant) { showToast('المطعم غير موجود'); return; }
     window.cart = [];
     window.customerLocation = null;
     window.deliveryCost = 0;
@@ -516,6 +496,7 @@ window.openRestaurantMenu = function(id) {
     updateCartDisplay();
     showPage('menuPage');
 };
+
 window.addToCart = function(idx) {
     let item = window.currentRestaurant.items[idx];
     let existing = window.cart.find(i=>i.n===item.n);
@@ -524,6 +505,7 @@ window.addToCart = function(idx) {
     updateCartDisplay();
     showToast(`تمت إضافة ${item.n}`);
 };
+
 function updateCartDisplay() {
     let total = window.cart.reduce((s,i)=>s+(i.p*i.qty),0);
     let itemsCount = window.cart.reduce((s,i)=>s+i.qty,0);
@@ -543,6 +525,7 @@ function updateCartDisplay() {
     let summaryDiv = document.getElementById('cartSummary');
     if(summaryDiv) summaryDiv.innerHTML = window.cart.length ? `<div style="background:var(--primary); color:white; padding:8px; border-radius:12px; text-align:center; font-size:0.7rem;">السلة: ${itemsCount} منتجات - ${total} ريال</div>` : '';
 }
+
 window.changeQty = function(idx,delta) { let newQty = window.cart[idx].qty+delta; if(newQty<=0) window.cart.splice(idx,1); else window.cart[idx].qty = newQty; updateCartDisplay(); };
 window.goToCheckout = function() { if(!window.cart.length){ showToast('السلة فارغة'); return; } showPage('checkoutPage'); updateCheckoutSummary(); document.getElementById('floatCart').style.display = 'none'; };
 window.goBackToMenu = function() { showPage('menuPage'); if(window.cart.length) document.getElementById('floatCart').style.display = 'flex'; };
@@ -597,7 +580,6 @@ window.confirmMapLocation = async function() {
     currentMapMode = null;
 };
 
-// وسائل الدفع
 function initPaymentList() {
     let options = document.querySelectorAll('.payment-option');
     options.forEach(opt => {
@@ -643,7 +625,7 @@ window.confirmCheckoutOrder = async function() {
     await fetch(`${FIREBASE_URL}/orders/${id}.json`, {method:'PUT', body:JSON.stringify(order)});
     localStorage.setItem('currentTrackingOrder', id);
     let itemsText = window.cart.map(i=>`• ${i.n} x${i.qty} = ${i.p*i.qty} ريال`).join('\n');
-    let message = `🛍️ *طلب جديد من تطبيق وصل* 🛍️\n\n🍔 المطعم: ${window.currentRestaurant.name}\n👤 الاسم: ${window.currentUser.name}\n📞 الجوال: ${window.currentUser.phone}\n📍 العنوان: ${order.address}\n\nالمنتجات:\n${itemsText}\n\n🚚 سعر التوصيل: ${window.deliveryCost} ريال\n💰 الإجمالي: ${total} ريال\n💳 الدفع: ${paymentMethods[selectedPaymentMethod]?.name||'الدفع عند الاستلام'}\n📅 التاريخ: ${new Date().toLocaleString('ar-SA')}`;
+    let message = `🛍️ طلب جديد\n\n🍔 المطعم: ${window.currentRestaurant.name}\n👤 الاسم: ${window.currentUser.name}\n📞 ${window.currentUser.phone}\n📍 ${order.address}\n\nالمنتجات:\n${itemsText}\n\n🚚 التوصيل: ${window.deliveryCost} ريال\n💰 الإجمالي: ${total} ريال`;
     window.open(`https://wa.me/777215154?text=${encodeURIComponent(message)}`, '_blank');
     showToast('✅ تم إرسال الطلب');
     window.cart = [];
@@ -671,7 +653,7 @@ window.viewOrderTracking = async function(id) {
     });
     stepsHtml += '</div>';
     let driverInfo = order.driverName ? `<p><span>🚚 المندوب:</span><span>${order.driverName}</span></p>` : '<p><span>🚚 المندوب:</span><span>لم يتم الإسناد بعد</span></p>';
-    let details = `<div style="padding:12px;"><h3 style="color:var(--primary);">📍 تتبع الطلب #${order.id}</h3>${stepsHtml}<p><span>التاريخ:</span><span>${new Date(order.createdAt).toLocaleString('ar-SA')}</span></p><p><span>المطعم:</span><span>${order.restaurant}</span></p>${driverInfo}<p><span>العنوان:</span><span>${order.address}</span></p><div style="display:flex; justify-content:space-between; margin-top:10px;"><span>الإجمالي:</span><span style="color:var(--primary); font-weight:800;">${order.total} ريال</span></div></div>`;
+    let details = `<div style="padding:12px;"><h3 style="color:var(--primary);">📍 تتبع الطلب #${order.id}</h3>${stepsHtml}<p><span>التاريخ:</span><span>${new Date(order.createdAt).toLocaleString('ar-SA')}</span></p><p><span>المطعم:</span><span>${order.restaurant}</span></p>${driverInfo}<p><span>العنوان:</span><span>${order.address}</span></p><div style="display:flex; justify-content:space-between; margin-top:10px;"><span>الإجمالي:</span><span>${order.total} ريال</span></div></div>`;
     document.getElementById('trackingFullscreenContainer').innerHTML = details;
     document.getElementById('trackFullscreen').style.display = 'block';
 };
@@ -791,7 +773,6 @@ document.getElementById('shareApp')?.addEventListener('click', ()=>{ if(navigato
 document.getElementById('settingsLogoutBtn')?.addEventListener('click', ()=>{ localStorage.removeItem('waselny_user'); location.reload(); });
 document.getElementById('driverLogoutBtn')?.addEventListener('click', ()=>{ localStorage.removeItem('waselny_user'); location.reload(); });
 
-// الإدارة بالضغط على الإصدار
 let clickCount=0;
 document.getElementById('versionNumber')?.addEventListener('click', ()=>{
     clickCount++;
@@ -808,7 +789,6 @@ document.getElementById('versionNumber')?.addEventListener('click', ()=>{
     }
 });
 
-// تبويبات الإدارة
 document.querySelectorAll('#adminTabs .tab-btn').forEach(btn=>{
     btn.onclick = ()=>{
         document.querySelectorAll('#adminTabs .tab-btn').forEach(b=>b.classList.remove('active'));

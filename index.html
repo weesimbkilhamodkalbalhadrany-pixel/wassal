@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
-    <title>وصل | WASAL - توصيل سريع</title>
+    <title>وصل | WASAL - تطبيق توصيل</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
@@ -45,7 +45,7 @@
             --gray-light: #334155;
         }
 
-        /* ========== Header ========== */
+        /* Header */
         .header {
             background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             color: white;
@@ -146,7 +146,7 @@
             100% { opacity: 1; transform: scale(1.2); }
         }
 
-        /* ========== Search Bar ========== */
+        /* Search Bar */
         .search-bar {
             position: relative;
             margin: -18px 16px 20px;
@@ -174,7 +174,7 @@
             font-size: 1rem;
         }
 
-        /* ========== Main Container ========== */
+        /* Main Container */
         .container {
             padding: 0 16px 80px;
         }
@@ -193,7 +193,7 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* ========== Categories Grid ========== */
+        /* Categories Grid */
         .categories-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -244,13 +244,12 @@
             color: var(--gray);
         }
 
-        /* ألوان الأقسام */
         .cat-restaurants .category-icon { background: linear-gradient(135deg, #f59e0b, #d97706); box-shadow: 0 4px 12px rgba(245,158,11,0.3); }
         .cat-supermarket .category-icon { background: linear-gradient(135deg, #10b981, #059669); box-shadow: 0 4px 12px rgba(16,185,129,0.3); }
         .cat-pharmacy .category-icon { background: linear-gradient(135deg, #8b5cf6, #7c3aed); box-shadow: 0 4px 12px rgba(139,92,246,0.3); }
         .cat-shein .category-icon { background: linear-gradient(135deg, #ec4899, #db2777); box-shadow: 0 4px 12px rgba(236,72,153,0.3); }
 
-        /* ========== Offers Section ========== */
+        /* Offers Section */
         .section-title {
             display: flex;
             align-items: center;
@@ -324,7 +323,7 @@
             color: white;
         }
 
-        /* ========== Restaurants Preview ========== */
+        /* Restaurants Preview */
         .restaurants-preview {
             display: flex;
             flex-direction: column;
@@ -405,7 +404,7 @@
             color: var(--gray);
         }
 
-        /* ========== Restaurants Full Page ========== */
+        /* Restaurants Full Page */
         .filter-chips {
             display: flex;
             gap: 10px;
@@ -521,7 +520,7 @@
             color: var(--primary);
         }
 
-        /* ========== Menu Page ========== */
+        /* Menu Page */
         .menu-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -581,7 +580,7 @@
             background: var(--primary-dark);
         }
 
-        /* ========== Cart ========== */
+        /* Cart */
         .cart-fab {
             position: fixed;
             bottom: 90px;
@@ -742,7 +741,7 @@
             background: #ea580c;
         }
 
-        /* ========== Bottom Navigation ========== */
+        /* Bottom Navigation */
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -785,7 +784,7 @@
             font-weight: 500;
         }
 
-        /* ========== Common Components ========== */
+        /* Common Components */
         .back-btn {
             display: inline-flex;
             align-items: center;
@@ -865,7 +864,7 @@
             background: var(--primary-dark);
         }
 
-        /* ========== Login Overlay ========== */
+        /* Login Overlay */
         #loginOverlay {
             position: fixed;
             top: 0;
@@ -1109,21 +1108,17 @@
 </div>
 
 <script>
-// ==================== بيانات المطاعم ====================
+// بيانات المطاعم
 const restaurants = [
     { id: 1, name: "رويال بروستر", cat: "بروست", img: "https://images.unsplash.com/photo-1626645738196-c2a7c8d08f58?w=400", rating: 4.5, items: [{n:"وجبة بروست (4 قطع)",p:22},{n:"زنجر سوبريم",p:24},{n:"ستريبس",p:20},{n:"بطاطس",p:6}] },
     { id: 2, name: "شاورما هت", cat: "شاورما", img: "https://images.unsplash.com/photo-1644704170910-a0cdf183649b?w=400", rating: 4.7, items: [{n:"شاورما دجاج",p:8},{n:"شاورما لحم",p:9},{n:"شاورما عربي",p:22},{n:"بطاطس",p:5}] },
     { id: 3, name: "بيتزا هت", cat: "بيتزا", img: "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=400", rating: 4.3, items: [{n:"بيتزا مارجريتا",p:25},{n:"بيبروني",p:30},{n:"بيتزا دجاج",p:28},{n:"مشروب",p:4}] },
     { id: 4, name: "ستار برجر", cat: "برجر", img: "https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=400", rating: 4.4, items: [{n:"برجر لحم",p:18},{n:"برجر دجاج",p:16},{n:"دبل برجر",p:28},{n:"بطاطس",p:6}] },
     { id: 5, name: "الشيباني", cat: "مشاوي", img: "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=400", rating: 4.6, items: [{n:"مشاوي مشكل",p:45},{n:"دجاج فحم",p:24},{n:"كباب لحم",p:35},{n:"أرز مندي",p:8}] },
-    { id: 6, name: "مدينة العصائر", cat: "عصائر", img: "https://images.unsplash.com/photo-1589733955941-5eeaf752f6dd?w=400", rating: 4.2, items: [{n:"عصير مانجو",p:10},{n:"عصير فراولة",p:9},{n:"كوكتيل",p:13},{n:"ميلك شيك",p:12}] },
-    { id: 7, name: "مطعم الأندلس", cat: "مشاوي", img: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=400", rating: 4.8, items: [{n:"نفر مشاوي",p:45},{n:"دجاج فحم",p:38},{n:"ريش غنم",p:50},{n:"فحسة لحم",p:25}] },
-    { id: 8, name: "العم طه", cat: "وجبات سريعة", img: "https://images.unsplash.com/photo-1593001874117-c99c800e3eb7?w=400", rating: 4.1, items: [{n:"زنجر",p:13},{n:"شيش طاووق",p:12},{n:"تورتيلا",p:12},{n:"برجر",p:15}] },
-    { id: 9, name: "باب المندب", cat: "بحرية", img: "https://images.unsplash.com/photo-1567620832903-9fc6debc209f?w=400", rating: 4.4, items: [{n:"سمك ديرك",p:35},{n:"جمبري",p:40},{n:"أرز صيادية",p:10},{n:"طاجن تونة",p:15}] },
-    { id: 10, name: "خير زمان", cat: "مندي", img: "https://images.unsplash.com/photo-1591261735099-e3776264e164?w=400", rating: 4.5, items: [{n:"مندي لحم",p:74},{n:"مندي دجاج",p:46},{n:"برمة لحم",p:80},{n:"ملوخية",p:7}] }
+    { id: 6, name: "مدينة العصائر", cat: "عصائر", img: "https://images.unsplash.com/photo-1589733955941-5eeaf752f6dd?w=400", rating: 4.2, items: [{n:"عصير مانجو",p:10},{n:"عصير فراولة",p:9},{n:"كوكتيل",p:13},{n:"ميلك شيك",p:12}] }
 ];
 
-// ==================== المتغيرات العامة ====================
+// المتغيرات العامة
 window.currentUser = null;
 window.cart = [];
 window.currentRestaurant = null;
@@ -1136,7 +1131,7 @@ const mainCategories = [
     { id: "shein", name: "شي إن", icon: "fa-shirt", desc: "أزياء وإكسسوارات", bg: "linear-gradient(135deg, #ec4899, #db2777)" }
 ];
 
-// ==================== دوال مساعدة ====================
+// دوال مساعدة
 function showToast(msg) {
     let t = document.getElementById('toast');
     if (t) {
@@ -1146,7 +1141,7 @@ function showToast(msg) {
     }
 }
 
-// ==================== الصفحة الرئيسية ====================
+// الصفحة الرئيسية
 function renderCategories() {
     let container = document.getElementById('categoriesGrid');
     container.innerHTML = mainCategories.map(cat => `
@@ -1164,24 +1159,15 @@ function renderOffers() {
     let container = document.getElementById('offersScroll');
     container.innerHTML = `
         <div class="offer-card" onclick="openCategory('restaurants')">
-            <div class="offer-text">
-                <h4>🔥 خصم 30%</h4>
-                <p>على أول طلب</p>
-            </div>
+            <div class="offer-text"><h4>🔥 خصم 30%</h4><p>على أول طلب</p></div>
             <div class="offer-badge">اطلب الآن</div>
         </div>
         <div class="offer-card" onclick="openCategory('supermarket')">
-            <div class="offer-text">
-                <h4>🛒 توصيل مجاني</h4>
-                <p>لطلبات السوبرماركت</p>
-            </div>
+            <div class="offer-text"><h4>🛒 توصيل مجاني</h4><p>لطلبات السوبرماركت</p></div>
             <div class="offer-badge">استفد</div>
         </div>
         <div class="offer-card" onclick="openCategory('pharmacy')">
-            <div class="offer-text">
-                <h4>💊 خصم 20%</h4>
-                <p>على منتجات الصيدلية</p>
-            </div>
+            <div class="offer-text"><h4>💊 خصم 20%</h4><p>على منتجات الصيدلية</p></div>
             <div class="offer-badge">عرض خاص</div>
         </div>
     `;
@@ -1217,9 +1203,9 @@ window.openCategory = function(catId) {
     }
 };
 
-// ==================== صفحة المطاعم ====================
+// صفحة المطاعم
 function renderFilters() {
-    const filters = ['الكل', 'بروست', 'برجر', 'شاورما', 'بيتزا', 'مشاوي', 'عصائر', 'مندي'];
+    const filters = ['الكل', 'بروست', 'برجر', 'شاورما', 'بيتزا', 'مشاوي', 'عصائر'];
     let container = document.getElementById('filterChips');
     container.innerHTML = filters.map((f, i) => `
         <div class="chip ${currentFilter === (i === 0 ? 'all' : f) ? 'active' : ''}" data-filter="${i === 0 ? 'all' : f}">
@@ -1262,7 +1248,7 @@ function renderRestaurantsFull() {
     `).join('');
 }
 
-// ==================== منيو المطعم ====================
+// منيو المطعم
 window.openRestaurantMenu = function(id) {
     window.currentRestaurant = restaurants.find(r => r.id === id);
     if (!window.currentRestaurant) return;
@@ -1422,7 +1408,7 @@ window.confirmCheckoutOrder = function() {
     showPage('homePage');
 };
 
-// ==================== الطلبات ====================
+// الطلبات
 window.renderMyOrders = function() {
     let container = document.getElementById('myOrdersContainer');
     container.innerHTML = `
@@ -1431,7 +1417,7 @@ window.renderMyOrders = function() {
     `;
 };
 
-// ==================== تسجيل الدخول ====================
+// تسجيل الدخول
 function initLogin() {
     let roleCustomer = document.getElementById('roleCustomer');
     let roleDriver = document.getElementById('roleDriver');
@@ -1476,7 +1462,7 @@ function initLogin() {
     };
 }
 
-// ==================== التنقل ====================
+// التنقل
 window.showPage = function(pageId) {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
     document.getElementById(pageId).classList.add('active-page');
@@ -1495,7 +1481,7 @@ document.querySelectorAll('.nav-item').forEach(n => {
     n.onclick = () => window.showPage(n.dataset.page);
 });
 
-// ========== الوضع الليلي ==========
+// الوضع الليلي
 document.getElementById('darkModeToggle')?.addEventListener('click', () => {
     document.body.classList.toggle('dark-mode');
     let icon = document.getElementById('darkModeIcon');
@@ -1508,7 +1494,7 @@ if (localStorage.getItem('darkMode') === 'true') {
     document.getElementById('darkModeIcon').className = 'fas fa-toggle-on';
 }
 
-// ========== التواصل ==========
+// التواصل
 document.getElementById('whatsappSupport')?.addEventListener('click', () => {
     window.open('https://wa.me/777215154', '_blank');
 });
@@ -1518,7 +1504,7 @@ document.getElementById('logoutBtn')?.addEventListener('click', () => {
     location.reload();
 });
 
-// ========== البحث ==========
+// البحث
 document.getElementById('searchInput')?.addEventListener('input', (e) => {
     let term = e.target.value.toLowerCase();
     if (document.getElementById('restaurantsPage').classList.contains('active-page')) {
@@ -1536,7 +1522,7 @@ document.getElementById('searchInput')?.addEventListener('input', (e) => {
     }
 });
 
-// ========== بدء التطبيق ==========
+// بدء التطبيق
 let savedUser = localStorage.getItem('waselny_user');
 if (savedUser) {
     try {

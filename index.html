@@ -144,7 +144,7 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Categories Grid */
+        /* Categories Grid (الصفحة الرئيسية) */
         .categories-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -178,7 +178,7 @@
             color: var(--gray);
         }
 
-        /* Offers */
+        /* عروض حصرية (الصفحة الرئيسية) */
         .offers-scroll {
             display: flex;
             gap: 14px;
@@ -204,7 +204,7 @@
         .offer-text p { font-size: 0.6rem; color: rgba(255,255,255,0.9); }
         .offer-badge { background: rgba(255,255,255,0.2); padding: 4px 12px; border-radius: 30px; font-size: 0.7rem; font-weight: 800; color: white; }
 
-        /* Restaurants Preview */
+        /* معاينة المطاعم (الصفحة الرئيسية) */
         .restaurants-preview {
             display: flex;
             flex-direction: column;
@@ -234,7 +234,93 @@
         .preview-price { text-align: center; min-width: 55px; }
         .preview-price .price { font-weight: 800; color: var(--primary); }
 
-        /* ========== سلايدر ثلاثي الأبعاد (محسن جداً) ========== */
+        /* ========== صفحة المطاعم (حسب الصورة) ========== */
+        /* فلتر مثل الصورة: الدفتر (الكل)، المفضلة، الأقرب، جديدنا */
+        .restaurants-header {
+            margin-bottom: 20px;
+        }
+        .filter-buttons {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            justify-content: flex-start;
+            flex-wrap: wrap;
+        }
+        .filter-btn {
+            background: var(--white);
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--gray);
+            border: 1px solid var(--gray-light);
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .filter-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        /* بطاقات المطاعم بشكل أفقي */
+        .restaurants-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        .restaurant-item {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 12px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            border: 1px solid var(--gray-light);
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .restaurant-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+        }
+        .restaurant-item-img {
+            width: 75px;
+            height: 75px;
+            border-radius: 16px;
+            background-size: cover;
+            background-position: center;
+            flex-shrink: 0;
+        }
+        .restaurant-item-info {
+            flex: 1;
+        }
+        .restaurant-item-name {
+            font-size: 1rem;
+            font-weight: 800;
+        }
+        .restaurant-item-cat {
+            font-size: 0.7rem;
+            color: var(--gray);
+            margin-top: 4px;
+        }
+        .restaurant-item-stats {
+            display: flex;
+            gap: 12px;
+            margin-top: 6px;
+            font-size: 0.7rem;
+            color: var(--gray);
+        }
+        .restaurant-item-price {
+            text-align: center;
+            min-width: 55px;
+        }
+        .restaurant-item-price .price {
+            font-weight: 800;
+            color: var(--primary);
+            font-size: 0.9rem;
+        }
+
+        /* ========== سلايدر ثلاثي الأبعاد (غير دائري، لا يعود للأول) ========== */
         .carousel-3d {
             position: relative;
             width: 100%;
@@ -249,7 +335,6 @@
             width: 100%;
             height: 100%;
             transform-style: preserve-3d;
-            transition: transform 0.1s; /* مجرد محافظة على الثبات */
         }
         .carousel-slide {
             position: absolute;
@@ -262,7 +347,7 @@
             border-radius: 24px;
             box-shadow: 0 20px 30px rgba(0,0,0,0.4);
             cursor: pointer;
-            transition: all 1.5s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            transition: all 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
             opacity: 0.6;
             backface-visibility: hidden;
         }
@@ -341,56 +426,7 @@
             background: var(--primary);
         }
 
-        /* Filter Chips */
-        .filter-chips {
-            display: flex;
-            gap: 10px;
-            overflow-x: auto;
-            margin-bottom: 20px;
-        }
-        .chip {
-            background: var(--white);
-            padding: 8px 18px;
-            border-radius: 40px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            white-space: nowrap;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            border: 1px solid var(--gray-light);
-            cursor: pointer;
-        }
-        .chip.active {
-            background: var(--primary);
-            color: white;
-        }
-
-        /* Restaurants Full Grid */
-        .restaurants-full-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-        .restaurant-card {
-            background: var(--white);
-            border-radius: 18px;
-            display: flex;
-            gap: 12px;
-            padding: 12px;
-            border: 1px solid var(--gray-light);
-            cursor: pointer;
-        }
-        .restaurant-img {
-            width: 70px;
-            height: 70px;
-            border-radius: 14px;
-            background-size: cover;
-        }
-        .restaurant-info { flex: 1; }
-        .restaurant-name { font-weight: 800; font-size: 0.9rem; }
-        .restaurant-cuisine { font-size: 0.65rem; color: var(--gray); margin: 4px 0; }
-        .restaurant-stats { display: flex; gap: 10px; font-size: 0.6rem; color: var(--gray); }
-
-        /* Menu Items */
+        /* منيو المطعم */
         .menu-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -421,7 +457,7 @@
             cursor: pointer;
         }
 
-        /* Cart */
+        /* السلة */
         .cart-fab {
             position: fixed;
             bottom: 90px;
@@ -523,7 +559,7 @@
             cursor: pointer;
         }
 
-        /* Bottom Navigation */
+        /* التنقل السفلي */
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -681,30 +717,45 @@
 </div>
 
 <div class="container">
+    <!-- الصفحة الرئيسية -->
     <div id="homePage" class="page active-page">
         <div class="categories-grid" id="categoriesGrid"></div>
         <div class="offers-scroll" id="offersScroll"></div>
         <div class="restaurants-preview" id="restaurantsPreview"></div>
     </div>
 
+    <!-- صفحة المطاعم (بالتصميم الجديد) -->
     <div id="restaurantsPage" class="page">
         <div class="back-btn" onclick="showPage('homePage')">🔙 رجوع</div>
+        
+        <!-- سلايدر ثلاثي الأبعاد (غير دائري) -->
         <div class="carousel-3d" id="carousel3d">
             <div class="carousel-container" id="carouselContainer"></div>
             <div class="carousel-btn prev" onclick="changeCarouselSlide(-1)">❮</div>
             <div class="carousel-btn next" onclick="changeCarouselSlide(1)">❯</div>
             <div class="carousel-dots" id="carouselDots"></div>
         </div>
-        <div class="filter-chips" id="filterChips"></div>
-        <div class="restaurants-full-grid" id="restaurantsFullGrid"></div>
+
+        <!-- أزرار التصفية -->
+        <div class="filter-buttons" id="filterButtons">
+            <div class="filter-btn active" data-filter="all">الكل</div>
+            <div class="filter-btn" data-filter="favorite">المفضلة</div>
+            <div class="filter-btn" data-filter="nearest">الأقرب</div>
+            <div class="filter-btn" data-filter="new">جديدنا</div>
+        </div>
+
+        <!-- قائمة المطاعم -->
+        <div class="restaurants-list" id="restaurantsList"></div>
     </div>
 
+    <!-- منيو المطعم -->
     <div id="menuPage" class="page">
         <div class="back-btn" onclick="showPage('restaurantsPage')">🔙 رجوع</div>
         <div id="menuContent"></div>
         <div id="cartSummary" style="margin:16px 0;"></div>
     </div>
 
+    <!-- صفحة الدفع -->
     <div id="checkoutPage" class="page">
         <div class="back-btn" onclick="showPage('menuPage')">🔙 رجوع</div>
         <h3 style="margin-bottom:16px;">🧾 تفاصيل الطلب</h3>
@@ -713,6 +764,7 @@
         <button class="checkout-btn" onclick="confirmCheckoutOrder()">✅ تأكيد الطلب</button>
     </div>
 
+    <!-- صفحة الطلبات -->
     <div id="ordersPage" class="page">
         <div id="myOrdersContainer" style="background:white; border-radius:20px; padding:20px; text-align:center;">
             <span style="font-size:2rem;">📦</span>
@@ -721,6 +773,7 @@
         <button class="btn-primary" onclick="renderMyOrders()" style="margin-top:16px;">تحديث</button>
     </div>
 
+    <!-- صفحة الإعدادات -->
     <div id="settingsPage" class="page">
         <div style="background:white; border-radius:20px; padding:20px;">
             <h3>⚙️ الإعدادات</h3>
@@ -741,6 +794,7 @@
     </div>
 </div>
 
+<!-- السلة الجانبية -->
 <div class="cart-sidebar" id="cartSidebar">
     <div class="cart-header">
         <span>🛒 سلة الطلبات</span>
@@ -793,20 +847,20 @@
 </div>
 
 <script>
-    // ==================== بيانات السلايدر ====================
+    // ==================== البيانات ====================
     const carouselImages = [
         { image: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800", title: "🔥 عروض المطاعم", desc: "خصم يصل إلى 40%" },
         { image: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=800", title: "🚚 توصيل مجاني", desc: "لفترة محدودة" },
         { image: "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800", title: "🍔 عروض البرجر", desc: "اطلب 2 واحصل على الثالث مجاناً" }
     ];
 
-    const restaurants = [
-        { id: 1, name: "رويال بروستر", cat: "بروست", img: "https://images.unsplash.com/photo-1626645738196-c2a7c8d08f58?w=200", rating: 4.5, items: [{n:"وجبة بروست (4 قطع)",p:22},{n:"زنجر سوبريم",p:24},{n:"ستريبس",p:20}] },
-        { id: 2, name: "شاورما هت", cat: "شاورما", img: "https://images.unsplash.com/photo-1644704170910-a0cdf183649b?w=200", rating: 4.7, items: [{n:"شاورما دجاج",p:8},{n:"شاورما لحم",p:9},{n:"شاورما عربي",p:22}] },
-        { id: 3, name: "بيتزا هت", cat: "بيتزا", img: "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=200", rating: 4.3, items: [{n:"بيتزا مارجريتا",p:25},{n:"بيبروني",p:30},{n:"بيتزا دجاج",p:28}] },
-        { id: 4, name: "ستار برجر", cat: "برجر", img: "https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=200", rating: 4.4, items: [{n:"برجر لحم",p:18},{n:"برجر دجاج",p:16},{n:"دبل برجر",p:28}] },
-        { id: 5, name: "الشيباني", cat: "مشاوي", img: "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=200", rating: 4.6, items: [{n:"مشاوي مشكل",p:45},{n:"دجاج فحم",p:24},{n:"كباب لحم",p:35}] },
-        { id: 6, name: "مدينة العصائر", cat: "عصائر", img: "https://images.unsplash.com/photo-1589733955941-5eeaf752f6dd?w=200", rating: 4.2, items: [{n:"عصير مانجو",p:10},{n:"عصير فراولة",p:9},{n:"كوكتيل",p:13}] }
+    // قائمة المطاعم مع إضافة حقل favorite (افتراضي false) و distance (رقمي) و isNew
+    const restaurantsData = [
+        { id: 1, name: "مؤسسة الشيباني", nameEn: "Al-Shaibani", cat: "المطاعم", distance: 4.9, time: "60 دقيقة", rating: 4.8, img: "https://images.unsplash.com/photo-1562967914-608f82629710?w=200", favorite: false, isNew: false, priceForTwo: 35, items: [{n:"مندي لحم",p:35},{n:"دجاج فحم",p:24},{n:"مشاوي",p:45}] },
+        { id: 2, name: "القاعة", nameEn: "Castle", cat: "المطاعم", distance: 3.0, time: "60 دقيقة", rating: 4.2, img: "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=200", favorite: false, isNew: false, priceForTwo: 50, items: [{n:"مشاوي مشكل",p:50},{n:"شاورما",p:12},{n:"بطاطس",p:6}] },
+        { id: 3, name: "تويستر - Twister - حده", nameEn: "Twister", cat: "المطاعم", distance: 4.7, time: "60 دقيقة", rating: 4.6, img: "https://images.unsplash.com/photo-1644704170910-a0cdf183649b?w=200", favorite: true, isNew: true, priceForTwo: 38, items: [{n:"وجبة بروست",p:22},{n:"تويستر دجاج",p:14},{n:"بطاطس",p:5}] },
+        { id: 4, name: "ريو - Reu", nameEn: "Reu", cat: "المطاعم", distance: 6.7, time: "60 دقيقة", rating: 4.5, img: "https://images.unsplash.com/photo-1626645738196-c2a7c8d08f58?w=200", favorite: false, isNew: false, priceForTwo: 45, items: [{n:"بروست دجاج",p:22},{n:"زنجر",p:24},{n:"كولا",p:4}] },
+        { id: 5, name: "تويستر - Twister - الديرة", nameEn: "Twister", cat: "المطاعم", distance: 8.2, time: "60 دقيقة", rating: 4.3, img: "https://images.unsplash.com/photo-1626645738196-c2a7c8d08f58?w=200", favorite: false, isNew: false, priceForTwo: 40, items: [{n:"وجبة بروست",p:22},{n:"ساندوتش",p:12},{n:"مشروب",p:4}] }
     ];
 
     const mainCategories = [
@@ -819,9 +873,9 @@
     let currentUser = null;
     let cart = [];
     let currentRestaurant = null;
-    let currentFilter = "all";
+    let currentFilter = "all"; // all, favorite, nearest, new
 
-    // ==================== سلايدر ثلاثي الأبعاد (محسن) ====================
+    // ==================== سلايدر ثلاثي الأبعاد (غير دائري) ====================
     let carouselIndex = 0;
     let carouselInterval;
     let totalSlides = carouselImages.length;
@@ -832,7 +886,6 @@
         let html = '';
         for (let i = 0; i < totalSlides; i++) {
             let img = carouselImages[i];
-            // حساب الإزاحة بشكل أكثر سلاسة: 25% فرق بين كل شريحة
             let offset = (i - carouselIndex) * 25;
             let scale = 1 - Math.abs(i - carouselIndex) * 0.12;
             let zIndex = 10 - Math.abs(i - carouselIndex);
@@ -882,21 +935,28 @@
     function startCarouselAuto() {
         if (carouselInterval) clearInterval(carouselInterval);
         carouselInterval = setInterval(() => {
-            carouselIndex = (carouselIndex + 1) % totalSlides;
-            updateCarousel();
+            if (carouselIndex < totalSlides - 1) {
+                carouselIndex++;
+                updateCarousel();
+            }
         }, 2000);
     }
 
     window.changeCarouselSlide = function(direction) {
-        carouselIndex = (carouselIndex + direction + totalSlides) % totalSlides;
-        updateCarousel();
-        startCarouselAuto();
+        let newIndex = carouselIndex + direction;
+        if (newIndex >= 0 && newIndex < totalSlides) {
+            carouselIndex = newIndex;
+            updateCarousel();
+            startCarouselAuto();
+        }
     };
 
     window.goToCarouselSlide = function(index) {
-        carouselIndex = index;
-        updateCarousel();
-        startCarouselAuto();
+        if (index >= 0 && index < totalSlides) {
+            carouselIndex = index;
+            updateCarousel();
+            startCarouselAuto();
+        }
     };
 
     // ==================== دوال مساعدة ====================
@@ -914,8 +974,7 @@
         let activeNav = document.querySelector(`.nav-item[data-page="${pageId}"]`);
         if (activeNav) activeNav.classList.add('active');
         if (pageId === 'restaurantsPage') {
-            renderFilters();
-            renderRestaurantsFull();
+            renderRestaurantsList();
             setTimeout(() => {
                 updateCarousel();
                 startCarouselAuto();
@@ -956,7 +1015,7 @@
     }
 
     function renderRestaurantsPreview() {
-        let preview = restaurants.slice(0, 4);
+        let preview = restaurantsData.slice(0, 4);
         let html = '';
         preview.forEach(r => {
             html += `
@@ -967,10 +1026,10 @@
                         <div class="preview-cuisine">${r.cat}</div>
                         <div class="preview-stats">
                             <span>⭐ ${r.rating}</span>
-                            <span>⏱️ 30-45د</span>
+                            <span>⏱️ ${r.time}</span>
                         </div>
                     </div>
-                    <div class="preview-price"><div class="price">${r.items[0]?.p || 25}</div><div>ريال</div></div>
+                    <div class="preview-price"><div class="price">${r.priceForTwo}</div><div>ريال</div></div>
                 </div>
             `;
         });
@@ -982,51 +1041,55 @@
         else showToast(`قريباً - ${mainCategories.find(c=>c.id===catId).name}`);
     };
 
-    // ==================== صفحة المطاعم ====================
-    function renderFilters() {
-        const filters = ['الكل', 'بروست', 'برجر', 'شاورما', 'بيتزا', 'مشاوي', 'عصائر'];
-        let html = '';
-        filters.forEach((f,i) => {
-            let filterVal = (i===0 ? 'all' : f);
-            html += `<div class="chip ${currentFilter===filterVal ? 'active' : ''}" data-filter="${filterVal}">${f}</div>`;
-        });
-        document.getElementById('filterChips').innerHTML = html;
-        document.querySelectorAll('.chip').forEach(chip => {
-            chip.onclick = () => {
-                document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
-                chip.classList.add('active');
-                currentFilter = chip.dataset.filter;
-                renderRestaurantsFull();
-            };
-        });
-    }
-
-    function renderRestaurantsFull() {
-        let filtered = [...restaurants];
-        if (currentFilter !== 'all') filtered = filtered.filter(r => r.cat === currentFilter);
+    // ==================== صفحة المطاعم (التصميم الجديد) ====================
+    function renderRestaurantsList() {
+        let filtered = [...restaurantsData];
+        if (currentFilter === 'favorite') filtered = filtered.filter(r => r.favorite);
+        else if (currentFilter === 'nearest') filtered.sort((a,b) => a.distance - b.distance);
+        else if (currentFilter === 'new') filtered = filtered.filter(r => r.isNew);
+        
+        let container = document.getElementById('restaurantsList');
         let html = '';
         filtered.forEach(r => {
             html += `
-                <div class="restaurant-card" onclick="openRestaurantMenu(${r.id})">
-                    <div class="restaurant-img" style="background-image: url('${r.img}')"></div>
-                    <div class="restaurant-info">
-                        <div class="restaurant-name">${r.name}</div>
-                        <div class="restaurant-cuisine">${r.cat}</div>
-                        <div class="restaurant-stats">
+                <div class="restaurant-item" onclick="openRestaurantMenu(${r.id})">
+                    <div class="restaurant-item-img" style="background-image: url('${r.img}')"></div>
+                    <div class="restaurant-item-info">
+                        <div class="restaurant-item-name">${r.name}</div>
+                        <div class="restaurant-item-cat">${r.cat}</div>
+                        <div class="restaurant-item-stats">
                             <span>⭐ ${r.rating}</span>
-                            <span>📍 ${(Math.random()*5+2).toFixed(1)} كيلو</span>
+                            <span>📍 ${r.distance} كيلو</span>
+                            <span>⏱️ ${r.time}</span>
                         </div>
                     </div>
-                    <div class="restaurant-price"><div>${r.items[0]?.p || 25}</div><div>ريال</div></div>
+                    <div class="restaurant-item-price">
+                        <div class="price">${r.priceForTwo}</div>
+                        <div style="font-size:0.6rem;">ريال</div>
+                    </div>
                 </div>
             `;
         });
-        document.getElementById('restaurantsFullGrid').innerHTML = html;
+        container.innerHTML = html;
+    }
+
+    // أحداث أزرار التصفية
+    function initFilters() {
+        let btns = document.querySelectorAll('.filter-btn');
+        btns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                btns.forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                let filter = this.getAttribute('data-filter');
+                currentFilter = filter;
+                renderRestaurantsList();
+            });
+        });
     }
 
     // ==================== منيو المطعم والسلة ====================
     window.openRestaurantMenu = function(id) {
-        currentRestaurant = restaurants.find(r => r.id === id);
+        currentRestaurant = restaurantsData.find(r => r.id === id);
         if (!currentRestaurant) return;
         cart = [];
         let menuHtml = `
@@ -1200,15 +1263,21 @@
     document.getElementById('searchInput')?.addEventListener('input', (e) => {
         let term = e.target.value.toLowerCase();
         if (document.getElementById('restaurantsPage').classList.contains('active-page')) {
-            let filtered = restaurants.filter(r => r.name.toLowerCase().includes(term));
+            let filtered = restaurantsData.filter(r => r.name.toLowerCase().includes(term));
+            let container = document.getElementById('restaurantsList');
             let html = '';
             filtered.forEach(r => {
-                html += `<div class="restaurant-card" onclick="openRestaurantMenu(${r.id})">
-                    <div class="restaurant-img" style="background-image:url('${r.img}')"></div>
-                    <div class="restaurant-info"><div class="restaurant-name">${r.name}</div><div class="restaurant-cuisine">${r.cat}</div></div>
-                </div>`;
+                html += `
+                    <div class="restaurant-item" onclick="openRestaurantMenu(${r.id})">
+                        <div class="restaurant-item-img" style="background-image:url('${r.img}')"></div>
+                        <div class="restaurant-item-info">
+                            <div class="restaurant-item-name">${r.name}</div>
+                            <div class="restaurant-item-cat">${r.cat}</div>
+                        </div>
+                    </div>
+                `;
             });
-            document.getElementById('restaurantsFullGrid').innerHTML = html;
+            container.innerHTML = html;
         }
     });
 
@@ -1233,10 +1302,10 @@
     renderCategories();
     renderOffers();
     renderRestaurantsPreview();
-    renderFilters();
-    renderRestaurantsFull();
     renderCarousel();
     startCarouselAuto();
+    renderRestaurantsList();
+    initFilters();
 </script>
 </body>
 </html>

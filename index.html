@@ -34,7 +34,6 @@
             font-family: 'Cairo', sans-serif;
         }
 
-        /* Dark Mode */
         body.dark-mode {
             --bg-light: #0f172a;
             --white: #1e293b;
@@ -179,7 +178,7 @@
             color: var(--gray);
         }
 
-        /* عروض حصرية */
+        /* Offers */
         .offers-scroll {
             display: flex;
             gap: 14px;
@@ -205,7 +204,7 @@
         .offer-text p { font-size: 0.6rem; color: rgba(255,255,255,0.9); }
         .offer-badge { background: rgba(255,255,255,0.2); padding: 4px 12px; border-radius: 30px; font-size: 0.7rem; font-weight: 800; color: white; }
 
-        /* بطاقات المطاعم (معاينة) */
+        /* Restaurants Preview */
         .restaurants-preview {
             display: flex;
             flex-direction: column;
@@ -235,7 +234,7 @@
         .preview-price { text-align: center; min-width: 55px; }
         .preview-price .price { font-weight: 800; color: var(--primary); }
 
-        /* ========== سلايدر ثلاثي الأبعاد (3D Carousel) ========== */
+        /* ========== سلايدر ثلاثي الأبعاد (سلس جداً) ========== */
         .carousel-3d {
             position: relative;
             width: 100%;
@@ -250,7 +249,6 @@
             width: 100%;
             height: 100%;
             transform-style: preserve-3d;
-            transition: transform 0.8s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
         .carousel-slide {
             position: absolute;
@@ -263,7 +261,7 @@
             border-radius: 24px;
             box-shadow: 0 15px 35px rgba(0,0,0,0.3);
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
             opacity: 0.7;
         }
         .carousel-slide.active {
@@ -336,7 +334,7 @@
             background: var(--primary);
         }
 
-        /* فلتر المطاعم */
+        /* Filter Chips */
         .filter-chips {
             display: flex;
             gap: 10px;
@@ -359,7 +357,7 @@
             color: white;
         }
 
-        /* قائمة المطاعم الكاملة */
+        /* Restaurants Full Grid */
         .restaurants-full-grid {
             display: flex;
             flex-direction: column;
@@ -385,7 +383,7 @@
         .restaurant-cuisine { font-size: 0.65rem; color: var(--gray); margin: 4px 0; }
         .restaurant-stats { display: flex; gap: 10px; font-size: 0.6rem; color: var(--gray); }
 
-        /* منيو المطعم */
+        /* Menu Items */
         .menu-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -416,7 +414,7 @@
             cursor: pointer;
         }
 
-        /* السلة */
+        /* Cart */
         .cart-fab {
             position: fixed;
             bottom: 90px;
@@ -518,7 +516,7 @@
             cursor: pointer;
         }
 
-        /* التنقل السفلي */
+        /* Bottom Navigation */
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -676,17 +674,14 @@
 </div>
 
 <div class="container">
-    <!-- الصفحة الرئيسية -->
     <div id="homePage" class="page active-page">
         <div class="categories-grid" id="categoriesGrid"></div>
         <div class="offers-scroll" id="offersScroll"></div>
         <div class="restaurants-preview" id="restaurantsPreview"></div>
     </div>
 
-    <!-- صفحة المطاعم الكاملة (بها السلايدر 3D) -->
     <div id="restaurantsPage" class="page">
         <div class="back-btn" onclick="showPage('homePage')">🔙 رجوع</div>
-        <!-- سلايدر ثلاثي الأبعاد كبير -->
         <div class="carousel-3d" id="carousel3d">
             <div class="carousel-container" id="carouselContainer"></div>
             <div class="carousel-btn prev" onclick="changeCarouselSlide(-1)">❮</div>
@@ -697,14 +692,12 @@
         <div class="restaurants-full-grid" id="restaurantsFullGrid"></div>
     </div>
 
-    <!-- منيو المطعم -->
     <div id="menuPage" class="page">
         <div class="back-btn" onclick="showPage('restaurantsPage')">🔙 رجوع</div>
         <div id="menuContent"></div>
         <div id="cartSummary" style="margin:16px 0;"></div>
     </div>
 
-    <!-- صفحة الدفع -->
     <div id="checkoutPage" class="page">
         <div class="back-btn" onclick="showPage('menuPage')">🔙 رجوع</div>
         <h3 style="margin-bottom:16px;">🧾 تفاصيل الطلب</h3>
@@ -713,7 +706,6 @@
         <button class="checkout-btn" onclick="confirmCheckoutOrder()">✅ تأكيد الطلب</button>
     </div>
 
-    <!-- صفحة الطلبات -->
     <div id="ordersPage" class="page">
         <div id="myOrdersContainer" style="background:white; border-radius:20px; padding:20px; text-align:center;">
             <span style="font-size:2rem;">📦</span>
@@ -722,7 +714,6 @@
         <button class="btn-primary" onclick="renderMyOrders()" style="margin-top:16px;">تحديث</button>
     </div>
 
-    <!-- صفحة الإعدادات -->
     <div id="settingsPage" class="page">
         <div style="background:white; border-radius:20px; padding:20px;">
             <h3>⚙️ الإعدادات</h3>
@@ -743,7 +734,6 @@
     </div>
 </div>
 
-<!-- السلة الجانبية -->
 <div class="cart-sidebar" id="cartSidebar">
     <div class="cart-header">
         <span>🛒 سلة الطلبات</span>
@@ -797,7 +787,6 @@
 
 <script>
     // ==================== البيانات ====================
-    // صور السلايدر ثلاثي الأبعاد (3 صور كبيرة)
     const carouselImages = [
         { image: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800", title: "🔥 عروض المطاعم", desc: "خصم يصل إلى 40%" },
         { image: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=800", title: "🚚 توصيل مجاني", desc: "لفترة محدودة" },
@@ -813,7 +802,6 @@
         { id: 6, name: "مدينة العصائر", cat: "عصائر", img: "https://images.unsplash.com/photo-1589733955941-5eeaf752f6dd?w=200", rating: 4.2, items: [{n:"عصير مانجو",p:10},{n:"عصير فراولة",p:9},{n:"كوكتيل",p:13}] }
     ];
 
-    // أقسام الرئيسية مع صورة جديدة لـ "شي إن"
     const mainCategories = [
         { id: "supermarket", name: "سوبرماركت", icon: "🛒", desc: "كل احتياجاتك" },
         { id: "restaurants", name: "مطاعم", icon: "🍔", desc: "أشهى الأطباق" },
@@ -826,7 +814,7 @@
     let currentRestaurant = null;
     let currentFilter = "all";
 
-    // ==================== سلايدر ثلاثي الأبعاد ====================
+    // ==================== سلايدر ثلاثي الأبعاد (سلس جداً) ====================
     let carouselIndex = 0;
     let carouselInterval;
     let totalSlides = carouselImages.length;
@@ -835,54 +823,52 @@
         let container = document.getElementById('carouselContainer');
         let dotsContainer = document.getElementById('carouselDots');
         let html = '';
-        carouselImages.forEach((img, i) => {
-            let angle = (i - carouselIndex) * 45;
+        for (let i = 0; i < totalSlides; i++) {
+            let img = carouselImages[i];
+            let offset = (i - carouselIndex) * 28; // إزاحة أفقية أكبر لتبدو كسحب
+            let scale = 1 - Math.abs(i - carouselIndex) * 0.12;
             let zIndex = 10 - Math.abs(i - carouselIndex);
             let opacity = 1 - Math.abs(i - carouselIndex) * 0.3;
-            let scale = 1 - Math.abs(i - carouselIndex) * 0.1;
-            let xOffset = (i - carouselIndex) * 15;
             html += `
                 <div class="carousel-slide ${i === carouselIndex ? 'active' : ''}" 
                      style="background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.5)), url('${img.image}');
-                            transform: translateX(${xOffset}%) scale(${scale});
+                            transform: translateX(${offset}%) scale(${scale});
                             z-index: ${zIndex};
-                            opacity: ${opacity};
-                            transition: all 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);">
+                            opacity: ${opacity};">
                     <div class="slide-caption">
                         <h4>${img.title}</h4>
                         <p>${img.desc}</p>
                     </div>
                 </div>
             `;
-        });
+        }
         container.innerHTML = html;
         
         let dotsHtml = '';
-        carouselImages.forEach((_, i) => {
+        for (let i = 0; i < totalSlides; i++) {
             dotsHtml += `<div class="carousel-dot ${i === carouselIndex ? 'active' : ''}" onclick="goToCarouselSlide(${i})"></div>`;
-        });
+        }
         dotsContainer.innerHTML = dotsHtml;
     }
 
     function updateCarousel() {
         let slides = document.querySelectorAll('.carousel-slide');
-        slides.forEach((slide, i) => {
-            let angle = (i - carouselIndex) * 45;
+        for (let i = 0; i < slides.length; i++) {
+            let offset = (i - carouselIndex) * 28;
+            let scale = 1 - Math.abs(i - carouselIndex) * 0.12;
             let zIndex = 10 - Math.abs(i - carouselIndex);
             let opacity = 1 - Math.abs(i - carouselIndex) * 0.3;
-            let scale = 1 - Math.abs(i - carouselIndex) * 0.1;
-            let xOffset = (i - carouselIndex) * 15;
-            slide.style.transform = `translateX(${xOffset}%) scale(${scale})`;
-            slide.style.zIndex = zIndex;
-            slide.style.opacity = opacity;
-            if (i === carouselIndex) slide.classList.add('active');
-            else slide.classList.remove('active');
-        });
+            slides[i].style.transform = `translateX(${offset}%) scale(${scale})`;
+            slides[i].style.zIndex = zIndex;
+            slides[i].style.opacity = opacity;
+            if (i === carouselIndex) slides[i].classList.add('active');
+            else slides[i].classList.remove('active');
+        }
         let dots = document.querySelectorAll('.carousel-dot');
-        dots.forEach((dot, i) => {
-            if (i === carouselIndex) dot.classList.add('active');
-            else dot.classList.remove('active');
-        });
+        for (let i = 0; i < dots.length; i++) {
+            if (i === carouselIndex) dots[i].classList.add('active');
+            else dots[i].classList.remove('active');
+        }
     }
 
     function startCarouselAuto() {
@@ -890,7 +876,7 @@
         carouselInterval = setInterval(() => {
             carouselIndex = (carouselIndex + 1) % totalSlides;
             updateCarousel();
-        }, 3000);
+        }, 2000); // كل ثانيتين
     }
 
     window.changeCarouselSlide = function(direction) {
@@ -913,18 +899,15 @@
         setTimeout(() => t.classList.remove('show'), 2500);
     }
 
-    // ========== إصلاح مشكلة الأزرار السفلية ==========
     function showPage(pageId) {
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
         document.getElementById(pageId).classList.add('active-page');
         document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
         let activeNav = document.querySelector(`.nav-item[data-page="${pageId}"]`);
         if (activeNav) activeNav.classList.add('active');
-        
         if (pageId === 'restaurantsPage') {
             renderFilters();
             renderRestaurantsFull();
-            // إعادة تهيئة السلايدر عند فتح الصفحة
             setTimeout(() => {
                 updateCarousel();
                 startCarouselAuto();

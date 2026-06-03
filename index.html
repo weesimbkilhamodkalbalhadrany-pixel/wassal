@@ -39,7 +39,6 @@
         .open-badge { width: 7px; height: 7px; background: #22c55e; border-radius: 50%; display: inline-block; animation: pulse 1.5s infinite; }
         @keyframes pulse { 0% { opacity: 0.5; transform: scale(0.8); } 100% { opacity: 1; transform: scale(1.2); } }
         
-        /* شريط البحث */
         .search-bar { margin: -14px 14px 14px; position: relative; z-index: 10; }
         .search-bar input { width: 100%; padding: 12px 16px; border-radius: 40px; border: none; background: var(--white); box-shadow: 0 4px 12px rgba(0,0,0,0.08); font-size: 0.85rem; padding-right: 42px; color: var(--dark); }
         .search-bar .search-icon { position: absolute; right: 16px; top: 50%; transform: translateY(-50%); color: var(--gray); font-size: 0.95rem; }
@@ -49,7 +48,7 @@
         .active-page { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
         
-        /* واجهة قائمة الطعام والوجبة المميزة (مثل الصورة) */
+        /* واجهة قائمة الطعام والوجبة المميزة */
         .restaurant-hero-banner { width: 100%; height: 160px; border-radius: 20px; background-size: cover; background-position: center; position: relative; margin-bottom: 20px; overflow: hidden; box-shadow: var(--shadow); }
         .restaurant-hero-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.85) 30%, rgba(0,0,0,0.2)); padding: 16px; display: flex; flex-direction: column; justify-content: flex-end; color: white; }
         .hero-tag { position: absolute; top: 12px; right: 12px; background: var(--warning); color: #000; font-size: 0.65rem; font-weight: 800; padding: 4px 10px; border-radius: 30px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
@@ -57,7 +56,6 @@
         .restaurant-hero-overlay p { font-size: 0.7rem; opacity: 0.9; margin-top: 2px; }
         .restaurant-hero-price { font-size: 1rem; font-weight: 800; color: var(--primary-light); margin-top: 4px; }
 
-        /* شبكة عرض الأصناف المطورة */
         .menu-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin-top: 10px; }
         .menu-item-card { background: var(--white); border-radius: 20px; overflow: hidden; border: 1px solid var(--gray-light); box-shadow: var(--shadow); display: flex; flex-direction: column; transition: transform 0.2s, box-shadow 0.2s; position: relative; }
         .menu-item-card:active { transform: scale(0.98); }
@@ -68,18 +66,14 @@
         .menu-item-price { color: var(--primary); font-weight: 800; font-size: 0.9rem; margin-bottom: 10px; display: flex; align-items: baseline; gap: 2px; }
         .menu-item-price span { font-size: 0.65rem; font-weight: 600; color: var(--gray); }
         
-        /* الأزرار التفاعلية المحدثة */
         .action-container { width: 100%; min-height: 34px; }
         .add-to-cart-btn { width: 100%; padding: 7px; background: var(--primary); color: white; border: none; border-radius: 30px; font-size: 0.75rem; font-weight: 700; cursor: pointer; transition: background 0.2s; display: flex; align-items: center; justify-content: center; gap: 4px; box-shadow: 0 2px 4px rgba(15,118,110,0.2); }
         .add-to-cart-btn:active { background: var(--primary-dark); }
-        
-        /* عداد الكمية الرقمي الثنائي */
         .quantity-counter { display: flex; align-items: center; justify-content: space-between; background: var(--primary); border-radius: 30px; overflow: hidden; width: 100%; padding: 3px; box-shadow: 0 2px 4px rgba(15,118,110,0.2); color: white; }
         .counter-btn { width: 28px; height: 28px; border-radius: 50%; border: none; background: rgba(255,255,255,0.2); color: white; font-size: 0.9rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.1s; }
         .counter-btn:active { background: rgba(255,255,255,0.4); }
         .counter-value { font-size: 0.8rem; font-weight: 700; min-width: 20px; text-align: center; }
 
-        /* بقية الأنماط السابقة */
         .categories-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 12px; margin-bottom: 20px; }
         .category-card { background: var(--white); border-radius: 14px; padding: 12px 6px; text-align: center; box-shadow: var(--shadow); border: 1px solid var(--gray-light); cursor: pointer; transition: 0.1s; }
         .category-card:active { transform: scale(0.97); }
@@ -108,7 +102,7 @@
         .preview-price { text-align: center; min-width: 45px; }
         .preview-price .price { font-weight: 800; color: var(--primary); font-size: 0.8rem; }
         
-        /* السلايدر */
+        /* الكاروسيل ثلاثي الأبعاد المحسن في قسم المطاعم فقط */
         .carousel-3d { position: relative; width: 100%; height: 280px; margin-bottom: 20px; perspective: 1200px; overflow: hidden; border-radius: 24px; }
         .carousel-container { position: relative; width: 100%; height: 100%; transform-style: preserve-3d; }
         .carousel-slide { position: absolute; width: 86%; height: 260px; left: 7%; top: 10px; background-size: cover; background-position: center; border-radius: 24px; box-shadow: 0 15px 35px rgba(0,0,0,0.3); transition: all 0.6s cubic-bezier(0.25,0.46,0.45,0.94); cursor: pointer; border: 2px solid rgba(255,255,255,0.3); }
@@ -138,10 +132,8 @@
         .restaurant-item-price { text-align: center; min-width: 50px; }
         .restaurant-item-price .price { font-weight: 800; color: var(--primary); font-size: 0.8rem; }
         
-        /* شريط عائم سفلي للسلة */
         .float-cart { position: fixed; bottom: 70px; left: 14px; right: 14px; background: linear-gradient(135deg, var(--primary-dark), var(--primary)); color: white; padding: 12px 20px; border-radius: 50px; display: flex; justify-content: space-between; align-items: center; z-index: 1000; cursor: pointer; display: none; font-size: 0.85rem; font-weight: 700; box-shadow: 0 6px 16px rgba(15,118,110,0.3); }
         
-        /* شريط السلة الجانبي */
         .cart-sidebar { position: fixed; top: 0; left: -100%; width: 85%; max-width: 320px; height: 100%; background: var(--white); z-index: 10001; transition: left 0.3s; display: flex; flex-direction: column; box-shadow: -2px 0 15px rgba(0,0,0,0.2); }
         .cart-sidebar.open { left: 0; }
         .cart-header { padding: 14px; background: var(--primary); color: white; display: flex; justify-content: space-between; align-items: center; font-weight: 700; }
@@ -158,7 +150,6 @@
         .cart-total { display: flex; justify-content: space-between; font-weight: 800; margin-bottom: 12px; font-size: 0.95rem; }
         .checkout-btn { width: 100%; padding: 12px; background: var(--warning); color: white; border: none; border-radius: 30px; font-weight: 800; cursor: pointer; font-size: 0.9rem; box-shadow: 0 4px 10px rgba(245,158,11,0.2); }
         
-        /* شريط التنقل السفلي الاحترافي */
         .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--white); display: flex; justify-content: space-around; padding: 8px 8px 12px; box-shadow: 0 -4px 16px rgba(0,0,0,0.06); z-index: 100; border-radius: 24px 24px 0 0; border-top: 1px solid var(--gray-light); }
         .nav-item { text-align: center; cursor: pointer; color: var(--gray); font-size: 0.65rem; font-weight: 700; padding: 4px 12px; border-radius: 16px; transition: 0.15s; display: flex; flex-direction: column; align-items: center; position: relative; }
         .nav-item.active { color: var(--primary); background: rgba(15,118,110,0.08); }
@@ -167,7 +158,6 @@
         
         .back-btn { display: inline-flex; align-items: center; gap: 6px; background: var(--white); padding: 6px 14px; border-radius: 30px; margin-bottom: 14px; cursor: pointer; font-size: 0.75rem; font-weight: 700; box-shadow: var(--shadow); border: 1px solid var(--gray-light); }
         
-        /* بقية الأنماط التكميلية */
         .tracking-fullscreen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-light); z-index: 15000; overflow-y: auto; padding: 16px; display: none; }
         .tracking-steps { display: flex; justify-content: space-between; align-items: center; margin: 20px 0; }
         .step { text-align: center; flex: 1; }
@@ -245,6 +235,7 @@
 
     <div id="restaurantsPage" class="page">
         <div class="back-btn" onclick="showPage('homePage')">🔙 رجوع</div>
+        <!-- الكاروسيل ثلاثي الأبعاد الجديد بخمس صور -->
         <div class="carousel-3d"><div class="carousel-container" id="carouselContainer"></div><div class="carousel-btn prev" onclick="changeCarouselSlide(-1)">❮</div><div class="carousel-btn next" onclick="changeCarouselSlide(1)">❯</div><div class="carousel-dots" id="carouselDots"></div></div>
         <div class="filter-buttons" id="filterButtons"></div>
         <div class="restaurants-list" id="restaurantsList"></div>
@@ -321,30 +312,24 @@
 <div id="map-overlay" class="map-overlay"><div id="map"></div><div class="map-controls"><div class="map-back" onclick="closeMap()">↩️ رجوع</div><div class="map-confirm" onclick="confirmMapLocation()">✅ تأكيد</div></div></div>
 
 <script>
-// ==================== قائمة المطاعم الكاملة بالأسعار اليمنية والبيانات المحدثة ====================
+// بيانات المطاعم الأساسية
 const allRestaurantsData = [
-    { id: 1, name: "رويال بروستر", cat: "بروست", img: "https://images.unsplash.com/photo-1626645738196-c2a7c8d08f58?w=400", items: [{n:"وجبة بروست (4 قطع)",p:2200,d:"دجاج مقرمش يقدم مع البطاطس، الثومية والخبز الطازج"},{n:"وجبة زنجر سوبريم",p:2400,d:"ساندوتش زنجر حار مع الجبنة الذائبة والخس المقرمش"},{n:"وجبة ستريبس (5 قطع)",p:2000,d:"قطع استريبس الدجاج المقلي المقرمش خالية من العظم"},{n:"بطاطس مقلية",p:600,d:"اصابع بطاطس ذهبية ومقرمشة ومملحة"},{n:"مشروب غازي",p:400,d:"مشروب غازي بارد منعش"}] },
-    { id: 2, name: "البيك رويال", cat: "بروست", img: "https://images.unsplash.com/photo-1562967914-608f82629710?w=400", items: [{n:"وجبة بروست رويال",p:2400,d:"دجاج ذهبي مقرمش بخلطة البيك الملكية الخاصة"},{n:"وجبة فيليه سمك",p:2200,d:"شرائح فيليه سمك مقلي مقرمش مع صلصة التارتار"},{n:"ساندوتش زنجر",p:1600,d:"ساندوتش دجاج حار مقرمش مع الخس والطماطم"},{n:"بطاطس",p:800,d:"طبق بطاطس مقلية ذهبية ولذيذة"}] },
-    { id: 3, name: "شاورما هت", cat: "شاورما", img: "https://images.unsplash.com/photo-1644704170910-a0cdf183649b?w=400", items: [{n:"شاورما دجاج",p:1200,d:"شاورما دجاج متبلة ومثومة بخبز صاج"},{n:"شاورما لحم",p:1800,d:"شاورما لحم بلدي طازج مع الطحينة والبقدونس"},{n:"شاورما عربي (صحن)",p:2200,d:"قطع شاورما مقطعة تقدم مع البطاطس والمقبلات"},{n:"بطاطس",p:700,d:"بطاطس مقلية حجم عائلي"}] },
-    { id: 4, name: "بيتزا هت", cat: "بيتزا", img: "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=400", items: [{n:"بيتزا مارجريتا",p:2500,d:"صلصة طماطم غنية مع جبنة الموزاريلا الفاخرة"},{n:"بيبروني",p:3000,d:"قطع البيبروني البقري مع الموزاريلا والصلصة"},{n:"بيتزا دجاج",p:2800,d:"قطع دجاج مشوي، فلفل أخضر، زيتون وموزاريلا"}] },
-    { id: 5, name: "ستار برجر", cat: "برجر", img: "https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=400", items: [{n:"برجر لحم مشوي",p:1800,d:"شريحة لحم بقري طازج مشوي مع الجبن والخضار"},{n:"برجر دجاج كرسبي",p:1600,d:"صدر دجاج مقرمش مع المايونيز والخس"},{n:"دبل برجر ستار",p:2800,d:"شريحتين من اللحم والجبن مع صوص ستار الخاص"}] }
+    { id: 1, name: "رويال بروستر", cat: "بروست", img: "https://images.unsplash.com/photo-1626645738196-c2a7c8d08f58?w=400", restaurantLat: 15.3694, restaurantLng: 44.1910, items: [{n:"وجبة بروست (4 قطع)",p:2200,d:"دجاج مقرمش يقدم مع البطاطس، الثومية والخبز الطازج"},{n:"وجبة زنجر سوبريم",p:2400,d:"ساندوتش زنجر حار مع الجبنة الذائبة والخس المقرمش"},{n:"وجبة ستريبس (5 قطع)",p:2000,d:"قطع استريبس الدجاج المقلي المقرمش خالية من العظم"},{n:"بطاطس مقلية",p:600,d:"اصابع بطاطس ذهبية ومقرمشة ومملحة"},{n:"مشروب غازي",p:400,d:"مشروب غازي بارد منعش"}] },
+    { id: 2, name: "البيك رويال", cat: "بروست", img: "https://images.unsplash.com/photo-1562967914-608f82629710?w=400", restaurantLat: 15.3612, restaurantLng: 44.1845, items: [{n:"وجبة بروست رويال",p:2400,d:"دجاج ذهبي مقرمش بخلطة البيك الملكية الخاصة"},{n:"وجبة فيليه سمك",p:2200,d:"شرائح فيليه سمك مقلي مقرمش مع صلصة التارتار"},{n:"ساندوتش زنجر",p:1600,d:"ساندوتش دجاج حار مقرمش مع الخس والطماطم"},{n:"بطاطس",p:800,d:"طبق بطاطس مقلية ذهبية ولذيذة"}] },
+    { id: 3, name: "شاورما هت", cat: "شاورما", img: "https://images.unsplash.com/photo-1644704170910-a0cdf183649b?w=400", restaurantLat: 15.3745, restaurantLng: 44.1950, items: [{n:"شاورما دجاج",p:1200,d:"شاورما دجاج متبلة ومثومة بخبز صاج"},{n:"شاورما لحم",p:1800,d:"شاورما لحم بلدي طازج مع الطحينة والبقدونس"},{n:"شاورما عربي (صحن)",p:2200,d:"قطع شاورما مقطعة تقدم مع البطاطس والمقبلات"},{n:"بطاطس",p:700,d:"بطاطس مقلية حجم عائلي"}] },
+    { id: 4, name: "بيتزا هت", cat: "بيتزا", img: "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=400", restaurantLat: 15.3567, restaurantLng: 44.1880, items: [{n:"بيتزا مارجريتا",p:2500,d:"صلصة طماطم غنية مع جبنة الموزاريلا الفاخرة"},{n:"بيبروني",p:3000,d:"قطع البيبروني البقري مع الموزاريلا والصلصة"},{n:"بيتزا دجاج",p:2800,d:"قطع دجاج مشوي، فلفل أخضر، زيتون وموزاريلا"}] },
+    { id: 5, name: "ستار برجر", cat: "برجر", img: "https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=400", restaurantLat: 15.3710, restaurantLng: 44.2000, items: [{n:"برجر لحم مشوي",p:1800,d:"شريحة لحم بقري طازج مشوي مع الجبن والخضار"},{n:"برجر دجاج كرسبي",p:1600,d:"صدر دجاج مقرمش مع المايونيز والخس"},{n:"دبل برجر ستار",p:2800,d:"شريحتين من اللحم والجبن مع صوص ستار الخاص"}] }
 ];
+let allRestaurants = [...allRestaurantsData];
 
-// دالة ذكية للحصول على صور متناسقة عالية الجودة ومطابقة لكل صنف (مثل صور التصميم المرفق)
-function getItemImage(itemName) {
-    const name = itemName.toLowerCase();
-    if (name.includes('برجر') || name.includes('burger')) return 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=300';
-    if (name.includes('بروست') || name.includes('ستريبس') || name.includes('كرسبي')) return 'https://images.unsplash.com/photo-1626645738196-c2a7c8d08f58?w=300';
-    if (name.includes('زنجر')) return 'https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?w=300';
-    if (name.includes('سمك') || name.includes('فيليه')) return 'https://images.unsplash.com/photo-1567620832903-9fc6debc209f?w=300';
-    if (name.includes('شاورما')) return 'https://images.unsplash.com/photo-1644704170910-a0cdf183649b?w=300';
-    if (name.includes('بيتزا')) return 'https://images.unsplash.com/photo-1513104890138-7c749659a591?w=300';
-    if (name.includes('بطاطس') || name.includes('فرايز')) return 'https://images.unsplash.com/photo-1585109649139-366815a0d713?w=300';
-    if (name.includes('مشاوي') || name.includes('كباب')) return 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=300';
-    if (name.includes('عصير') || name.includes('كوكتيل')) return 'https://images.unsplash.com/photo-1589733955941-5eeaf752f6dd?w=300';
-    if (name.includes('مندي') || name.includes('أرز')) return 'https://images.unsplash.com/photo-1591261735099-e3776264e164?w=300';
-    return 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=300';
-}
+// الكاروسيل ثلاثي الأبعاد بخمس صور (تم نقله إلى قسم المطاعم فقط)
+const sliderImages = [
+    { image: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800", title: "🔥 عروض الرويال", desc: "خصومات ملوكية تصل إلى 40%" },
+    { image: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=800", title: "🚚 توصيل سريع وآمن", desc: "طعامك يصلك ساخناً دائماً" },
+    { image: "https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=800", title: "🍕 بيتزا طازجة", desc: "عجينة طازجة وجبنة ذائبة" },
+    { image: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=800", title: "🍔 برجر لذيذ", desc: "لحم طازج مشوي على الفحم" },
+    { image: "https://images.unsplash.com/photo-1586190848861-99aa4a171e90?w=800", title: "🍗 بروست مقرمش", desc: "دجاج مقرمش بخلطة سرية" }
+];
 
 const FIREBASE_URL = "https://waselny-2812b-default-rtdb.firebaseio.com";
 const DRIVER_PASSWORD = "weesim73741";
@@ -361,7 +346,6 @@ window.deliveryCost = 0;
 let map, marker, currentMapMode = null;
 let selectedPaymentMethod = 'cash';
 let receiptBase64 = null;
-let allRestaurants = allRestaurantsData;
 
 function showToast(msg) { let t = document.getElementById('toastMsg'); if(t){ t.innerText=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2500); } }
 function calculateDistance(lat1,lng1,lat2,lng2) { const R=6371; const dLat=(lat2-lat1)*Math.PI/180; const dLng=(lng2-lng1)*Math.PI/180; const a=Math.sin(dLat/2)**2+Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLng/2)**2; return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a)); }
@@ -380,9 +364,9 @@ window.updateDeliveryCost = function() {
 function updateCheckoutSummary() {
     if(!window.currentRestaurant) return;
     let totalFood = window.cart.reduce((s,i)=>s+(i.p*i.qty),0);
-    let total = totalFood + window.deliveryCost;
+    let total = totalFood + (window.deliveryCost || 0);
     let itemsHtml = window.cart.map(i=>`<div style="display:flex; justify-content:space-between; padding:6px 0; border-bottom:1px solid var(--gray-light); font-size:0.8rem;"><span>${i.n} <strong>x${i.qty}</strong></span><span>${i.p*i.qty} ريال</span></div>`).join('');
-    itemsHtml += `<div style="font-weight:bold; border-top:2px solid var(--gray-light); margin-top:8px; padding-top:8px; display:flex; justify-content:space-between; font-size:0.85rem;"><span>المجموع الفرعي</span><span>${totalFood} ريال</span></div><div style="display:flex; justify-content:space-between; margin-top:6px; font-size:0.85rem;"><span>🚚 سعر التوصيل:</span><span>${window.deliveryCost} ريال</span></div><div style="display:flex; justify-content:space-between; margin-top:8px; color:var(--primary); font-weight:800; font-size:1rem; border-top:1px dashed var(--gray-light); padding-top:6px;"><span>الإجمالي الكلي:</span><span>${total} ريال</span></div>`;
+    itemsHtml += `<div style="font-weight:bold; border-top:2px solid var(--gray-light); margin-top:8px; padding-top:8px; display:flex; justify-content:space-between; font-size:0.85rem;"><span>المجموع الفرعي</span><span>${totalFood} ريال</span></div><div style="display:flex; justify-content:space-between; margin-top:6px; font-size:0.85rem;"><span>🚚 سعر التوصيل:</span><span>${window.deliveryCost || 0} ريال</span></div><div style="display:flex; justify-content:space-between; margin-top:8px; color:var(--primary); font-weight:800; font-size:1rem; border-top:1px dashed var(--gray-light); padding-top:6px;"><span>الإجمالي الكلي:</span><span>${total} ريال</span></div>`;
     let summaryDiv = document.getElementById('checkoutOrderSummary');
     if(summaryDiv) summaryDiv.innerHTML = `<h4 style="margin-bottom:8px; color:var(--primary); font-weight:800;">🍽️ ${window.currentRestaurant.name}</h4>${itemsHtml}`;
 }
@@ -413,11 +397,7 @@ function renderRestaurantsPreview() {
 }
 window.openCategory = function(catId) { if(catId === 'restaurants') showPage('restaurantsPage'); else showToast(`قريباً - قسم ${catId} قيد التجهيز`); };
 
-// سلايدر ثلاثي الأبعاد
-const sliderImages = [
-    { image: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800", title: "🔥 عروض الرويال", desc: "خصومات ملوكية تصل إلى 40%" },
-    { image: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=800", title: "🚚 توصيل سريع وآمن", desc: "طعامك يصلك ساخناً دائماً" }
-];
+// دوال الكاروسيل ثلاثي الأبعاد
 let carouselIndex = 0, carouselInterval;
 function renderCarousel() {
     let container = document.getElementById('carouselContainer');
@@ -451,7 +431,7 @@ function updateCarousel() {
     let dots = document.querySelectorAll('.carousel-dot');
     for(let i=0;i<dots.length;i++) { if(i===carouselIndex) dots[i].classList.add('active'); else dots[i].classList.remove('active'); }
 }
-function startCarouselAuto() { if(carouselInterval) clearInterval(carouselInterval); carouselInterval = setInterval(()=>{ carouselIndex = (carouselIndex+1)%sliderImages.length; updateCarousel(); }, 2500); }
+function startCarouselAuto() { if(carouselInterval) clearInterval(carouselInterval); carouselInterval = setInterval(()=>{ carouselIndex = (carouselIndex+1)%sliderImages.length; updateCarousel(); }, 3000); }
 window.changeCarouselSlide = function(d) { carouselIndex = (carouselIndex+d+sliderImages.length)%sliderImages.length; updateCarousel(); startCarouselAuto(); };
 window.goToCarouselSlide = function(i) { carouselIndex = i; updateCarousel(); startCarouselAuto(); };
 
@@ -470,18 +450,23 @@ function renderRestaurantsList() {
     container.innerHTML = filtered.map(r=>`<div class="restaurant-item" onclick="openRestaurantMenu(${r.id})"><div class="restaurant-item-img" style="background-image:url('${r.img}')"></div><div class="restaurant-item-info"><div class="restaurant-item-name">${r.name}</div><div class="restaurant-item-cat">${r.cat}</div><div class="restaurant-item-stats"><span>⭐ 4.7</span><span>📍 2.5 كيلو</span></div></div><div class="restaurant-item-price"><div class="price">${r.items[0]?.p || 2200}</div><div>ريال</div></div></div>`).join('');
 }
 
-// ==================== تعديل دالة فتح قائمة المطعم وعرض الأصناف بشكل احترافي ====================
+function getItemImage(itemName) {
+    const name = itemName.toLowerCase();
+    if (name.includes('برجر')) return 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=300';
+    if (name.includes('بروست')) return 'https://images.unsplash.com/photo-1626645738196-c2a7c8d08f58?w=300';
+    if (name.includes('زنجر')) return 'https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?w=300';
+    if (name.includes('سمك')) return 'https://images.unsplash.com/photo-1567620832903-9fc6debc209f?w=300';
+    if (name.includes('شاورما')) return 'https://images.unsplash.com/photo-1644704170910-a0cdf183649b?w=300';
+    if (name.includes('بيتزا')) return 'https://images.unsplash.com/photo-1513104890138-7c749659a591?w=300';
+    return 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=300';
+}
+
 window.openRestaurantMenu = function(id) {
     window.currentRestaurant = allRestaurants.find(r=>r.id===id);
     if(!window.currentRestaurant) { showToast('المطعم غير موجود'); return; }
-    
     let menuDiv = document.getElementById('menuContent');
-    if(!menuDiv) return;
-
-    // جلب الوجبة الأولى لتكون كوجبة ملوكية في البانر العلوي (مثل الصورة)
-    let heroItem = window.currentRestaurant.items[0] || {n: "وجبة رويال كاملة", p: 2400, d: "دجاج مقرمش شهي بخلطة ملكية سرية"};
+    let heroItem = window.currentRestaurant.items[0];
     let heroImage = getItemImage(heroItem.n);
-
     let itemsHtml = `
         <div class="restaurant-hero-banner" style="background-image: url('${heroImage}');">
             <div class="restaurant-hero-overlay">
@@ -491,18 +476,13 @@ window.openRestaurantMenu = function(id) {
                 <div class="restaurant-hero-price">${heroItem.p} ريال يمني</div>
             </div>
         </div>
-        
         <h3 style="font-size: 0.95rem; margin: 15px 0 5px; font-weight: 800; color: var(--primary-dark)">🍽️ قائمة المأكولات الأصيلة</h3>
-        
         <div class="menu-grid">
     `;
-
     window.currentRestaurant.items.forEach((item, idx) => {
         let itemImage = getItemImage(item.n);
-        // البحث فيما إذا كان المنتج مضاف مسبقاً للسلة لتحديد طريقة عرض الزر
         let cartItem = window.cart.find(i => i.n === item.n);
         let count = cartItem ? cartItem.qty : 0;
-
         itemsHtml += `
             <div class="menu-item-card" data-name="${item.n}">
                 <div class="menu-item-img" style="background-image:url('${itemImage}')"></div>
@@ -513,7 +493,6 @@ window.openRestaurantMenu = function(id) {
                     </div>
                     <div>
                         <div class="menu-item-price">${item.p} <span>ريال</span></div>
-                        
                         <div class="action-container" id="action-${idx}">
                             ${ count > 0 ? `
                                 <div class="quantity-counter">
@@ -532,14 +511,12 @@ window.openRestaurantMenu = function(id) {
             </div>
         `;
     });
-    
     itemsHtml += `</div>`;
     menuDiv.innerHTML = itemsHtml;
     updateCartDisplay();
     showPage('menuPage');
 };
 
-// الدالة الذكية للإضافة المباشرة من الكرت
 window.inlineAddToCart = function(idx) {
     let item = window.currentRestaurant.items[idx];
     window.cart.push({...item, qty: 1});
@@ -548,15 +525,12 @@ window.inlineAddToCart = function(idx) {
     showToast(`تمت إضافة ${item.n} إلى السلة`);
 };
 
-// تحديث الكمية مباشرة من العداد المدمج داخل البطاقة
 window.updateCartQtyDirect = function(idx, delta) {
     let item = window.currentRestaurant.items[idx];
     let cartItemIdx = window.cart.findIndex(i => i.n === item.n);
-    
     if (cartItemIdx !== -1) {
         window.cart[cartItemIdx].qty += delta;
         let newQty = window.cart[cartItemIdx].qty;
-        
         if (newQty <= 0) {
             window.cart.splice(cartItemIdx, 1);
             renderInlineAddButton(idx);
@@ -567,7 +541,6 @@ window.updateCartQtyDirect = function(idx, delta) {
     updateCartDisplay();
 };
 
-// دالة رسم كود العداد المدمج ثنائي الأزرار
 function renderInlineCounter(idx, qty) {
     let container = document.getElementById(`action-${idx}`);
     if(container) {
@@ -581,7 +554,6 @@ function renderInlineCounter(idx, qty) {
     }
 }
 
-// دالة إعادة زر "أضف للسلة" العادي في حال أصبحت الكمية صفر
 function renderInlineAddButton(idx) {
     let container = document.getElementById(`action-${idx}`);
     if(container) {
@@ -593,39 +565,23 @@ function renderInlineAddButton(idx) {
     }
 }
 
-// تحديث وعرض السلة الشامل وإشعارات شريط السفلي
 function updateCartDisplay() {
     let total = window.cart.reduce((s,i)=>s+(i.p*i.qty),0);
     let itemsCount = window.cart.reduce((s,i)=>s+i.qty,0);
-    
-    // شريط عائم سفلي
     let floatCartElem = document.getElementById('floatCart');
     if(floatCartElem) {
         document.getElementById('cartCount').innerText = itemsCount;
         document.getElementById('cartTotal').innerText = total;
         floatCartElem.style.display = window.cart.length && document.getElementById('menuPage').classList.contains('active-page') ? 'flex' : 'none';
     }
-    
-    // تحديث شارة العداد الحمراء في شريط التنقل السفلي الاحترافي
     let badge = document.getElementById('navCartBadge');
-    if(badge) {
-        if(itemsCount > 0) {
-            badge.innerText = itemsCount;
-            badge.style.display = 'block';
-        } else {
-            badge.style.display = 'none';
-        }
-    }
-    
-    // تحديث المحتويات داخل القائمة الجانبية للسلة
+    if(badge) { if(itemsCount > 0) { badge.innerText = itemsCount; badge.style.display = 'block'; } else badge.style.display = 'none'; }
     let container = document.getElementById('cartItemsList');
     if(container){
-        if(window.cart.length === 0) {
-            container.innerHTML = `<p style="text-align:center; padding:30px; color:var(--gray)">السلة فارغة تماماً 🛒</p>`;
-        } else {
+        if(window.cart.length === 0) container.innerHTML = `<p style="text-align:center; padding:30px; color:var(--gray)">السلة فارغة تماماً 🛒</p>`;
+        else {
             container.innerHTML = window.cart.map((item, i) => {
                 let itemImage = getItemImage(item.n);
-                // جلب المندوب الأصلي للمنتج لتعديله برمجياً بالشبكة
                 let origIdx = window.currentRestaurant ? window.currentRestaurant.items.findIndex(it => it.n === item.n) : -1;
                 return `
                     <div class="cart-item">
@@ -644,19 +600,13 @@ function updateCartDisplay() {
             }).join('');
         }
     }
-    
     let totalPriceElem = document.getElementById('cartTotalPrice');
     if(totalPriceElem) totalPriceElem.innerText = total + ' ريال';
-    
-    let summaryDiv = document.getElementById('cartSummary');
-    if(summaryDiv) summaryDiv.innerHTML = window.cart.length ? `<div style="background:var(--primary); color:white; padding:9px; border-radius:12px; text-align:center; font-size:0.75rem; font-weight:700;">سلة مشترياتك الحالية تحتوي على (${itemsCount}) أصناف بقيمة ${total} ريال</div>` : '';
 }
 
-// دالة التحكم بالكمية من شريط السلة الجانبي وتحديث الأزرار في الواجهة الخلفية معاً
 window.sidebarChangeQty = function(cartIdx, origIdx, delta) {
     window.cart[cartIdx].qty += delta;
     let newQty = window.cart[cartIdx].qty;
-    
     if(newQty <= 0) {
         window.cart.splice(cartIdx, 1);
         if(origIdx !== -1) renderInlineAddButton(origIdx);
@@ -666,7 +616,6 @@ window.sidebarChangeQty = function(cartIdx, origIdx, delta) {
     updateCartDisplay();
 };
 
-window.changeQty = function(idx,delta) { let newQty = window.cart[idx].qty+delta; if(newQty<=0) window.cart.splice(idx,1); else window.cart[idx].qty = newQty; updateCartDisplay(); };
 window.goToCheckout = function() {
     if(!window.cart.length){ showToast('السلة فارغة'); return; }
     if(!window.currentRestaurant) { showToast('خطأ: لم يتم تحديد المطعم'); return; }
@@ -726,15 +675,7 @@ window.confirmMapLocation = async function() {
 
 function initPaymentList() {
     let options = document.querySelectorAll('.payment-option');
-    const paymentMethods = {
-        jeeb: { name: "محفظة جيب", number: "777215154" },
-        onecash: { name: "ون كاش", number: "777215154" },
-        floosak: { name: "فلوسك", number: "777215154" },
-        jawaly: { name: "جوالي", number: "777215154" },
-        kremi: { name: "الكريمي", number: "777215154" },
-        easy: { name: "إيزي", number: "777215154" },
-        cash: { name: "الدفع عند الاستلام", number: "" }
-    };
+    const paymentMethods = { jeeb: "777215154", onecash: "777215154", floosak: "777215154", jawaly: "777215154", kremi: "777215154", easy: "777215154", cash: "" };
     options.forEach(opt => {
         opt.onclick = () => {
             options.forEach(o=>o.classList.remove('active'));
@@ -742,7 +683,7 @@ function initPaymentList() {
             selectedPaymentMethod = opt.dataset.method;
             let detailsDiv = document.getElementById('paymentDetails');
             if(selectedPaymentMethod === 'cash') detailsDiv.style.display = 'none';
-            else { detailsDiv.style.display = 'block'; document.getElementById('accountNumberText').innerText = paymentMethods[selectedPaymentMethod].number; }
+            else { detailsDiv.style.display = 'block'; document.getElementById('accountNumberText').innerText = paymentMethods[selectedPaymentMethod]; }
         };
     });
     let defaultOpt = document.querySelector('.payment-option[data-method="cash"]');
@@ -798,13 +739,9 @@ window.viewOrderTracking = async function(id) {
         if(i<steps.length-1) stepsHtml += `<div class="step-connector ${i<idx?'completed':''}"></div>`;
     });
     stepsHtml += '</div>';
-    
     let itemsListHtml = '<ul class="order-items-list">';
-    order.items.forEach(item => {
-        itemsListHtml += `<li><span>${item.name} x ${item.qty}</span><span>${item.price * item.qty} ريال</span></li>`;
-    });
+    order.items.forEach(item => { itemsListHtml += `<li><span>${item.name} x ${item.qty}</span><span>${item.price * item.qty} ريال</span></li>`; });
     itemsListHtml += '</ul>';
-    
     let details = `
         <div class="tracking-detail-card">
             <h3 style="color:var(--primary); margin-bottom:15px;">📍 تفاصيل الطلب #${order.id}</h3>
@@ -838,7 +775,90 @@ window.renderMyOrders = async function() {
     document.getElementById('myOrdersContainer').innerHTML = html;
 };
 
-// عمليات الإدارة
+// ============= تحسين عرض الطلب للمندوب =============
+async function renderDriverOrders() {
+    await loadOrders();
+    let pendingOrders = window.allOrders.filter(o => o.status !== 'delivered');
+    let activeCount = pendingOrders.length;
+    let completedCount = window.allOrders.filter(o => o.status === 'delivered').length;
+    document.getElementById('activeOrdersCount').innerText = activeCount;
+    document.getElementById('completedOrdersCount').innerText = completedCount;
+    let container = document.getElementById('driverOrdersList');
+    if(pendingOrders.length === 0) { container.innerHTML = '<p>لا توجد طلبات نشطة حالياً</p>'; return; }
+    container.innerHTML = pendingOrders.map(order => `
+        <div class="admin-section" style="margin-bottom:12px; cursor:pointer;" onclick="showDriverOrderDetails(${order.id})">
+            <div style="display:flex; justify-content:space-between;">
+                <strong>#${order.id}</strong> <span style="background:var(--warning); padding:2px 6px; border-radius:20px;">${order.status}</span>
+            </div>
+            <div>👤 ${order.customerName}</div>
+            <div>📍 ${order.address.substring(0,30)}</div>
+            <div>💰 ${order.total} ريال</div>
+        </div>
+    `).join('');
+}
+
+window.showDriverOrderDetails = async function(orderId) {
+    await loadOrders();
+    let order = window.allOrders.find(o => o.id == orderId);
+    if(!order) return;
+    let steps = ['pending','on_the_way','arrived','delivered'];
+    let idx = steps.indexOf(order.status);
+    let stepsHtml = '<div class="tracking-steps">';
+    steps.forEach((s,i)=>{
+        let cls = (i<idx)?'completed':(i===idx?'active':'');
+        let icon = {pending:'fa-clock', on_the_way:'fa-truck', arrived:'fa-map-marker-alt', delivered:'fa-check-circle'}[s];
+        let label = {pending:'قيد المراجعة', on_the_way:'في الطريق', arrived:'وصل الموقع', delivered:'تم التوصيل'}[s];
+        stepsHtml += `<div class="step ${cls}"><div class="circle"><i class="fas ${icon}"></i></div><div class="step-label">${label}</div></div>`;
+        if(i<steps.length-1) stepsHtml += `<div class="step-connector ${i<idx?'completed':''}"></div>`;
+    });
+    stepsHtml += '</div>';
+    let itemsListHtml = '<ul class="order-items-list">';
+    order.items.forEach(item => { itemsListHtml += `<li><span>${item.name} x ${item.qty}</span><span>${item.price * item.qty} ريال</span></li>`; });
+    itemsListHtml += '</ul>';
+    let details = `
+        <div class="tracking-detail-card">
+            <h3 style="color:var(--primary); margin-bottom:15px;">📦 تفاصيل الطلب #${order.id}</h3>
+            <div class="tracking-label">⏰ وقت الطلب</div>
+            <div class="tracking-value">${new Date(order.createdAt).toLocaleString('ar-SA')}</div>
+            <div class="tracking-label">🍔 المطعم</div>
+            <div class="tracking-value">${order.restaurant}</div>
+            <div class="tracking-label">👤 العميل</div>
+            <div class="tracking-value">${order.customerName} (${order.customerPhone})</div>
+            <div class="tracking-label">📍 العنوان الكامل</div>
+            <div class="tracking-value">${order.address}</div>
+            <div class="tracking-label">🧾 الأصناف المطلوبة</div>
+            ${itemsListHtml}
+            <div style="display:flex; justify-content:space-between; margin:10px 0; padding:8px 0; border-top:2px solid var(--gray-light);">
+                <span>المجموع</span><span>${order.totalFood} ريال</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; margin:5px 0;">
+                <span>🚚 التوصيل</span><span>${order.deliveryCost} ريال</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; margin:10px 0; font-weight:800; color:var(--primary); font-size:1rem;">
+                <span>الإجمالي الكلي</span><span>${order.total} ريال</span>
+            </div>
+            <div class="tracking-label">💳 وسيلة الدفع</div>
+            <div class="tracking-value">${order.paymentMethod === 'cash' ? 'الدفع عند الاستلام' : 'تحويل إلكتروني'}</div>
+        </div>
+        ${stepsHtml}
+        <div style="display:flex; gap:10px; margin-top:20px;">
+            ${order.status === 'pending' ? `<button class="btn-primary" onclick="updateOrderStatus(${order.id}, 'on_the_way')">🚚 بدء التوصيل</button>` : ''}
+            ${order.status === 'on_the_way' ? `<button class="btn-primary" onclick="updateOrderStatus(${order.id}, 'arrived')">📍 وصلت للموقع</button>` : ''}
+            ${order.status === 'arrived' ? `<button class="btn-primary" onclick="updateOrderStatus(${order.id}, 'delivered')">✅ تم التوصيل</button>` : ''}
+        </div>
+    `;
+    document.getElementById('trackingFullscreenContainer').innerHTML = details;
+    document.getElementById('trackFullscreen').style.display = 'block';
+};
+
+window.updateOrderStatus = async function(orderId, newStatus) {
+    await fetch(`${FIREBASE_URL}/orders/${orderId}.json`, { method: 'PATCH', body: JSON.stringify({ status: newStatus }) });
+    showToast(`تم تحديث حالة الطلب إلى ${newStatus}`);
+    await loadOrders();
+    if(window.currentUser?.role === 'driver') renderDriverOrders();
+    closeTracking();
+};
+
 async function renderAdminRestaurantsList() {
     let container = document.getElementById('adminRestaurantsList');
     if(container) container.innerHTML = allRestaurants.map(r => `<div style="display:flex; justify-content:space-between; padding:8px; border-bottom:1px solid var(--gray-light); align-items:center;"><div><strong>${r.name}</strong><br><small>${r.cat}</small></div><button style="background:var(--danger); color:white; border:none; padding:4px 10px; border-radius:8px; cursor:pointer;" onclick="deleteRestaurantFromAdmin(${r.id})">🗑️ حذف</button></div>`).join('');
@@ -880,7 +900,7 @@ function initLogin() {
         window.currentUser = {role, phone, name};
         localStorage.setItem('waselny_user', JSON.stringify(window.currentUser));
         document.getElementById('loginOverlay').style.display = 'none';
-        if(role === 'driver') showPage('driverPage');
+        if(role === 'driver') { showPage('driverPage'); renderDriverOrders(); document.getElementById('driverNameDisplay').innerText = name; }
         else showPage('homePage');
         showToast(`أهلاً بك، ${name}`);
     };
@@ -890,19 +910,14 @@ function showPage(pageId) {
     document.querySelectorAll('.page').forEach(p=>p.classList.remove('active-page'));
     let targetPage = document.getElementById(pageId);
     if(targetPage) targetPage.classList.add('active-page');
-    
     document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
     let activeNav = document.querySelector(`.nav-item[data-page="${pageId}"]`);
     if(activeNav) activeNav.classList.add('active');
-    
-    // شروط إظهار شريط السلة العائم الذكي
     let floatCartElem = document.getElementById('floatCart');
-    if(floatCartElem) {
-        floatCartElem.style.display = window.cart.length > 0 && pageId === 'menuPage' ? 'flex' : 'none';
-    }
-    
+    if(floatCartElem) floatCartElem.style.display = window.cart.length > 0 && pageId === 'menuPage' ? 'flex' : 'none';
     if(pageId === 'restaurantsPage') { renderFilters(); renderRestaurantsList(); setTimeout(()=>{ renderCarousel(); updateCarousel(); startCarouselAuto(); },100); }
     if(pageId === 'homePage') document.getElementById('trackOrderBtnHome').style.display = localStorage.getItem('currentTrackingOrder') ? 'block' : 'none';
+    if(pageId === 'driverPage' && window.currentUser?.role === 'driver') renderDriverOrders();
 }
 
 document.querySelectorAll('.nav-item[data-page]').forEach(n=>{ n.onclick = ()=>showPage(n.dataset.page); });
@@ -929,7 +944,7 @@ if(savedUser){
     try {
         window.currentUser = JSON.parse(savedUser);
         document.getElementById('loginOverlay').style.display = 'none';
-        if(window.currentUser.role === 'driver') showPage('driverPage');
+        if(window.currentUser.role === 'driver') { showPage('driverPage'); renderDriverOrders(); document.getElementById('driverNameDisplay').innerText = window.currentUser.name; }
         else if(window.currentUser.role === 'admin') showPage('adminPage');
         else showPage('homePage');
     } catch(e){ initLogin(); }

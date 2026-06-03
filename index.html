@@ -57,75 +57,98 @@
         .active-page { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
         
-        .offers-slider {
+        /* سلايدر ثلاثي الأبعاد 3D */
+        .carousel-3d {
             position: relative;
             width: 100%;
-            height: 200px;
-            margin-bottom: 20px;
-            overflow: hidden;
-            border-radius: 20px;
+            height: 280px;
+            margin-bottom: 25px;
+            perspective: 1200px;
+            overflow: visible;
         }
-        .slider-container {
+        .carousel-container-3d {
             position: relative;
             width: 100%;
             height: 100%;
+            transform-style: preserve-3d;
         }
-        .slider-slide {
+        .carousel-slide-3d {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            opacity: 0;
-            transition: opacity 0.8s ease-in-out;
+            width: 80%;
+            height: 250px;
+            left: 10%;
+            top: 15px;
             background-size: cover;
             background-position: center;
-            border-radius: 20px;
+            border-radius: 24px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+            transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
             cursor: pointer;
+            border: 2px solid rgba(255,255,255,0.3);
         }
-        .slider-slide.active {
+        .carousel-slide-3d.active {
             opacity: 1;
+            transform: scale(1.05) translateZ(35px);
+            box-shadow: 0 25px 45px rgba(0,0,0,0.5);
+            z-index: 10;
+            border-color: var(--primary-light);
         }
-        .slider-slide .slide-content {
+        .carousel-slide-3d .slide-caption {
             position: absolute;
             bottom: 0;
             left: 0;
             right: 0;
-            background: linear-gradient(transparent, rgba(0,0,0,0.8));
-            padding: 20px;
+            background: linear-gradient(transparent, rgba(0,0,0,0.85));
+            padding: 15px;
             color: white;
-            border-radius: 0 0 20px 20px;
+            border-radius: 0 0 24px 24px;
         }
-        .slider-slide .slide-content h3 {
+        .carousel-slide-3d .slide-caption h4 {
             font-size: 1rem;
             font-weight: 800;
-            margin-bottom: 5px;
         }
-        .slider-slide .slide-content p {
+        .carousel-slide-3d .slide-caption p {
             font-size: 0.7rem;
-            opacity: 0.9;
         }
-        .slider-dots {
+        .carousel-btn-3d {
             position: absolute;
-            bottom: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0,0,0,0.6);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: white;
+            font-size: 1rem;
+            z-index: 20;
+            backdrop-filter: blur(4px);
+        }
+        .carousel-btn-3d.prev { right: 5px; }
+        .carousel-btn-3d.next { left: 5px; }
+        .carousel-dots-3d {
+            position: absolute;
+            bottom: -10px;
             left: 0;
             right: 0;
             display: flex;
             justify-content: center;
-            gap: 8px;
-            z-index: 10;
+            gap: 10px;
+            z-index: 20;
         }
-        .slider-dot {
+        .carousel-dot-3d {
             width: 8px;
             height: 8px;
             border-radius: 50%;
-            background: rgba(255,255,255,0.5);
+            background: rgba(255,255,255,0.6);
             cursor: pointer;
-            transition: all 0.2s;
         }
-        .slider-dot.active {
-            width: 24px;
-            border-radius: 4px;
+        .carousel-dot-3d.active {
+            width: 28px;
+            border-radius: 6px;
             background: var(--primary-light);
         }
         
@@ -232,7 +255,6 @@
         .payment-name { flex: 1; font-weight: 700; font-size: 0.8rem; }
         .account-number { background: #f1f5f9; padding: 10px 14px; border-radius: 25px; display: flex; justify-content: space-between; align-items: center; margin: 8px 0; direction: ltr; font-family: monospace; font-size: 0.85rem; font-weight: 700; }
         
-        /* نافذة تسجيل الدخول - مخفية بشكل افتراضي */
         #loginOverlay { 
             position: fixed; 
             top: 0; 
@@ -241,7 +263,7 @@
             height: 100%; 
             background: var(--primary-dark); 
             z-index: 100000; 
-            display: none; /* تم تغييرها إلى none */
+            display: none;
             align-items: center; 
             justify-content: center; 
         }
@@ -321,6 +343,68 @@
             margin-top: 10px;
         }
         
+        /* نافذة تفاصيل الطلب للمندوب */
+        .order-details-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-light);
+            z-index: 200000;
+            overflow-y: auto;
+            display: none;
+            padding: 20px;
+        }
+        .order-details-modal.active {
+            display: block;
+        }
+        .order-details-card {
+            background: var(--white);
+            border-radius: 24px;
+            padding: 20px;
+            max-width: 500px;
+            margin: 20px auto;
+            box-shadow: var(--shadow-md);
+        }
+        .order-details-card h2 {
+            color: var(--primary);
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+        .order-details-card .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--gray-light);
+        }
+        .order-details-card .detail-label {
+            font-weight: 700;
+            color: var(--primary-dark);
+        }
+        .order-details-card .items-list {
+            margin: 10px 0;
+            background: var(--bg-light);
+            border-radius: 16px;
+            padding: 10px;
+        }
+        .order-details-card .items-list .item-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--gray-light);
+        }
+        .order-details-card .total-row {
+            background: var(--primary);
+            color: white;
+            padding: 12px;
+            border-radius: 16px;
+            margin-top: 15px;
+            display: flex;
+            justify-content: space-between;
+            font-weight: 800;
+        }
+        
         /* وضع المندوب */
         body.driver-mode .bottom-nav .nav-item:not([data-page="driverInterfacePage"]) {
             display: none !important;
@@ -366,10 +450,6 @@
 
 <div class="container">
     <div id="homePage" class="page active-page">
-        <div class="offers-slider" id="offersSlider">
-            <div class="slider-container" id="sliderContainer"></div>
-            <div class="slider-dots" id="sliderDots"></div>
-        </div>
         <div class="categories-grid" id="categoriesGrid"></div>
         <div class="section-title"><i class="fas fa-star" style="color:#f59e0b;"></i><h2>أشهر المطاعم</h2></div>
         <div class="restaurants-preview" id="restaurantsPreview"></div>
@@ -378,6 +458,13 @@
 
     <div id="restaurantsPage" class="page">
         <div class="back-btn" onclick="showPage('homePage')">🔙 رجوع</div>
+        <!-- السلايدر ثلاثي الأبعاد -->
+        <div class="carousel-3d">
+            <div class="carousel-container-3d" id="carouselContainer3d"></div>
+            <div class="carousel-btn-3d prev" onclick="changeCarouselSlide3d(-1)">❮</div>
+            <div class="carousel-btn-3d next" onclick="changeCarouselSlide3d(1)">❯</div>
+            <div class="carousel-dots-3d" id="carouselDots3d"></div>
+        </div>
         <div class="filter-buttons" id="filterButtons"></div>
         <div class="restaurants-list" id="restaurantsList"></div>
     </div>
@@ -472,7 +559,6 @@
 
 <div id="toastMsg" class="toast"></div>
 
-<!-- نافذة تسجيل الدخول - مخفية بشكل افتراضي -->
 <div id="loginOverlay">
     <div class="login-card">
         <h3>وصل | WASAL</h3>
@@ -499,8 +585,15 @@
     </div>
 </div>
 
+<!-- نافذة تفاصيل الطلب للمندوب -->
+<div id="orderDetailsModal" class="order-details-modal">
+    <div class="order-details-card" id="orderDetailsCard"></div>
+    <button class="btn-primary" onclick="closeOrderDetailsModal()" style="margin-top:10px; max-width:500px; margin:10px auto; display:block;">إغلاق</button>
+</div>
+
 <script>
-const offerSlides = [
+// 5 صور للسلايدر ثلاثي الأبعاد
+const carouselSlides = [
     { image: "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800", title: "🔥 عرض خاص 30%", desc: "على جميع الوجبات الساخنة" },
     { image: "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=800", title: "🍕 بيتزا مجاناً", desc: "اطلب بيتزا واحصل على الثانية مجاناً" },
     { image: "https://images.unsplash.com/photo-1600891964092-4316c288032e?w=800", title: "🚚 توصيل مجاني", desc: "لجميع الطلبات فوق 1000 ريال" },
@@ -546,45 +639,95 @@ let allRestaurants = allRestaurantsData;
 let shareClickCount = 0;
 let shareClickTimer = null;
 
-function showToast(msg) { let t = document.getElementById('toastMsg'); if(t){ t.innerText=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2500); } }
+// متغيرات السلايدر ثلاثي الأبعاد
+let carouselIndex = 0;
+let carouselInterval;
 
-// سلايدر الصور
-let currentSlideIndex = 0;
-let slideInterval;
-
-function renderSlider() {
-    let container = document.getElementById('sliderContainer');
-    let dotsContainer = document.getElementById('sliderDots');
+function renderCarousel3d() {
+    let container = document.getElementById('carouselContainer3d');
+    let dotsContainer = document.getElementById('carouselDots3d');
     if(!container) return;
     
-    let slidesHtml = '';
+    let html = '';
     let dotsHtml = '';
     
-    offerSlides.forEach((slide, index) => {
-        slidesHtml += `<div class="slider-slide ${index === 0 ? 'active' : ''}" style="background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.5)), url('${slide.image}');"><div class="slide-content"><h3>${slide.title}</h3><p>${slide.desc}</p></div></div>`;
-        dotsHtml += `<div class="slider-dot ${index === 0 ? 'active' : ''}" onclick="goToSlide(${index})"></div>`;
-    });
+    for(let i = 0; i < carouselSlides.length; i++) {
+        let slide = carouselSlides[i];
+        let offset = (i - carouselIndex) * 35;
+        let scale = 1 - Math.abs(i - carouselIndex) * 0.1;
+        let zIndex = 10 - Math.abs(i - carouselIndex);
+        let opacity = 1 - Math.abs(i - carouselIndex) * 0.25;
+        
+        html += `<div class="carousel-slide-3d ${i === carouselIndex ? 'active' : ''}" style="background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.6)), url('${slide.image}'); transform: translateX(${offset}%) scale(${scale}) translateZ(${i === carouselIndex ? '35px' : '0px'}); z-index: ${zIndex}; opacity: ${opacity};">
+            <div class="slide-caption">
+                <h4>${slide.title}</h4>
+                <p>${slide.desc}</p>
+            </div>
+        </div>`;
+        dotsHtml += `<div class="carousel-dot-3d ${i === carouselIndex ? 'active' : ''}" onclick="goToCarouselSlide3d(${i})"></div>`;
+    }
     
-    container.innerHTML = slidesHtml;
+    container.innerHTML = html;
     dotsContainer.innerHTML = dotsHtml;
 }
 
-function goToSlide(index) { currentSlideIndex = index; updateSlider(); }
-function nextSlide() { currentSlideIndex = (currentSlideIndex + 1) % offerSlides.length; updateSlider(); }
-function updateSlider() {
-    const slides = document.querySelectorAll('.slider-slide');
-    const dots = document.querySelectorAll('.slider-dot');
-    slides.forEach((slide, i) => { if(i === currentSlideIndex) slide.classList.add('active'); else slide.classList.remove('active'); });
-    dots.forEach((dot, i) => { if(i === currentSlideIndex) dot.classList.add('active'); else dot.classList.remove('active'); });
+function updateCarousel3d() {
+    let slides = document.querySelectorAll('.carousel-slide-3d');
+    if(!slides.length) return;
+    
+    for(let i = 0; i < slides.length; i++) {
+        let offset = (i - carouselIndex) * 35;
+        let scale = 1 - Math.abs(i - carouselIndex) * 0.1;
+        let zIndex = 10 - Math.abs(i - carouselIndex);
+        let opacity = 1 - Math.abs(i - carouselIndex) * 0.25;
+        
+        slides[i].style.transform = `translateX(${offset}%) scale(${scale}) translateZ(${i === carouselIndex ? '35px' : '0px'})`;
+        slides[i].style.zIndex = zIndex;
+        slides[i].style.opacity = opacity;
+        
+        if(i === carouselIndex) {
+            slides[i].classList.add('active');
+        } else {
+            slides[i].classList.remove('active');
+        }
+    }
+    
+    let dots = document.querySelectorAll('.carousel-dot-3d');
+    for(let i = 0; i < dots.length; i++) {
+        if(i === carouselIndex) {
+            dots[i].classList.add('active');
+        } else {
+            dots[i].classList.remove('active');
+        }
+    }
 }
-function startSlider() { if(slideInterval) clearInterval(slideInterval); slideInterval = setInterval(() => { nextSlide(); }, 1500); }
 
-// دوال وضع المندوب - تم تعديلها لمنع ظهور شاشة تسجيل الدخول
+function startCarouselAuto() {
+    if(carouselInterval) clearInterval(carouselInterval);
+    carouselInterval = setInterval(() => {
+        carouselIndex = (carouselIndex + 1) % carouselSlides.length;
+        updateCarousel3d();
+    }, 2500);
+}
+
+window.changeCarouselSlide3d = function(d) {
+    carouselIndex = (carouselIndex + d + carouselSlides.length) % carouselSlides.length;
+    updateCarousel3d();
+    startCarouselAuto();
+};
+
+window.goToCarouselSlide3d = function(i) {
+    carouselIndex = i;
+    updateCarousel3d();
+    startCarouselAuto();
+};
+
+function showToast(msg) { let t = document.getElementById('toastMsg'); if(t){ t.innerText=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2500); } }
+
+// دوال وضع المندوب
 function enableDriverMode() {
     document.body.classList.add('driver-mode');
-    // تعيين مستخدم وهمي للمندوب بدون الحاجة لتسجيل دخول
     window.currentUser = { role: 'driver', name: 'مندوب التوصيل', phone: 'driver_' + Date.now() };
-    // لا نقوم بحفظ في localStorage لمنع إعادة التوجيه
     showPage('driverInterfacePage');
     refreshDriverPanel();
     showToast('تم الدخول إلى وضع المندوب');
@@ -593,7 +736,6 @@ function enableDriverMode() {
 function disableDriverMode() {
     document.body.classList.remove('driver-mode');
     window.currentUser = null;
-    // إعادة تحميل الصفحة كعميل عادي
     location.reload();
 }
 
@@ -616,6 +758,78 @@ function verifyDriverPassword() {
         showToast('كلمة السر غير صحيحة');
         document.getElementById('driverPasswordInput').value = '';
     }
+}
+
+// نافذة تفاصيل الطلب للمندوب
+function openOrderDetailsModal(order) {
+    let modal = document.getElementById('orderDetailsModal');
+    let card = document.getElementById('orderDetailsCard');
+    
+    let itemsHtml = '';
+    if(order.items && order.items.length > 0) {
+        itemsHtml = '<div class="items-list"><div class="detail-label">🍽️ الأصناف المطلوبة:</div>';
+        order.items.forEach(item => {
+            itemsHtml += `<div class="item-row"><span>${item.name} x ${item.qty}</span><span>${item.price * item.qty} ريال</span></div>`;
+        });
+        itemsHtml += '</div>';
+    }
+    
+    let statusText = '';
+    if(order.status === 'pending') statusText = '⏳ قيد المراجعة';
+    else if(order.status === 'arrived') statusText = '📍 وصل الموقع';
+    else if(order.status === 'delivered') statusText = '✅ تم التوصيل';
+    else statusText = '🚚 في الطريق';
+    
+    card.innerHTML = `
+        <h2>📋 تفاصيل الطلب #${order.id}</h2>
+        <div class="detail-row">
+            <span class="detail-label">🍔 المطعم:</span>
+            <span>${order.restaurant || 'غير محدد'}</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">👤 اسم العميل:</span>
+            <span>${order.customerName || 'غير معروف'}</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">📞 رقم الهاتف:</span>
+            <span>${order.customerPhone || 'غير متوفر'}</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">📍 عنوان التوصيل:</span>
+            <span>${order.address || 'غير محدد'}</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">⏰ وقت الطلب:</span>
+            <span>${new Date(order.createdAt).toLocaleString('ar-SA')}</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">📊 حالة الطلب:</span>
+            <span style="color: var(--warning); font-weight: 700;">${statusText}</span>
+        </div>
+        ${itemsHtml}
+        <div class="detail-row">
+            <span class="detail-label">💰 قيمة المشتريات:</span>
+            <span>${order.totalFood || 0} ريال</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">🚚 سعر التوصيل:</span>
+            <span>${order.deliveryCost || 0} ريال</span>
+        </div>
+        <div class="total-row">
+            <span>💰 الإجمالي الكلي:</span>
+            <span>${order.total || 0} ريال</span>
+        </div>
+        ${order.paymentMethod ? `<div class="detail-row">
+            <span class="detail-label">💳 وسيلة الدفع:</span>
+            <span>${order.paymentMethod === 'cash' ? 'الدفع عند الاستلام' : order.paymentMethod}</span>
+        </div>` : ''}
+    `;
+    
+    modal.classList.add('active');
+}
+
+function closeOrderDetailsModal() {
+    document.getElementById('orderDetailsModal').classList.remove('active');
 }
 
 // دوال حساب المسافة
@@ -897,11 +1111,7 @@ window.saveDeliverySettings = async function() { let pricePerKm = parseInt(docum
 let driverFilter = "available";
 async function refreshDriverPanel() {
     await loadOrders();
-    // التحقق من وجود currentUser و role driver
-    if (!window.currentUser || window.currentUser.role !== 'driver') {
-        // إذا لم يكن هناك مستخدم مندوب، لا نقوم بتحديث الواجهة
-        return;
-    }
+    if (!window.currentUser || window.currentUser.role !== 'driver') return;
     let availableOrders = window.allOrders.filter(o => o.status === 'pending');
     let myActiveOrders = window.allOrders.filter(o => o.driverId === window.currentUser.phone && o.status !== 'delivered');
     let completedOrders = window.allOrders.filter(o => o.driverId === window.currentUser.phone && o.status === 'delivered');
@@ -933,7 +1143,15 @@ function renderDriverOrdersList(availableOrders, myActiveOrders) {
             let statusText = o.status === 'pending' ? 'في الطريق للمطعم' : (o.status === 'arrived' ? 'استلمت الطلب' : '');
             if (nextStatus) actionButtons = `<div class="quick-actions"><button class="quick-btn quick-btn-deliver" onclick="updateDriverStatus(${o.id},'${nextStatus}')">${statusText}</button><button class="quick-btn quick-btn-call" onclick="callCustomer('${o.customerPhone}')"><i class="fas fa-phone"></i> اتصال</button></div>`;
         }
-        return `<div style="padding:15px; background:var(--white); border-radius:14px; margin-bottom: 10px;"><div style="display:flex; justify-content:space-between;"><strong>#${o.id} - ${o.restaurant}</strong><span>${o.total} ريال</span></div><div>👤 ${o.customerName}</div><div>📍 ${o.address}</div>${actionButtons}</div>`;
+        return `<div style="padding:15px; background:var(--white); border-radius:14px; margin-bottom: 10px; cursor:pointer;" onclick="openOrderDetailsModal(${JSON.stringify(o).replace(/"/g, '&quot;')})">
+            <div style="display:flex; justify-content:space-between;">
+                <strong>#${o.id} - ${o.restaurant}</strong>
+                <span>${o.total} ريال</span>
+            </div>
+            <div>👤 ${o.customerName}</div>
+            <div>📍 ${o.address}</div>
+            ${actionButtons}
+        </div>`;
     }).join('');
     container.innerHTML = html;
 }
@@ -947,7 +1165,7 @@ window.acceptOrder = async function(orderId) {
 window.updateDriverStatus = async function(id,status) { await fetch(`${FIREBASE_URL}/orders/${id}.json`, {method:'PATCH', body:JSON.stringify({status})}); showToast("تم التحديث"); refreshDriverPanel(); };
 window.callCustomer = function(phone) { if(phone) window.location.href = `tel:${phone}`; };
 
-// دوال تسجيل الدخول - تم تعديلها لتعمل بشكل صحيح
+// دوال تسجيل الدخول
 function initLogin() {
     let roleCustomer = document.getElementById('roleCustomer'), roleDriver = document.getElementById('roleDriver'), loginPassword = document.getElementById('loginPassword'), loginBtn = document.getElementById('loginBtn'), nameInput = document.getElementById('loginName'), phoneInput = document.getElementById('loginPhone');
     roleCustomer.onclick = () => { roleCustomer.classList.add('active'); roleDriver.classList.remove('active'); loginPassword.style.display = 'none'; };
@@ -979,7 +1197,7 @@ function showPage(pageId) {
     if(activeNav) activeNav.classList.add('active');
     let floatCartElem = document.getElementById('floatCart');
     if(floatCartElem && !document.body.classList.contains('driver-mode')) { floatCartElem.style.display = window.cart.length > 0 && pageId === 'menuPage' ? 'flex' : 'none'; }
-    if(pageId === 'restaurantsPage') { renderFilters(); renderRestaurantsList(); }
+    if(pageId === 'restaurantsPage') { renderFilters(); renderRestaurantsList(); setTimeout(() => { renderCarousel3d(); updateCarousel3d(); startCarouselAuto(); }, 100); }
     if(pageId === 'homePage') document.getElementById('trackOrderBtnHome').style.display = localStorage.getItem('currentTrackingOrder') ? 'block' : 'none';
     if(pageId === 'adminPage') { renderAdminRestaurantsList(); populateRestaurantSelect(); renderAdminOrdersList(); renderAdminUsersList(); }
     if(pageId === 'driverInterfacePage') refreshDriverPanel();
@@ -1031,19 +1249,15 @@ document.querySelectorAll('#adminTabs .tab-btn').forEach(btn=>{
 });
 document.getElementById('adminItemRestaurantSelect')?.addEventListener('change', loadItemsForAdmin);
 
-renderSlider();
-startSlider();
 renderCategories();
 renderRestaurantsPreview();
 initPaymentList();
 
-// التحقق من وجود مستخدم محفوظ
 let savedUser = localStorage.getItem('waselny_user');
 if(savedUser){
     try {
         window.currentUser = JSON.parse(savedUser);
         if(window.currentUser.role === 'driver') {
-            // لا نستخدم enableDriverMode هنا لأنها تخلق مستخدم جديد
             document.body.classList.add('driver-mode');
             showPage('driverInterfacePage');
             refreshDriverPanel();

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
-    <title>وصل | WASAL - توصيل سريع</title>
+    <title>وصل | WASAL - النظام المتكامل</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -55,22 +55,26 @@
         .restaurant-hero-price { font-size: 1rem; font-weight: 800; color: var(--primary-light); margin-top: 4px; }
 
         .menu-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin-top: 10px; }
-        .menu-item-card { background: var(--white); border-radius: 20px; overflow: hidden; border: 1px solid var(--gray-light); box-shadow: var(--shadow); display: flex; flex-direction: column; transition: transform 0.2s; }
+        .menu-item-card { background: var(--white); border-radius: 20px; overflow: hidden; border: 1px solid var(--gray-light); box-shadow: var(--shadow); display: flex; flex-direction: column; transition: transform 0.2s, box-shadow 0.2s; position: relative; }
         .menu-item-card:active { transform: scale(0.98); }
-        .menu-item-img { height: 125px; background-size: cover; background-position: center; width: 100%; }
+        .menu-item-img { height: 125px; background-size: cover; background-position: center; width: 100%; background-color: #f1f5f9; }
         .menu-item-info { padding: 12px; display: flex; flex-direction: column; flex-grow: 1; justify-content: space-between; }
-        .menu-item-name { font-weight: 800; font-size: 0.85rem; }
-        .menu-item-desc { font-size: 0.65rem; color: var(--gray); margin: 6px 0; }
-        .menu-item-price { color: var(--primary); font-weight: 800; font-size: 0.9rem; margin-bottom: 10px; }
-        .action-container { width: 100%; min-height: 34px; }
-        .add-to-cart-btn { width: 100%; padding: 7px; background: var(--primary); color: white; border: none; border-radius: 30px; font-size: 0.75rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; }
-        .add-to-cart-btn:active { background: var(--primary-dark); }
-        .quantity-counter { display: flex; align-items: center; justify-content: space-between; background: var(--primary); border-radius: 30px; overflow: hidden; width: 100%; padding: 3px; color: white; }
-        .counter-btn { width: 28px; height: 28px; border-radius: 50%; border: none; background: rgba(255,255,255,0.2); color: white; font-size: 0.9rem; font-weight: 700; cursor: pointer; }
-        .counter-value { font-size: 0.8rem; font-weight: 700; min-width: 20px; text-align: center; }
+        .menu-item-name { font-weight: 800; font-size: 0.85rem; color: var(--dark); line-height: 1.4; margin-bottom: 2px; }
+        .menu-item-desc { font-size: 0.65rem; color: var(--gray); line-height: 1.3; margin-bottom: 8px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; height: 34px; }
+        .menu-item-price { color: var(--primary); font-weight: 800; font-size: 0.9rem; margin-bottom: 10px; display: flex; align-items: baseline; gap: 2px; }
+        .menu-item-price span { font-size: 0.65rem; font-weight: 600; color: var(--gray); }
         
+        .action-container { width: 100%; min-height: 34px; }
+        .add-to-cart-btn { width: 100%; padding: 7px; background: var(--primary); color: white; border: none; border-radius: 30px; font-size: 0.75rem; font-weight: 700; cursor: pointer; transition: background 0.2s; display: flex; align-items: center; justify-content: center; gap: 4px; box-shadow: 0 2px 4px rgba(15,118,110,0.2); }
+        .add-to-cart-btn:active { background: var(--primary-dark); }
+        
+        .quantity-counter { display: flex; align-items: center; justify-content: space-between; background: var(--primary); border-radius: 30px; overflow: hidden; width: 100%; padding: 3px; box-shadow: 0 2px 4px rgba(15,118,110,0.2); color: white; }
+        .counter-btn { width: 28px; height: 28px; border-radius: 50%; border: none; background: rgba(255,255,255,0.2); color: white; font-size: 0.9rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.1s; }
+        .counter-btn:active { background: rgba(255,255,255,0.4); }
+        .counter-value { font-size: 0.8rem; font-weight: 700; min-width: 20px; text-align: center; }
+
         .categories-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 12px; margin-bottom: 20px; }
-        .category-card { background: var(--white); border-radius: 14px; padding: 12px 6px; text-align: center; box-shadow: var(--shadow); border: 1px solid var(--gray-light); cursor: pointer; }
+        .category-card { background: var(--white); border-radius: 14px; padding: 12px 6px; text-align: center; box-shadow: var(--shadow); border: 1px solid var(--gray-light); cursor: pointer; transition: 0.1s; }
         .category-card:active { transform: scale(0.97); }
         .category-icon { font-size: 2rem; margin-bottom: 6px; }
         .category-card h3 { font-size: 0.85rem; font-weight: 800; }
@@ -127,7 +131,6 @@
         .restaurant-item-price .price { font-weight: 800; color: var(--primary); font-size: 0.8rem; }
         
         .float-cart { position: fixed; bottom: 70px; left: 14px; right: 14px; background: linear-gradient(135deg, var(--primary-dark), var(--primary)); color: white; padding: 12px 20px; border-radius: 50px; display: flex; justify-content: space-between; align-items: center; z-index: 1000; cursor: pointer; display: none; font-size: 0.85rem; font-weight: 700; box-shadow: 0 6px 16px rgba(15,118,110,0.3); }
-        
         .cart-sidebar { position: fixed; top: 0; left: -100%; width: 85%; max-width: 320px; height: 100%; background: var(--white); z-index: 10001; transition: left 0.3s; display: flex; flex-direction: column; box-shadow: -2px 0 15px rgba(0,0,0,0.2); }
         .cart-sidebar.open { left: 0; }
         .cart-header { padding: 14px; background: var(--primary); color: white; display: flex; justify-content: space-between; align-items: center; font-weight: 700; }
@@ -136,35 +139,35 @@
         .cart-item { display: flex; gap: 10px; padding: 10px; background: var(--bg-light); border-radius: 14px; margin-bottom: 10px; align-items: center; }
         .cart-item-img { width: 50px; height: 50px; border-radius: 10px; background-size: cover; }
         .cart-item-details { flex: 1; }
-        .cart-item-details h4 { font-size: 0.8rem; font-weight: 800; }
-        .cart-item-details div { font-size: 0.75rem; color: var(--primary); font-weight: 700; }
+        .cart-item-details h4 { font-size: 0.8rem; font-weight: 800; color: var(--dark); }
+        .cart-item-details div { font-size: 0.75rem; color: var(--primary); font-weight: 700; margin-top: 2px; }
         .cart-qty-controls { display: flex; align-items: center; gap: 8px; }
-        .qty-btn { width: 26px; height: 26px; border-radius: 50%; background: var(--primary); border: none; color: white; font-weight: bold; cursor: pointer; }
+        .qty-btn { width: 26px; height: 26px; border-radius: 50%; background: var(--primary); border: none; color: white; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; }
         .cart-footer { padding: 14px; border-top: 1px solid var(--gray-light); background: var(--white); }
         .cart-total { display: flex; justify-content: space-between; font-weight: 800; margin-bottom: 12px; font-size: 0.95rem; }
-        .checkout-btn { width: 100%; padding: 12px; background: var(--warning); color: white; border: none; border-radius: 30px; font-weight: 800; cursor: pointer; font-size: 0.9rem; }
+        .checkout-btn { width: 100%; padding: 12px; background: var(--warning); color: white; border: none; border-radius: 30px; font-weight: 800; cursor: pointer; font-size: 0.9rem; box-shadow: 0 4px 10px rgba(245,158,11,0.2); }
         
-        /* شريط التنقل السفلي المصغر */
-        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--white); display: flex; justify-content: space-around; padding: 5px 6px 8px; z-index: 100; border-top: 1px solid var(--gray-light); }
-        .nav-item { text-align: center; cursor: pointer; color: var(--gray); font-size: 0.55rem; font-weight: 700; padding: 3px 10px; border-radius: 16px; display: flex; flex-direction: column; align-items: center; position: relative; }
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--white); display: flex; justify-content: space-around; padding: 8px 8px 12px; box-shadow: 0 -4px 16px rgba(0,0,0,0.06); z-index: 100; border-radius: 24px 24px 0 0; border-top: 1px solid var(--gray-light); }
+        .nav-item { text-align: center; cursor: pointer; color: var(--gray); font-size: 0.65rem; font-weight: 700; padding: 4px 12px; border-radius: 16px; transition: 0.15s; display: flex; flex-direction: column; align-items: center; position: relative; }
         .nav-item.active { color: var(--primary); background: rgba(15,118,110,0.08); }
-        .nav-icon { font-size: 1rem; margin-bottom: 1px; }
-        .nav-badge { position: absolute; top: -2px; right: 12px; background: var(--danger); color: white; font-size: 0.5rem; padding: 1px 4px; border-radius: 10px; border: 1px solid var(--white); }
+        .nav-icon { font-size: 1.25rem; display: block; margin-bottom: 2px; }
+        .nav-badge { position: absolute; top: 1px; right: 18px; background: var(--danger); color: white; font-size: 0.55rem; font-weight: 800; padding: 1px 5px; border-radius: 10px; border: 2px solid var(--white); }
         
-        .back-btn { display: inline-flex; align-items: center; gap: 6px; background: var(--white); padding: 6px 14px; border-radius: 30px; margin-bottom: 14px; cursor: pointer; font-size: 0.75rem; font-weight: 700; border: 1px solid var(--gray-light); }
+        .back-btn { display: inline-flex; align-items: center; gap: 6px; background: var(--white); padding: 6px 14px; border-radius: 30px; margin-bottom: 14px; cursor: pointer; font-size: 0.75rem; font-weight: 700; box-shadow: var(--shadow); border: 1px solid var(--gray-light); }
+        
         .tracking-fullscreen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-light); z-index: 15000; overflow-y: auto; padding: 16px; display: none; }
-        .tracking-steps { display: flex; justify-content: space-between; align-items: center; margin: 20px 0; }
-        .step { text-align: center; flex: 1; }
-        .step .circle { width: 40px; height: 40px; background: var(--white); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 6px; border: 2px solid var(--gray-light); font-size: 1rem; color: var(--gray); }
-        .step.active .circle { background: var(--primary); border-color: var(--primary); color: white; }
+        .tracking-steps { display: flex; justify-content: space-between; align-items: center; margin: 20px 0; position: relative; }
+        .step { text-align: center; flex: 1; z-index: 2; }
+        .step .circle { width: 44px; height: 44px; background: var(--white); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 6px; border: 2px solid var(--gray-light); font-size: 1.1rem; color: var(--gray); transition: all 0.3s ease; }
+        .step.active .circle { background: var(--primary); border-color: var(--primary); color: white; transform: scale(1.1); box-shadow: 0 0 10px rgba(15,118,110,0.3); }
         .step.completed .circle { background: var(--success); border-color: var(--success); color: white; }
-        .step-label { font-size: 0.6rem; font-weight: 600; }
-        .step-connector { flex: 0.5; height: 3px; background: var(--gray-light); }
+        .step-label { font-size: 0.65rem; font-weight: 700; color: var(--dark); }
+        .step-connector { flex: 1; height: 4px; background: var(--gray-light); position: relative; top: -12px; z-index: 1; margin: 0 -15px; }
         .step-connector.completed { background: var(--success); }
         
         .field-input { width: 100%; padding: 11px 16px; border-radius: 30px; border: 1px solid var(--gray-light); background: var(--white); font-size: 0.85rem; margin-bottom: 12px; color: var(--dark); }
         .btn-primary { background: var(--primary); color: white; border: none; padding: 11px; border-radius: 40px; width: 100%; font-weight: 700; cursor: pointer; font-size: 0.9rem; }
-        .toast { position: fixed; bottom: 85px; left: 20px; right: 20px; background: var(--dark); color: white; padding: 12px; border-radius: 30px; text-align: center; z-index: 3000; display: none; font-size: 0.8rem; }
+        .toast { position: fixed; bottom: 85px; left: 20px; right: 20px; background: var(--dark); color: white; padding: 12px; border-radius: 30px; text-align: center; z-index: 200000; display: none; font-size: 0.8rem; font-weight: 600; box-shadow: var(--shadow-md); }
         .toast.show { display: block; animation: slideUp 0.3s forwards; }
         @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
         
@@ -175,13 +178,19 @@
         .payment-name { flex: 1; font-weight: 700; font-size: 0.8rem; }
         .account-number { background: #f1f5f9; padding: 10px 14px; border-radius: 25px; display: flex; justify-content: space-between; align-items: center; margin: 8px 0; direction: ltr; font-family: monospace; font-size: 0.85rem; font-weight: 700; }
         
-        #loginOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--primary-dark); z-index: 100000; display: flex; align-items: center; justify-content: center; }
-        .login-card { background: var(--white); border-radius: 32px; padding: 24px; width: 90%; max-width: 320px; text-align: center; box-shadow: var(--shadow-md); }
-        .role-buttons { display: flex; gap: 10px; margin-bottom: 16px; }
-        .role-btn { flex: 1; padding: 10px; border-radius: 40px; background: var(--gray-light); font-weight: 700; cursor: pointer; font-size: 0.8rem; color: var(--gray); }
-        .role-btn.active { background: var(--primary); color: white; }
+        #loginOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, var(--primary-dark), var(--primary)); z-index: 99999; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(6px); }
+        #secretDriverOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.85); z-index: 100000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(10px); }
         
-        .map-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 10000; display: none; flex-direction: column; }
+        .login-card { background: var(--white); border-radius: 32px; padding: 30px 20px; width: 90%; max-width: 360px; text-align: center; box-shadow: 0 25px 50px rgba(0,0,0,0.2); animation: slideUpFade 0.4s ease-out; position: relative; }
+        @keyframes slideUpFade { 0% { opacity: 0; transform: translateY(30px); } 100% { opacity: 1; transform: translateY(0); } }
+        
+        .login-card h2 { font-size: 2rem; font-weight: 900; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); -webkit-background-clip: text; background-clip: text; color: transparent; margin-bottom: 8px; }
+        .login-card p { color: var(--gray); font-size: 0.85rem; margin-bottom: 20px; }
+        .login-card input { width: 100%; padding: 12px 16px; margin-bottom: 14px; border-radius: 30px; border: 1px solid var(--gray-light); background: var(--bg-light); font-size: 0.9rem; transition: 0.2s; color: var(--dark); }
+        .login-card input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(15,118,110,0.1); outline: none; }
+        .login-card .btn-login { width: 100%; padding: 12px; background: var(--primary); color: white; border: none; border-radius: 30px; font-weight: 700; font-size: 1rem; cursor: pointer; transition: 0.2s; margin-top: 10px; box-shadow: 0 6px 15px rgba(15,118,110,0.3); }
+        
+        .map-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 1000000; display: none; flex-direction: column; }
         #map { flex: 1; width: 100%; }
         .map-controls { display: flex; background: var(--primary-dark); }
         .map-confirm, .map-back { flex: 1; color: white; padding: 14px; text-align: center; font-weight: 700; cursor: pointer; }
@@ -192,14 +201,42 @@
         .tab-btn.active { color: var(--primary); border-bottom: 3px solid var(--primary); }
         .tab-content { display: none; }
         .tab-content.active-tab { display: block; }
-        .driver-stats { display: flex; gap: 10px; margin-bottom: 12px; }
-        .stat-card { background: linear-gradient(135deg, var(--primary-dark), var(--primary)); color: white; border-radius: 14px; padding: 10px; flex: 1; text-align: center; font-size: 0.7rem; }
-        .stat-card .number { font-size: 1.2rem; font-weight: 900; }
-        .order-items-list { list-style: none; margin: 10px 0; }
-        .order-items-list li { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid #eee; font-size: 0.8rem; }
-        .tracking-detail-card { background: var(--white); border-radius: 16px; padding: 16px; margin-bottom: 12px; box-shadow: var(--shadow); }
-        .tracking-label { font-weight: 700; color: var(--primary); font-size: 0.75rem; margin-bottom: 4px; }
-        .tracking-value { font-size: 0.85rem; margin-bottom: 8px; }
+        
+        /* واجهات المندوب المتقدمة */
+        .driver-order-card { background: var(--white); border: 1px solid var(--gray-light); border-radius: 16px; padding: 14px; margin-bottom: 12px; box-shadow: var(--shadow); position: relative; }
+        .driver-order-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--gray-light); padding-bottom: 8px; margin-bottom: 8px; }
+        .driver-order-id { font-weight: 800; color: var(--primary); font-size: 0.85rem; }
+        .driver-order-status { font-size: 0.7rem; padding: 3px 8px; border-radius: 20px; font-weight: 700; }
+        .status-pending { background: rgba(245,158,11,0.15); color: var(--warning); }
+        .status-ontheway { background: rgba(15,118,110,0.15); color: var(--primary); }
+        .status-arrived { background: rgba(16,185,129,0.15); color: var(--success); }
+        
+        .driver-tabs { display: flex; background: var(--gray-light); padding: 4px; border-radius: 30px; margin-bottom: 14px; }
+        .driver-tab { flex: 1; text-align: center; padding: 8px; border-radius: 25px; font-size: 0.75rem; font-weight: 700; color: var(--gray); cursor: pointer; }
+        .driver-tab.active { background: var(--primary); color: white; box-shadow: var(--shadow); }
+        
+        .order-meta-row { display: flex; justify-content: space-between; font-size: 0.75rem; margin-bottom: 4px; color: var(--gray); }
+        .order-meta-row strong { color: var(--dark); }
+        
+        /* نظام التقييم المنبثق للعميل */
+        .rating-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15,23,42,0.7); backdrop-filter: blur(5px); z-index: 16000; display: none; align-items: center; justify-content: center; padding: 16px; }
+        .rating-card { background: var(--white); border-radius: 24px; padding: 22px; width: 100%; max-width: 360px; text-align: center; box-shadow: var(--shadow-md); animation: slideUpFade 0.3s ease-out; }
+        .rating-card h3 { font-size: 1.1rem; font-weight: 800; color: var(--primary-dark); margin-bottom: 6px; }
+        .rating-card p { font-size: 0.75rem; color: var(--gray); margin-bottom: 14px; }
+        .rating-stars { display: flex; justify-content: center; gap: 8px; direction: ltr; margin-bottom: 12px; }
+        .rating-stars i { font-size: 1.8rem; color: var(--gray-light); cursor: pointer; transition: color 0.1s; }
+        .rating-stars i.active { color: var(--warning); }
+        .rating-comment { width: 100%; padding: 10px; border-radius: 12px; border: 1px solid var(--gray-light); font-size: 0.8rem; resize: none; height: 55px; margin-bottom: 16px; outline: none; color: var(--dark); background: var(--bg-light); }
+        
+        /* إشعار توصيل منبثق فوري */
+        .delivery-alert-popup { position: fixed; top: 20px; left: 20px; right: 20px; background: linear-gradient(135deg, #10b981, #059669); color: white; padding: 16px; border-radius: 20px; box-shadow: var(--shadow-md); z-index: 17000; display: none; animation: slideDown 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        @keyframes slideDown { from { transform: translateY(-100px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        
+        /* عداد تصاعدي زمني للطلبات */
+        .timer-badge { background: #f1f5f9; padding: 2px 8px; border-radius: 12px; font-family: monospace; font-weight: bold; color: var(--danger); font-size: 0.75rem; display: flex; align-items: center; gap: 4px; }
+        
+        /* خريطة مراقبة الإدارة الفورية */
+        #adminLiveMap { width: 100%; height: 320px; border-radius: 16px; margin-bottom: 14px; border: 1px solid var(--gray-light); }
     </style>
 </head>
 <body>
@@ -241,7 +278,7 @@
         <div id="checkoutOrderSummary" style="background:var(--white); border-radius:14px; padding:12px; border:1px solid var(--gray-light);"></div>
         <div class="location-section" style="margin-top:15px;">
             <label style="font-weight:800; font-size:0.8rem;">📍 عنوان التوصيل</label>
-            <button class="current-location-btn" id="getCurrentLocationBtn" style="background:#10b981; color:white; width:100%; padding:9px; border-radius:30px; margin:8px 0; border:none; font-weight:700; cursor:pointer;"><i class="fas fa-location-dot"></i> استخدم موقعي الحالي</button>
+            <button class="current-location-btn" onclick="getCurrentLocationForCheckout()" style="background:#10b981; color:white; width:100%; padding:9px; border-radius:30px; margin:8px 0; border:none; font-weight:700; cursor:pointer;"><i class="fas fa-location-dot"></i> استخدم موقعي الحالي</button>
             <div class="geo-btn" onclick="initMapForCheckout()" style="background:var(--white); border:1px solid var(--gray-light); border-radius:30px; padding:9px; display:flex; justify-content:space-between; margin-bottom:8px; cursor:pointer;"><span id="checkoutLocationTxt">🗺️ حدد موقعك من الخريطة</span><i class="fas fa-map-marker-alt" style="color:var(--primary)"></i></div>
             <input type="text" id="checkoutAddressManual" class="field-input" placeholder="✍️ أو اكتب عنوانك يدوياً التفصيلي">
             <div id="deliveryCostDisplay" style="display:none; background:var(--primary-dark); border-radius:14px; padding:10px; margin:10px 0; color:white; display:flex; justify-content:space-between; font-weight:700; font-size:0.8rem;"><div>🚚 سعر التوصيل</div><div><strong id="deliveryCostValue">0</strong> ريال</div></div>
@@ -255,7 +292,7 @@
                 <div class="payment-option" data-method="jawaly"><div class="payment-icon"><i class="fas fa-mobile-alt"></i></div><div class="payment-name">جوالي</div></div>
                 <div class="payment-option" data-method="kremi"><div class="payment-icon"><i class="fas fa-credit-card"></i></div><div class="payment-name">الكريمي</div></div>
                 <div class="payment-option" data-method="easy"><div class="payment-icon"><i class="fas fa-bolt"></i></div><div class="payment-name">إيزي</div></div>
-                <div class="payment-option" data-method="cash"><div class="payment-icon"><i class="fas fa-hand-holding-usd"></i></div><div class="payment-name">الدفع عند الاستلام</div></div>
+                <div class="payment-option" data-method="cash"><div class="payment-option" data-method="cash"><div class="payment-icon"><i class="fas fa-hand-holding-usd"></i></div><div class="payment-name">الدفع عند الاستلام</div></div>
             </div>
             <div id="paymentDetails" style="display:none;">
                 <div class="account-number"><span id="accountNumberText">777215154</span><button class="copy-btn" onclick="copyAccountNumber()" style="background:var(--primary); color:white; border:none; padding:4px 10px; border-radius:20px; cursor:pointer; font-size:0.7rem;">نسخ</button></div>
@@ -278,9 +315,79 @@
         </div>
     </div>
 
-    <div id="driverPage" class="page"><div class="driver-panel"><div style="display:flex; justify-content:space-between; margin-bottom:10px;"><h2 style="font-size:1rem;">👋 مرحباً، <span id="driverNameDisplay"></span></h2><i class="fas fa-user-circle" style="font-size:1.6rem; color:var(--primary);"></i></div><div class="driver-stats"><div class="stat-card"><i class="fas fa-truck"></i><div class="number" id="activeOrdersCount">0</div><span>طلبي النشط</span></div><div class="stat-card"><i class="fas fa-check-circle"></i><div class="number" id="completedOrdersCount">0</div><span>مكتمل</span></div></div><div id="driverOrdersList"></div><button id="driverLogoutBtn" class="btn-primary" style="background:var(--danger); margin-top:12px;">تسجيل الخروج</button></div></div>
+    <div id="driverPage" class="page">
+        <div class="driver-panel">
+            <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
+                <h2 style="font-size:1rem;">👋 مرحباً كابتن، <span id="driverNameDisplay"></span></h2>
+                <i class="fas fa-user-circle" style="font-size:1.6rem; color:var(--primary);"></i>
+            </div>
+            <div class="driver-stats">
+                <div class="stat-card"><i class="fas fa-truck"></i><div class="number" id="activeOrdersCount">0</div><span>طلباتي النشطة</span></div>
+                <div class="stat-card"><i class="fas fa-check-circle"></i><div class="number" id="completedOrdersCount">0</div><span>مكتمل</span></div>
+            </div>
+            
+            <div class="driver-tabs">
+                <div class="driver-tab active" id="tabAvailableBtn" onclick="switchDriverSubTab('available')">الطلبات المتاحة</div>
+                <div class="driver-tab" id="tabActiveBtn" onclick="switchDriverSubTab('active')">الطلبات النشطة</div>
+            </div>
+            
+            <div id="driverAvailableOrdersContainer"></div>
+            <div id="driverActiveOrdersContainer" style="display:none;"></div>
+            
+            <button id="driverLogoutBtn" class="btn-primary" style="background:var(--danger); margin-top:12px;">تسجيل الخروج</button>
+        </div>
+    </div>
 
-    <div id="adminPage" class="page"><div style="background:var(--white); border-radius:14px; padding:14px;"><div class="back-btn" onclick="showPage('homePage')">🔙 رجوع</div><h2 style="color:var(--primary); margin:10px 0; font-size:1rem;">👨‍💼 لوحة الإدارة</h2><div class="admin-tabs" id="adminTabs"><button class="tab-btn active" data-tab="restaurants">🍔 المطاعم</button><button class="tab-btn" data-tab="items">🍽️ الأصناف</button><button class="tab-btn" data-tab="orders">📦 الطلبات</button><button class="tab-btn" data-tab="users">👥 المستخدمين</button><button class="tab-btn" data-tab="settings">⚙️ الإعدادات</button></div><div class="tab-content active-tab" id="tab-restaurants"><div class="admin-section"><h4>إضافة مطعم</h4><input type="text" id="adminRestName" class="field-input" placeholder="اسم المطعم"><select id="adminRestCat" class="field-input"><option>بروست</option><option>بيتزا</option><option>برجر</option><option>شاورما</option></select><input type="text" id="adminRestImg" class="field-input" placeholder="رابط الصورة"><div class="geo-btn" onclick="initMapForAdmin()" style="background:var(--bg-light); padding:8px; border-radius:30px; text-align:center; margin-bottom:8px; cursor:pointer;">🗺️ اختر موقع المطعم</div><input type="hidden" id="adminRestLat"><input type="hidden" id="adminRestLng"><button class="btn-primary" onclick="addNewRestaurant()">➕ إضافة</button></div><div class="admin-section"><h4>قائمة المطاعم</h4><div id="adminRestaurantsList"></div></div></div><div class="tab-content" id="tab-items"><div class="admin-section"><select id="adminItemRestaurantSelect" class="field-input"></select><div id="adminItemsList"></div><div style="margin-top:10px;"><input type="text" id="newItemName" class="field-input" placeholder="اسم الصنف"><input type="number" id="newItemPrice" class="field-input" placeholder="السعر"><button class="btn-primary" onclick="addNewItem()">+ إضافة صنف</button></div></div></div><div class="tab-content" id="tab-orders"><div class="admin-section"><div id="adminOrdersList"></div></div></div><div class="tab-content" id="tab-users"><div class="admin-section"><div id="adminUsersList"></div></div></div><div class="tab-content" id="tab-settings"><div class="admin-section"><div><span>🚖 سعر الكيلومتر:</span><input type="number" id="adminPricePerKm" value="180" class="field-input"></div><div><span>💰 الحد الأدنى:</span><input type="number" id="adminMinDelivery" value="550" class="field-input"></div><button class="btn-primary" onclick="saveDeliverySettings()">💾 حفظ</button></div></div></div></div>
+    <div id="adminPage" class="page">
+        <div style="background:var(--white); border-radius:14px; padding:14px;">
+            <div class="back-btn" onclick="showPage('homePage')">🔙 رجوع</div>
+            <h2 style="color:var(--primary); margin:10px 0; font-size:1rem;">👨‍💼 لوحة الإدارة الشاملة</h2>
+            <div class="admin-tabs" id="adminTabs">
+                <button class="tab-btn active" data-tab="live">📍 الخريطة الحية</button>
+                <button class="tab-btn" data-tab="restaurants">🍔 المطاعم</button>
+                <button class="tab-btn" data-tab="items">🍽️ الأصناف</button>
+                <button class="tab-btn" data-tab="orders">📦 الطلبات</button>
+                <button class="tab-btn" data-tab="users">👥 المستخدمين</button>
+                <button class="tab-btn" data-tab="settings">⚙️ الإعدادات</button>
+            </div>
+            
+            <div class="tab-content active-tab" id="tab-live">
+                <h4>المراقبة الفورية المباشرة لحركة الطلبات</h4>
+                <div id="adminLiveMap"></div>
+                <div id="adminLiveOrdersStats" style="font-size:0.75rem; color:var(--gray)">جاري تحميل تحديثات الخريطة...</div>
+            </div>
+            
+            <div class="tab-content" id="tab-restaurants">
+                <div class="admin-section">
+                    <h4>تعديل شامل وإضافة مطعم</h4>
+                    <input type="text" id="adminRestName" class="field-input" placeholder="اسم المطعم">
+                    <select id="adminRestCat" class="field-input"><option>بروست</option><option>بيتزا</option><option>برجر</option><option>شاورما</option></select>
+                    <input type="text" id="adminRestImg" class="field-input" placeholder="رابط الصورة">
+                    <div class="geo-btn" onclick="initMapForAdmin()" style="background:var(--bg-light); padding:10px; border-radius:30px; text-align:center; margin-bottom:8px; cursor:pointer; font-size:0.8rem; font-weight:700; border:1px solid var(--gray-light)">🗺️ انقر هنا لتحديد موقع المطعم الجغرافي</div>
+                    <input type="text" id="adminRestLat" class="field-input" placeholder="خط العرض Latitude (تلقائي)" readonly>
+                    <input type="text" id="adminRestLng" class="field-input" placeholder="خط الطول Longitude (تلقائي)" readonly>
+                    <button class="btn-primary" onclick="addNewRestaurant()">➕ حفظ وإضافة المطعم لـ Firebase</button>
+                </div>
+                <div class="admin-section"><h4>قائمة المطاعم الحالية</h4><div id="adminRestaurantsList"></div></div>
+            </div>
+            
+            <div class="tab-content" id="tab-items">
+                <div class="admin-section">
+                    <select id="adminItemRestaurantSelect" class="field-input" onchange="loadAdminItemsForSelectedRestaurant()"></select>
+                    <div id="adminItemsList"></div>
+                    <div style="margin-top:10px; padding-top:10px; border-top:1px dashed #eee;">
+                        <input type="text" id="newItemName" class="field-input" placeholder="اسم الصنف الجديد">
+                        <input type="number" id="newItemPrice" class="field-input" placeholder="السعر بالريال">
+                        <button class="btn-primary" onclick="addNewItem()">➕ إضافة صنف جديد للقائمة</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="tab-content" id="tab-orders"><div class="admin-section"><div id="adminOrdersList"></div></div></div>
+            <div class="tab-content" id="tab-users"><div class="admin-section"><div id="adminUsersList"></div></div></div>
+            <div class="tab-content" id="tab-settings"><div class="admin-section"><div><span>🚖 سعر الكيلومتر:</span><input type="number" id="adminPricePerKm" class="field-input"></div><div><span>💰 الحد الأدنى:</span><input type="number" id="adminMinDelivery" class="field-input"></div><button class="btn-primary" onclick="saveDeliverySettings()">💾 حفظ الإعدادات الافتراضية</button></div></div>
+        </div>
+    </div>
 </div>
 
 <div id="floatCart" class="float-cart" onclick="goToCheckout()"><div><span id="cartCount">0</span> أصناف | <span id="cartTotal">0</span> ريال</div><div>عرض السلة <i class="fas fa-chevron-left"></i></div></div>
@@ -295,27 +402,78 @@
 </nav>
 
 <div id="toastMsg" class="toast"></div>
-<div id="loginOverlay"><div class="login-card"><h3>وصل | WASAL</h3><div class="role-buttons"><div id="roleCustomer" class="role-btn active">عميل</div><div id="roleDriver" class="role-btn">مندوب</div></div><input type="text" id="loginName" placeholder="الاسم"><input type="tel" id="loginPhone" placeholder="رقم الهاتف"><input type="password" id="loginPassword" placeholder="كلمة السر" style="display:none;"><button id="loginBtn">دخول</button></div></div>
-<div id="trackFullscreen" class="tracking-fullscreen"><div id="trackingFullscreenContainer"></div><button class="btn-primary" onclick="closeTracking()" style="margin-top:12px;">إغلاق</button></div>
-<div id="map-overlay" class="map-overlay"><div id="map"></div><div class="map-controls"><div class="map-back" onclick="closeMap()">↩️ رجوع</div><div class="map-confirm" onclick="confirmMapLocation()">✅ تأكيد</div></div></div>
+
+<div id="deliveryAlertPopup" class="delivery-alert-popup">
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+        <div>
+            <h4 style="font-weight:800; font-size:0.9rem;"><i class="fas fa-check-circle"></i> تم التوصيل بنجاح!</h4>
+            <p style="font-size:0.75rem; margin-top:2px; opacity:0.95;">شكراً لاستخدامك خدمتنا. نتمنى لك يوماً سعيداً ووجبة شهية 😊</p>
+        </div>
+        <button onclick="closeDeliveryAlertPopup()" style="background:transparent; border:none; color:white; font-size:1.1rem; cursor:pointer;">✕</button>
+    </div>
+</div>
+
+<div id="ratingOverlay" class="rating-overlay">
+    <div class="rating-card">
+        <h3>🌟 تقييم جودة الخدمة</h3>
+        <p>رأيك يهمنا لتطوير خدمات تطبيق وصل</p>
+        
+        <div style="text-align:right; margin-bottom:12px;">
+            <label style="font-size:0.75rem; font-weight:700; color:var(--dark);">🍔 تقييم المطعم والمأكولات:</label>
+            <div class="rating-stars" id="restaurantStars">
+                <i class="fas fa-star" data-value="1"></i><i class="fas fa-star" data-value="2"></i><i class="fas fa-star" data-value="3"></i><i class="fas fa-star" data-value="4"></i><i class="fas fa-star" data-value="5"></i>
+            </div>
+            <textarea id="restaurantComment" class="rating-comment" placeholder="اكتب ملاحظاتك عن المطعم هنا..."></textarea>
+        </div>
+        
+        <div style="text-align:right; margin-bottom:12px;">
+            <label style="font-size:0.75rem; font-weight:700; color:var(--dark);">🚖 تقييم كابتن التوصيل (المندوب):</label>
+            <div class="rating-stars" id="driverStars">
+                <i class="fas fa-star" data-value="1"></i><i class="fas fa-star" data-value="2"></i><i class="fas fa-star" data-value="3"></i><i class="fas fa-star" data-value="4"></i><i class="fas fa-star" data-value="5"></i>
+            </div>
+            <textarea id="driverComment" class="rating-comment" placeholder="اكتب ملاحظاتك عن أداء المندوب وسرعته..."></textarea>
+        </div>
+        
+        <button class="btn-primary" onclick="submitOrderRating()">حفظ وإرسال التقييم للإدارة 😊</button>
+    </div>
+</div>
+
+<div id="loginOverlay" style="display:none;">
+    <div class="login-card">
+        <h2>وصل WASAL</h2>
+        <p>توصيل سريع وذكي للوجبات والطلبات</p>
+        <input type="text" id="loginName" placeholder="الاسم الكامل">
+        <input type="tel" id="loginPhone" placeholder="رقم الهاتف">
+        <button class="btn-login" id="loginBtn">دخول</button>
+        <div class="secret-notice">✨ توصيل طلباتك بكل سهولة ✨</div>
+    </div>
+</div>
+
+<div id="secretDriverOverlay">
+    <div class="login-card" style="background:var(--primary-dark); color:white;">
+        <h3 style="color:white; margin-bottom:10px;">🔐 دخول المندوب</h3>
+        <input type="text" id="secretDriverName" placeholder="اسم المندوب" style="background:rgba(255,255,255,0.1); color:white; border:1px solid rgba(255,255,255,0.2);">
+        <input type="password" id="secretDriverPassword" placeholder="كلمة السر" style="background:rgba(255,255,255,0.1); color:white; border:1px solid rgba(255,255,255,0.2);">
+        <button class="btn-login" onclick="loginAsDriver()" style="background:var(--warning); color:#000;">دخول</button>
+        <button onclick="closeSecretDriver()" style="background:transparent; border:none; color:white; margin-top:15px; font-weight:700; cursor:pointer;">إلغاء والعودة</button>
+    </div>
+</div>
+
+<div id="trackFullscreen" class="tracking-fullscreen"><div id="trackingFullscreenContainer"></div><button class="btn-primary" onclick="closeTracking()" style="margin-top:12px;">إغلاق نافذة التتبع</button></div>
+<div id="map-overlay" class="map-overlay"><div id="map"></div><div class="map-controls"><div class="map-back" onclick="closeMap()">↩️ رجوع</div><div class="map-confirm" onclick="confirmMapLocation()">✅ تأكيد الموقع الفعلي</div></div></div>
 
 <script>
-// ==================== قائمة المطاعم الكاملة ====================
 const allRestaurantsData = [
-    { id: 1, name: "رويال بروستر", cat: "بروست", img: "https://images.unsplash.com/photo-1626645738196-c2a7c8d08f58?w=400", items: [{n:"وجبة بروست (4 قطع)",p:2200,d:"دجاج مقرمش يقدم مع البطاطس، الثومية والخبز الطازج"},{n:"وجبة زنجر سوبريم",p:2400,d:"ساندوتش زنجر حار مع الجبنة الذائبة والخس المقرمش"},{n:"وجبة ستريبس (5 قطع)",p:2000,d:"قطع استريبس الدجاج المقلي المقرمش خالية من العظم"},{n:"بطاطس مقلية",p:600,d:"اصابع بطاطس ذهبية ومقرمشة ومملحة"},{n:"مشروب غازي",p:400,d:"مشروب غازي بارد منعش"}] },
-    { id: 2, name: "البيك رويال", cat: "بروست", img: "https://images.unsplash.com/photo-1562967914-608f82629710?w=400", items: [{n:"وجبة بروست رويال",p:2400,d:"دجاج ذهبي مقرمش بخلطة البيك الملكية الخاصة"},{n:"وجبة فيليه سمك",p:2200,d:"شرائح فيليه سمك مقلي مقرمش مع صلصة التارتار"},{n:"ساندوتش زنجر",p:1600,d:"ساندوتش دجاج حار مقرمش مع الخس والطماطم"},{n:"بطاطس",p:800,d:"طبق بطاطس مقلية ذهبية ولذيذة"}] },
-    { id: 3, name: "شاورما هت", cat: "شاورما", img: "https://images.unsplash.com/photo-1644704170910-a0cdf183649b?w=400", items: [{n:"شاورما دجاج",p:1200,d:"شاورما دجاج متبلة ومثومة بخبز صاج"},{n:"شاورما لحم",p:1800,d:"شاورما لحم بلدي طازج مع الطحينة والبقدونس"},{n:"شاورما عربي (صحن)",p:2200,d:"قطع شاورما مقطعة تقدم مع البطاطس والمقبلات"},{n:"بطاطس",p:700,d:"بطاطس مقلية حجم عائلي"}] },
-    { id: 4, name: "بيتزا هت", cat: "بيتزا", img: "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=400", items: [{n:"بيتزا مارجريتا",p:2500,d:"صلصة طماطم غنية مع جبنة الموزاريلا الفاخرة"},{n:"بيبروني",p:3000,d:"قطع البيبروني البقري مع الموزاريلا والصلصة"},{n:"بيتزا دجاج",p:2800,d:"قطع دجاج مشوي، فلفل أخضر، زيتون وموزاريلا"}] },
-    { id: 5, name: "ستار برجر", cat: "برجر", img: "https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=400", items: [{n:"برجر لحم مشوي",p:1800,d:"شريحة لحم بقري طازج مشوي مع الجبن والخضار"},{n:"برجر دجاج كرسبي",p:1600,d:"صدر دجاج مقرمش مع المايونيز والخس"},{n:"دبل برجر ستار",p:2800,d:"شريحتين من اللحم والجبن مع صوص ستار الخاص"}] }
+    { id: 1, name: "رويال بروستر", cat: "بروست", img: "https://images.unsplash.com/photo-1626645738196-c2a7c8d08f58?w=400", restaurantLat: 15.3694, restaurantLng: 44.1910, items: [{n:"وجبة بروست (4 قطع)",p:2200,d:"دجاج مقرمش يقدم مع البطاطس، الثومية والخبز الطازج"},{n:"وجبة زنجر سوبريم",p:2400,d:"ساندوتش زنجر حار مع الجبنة الذائبة والخس المقرمش"},{n:"وجبة ستريبس (5 قطع)",p:2000,d:"قطع استريبس الدجاج المقلي المقرمش خالية من العظم"}] },
+    { id: 2, name: "البيك رويال", cat: "بروست", img: "https://images.unsplash.com/photo-1562967914-608f82629710?w=400", restaurantLat: 15.3520, restaurantLng: 44.2012, items: [{n:"وجبة بروست رويال",p:2400,d:"دجاج ذهبي مقرمش بخلطة البيك الملكية الخاصة"},{n:"ساندوتش زنجر",p:1600,d:"ساندوتش دجاج حار مقرمش مع الخس والطما"}] },
+    { id: 3, name: "شاورما هت", cat: "شاورما", img: "https://images.unsplash.com/photo-1644704170910-a0cdf183649b?w=400", restaurantLat: 15.3611, restaurantLng: 44.1785, items: [{n:"شاورما دجاج",p:1200,d:"شاورما دجاج متبلة ومثومة بخبز صاج"},{n:"شاورما عربي (صحن)",p:2200,d:"قطع شاورما مقطعة تقدم مع البطاطس والمقبلات"}] }
 ];
 
 function getItemImage(itemName) {
     const name = itemName.toLowerCase();
     if (name.includes('برجر')) return 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=300';
-    if (name.includes('بروست')) return 'https://images.unsplash.com/photo-1626645738196-c2a7c8d08f58?w=300';
-    if (name.includes('زنجر')) return 'https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?w=300';
+    if (name.includes('بروست') || name.includes('ستريبس')) return 'https://images.unsplash.com/photo-1626645738196-c2a7c8d08f58?w=300';
     if (name.includes('شاورما')) return 'https://images.unsplash.com/photo-1644704170910-a0cdf183649b?w=300';
-    if (name.includes('بيتزا')) return 'https://images.unsplash.com/photo-1513104890138-7c749659a591?w=300';
     return 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=300';
 }
 
@@ -332,9 +490,13 @@ window.currentRestaurant = null;
 window.customerLocation = null;
 window.deliveryCost = 0;
 let map, marker, currentMapMode = null;
+let adminLiveLeafletMap = null;
 let selectedPaymentMethod = 'cash';
 let receiptBase64 = null;
-let allRestaurants = [...allRestaurantsData];
+let allRestaurants = allRestaurantsData;
+let activeDriverSubTab = 'available';
+let trackingInterval = null;
+let currentRatingOrderId = null;
 
 function showToast(msg) { let t = document.getElementById('toastMsg'); if(t){ t.innerText=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2500); } }
 function calculateDistance(lat1,lng1,lat2,lng2) { const R=6371; const dLat=(lat2-lat1)*Math.PI/180; const dLng=(lng2-lng1)*Math.PI/180; const a=Math.sin(dLat/2)**2+Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLng/2)**2; return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a)); }
@@ -360,8 +522,10 @@ function updateCheckoutSummary() {
     if(summaryDiv) summaryDiv.innerHTML = `<h4 style="margin-bottom:8px; color:var(--primary); font-weight:800;">🍽️ ${window.currentRestaurant.name}</h4>${itemsHtml}`;
 }
 
-async function loadOrders() { try { let res = await fetch(`${FIREBASE_URL}/orders.json`); let data = await res.json(); window.allOrders = data ? Object.values(data).sort((a,b)=>b.id-a.id) : []; } catch(e){} }
+async function loadOrders() { try { let res = await fetch(`${FIREBASE_URL}/orders.json`); let data = await res.json(); window.allOrders = data ? Object.keys(data).map(key=>({firebaseKey:key, ...data[key]})) : []; window.allOrders.sort((a,b)=>b.id-a.id); } catch(e){} }
 async function loadUsers() { try { let res = await fetch(`${FIREBASE_URL}/users.json`); let data = await res.json(); window.allUsers = data ? Object.values(data) : []; } catch(e){} }
+async function loadGlobalSettings() { try { let res = await fetch(`${FIREBASE_URL}/settings.json`); let data = await res.json(); if(data){ PRICE_PER_KM = parseInt(data.pricePerKm || 180); MIN_DELIVERY_PRICE = parseInt(data.minDelivery || 550); if(document.getElementById('adminPricePerKm')) document.getElementById('adminPricePerKm').value = PRICE_PER_KM; if(document.getElementById('adminMinDelivery')) document.getElementById('adminMinDelivery').value = MIN_DELIVERY_PRICE; } } catch(e){} }
+async function loadRestaurantsFromFirebase() { try { let res = await fetch(`${FIREBASE_URL}/restaurants.json`); let data = await res.json(); if(data) { allRestaurants = Object.keys(data).map(k=>({firebaseKey:k, ...data[k]})); } else { allRestaurants = allRestaurantsData; } } catch(e){} }
 
 function renderCategories() {
     let grid = document.getElementById('categoriesGrid');
@@ -382,11 +546,10 @@ function renderOffers() {
 function renderRestaurantsPreview() {
     let preview = allRestaurants.slice(0,4);
     let container = document.getElementById('restaurantsPreview');
-    container.innerHTML = preview.map(r=>`<div class="preview-card" onclick="openRestaurantMenu(${r.id})"><div class="preview-img" style="background-image:url('${r.img}')"></div><div class="preview-info"><div class="preview-name">${r.name}</div><div class="preview-cuisine">${r.cat}</div><div class="preview-stats"><span>⭐ 4.8</span><span>⏱️ 25-40 دقيقة</span></div></div><div class="preview-price"><div class="price">${r.items[0]?.p || 2200}</div><div>ريال</div></div></div>`).join('');
+    container.innerHTML = preview.map(r=>`<div class="preview-card" onclick="openRestaurantMenu(${r.id})"><div class="preview-img" style="background-image:url('${r.img}')"></div><div class="preview-info"><div class="preview-name">${r.name}</div><div class="preview-cuisine">${r.cat}</div><div class="preview-stats"><span>⭐ 4.8</span><span>⏱️ 25-40 دقيقة</span></div></div><div class="preview-price"><div class="price">${r.items && r.items[0] ? r.items[0].p : 2200}</div><div>ريال</div></div></div>`).join('');
 }
 window.openCategory = function(catId) { if(catId === 'restaurants') showPage('restaurantsPage'); else showToast(`قريباً - قسم ${catId} قيد التجهيز`); };
 
-// سلايدر ثلاثي الأبعاد
 const sliderImages = [
     { image: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800", title: "🔥 عروض الرويال", desc: "خصومات ملوكية تصل إلى 40%" },
     { image: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=800", title: "🚚 توصيل سريع وآمن", desc: "طعامك يصلك ساخناً دائماً" }
@@ -404,9 +567,9 @@ function renderCarousel() {
         let opacity = 1 - Math.abs(i - carouselIndex) * 0.2;
         html += `<div class="carousel-slide ${i===carouselIndex?'active':''}" style="background-image:linear-gradient(rgba(0,0,0,0.3),rgba(0,0,0,0.6)),url('${img.image}'); transform:translateX(${offset}%) scale(${scale}) translateZ(${i===carouselIndex?'25px':'0px'}); z-index:${zIndex}; opacity:${opacity};"><div class="slide-caption"><h4>${img.title}</h4><p>${img.desc}</p></div></div>`;
     }
-    container.innerHTML = html;
+    if(container) container.innerHTML = html;
     let dotsHtml = ''; for(let i=0;i<sliderImages.length;i++) dotsHtml += `<div class="carousel-dot ${i===carouselIndex?'active':''}" onclick="goToCarouselSlide(${i})"></div>`;
-    dotsContainer.innerHTML = dotsHtml;
+    if(dotsContainer) dotsContainer.innerHTML = dotsHtml;
 }
 function updateCarousel() {
     let slides = document.querySelectorAll('.carousel-slide');
@@ -440,66 +603,24 @@ function renderRestaurantsList() {
     let filtered = [...allRestaurants];
     if(currentFilter !== 'all') filtered = filtered.filter(r=>r.cat.includes(currentFilter));
     let container = document.getElementById('restaurantsList');
-    container.innerHTML = filtered.map(r=>`<div class="restaurant-item" onclick="openRestaurantMenu(${r.id})"><div class="restaurant-item-img" style="background-image:url('${r.img}')"></div><div class="restaurant-item-info"><div class="restaurant-item-name">${r.name}</div><div class="restaurant-item-cat">${r.cat}</div><div class="restaurant-item-stats"><span>⭐ 4.7</span><span>📍 2.5 كيلو</span></div></div><div class="restaurant-item-price"><div class="price">${r.items[0]?.p || 2200}</div><div>ريال</div></div></div>`).join('');
+    if(container) container.innerHTML = filtered.map(r=>`<div class="restaurant-item" onclick="openRestaurantMenu(${r.id})"><div class="restaurant-item-img" style="background-image:url('${r.img}')"></div><div class="restaurant-item-info"><div class="restaurant-item-name">${r.name}</div><div class="restaurant-item-cat">${r.cat}</div><div class="restaurant-item-stats"><span>⭐ 4.7</span><span>📍 موقع محدد ومؤمن</span></div></div><div class="restaurant-item-price"><div class="price">${r.items && r.items[0] ? r.items[0].p : 2200}</div><div>ريال</div></div></div>`).join('');
 }
 
 window.openRestaurantMenu = function(id) {
     window.currentRestaurant = allRestaurants.find(r=>r.id===id);
     if(!window.currentRestaurant) { showToast('المطعم غير موجود'); return; }
-    
     let menuDiv = document.getElementById('menuContent');
-    if(!menuDiv) return;
-
-    let heroItem = window.currentRestaurant.items[0] || {n: "وجبة رويال كاملة", p: 2400, d: "دجاج مقرمش شهي بخلطة ملكية سرية"};
+    let heroItem = (window.currentRestaurant.items && window.currentRestaurant.items[0]) ? window.currentRestaurant.items[0] : {n: "وجبة رويال كاملة", p: 2400, d: "دجاج مقرمش شهي بخلطة ملكية سرية"};
     let heroImage = getItemImage(heroItem.n);
-
-    let itemsHtml = `
-        <div class="restaurant-hero-banner" style="background-image: url('${heroImage}');">
-            <div class="restaurant-hero-overlay">
-                <span class="hero-tag">🔥 الأكثر طلباً</span>
-                <h2>${heroItem.n}</h2>
-                <p>${heroItem.d}</p>
-                <div class="restaurant-hero-price">${heroItem.p} ريال يمني</div>
-            </div>
-        </div>
-        <h3 style="font-size: 0.95rem; margin: 15px 0 5px; font-weight: 800; color: var(--primary-dark)">🍽️ قائمة المأكولات الأصيلة</h3>
-        <div class="menu-grid">
-    `;
-
-    window.currentRestaurant.items.forEach((item, idx) => {
-        let itemImage = getItemImage(item.n);
-        let cartItem = window.cart.find(i => i.n === item.n);
-        let count = cartItem ? cartItem.qty : 0;
-
-        itemsHtml += `
-            <div class="menu-item-card" data-name="${item.n}">
-                <div class="menu-item-img" style="background-image:url('${itemImage}')"></div>
-                <div class="menu-item-info">
-                    <div>
-                        <div class="menu-item-name">${item.n}</div>
-                        <div class="menu-item-desc">${item.d || "وجبة شهية ومحضرة طازجة بعناية وجودة عالية لتناسب ذوقك."}</div>
-                    </div>
-                    <div>
-                        <div class="menu-item-price">${item.p} <span>ريال</span></div>
-                        <div class="action-container" id="action-${idx}">
-                            ${ count > 0 ? `
-                                <div class="quantity-counter">
-                                    <button class="counter-btn" onclick="updateCartQtyDirect(${idx}, 1)">+</button>
-                                    <span class="counter-value">${count}</span>
-                                    <button class="counter-btn" onclick="updateCartQtyDirect(${idx}, -1)">-</button>
-                                </div>
-                            ` : `
-                                <button class="add-to-cart-btn" onclick="inlineAddToCart(${idx})">
-                                    <i class="fas fa-plus"></i> أضف للسلة
-                                </button>
-                            `}
-                        </div>
-                    </div>
-                </div>
-            </div>
-        `;
-    });
-    
+    let itemsHtml = `<div class="restaurant-hero-banner" style="background-image: url('${heroImage}');"><div class="restaurant-hero-overlay"><span class="hero-tag">🔥 الأكثر طلباً</span><h2>${heroItem.n}</h2><p>${heroItem.d}</p><div class="restaurant-hero-price">${heroItem.p} ريال يمني</div></div></div><h3 style="font-size: 0.95rem; margin: 15px 0 5px; font-weight: 800; color: var(--primary-dark)">🍽️ قائمة المأكولات الأصيلة</h3><div class="menu-grid">`;
+    if(window.currentRestaurant.items) {
+        window.currentRestaurant.items.forEach((item, idx) => {
+            let itemImage = getItemImage(item.n);
+            let cartItem = window.cart.find(i => i.n === item.n);
+            let count = cartItem ? cartItem.qty : 0;
+            itemsHtml += `<div class="menu-item-card"><div class="menu-item-img" style="background-image:url('${itemImage}')"></div><div class="menu-item-info"><div><div class="menu-item-name">${item.n}</div><div class="menu-item-desc">${item.d || "وجبة شهية ومحضرة طازجة"}</div></div><div><div class="menu-item-price">${item.p} <span>ريال</span></div><div class="action-container" id="action-${idx}">${ count > 0 ? `<div class="quantity-counter"><button class="counter-btn" onclick="updateCartQtyDirect(${idx}, 1)">+</button><span class="counter-value">${count}</span><button class="counter-btn" onclick="updateCartQtyDirect(${idx}, -1)">-</button></div>` : `<button class="add-to-cart-btn" onclick="inlineAddToCart(${idx})"><i class="fas fa-plus"></i> أضف للسلة</button>`}</div></div></div></div>`;
+        });
+    }
     itemsHtml += `</div>`;
     menuDiv.innerHTML = itemsHtml;
     updateCartDisplay();
@@ -517,11 +638,9 @@ window.inlineAddToCart = function(idx) {
 window.updateCartQtyDirect = function(idx, delta) {
     let item = window.currentRestaurant.items[idx];
     let cartItemIdx = window.cart.findIndex(i => i.n === item.n);
-    
     if (cartItemIdx !== -1) {
         window.cart[cartItemIdx].qty += delta;
         let newQty = window.cart[cartItemIdx].qty;
-        
         if (newQty <= 0) {
             window.cart.splice(cartItemIdx, 1);
             renderInlineAddButton(idx);
@@ -534,78 +653,38 @@ window.updateCartQtyDirect = function(idx, delta) {
 
 function renderInlineCounter(idx, qty) {
     let container = document.getElementById(`action-${idx}`);
-    if(container) {
-        container.innerHTML = `
-            <div class="quantity-counter">
-                <button class="counter-btn" onclick="updateCartQtyDirect(${idx}, 1)">+</button>
-                <span class="counter-value">${qty}</span>
-                <button class="counter-btn" onclick="updateCartQtyDirect(${idx}, -1)">-</button>
-            </div>
-        `;
-    }
+    if(container) container.innerHTML = `<div class="quantity-counter"><button class="counter-btn" onclick="updateCartQtyDirect(${idx}, 1)">+</button><span class="counter-value">${qty}</span><button class="counter-btn" onclick="updateCartQtyDirect(${idx}, -1)">-</button></div>`;
 }
-
 function renderInlineAddButton(idx) {
     let container = document.getElementById(`action-${idx}`);
-    if(container) {
-        container.innerHTML = `
-            <button class="add-to-cart-btn" onclick="inlineAddToCart(${idx})">
-                <i class="fas fa-plus"></i> أضف للسلة
-            </button>
-        `;
-    }
+    if(container) container.innerHTML = `<button class="add-to-cart-btn" onclick="inlineAddToCart(${idx})"><i class="fas fa-plus"></i> أضف للسلة</button>`;
 }
 
 function updateCartDisplay() {
     let total = window.cart.reduce((s,i)=>s+(i.p*i.qty),0);
     let itemsCount = window.cart.reduce((s,i)=>s+i.qty,0);
-    
     let floatCartElem = document.getElementById('floatCart');
     if(floatCartElem) {
         document.getElementById('cartCount').innerText = itemsCount;
         document.getElementById('cartTotal').innerText = total;
         floatCartElem.style.display = window.cart.length && document.getElementById('menuPage').classList.contains('active-page') ? 'flex' : 'none';
     }
-    
     let badge = document.getElementById('navCartBadge');
     if(badge) {
-        if(itemsCount > 0) {
-            badge.innerText = itemsCount;
-            badge.style.display = 'block';
-        } else {
-            badge.style.display = 'none';
-        }
+        if(itemsCount > 0) { badge.innerText = itemsCount; badge.style.display = 'block'; }
+        else badge.style.display = 'none';
     }
-    
     let container = document.getElementById('cartItemsList');
     if(container){
-        if(window.cart.length === 0) {
-            container.innerHTML = `<p style="text-align:center; padding:30px; color:var(--gray)">السلة فارغة تماماً 🛒</p>`;
-        } else {
-            container.innerHTML = window.cart.map((item, i) => {
-                let itemImage = getItemImage(item.n);
-                let origIdx = window.currentRestaurant ? window.currentRestaurant.items.findIndex(it => it.n === item.n) : -1;
-                return `
-                    <div class="cart-item">
-                        <div class="cart-item-img" style="background-image:url('${itemImage}')"></div>
-                        <div class="cart-item-details">
-                            <h4>${item.n}</h4>
-                            <div>${item.p * item.qty} ريال</div>
-                        </div>
-                        <div class="cart-qty-controls">
-                            <button class="qty-btn" onclick="sidebarChangeQty(${i}, ${origIdx}, 1)">+</button>
-                            <span style="font-weight:700; font-size:0.85rem;">${item.qty}</span>
-                            <button class="qty-btn" onclick="sidebarChangeQty(${i}, ${origIdx}, -1)">-</button>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        }
+        if(window.cart.length === 0) container.innerHTML = `<p style="text-align:center; padding:30px; color:var(--gray)">السلة فارغة تماماً 🛒</p>`;
+        else container.innerHTML = window.cart.map((item, i) => {
+            let itemImage = getItemImage(item.n);
+            let origIdx = window.currentRestaurant ? window.currentRestaurant.items.findIndex(it => it.n === item.n) : -1;
+            return `<div class="cart-item"><div class="cart-item-img" style="background-image:url('${itemImage}')"></div><div class="cart-item-details"><h4>${item.n}</h4><div>${item.p * item.qty} ريال</div></div><div class="cart-qty-controls"><button class="qty-btn" onclick="sidebarChangeQty(${i}, ${origIdx}, 1)">+</button><span style="font-weight:700;">${item.qty}</span><button class="qty-btn" onclick="sidebarChangeQty(${i}, ${origIdx}, -1)">-</button></div></div>`;
+        }).join('');
     }
-    
     let totalPriceElem = document.getElementById('cartTotalPrice');
     if(totalPriceElem) totalPriceElem.innerText = total + ' ريال';
-    
     let summaryDiv = document.getElementById('cartSummary');
     if(summaryDiv) summaryDiv.innerHTML = window.cart.length ? `<div style="background:var(--primary); color:white; padding:9px; border-radius:12px; text-align:center; font-size:0.75rem; font-weight:700;">سلة مشترياتك الحالية تحتوي على (${itemsCount}) أصناف بقيمة ${total} ريال</div>` : '';
 }
@@ -613,7 +692,6 @@ function updateCartDisplay() {
 window.sidebarChangeQty = function(cartIdx, origIdx, delta) {
     window.cart[cartIdx].qty += delta;
     let newQty = window.cart[cartIdx].qty;
-    
     if(newQty <= 0) {
         window.cart.splice(cartIdx, 1);
         if(origIdx !== -1) renderInlineAddButton(origIdx);
@@ -634,37 +712,17 @@ window.goBackToMenu = function() { showPage('menuPage'); if(window.cart.length) 
 window.proceedToCheckout = function() { toggleCart(); goToCheckout(); };
 window.toggleCart = function() { document.getElementById('cartSidebar').classList.toggle('open'); };
 
-// دالة محسنة لاستخدام الموقع الحالي وفتح الخريطة
-function getCurrentLocationAndOpenMap() {
+window.getCurrentLocationForCheckout = function() {
     if(navigator.geolocation){
-        showToast("جاري تحديد موقعك...");
         navigator.geolocation.getCurrentPosition(pos => {
             window.customerLocation = {lat: pos.coords.latitude, lng: pos.coords.longitude};
-            // فتح الخريطة وعرض الموقع
-            currentMapMode = 'checkout';
-            document.getElementById('map-overlay').style.display = 'flex';
-            setTimeout(() => {
-                if(!map){ 
-                    map = L.map('map').setView([window.customerLocation.lat, window.customerLocation.lng], 15); 
-                    L.tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {subdomains:['mt0','mt1','mt2','mt3']}).addTo(map); 
-                    marker = L.marker([window.customerLocation.lat, window.customerLocation.lng], {draggable:true}).addTo(map); 
-                    map.on('click', e => marker.setLatLng(e.latlng));
-                } else {
-                    map.setView([window.customerLocation.lat, window.customerLocation.lng], 15);
-                    marker.setLatLng([window.customerLocation.lat, window.customerLocation.lng]);
-                }
-                map.invalidateSize();
-                document.getElementById('checkoutLocationTxt').innerHTML = '✅ تم تحديد موقعك، يمكنك تعديله على الخريطة';
-            }, 100);
-            showToast("تم تحديد موقعك، يمكنك تعديله على الخريطة");
-        }, err => { showToast("فشل تحديد الموقع، حاول يدوياً"); });
+            document.getElementById('checkoutLocationTxt').innerHTML = '✅ تم تثبيت موقعك الحالي بنجاح';
+            document.getElementById('checkoutAddressManual').value = 'الموقع الجغرافي المباشر والجاري تتبعه للعميل';
+            window.updateDeliveryCost();
+            showToast("تم تحديد موقعك");
+        }, err => showToast("فشل تفعيل الـ GPS"));
     } else showToast("المتصفح لا يدعم الموقع");
-}
-
-window.getCurrentLocationForCheckout = function() {
-    getCurrentLocationAndOpenMap();
 };
-
 window.initMapForCheckout = function() {
     currentMapMode = 'checkout';
     document.getElementById('map-overlay').style.display = 'flex';
@@ -689,14 +747,12 @@ window.confirmMapLocation = async function() {
     if(currentMapMode === 'checkout'){
         window.customerLocation = {lat: pos.lat, lng: pos.lng};
         document.getElementById('checkoutLocationTxt').innerHTML = '✅ تم تحديد الإحداثيات بنجاح';
-        document.getElementById('checkoutAddressManual').value = `الموقع: ${pos.lat.toFixed(4)}, ${pos.lng.toFixed(4)}`;
         window.updateDeliveryCost();
         closeMap();
-        showToast("تم تأكيد الموقع");
     } else if(currentMapMode === 'admin'){
-        document.getElementById('adminRestLat').value = pos.lat;
-        document.getElementById('adminRestLng').value = pos.lng;
-        showToast("تم تحديد موقع المطعم");
+        document.getElementById('adminRestLat').value = pos.lat.toFixed(6);
+        document.getElementById('adminRestLng').value = pos.lng.toFixed(6);
+        showToast("تم التقاط إحداثيات المطعم");
         closeMap();
     }
     currentMapMode = null;
@@ -704,15 +760,6 @@ window.confirmMapLocation = async function() {
 
 function initPaymentList() {
     let options = document.querySelectorAll('.payment-option');
-    const paymentMethods = {
-        jeeb: { name: "محفظة جيب", number: "777215154" },
-        onecash: { name: "ون كاش", number: "777215154" },
-        floosak: { name: "فلوسك", number: "777215154" },
-        jawaly: { name: "جوالي", number: "777215154" },
-        kremi: { name: "الكريمي", number: "777215154" },
-        easy: { name: "إيزي", number: "777215154" },
-        cash: { name: "الدفع عند الاستلام", number: "" }
-    };
     options.forEach(opt => {
         opt.onclick = () => {
             options.forEach(o=>o.classList.remove('active'));
@@ -720,15 +767,11 @@ function initPaymentList() {
             selectedPaymentMethod = opt.dataset.method;
             let detailsDiv = document.getElementById('paymentDetails');
             if(selectedPaymentMethod === 'cash') detailsDiv.style.display = 'none';
-            else { detailsDiv.style.display = 'block'; document.getElementById('accountNumberText').innerText = paymentMethods[selectedPaymentMethod].number; }
+            else { detailsDiv.style.display = 'block'; document.getElementById('accountNumberText').innerText = "777215154"; }
         };
     });
-    let defaultOpt = document.querySelector('.payment-option[data-method="cash"]');
-    if(defaultOpt) defaultOpt.classList.add('active');
-    selectedPaymentMethod = 'cash';
-    document.getElementById('paymentDetails').style.display = 'none';
 }
-window.copyAccountNumber = function() { navigator.clipboard.writeText(document.getElementById('accountNumberText').innerText); showToast('تم نسخ الرقم'); };
+window.copyAccountNumber = function() { navigator.clipboard.writeText(document.getElementById('accountNumberText').innerText); showToast('تم نسخ رقم المحفظة'); };
 
 window.confirmCheckoutOrder = async function() {
     let addressVal = document.getElementById('checkoutAddressManual').value.trim();
@@ -740,12 +783,12 @@ window.confirmCheckoutOrder = async function() {
     let order = {
         id, type:'restaurant', restaurant: window.currentRestaurant.name,
         customerName: window.currentUser.name, customerPhone: window.currentUser.phone,
-        address: addressVal || 'موقع جغرافي مثبت',
+        address: addressVal || 'موقع جغرافي مثبت بدقة الكابتن',
         lat: window.customerLocation?.lat || 15.3694, lng: window.customerLocation?.lng || 44.1910,
         items: window.cart.map(i=>({name:i.n, qty:i.qty, price:i.p})),
         totalFood, deliveryCost: window.deliveryCost, total, status:'pending',
         createdAt: new Date().toISOString(), restaurantId: window.currentRestaurant.id,
-        paymentMethod: selectedPaymentMethod, receiptImage: receiptBase64 || null
+        paymentMethod: selectedPaymentMethod, driverName: '', driverPhone: ''
     };
     await fetch(`${FIREBASE_URL}/orders/${id}.json`, {method:'PUT', body:JSON.stringify(order)});
     localStorage.setItem('currentTrackingOrder', id);
@@ -761,154 +804,549 @@ window.confirmCheckoutOrder = async function() {
     setTimeout(()=>viewOrderTracking(id),2000);
 };
 
+// واجهة التتبع الفوري والمباشر مع التحديث التلقائي للعميل
 window.viewOrderTracking = async function(id) {
-    await loadOrders();
-    let order = window.allOrders.find(o=>o.id==id);
-    if(!order) return;
-    let steps = ['pending','on_the_way','arrived','delivered'];
-    let idx = steps.indexOf(order.status);
-    let stepsHtml = '<div class="tracking-steps">';
-    steps.forEach((s,i)=>{
-        let cls = (i<idx)?'completed':(i===idx?'active':'');
-        let icon = {pending:'fa-clock', on_the_way:'fa-truck', arrived:'fa-map-marker-alt', delivered:'fa-check-circle'}[s];
-        let label = {pending:'قيد المراجعة', on_the_way:'في الطريق', arrived:'وصل الموقع', delivered:'تم التوصيل'}[s];
-        stepsHtml += `<div class="step ${cls}"><div class="circle"><i class="fas ${icon}"></i></div><div class="step-label">${label}</div></div>`;
-        if(i<steps.length-1) stepsHtml += `<div class="step-connector ${i<idx?'completed':''}"></div>`;
-    });
-    stepsHtml += '</div>';
+    if(trackingInterval) clearInterval(trackingInterval);
     
-    let itemsListHtml = '<ul class="order-items-list">';
-    order.items.forEach(item => {
-        itemsListHtml += `<li><span>${item.name} x ${item.qty}</span><span>${item.price * item.qty} ريال</span></li>`;
-    });
-    itemsListHtml += '</ul>';
+    const trackingTicker = async () => {
+        let res = await fetch(`${FIREBASE_URL}/orders/${id}.json`);
+        let order = await res.json();
+        if(!order) return;
+        
+        // التحقق الفوري من حالة التوصيل لفتح الإشعار والتقييم تلقائياً
+        if(order.status === 'delivered' && !order.ratedByCustomer) {
+            clearInterval(trackingInterval);
+            document.getElementById('trackFullscreen').style.display = 'none';
+            triggerDeliverySuccessFlow(id, order.restaurant);
+            return;
+        }
+
+        let steps = ['pending','on_the_way','arrived','delivered'];
+        let idx = steps.indexOf(order.status);
+        let stepsHtml = '<div class="tracking-steps">';
+        steps.forEach((s,i)=>{
+            let cls = (i<idx)?'completed':(i===idx?'active':'');
+            let icon = {pending:'fa-clock', on_the_way:'fa-truck', arrived:'fa-map-marker-alt', delivered:'fa-check-circle'}[s];
+            let label = {pending:'قيد المراجعة', on_the_way:'في الطريق', arrived:'وصل الموقع', delivered:'تم التوصيل'}[s];
+            stepsHtml += `<div class="step ${cls}"><div class="circle"><i class="fas ${icon}"></i></div><div class="step-label">${label}</div></div>`;
+            if(i<steps.length-1) stepsHtml += `<div class="step-connector ${i<idx?'completed':''}"></div>`;
+        });
+        stepsHtml += '</div>';
+        
+        let itemsListHtml = '<ul class="order-items-list">';
+        order.items.forEach(item => { itemsListHtml += `<li><span>${item.name} x ${item.qty}</span><span>${item.price * item.qty} ريال</span></li>`; });
+        itemsListHtml += '</ul>';
+        
+        let driverInfoHtml = order.driverName ? `
+            <div style="background:rgba(15,118,110,0.06); padding:10px; border-radius:12px; margin-top:10px; border:1px solid rgba(15,118,110,0.15)">
+                <div style="font-size:0.7rem; color:var(--primary); font-weight:800">🚖 كابتن التوصيل المسؤول:</div>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-top:4px;">
+                    <span style="font-size:0.8rem; font-weight:700;">${order.driverName}</span>
+                    <a href="tel:${order.driverPhone}" style="background:var(--success); color:white; padding:4px 10px; border-radius:15px; font-size:0.65rem; text-decoration:none; font-weight:700;"><i class="fas fa-phone"></i> اتصال بالمندوب</a>
+                </div>
+            </div>
+        ` : `<div style="text-align:center; padding:8px; font-size:0.7rem; color:var(--gray); background:#f1f5f9; border-radius:12px; margin-top:10px;">⏳ جاري تعيين أقرب كابتن توصيل...</div>`;
+
+        let details = `
+            <div class="tracking-detail-card">
+                <h3 style="color:var(--primary); margin-bottom:15px; font-weight:800;">📍 تتبع طلبك الفوري #${order.id}</h3>
+                <div class="tracking-label">⏰ وقت إرسال الطلب</div><div class="tracking-value">${new Date(order.createdAt).toLocaleString('ar-SA')}</div>
+                <div class="tracking-label">🍔 المطعم الموفر للوجبة</div><div class="tracking-value">${order.restaurant}</div>
+                ${driverInfoHtml}
+                <div class="tracking-label" style="margin-top:10px;">🧾 الأصناف في السلة</div>${itemsListHtml}
+                <div style="display:flex; justify-content:space-between; margin:10px 0; padding:8px 0; border-top:2px solid var(--gray-light);"><span>المجموع الفرعي</span><span>${order.totalFood} ريال</span></div>
+                <div style="display:flex; justify-content:space-between; margin:5px 0;"><span>🚚 تكلفة التوصيل</span><span>${order.deliveryCost} ريال</span></div>
+                <div style="display:flex; justify-content:space-between; margin:10px 0; font-weight:800; color:var(--primary); font-size:1rem; border-top:1px dashed var(--gray-light); padding-top:6px;"><span>الإجمالي الكلي</span><span>${order.total} ريال</span></div>
+            </div>
+            ${stepsHtml}
+        `;
+        document.getElementById('trackingFullscreenContainer').innerHTML = details;
+    };
     
-    let details = `
-        <div class="tracking-detail-card">
-            <h3 style="color:var(--primary); margin-bottom:15px;">📍 تفاصيل الطلب #${order.id}</h3>
-            <div class="tracking-label">⏰ وقت الطلب</div>
-            <div class="tracking-value">${new Date(order.createdAt).toLocaleString('ar-SA')}</div>
-            <div class="tracking-label">🍔 المطعم</div>
-            <div class="tracking-value">${order.restaurant}</div>
-            <div class="tracking-label">🧾 الأصناف المطلوبة</div>
-            ${itemsListHtml}
-            <div style="display:flex; justify-content:space-between; margin:10px 0; padding:8px 0; border-top:2px solid var(--gray-light);">
-                <span>المجموع</span><span>${order.totalFood} ريال</span>
-            </div>
-            <div style="display:flex; justify-content:space-between; margin:5px 0;">
-                <span>🚚 التوصيل</span><span>${order.deliveryCost} ريال</span>
-            </div>
-            <div style="display:flex; justify-content:space-between; margin:10px 0; font-weight:800; color:var(--primary); font-size:1rem;">
-                <span>الإجمالي</span><span>${order.total} ريال</span>
-            </div>
-        </div>
-        ${stepsHtml}
-    `;
-    document.getElementById('trackingFullscreenContainer').innerHTML = details;
+    await trackingTicker();
+    trackingInterval = setInterval(trackingTicker, 5000);
     document.getElementById('trackFullscreen').style.display = 'block';
 };
-window.closeTracking = function() { document.getElementById('trackFullscreen').style.display = 'none'; };
-window.viewMyTracking = function() { let id = localStorage.getItem('currentTrackingOrder'); if(id) viewOrderTracking(parseInt(id)); else showToast('لا يوجد طلب نشط حالياً'); };
+
+window.closeTracking = function() { if(trackingInterval) clearInterval(trackingInterval); document.getElementById('trackFullscreen').style.display = 'none'; };
+window.viewMyTracking = function() { let id = localStorage.getItem('currentTrackingOrder'); if(id) viewOrderTracking(parseInt(id)); else showToast('لا يوجد طلب نشط حالياً لتعقبه'); };
+
+// تدفق نظام التوصيل والتقييم للعميل
+function triggerDeliverySuccessFlow(orderId, restaurantName) {
+    currentRatingOrderId = orderId;
+    localStorage.removeItem('currentTrackingOrder');
+    let alertPopup = document.getElementById('deliveryAlertPopup');
+    if(alertPopup) alertPopup.style.display = 'block';
+    setTimeout(() => {
+        closeDeliveryAlertPopup();
+        resetRatingModal();
+        document.getElementById('ratingOverlay').style.display = 'flex';
+    }, 4000);
+}
+
+window.closeDeliveryAlertPopup = function() {
+    let alertPopup = document.getElementById('deliveryAlertPopup');
+    if(alertPopup) alertPopup.style.display = 'none';
+};
+
+function resetRatingModal() {
+    document.querySelectorAll('.rating-stars i').forEach(star => star.classList.remove('active'));
+    document.getElementById('restaurantComment').value = '';
+    document.getElementById('driverComment').value = '';
+}
+
+// تشغيل اختيار النجوم برمجياً
+document.querySelectorAll('.rating-stars i').forEach(star => {
+    star.onclick = function() {
+        let val = parseInt(this.dataset.value);
+        let siblings = this.parentElement.querySelectorAll('i');
+        siblings.forEach(s => {
+            if(parseInt(s.dataset.value) <= val) s.classList.add('active');
+            else s.classList.remove('active');
+        });
+    };
+});
+
+window.submitOrderRating = async function() {
+    let restStars = document.querySelectorAll('#restaurantStars i.active').length;
+    let drivStars = document.querySelectorAll('#driverStars i.active').length;
+    let restComment = document.getElementById('restaurantComment').value.trim();
+    let drivComment = document.getElementById('driverComment').value.trim();
+    
+    if(restStars === 0 || drivStars === 0) return showToast('يرجى تحديد النجوم لتقييم المطعم والمندوب أولاً');
+    
+    let ratingData = {
+        orderId: currentRatingOrderId,
+        restaurantStars: restStars,
+        restaurantComment: restComment,
+        driverStars: drivStars,
+        driverComment: drivComment,
+        submittedAt: new Date().toISOString()
+    };
+    
+    await fetch(`${FIREBASE_URL}/ratings/${currentRatingOrderId}.json`, {method:'PUT', body:JSON.stringify(ratingData)});
+    await fetch(`${FIREBASE_URL}/orders/${currentRatingOrderId}/ratedByCustomer.json`, {method:'PUT', body:JSON.stringify(true)});
+    
+    document.getElementById('ratingOverlay').style.display = 'none';
+    showToast('🎉 شكراً لك! تم إرسال تقييمك بنجاح ودعم جودتنا');
+    showPage('homePage');
+};
+
 window.renderMyOrders = async function() {
     await loadOrders();
     let myOrders = window.allOrders.filter(o=>o.customerPhone === window.currentUser?.phone);
-    let html = myOrders.length ? myOrders.map(o=>`<div style="padding:10px; border-bottom:1px solid var(--gray-light); cursor:pointer;" onclick="viewOrderTracking(${o.id})"><div><strong>#${o.id}</strong> - ${o.restaurant}</div><div style="font-size:0.75rem; color:var(--gray); margin-top:2px;">${o.total} ريال - <span style="color:${o.status==='delivered'?'green':'orange'}; font-weight:700;">${o.status}</span></div></div>`).join('') : '<p style="text-align:center; padding:20px;">لا توجد طلبات سابقة</p>';
+    let html = myOrders.length ? myOrders.map(o=>`<div style="padding:12px; border-bottom:1px solid var(--gray-light); cursor:pointer; background:var(--white); border-radius:12px; margin-bottom:8px;" onclick="viewOrderTracking(${o.id})"><div><strong>طلب رقم #${o.id}</strong></div><div style="font-size:0.75rem; color:var(--gray); margin-top:2px;">${o.restaurant} - قيمة: ${o.total} ريال - الحالة: <span style="color:${o.status==='delivered'?'green':'orange'}; font-weight:700;">${o.status}</span></div></div>`).join('') : '<p style="text-align:center; padding:20px;">لا توجد طلبات سابقة مسجلة برقمك</p>';
     document.getElementById('myOrdersContainer').innerHTML = html;
 };
 
-// عمليات الإدارة - تم إصلاحها
-async function renderAdminRestaurantsList() {
-    let container = document.getElementById('adminRestaurantsList');
-    if(container) container.innerHTML = allRestaurants.map(r => `<div style="display:flex; justify-content:space-between; padding:8px; border-bottom:1px solid var(--gray-light); align-items:center;"><div><strong>${r.name}</strong><br><small>${r.cat}</small></div><button style="background:var(--danger); color:white; border:none; padding:4px 10px; border-radius:8px; cursor:pointer;" onclick="deleteRestaurantFromAdmin(${r.id})">🗑️ حذف</button></div>`).join('');
-}
-window.deleteRestaurantFromAdmin = async function(id) { 
-    if(confirm('هل أنت متأكد من حذف المطعم؟')) { 
-        allRestaurants = allRestaurants.filter(r=>r.id!==id); 
-        renderAdminRestaurantsList(); 
-        renderRestaurantsList(); 
-        showToast('تم الحذف بنجاح'); 
-    } 
+// ==================== البرمجيات المتقدمة لواجهة المندوب ====================
+window.switchDriverSubTab = function(subTab) {
+    activeDriverSubTab = subTab;
+    document.getElementById('tabAvailableBtn').classList.toggle('active', subTab === 'available');
+    document.getElementById('tabActiveBtn').classList.toggle('active', subTab === 'active');
+    document.getElementById('driverAvailableOrdersContainer').style.display = subTab === 'available' ? 'block' : 'none';
+    document.getElementById('driverActiveOrdersContainer').style.display = subTab === 'active' ? 'block' : 'none';
+    renderDriverOrdersContainers();
 };
+
+async function renderDriverOrdersContainers() {
+    await loadOrders();
+    let availableContainer = document.getElementById('driverAvailableOrdersContainer');
+    let activeContainer = document.getElementById('driverActiveOrdersContainer');
+    
+    let availableOrders = window.allOrders.filter(o => o.status === 'pending');
+    let activeOrders = window.allOrders.filter(o => o.status === 'on_the_way' || o.status === 'arrived');
+    
+    document.getElementById('activeOrdersCount').innerText = activeOrders.length;
+    let completedOrders = window.allOrders.filter(o => o.status === 'delivered').length;
+    document.getElementById('completedOrdersCount').innerText = completedOrders;
+    
+    // 1. الطلبات المتاحة للقبول (قيد المراجعة)
+    if(availableContainer) {
+        if(availableOrders.length === 0) {
+            availableContainer.innerHTML = `<p style="text-align:center; padding:20px; font-size:0.75rem; color:var(--gray)">🔍 لا توجد طلبات متاحة حالياً في شاشتك...</p>`;
+        } else {
+            availableContainer.innerHTML = availableOrders.map(o => {
+                return `
+                    <div class="driver-order-card">
+                        <div class="driver-order-header">
+                            <span class="driver-order-id">طلب جديد #${o.id}</span>
+                            <span class="driver-order-status status-pending">متاح للقبول</span>
+                        </div>
+                        <div class="order-meta-row"><span>🍔 المطعم:</span><strong>${o.restaurant}</strong></div>
+                        <div class="order-meta-row"><span>💰 إجمالي دخل المندوب:</span><strong>${o.deliveryCost} ريال</strong></div>
+                        <div class="order-meta-row"><span>🧾 إجمالي الفاتورة:</span><strong>${o.total} ريال</strong></div>
+                        <div class="order-meta-row"><span>📍 العنوان:</span><strong>${o.address}</strong></div>
+                        <div style="display:flex; gap:10px; margin-top:10px;">
+                            <button onclick="acceptOrderAsDriver('${o.firebaseKey}', ${o.id})" style="flex:1; background:var(--primary); color:white; border:none; padding:8px; border-radius:20px; font-weight:700; font-size:0.75rem; cursor:pointer;"><i class="fas fa-check"></i> قبول واستلام الطلب</button>
+                            <button onclick="rejectOrderUi(this)" style="background:var(--danger); color:white; border:none; padding:8px 14px; border-radius:20px; font-weight:700; font-size:0.75rem; cursor:pointer;">رفض</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+    }
+    
+    // 2. الطلبات النشطة الجاري العمل عليها من قبل المندوب
+    if(activeContainer) {
+        if(activeOrders.length === 0) {
+            activeContainer.innerHTML = `<p style="text-align:center; padding:20px; font-size:0.75rem; color:var(--gray)">🚖 ليس لديك أي طلب نشط حالياً...</p>`;
+        } else {
+            activeContainer.innerHTML = activeOrders.map(o => {
+                let statusLabel = o.status === 'on_the_way' ? 'جاري التوصيل' : 'وصل الموقع';
+                let statusClass = o.status === 'on_the_way' ? 'status-ontheway' : 'status-arrived';
+                let itemsList = o.items.map(i=>`• ${i.name} (x${i.qty})`).join('<br>');
+                
+                // حساب العداد التنازلي التقديري بناءً على وقت الإنشاء (مثال 40 دقيقة للتوصيل)
+                let createdTime = new Date(o.createdAt).getTime();
+                let now = Date.now();
+                let diffMin = Math.max(0, 40 - Math.floor((now - createdTime) / 60000));
+
+                return `
+                    <div class="driver-order-card">
+                        <div class="driver-order-header">
+                            <span class="driver-order-id">طلب نشط #${o.id}</span>
+                            <div style="display:flex; gap:6px; align-items:center;">
+                                <div class="timer-badge"><i class="fas fa-clock"></i> ⏱️ المتبقي: ${diffMin} د</div>
+                                <span class="driver-order-status ${statusClass}">${statusLabel}</span>
+                            </div>
+                        </div>
+                        <div style="background:var(--bg-light); padding:10px; border-radius:12px; margin-bottom:10px; font-size:0.75rem;">
+                            <strong style="color:var(--primary)">📋 تفاصيل المحتويات والأصناف:</strong><br>${itemsList}
+                        </div>
+                        <div class="order-meta-row"><span>👤 اسم العميل:</span><strong>${o.customerName}</strong></div>
+                        <div class="order-meta-row"><span>📞 هاتف العميل:</span><strong>${o.customerPhone}</strong></div>
+                        <div class="order-meta-row"><span>📍 موقع المطعم:</span><strong style="color:var(--primary); text-decoration:underline; cursor:pointer;" onclick="openExternalMap(${o.lat}, ${o.lng})">🗺️ عرض موقع المطعم الفعلي على الخريطة</strong></div>
+                        <div class="order-meta-row"><span>🏡 موقع تسليم العميل:</span><strong style="color:var(--primary); text-decoration:underline; cursor:pointer;" onclick="openExternalMap(${o.lat}, ${o.lng})">📍 إحداثيات العميل في جوجل ماب</strong></div>
+                        
+                        <div style="margin-top:10px; padding-top:10px; border-top:1px solid var(--gray-light);">
+                            <div style="font-size:0.7rem; font-weight:700; margin-bottom:6px;">خطوات تتبع وإجراءات الاعتماد:</div>
+                            <div style="display:grid; grid-template-columns: repeat(2, 1fr); gap:6px;">
+                                <button onclick="changeStatusByDriver('${o.firebaseKey}', 'on_the_way')" style="background:var(--primary-dark); color:white; border:none; padding:7px; border-radius:15px; font-size:0.7rem; font-weight:700; cursor:pointer;">🚚 في الطريق</button>
+                                <button onclick="changeStatusByDriver('${o.firebaseKey}', 'arrived')" style="background:var(--warning); color:black; border:none; padding:7px; border-radius:15px; font-size:0.7rem; font-weight:700; cursor:pointer;">📍 وصلت موقع العميل</button>
+                            </div>
+                            <button onclick="approveAndRedirectToCustomerWhatsApp('${o.customerPhone}', '${o.id}', '${o.restaurant}', '${o.total}')" style="width:100%; margin-top:6px; background:#25D366; color:white; border:none; padding:8px; border-radius:15px; font-size:0.75rem; font-weight:700; cursor:pointer;"><i class="fab fa-whatsapp"></i> اعتماد الطلب وتحويل لواتساب العميل</button>
+                            <button onclick="changeStatusByDriver('${o.firebaseKey}', 'delivered')" style="width:100%; margin-top:6px; background:var(--success); color:white; border:none; padding:9px; border-radius:15px; font-size:0.8rem; font-weight:800; cursor:pointer;"><i class="fas fa-check-circle"></i> [ تم التوصيل بنجاح وتسليم الوجبة ]</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+    }
+}
+
+window.rejectOrderUi = function(btn) {
+    if(confirm('هل أنت متأكد من رفض استلام هذا الطلب من شاشتك؟')) {
+        btn.parentElement.parentElement.remove();
+        showToast('تم إخفاء الطلب بنجاح');
+    }
+};
+
+window.acceptOrderAsDriver = async function(firebaseKey, orderId) {
+    if(confirm(`تأكيد قبول الطلب رقم #${orderId} والانتقال الفوري لتوصيله؟`)) {
+        await fetch(`${FIREBASE_URL}/orders/${orderId}/status.json`, {method:'PUT', body:JSON.stringify('on_the_way')});
+        await fetch(`${FIREBASE_URL}/orders/${orderId}/driverName.json`, {method:'PUT', body:JSON.stringify(window.currentUser.name)});
+        await fetch(`${FIREBASE_URL}/orders/${orderId}/driverPhone.json`, {method:'PUT', body:JSON.stringify('777215154')});
+        showToast('✅ تمت عملية القبول ونقل الطلب لقائمة النشطة');
+        switchDriverSubTab('active');
+    }
+};
+
+window.changeStatusByDriver = async function(firebaseKey, nextStatus) {
+    // استخراج المعرف الرقمي الصحيح من الحقل المفتاحي
+    let orderId = firebaseKey;
+    await fetch(`${FIREBASE_URL}/orders/${orderId}/status.json`, {method:'PUT', body:JSON.stringify(nextStatus)});
+    showToast(`تم تغيير وتحديث حالة الطلب الفورية بنجاح`);
+    renderDriverOrdersContainers();
+};
+
+window.openExternalMap = function(lat, lng) {
+    window.open(`https://www.google.com/maps/search/?api=1&query=${lat},${lng}`, '_blank');
+};
+
+window.approveAndRedirectToCustomerWhatsApp = function(phone, orderId, restName, total) {
+    const baseUrl = "https://wa.me/";
+    let formattedPhone = phone.replace(/[^0-9]/g, '');
+    let detailsTxt = `مرحباً عزيزي العميل، أنا كابتن التوصيل من تطبيق وصل 🚖\nتم اعتماد طلبك وجاري تحضيره رقم الطلب: #${orderId}\nالمطعم: ${restName}\nإجمالي الحساب: ${total} ريال\n\nعزيزي العميل، عد للتطبيق لتتبع حالة طلبك بدقة ومباشرة 😊`;
+    let finalLink = `${baseUrl}${formattedPhone}?text=${encodeURIComponent(detailsTxt)}`;
+    window.open(finalLink, '_blank');
+};
+
+// ==================== البرمجيات الشاملة للوحة التحكم الفورية بالإدارة ====================
+function switchAdminTabFlow(tabId) {
+    document.querySelectorAll('#adminTabs .tab-btn').forEach(b => b.classList.remove('active'));
+    let matchedBtn = document.querySelector(`#adminTabs .tab-btn[data-tab="${tabId}"]`);
+    if(matchedBtn) matchedBtn.classList.add('active');
+    
+    document.querySelectorAll('.tab-content').forEach(tc => tc.classList.remove('active-tab'));
+    let targetContent = document.getElementById(`tab-${tabId}`);
+    if(targetContent) targetContent.classList.add('active-tab');
+    
+    if(tabId === 'live') initAdminLiveMonitoringMap();
+    if(tabId === 'restaurants') renderAdminRestaurantsList();
+    if(tabId === 'items') populateRestaurantSelect();
+    if(tabId === 'orders') renderAdminOrders();
+    if(tabId === 'users') renderAdminUsers();
+}
+
+document.querySelectorAll('#adminTabs .tab-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        switchAdminTabFlow(this.getAttribute('data-tab'));
+    });
+});
+
+function initAdminLiveMonitoringMap() {
+    setTimeout(async ()=>{
+        if(!adminLiveLeafletMap) {
+            adminLiveLeafletMap = L.map('adminLiveMap').setView([15.3694,44.1910],13);
+            L.tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {subdomains:['mt0','mt1','mt2','mt3']}).addTo(adminLiveLeafletMap);
+        }
+        adminLiveLeafletMap.invalidateSize();
+        
+        await loadOrders();
+        // تصفية ورسم دبابيس جغرافية للطلبات النشطة والجديدة لمراقبتها في الوقت الفعلي
+        let monitoringHtml = `📊 إحصائيات المراقبة الفورية: الإجمالي الحركي (${window.allOrders.length}) طلب مسجل بـ Firebase`;
+        document.getElementById('adminLiveOrdersStats').innerHTML = monitoringHtml;
+        
+        // مسح الطبقات السابقة لإعادة الرسم النظيف
+        adminLiveLeafletMap.eachLayer((layer) => {
+            if (layer instanceof L.Marker) adminLiveLeafletMap.removeLayer(layer);
+        });
+
+        window.allOrders.forEach(o => {
+            if(o.lat && o.lng) {
+                let markerColor = o.status === 'pending' ? 'orange' : 'blue';
+                let m = L.marker([o.lat, o.lng]).addTo(adminLiveLeafletMap);
+                m.bindPopup(`<b>طلب #${o.id}</b><br>المطعم: ${o.restaurant}<br>الحالة: ${o.status}<br>العميل: ${o.customerName}`);
+            }
+        });
+    }, 200);
+}
+
+async function renderAdminRestaurantsList() {
+    await loadRestaurantsFromFirebase();
+    let container = document.getElementById('adminRestaurantsList');
+    if(container) container.innerHTML = allRestaurants.map(r => `<div style="display:flex; justify-content:space-between; padding:8px; border-bottom:1px solid var(--gray-light); align-items:center; background:#fff; margin-bottom:4px; border-radius:8px;"><div><strong>${r.name}</strong><br><small style="color:var(--gray)">${r.cat} | Lat:${r.restaurantLat||'لم يحدد'}</small></div><button style="background:var(--danger); color:white; border:none; padding:4px 10px; border-radius:8px; cursor:pointer; font-size:0.7rem;" onclick="deleteRestaurantFromAdmin('${r.firebaseKey || r.id}')">🗑️ حذف نهائي</button></div>`).join('');
+}
+
+window.deleteRestaurantFromAdmin = async function(id) {
+    if(confirm('هل أنت متأكد تماماً من حذف هذا المطعم من السيرفر؟')) {
+        await fetch(`${FIREBASE_URL}/restaurants/${id}.json`, {method:'DELETE'});
+        showToast('تم حذف المطعم وتصفير بياناته');
+        await loadRestaurantsFromFirebase();
+        renderAdminRestaurantsList();
+        renderRestaurantsList();
+    }
+};
+
 window.addNewRestaurant = async function() {
     let name = document.getElementById('adminRestName').value.trim();
     let cat = document.getElementById('adminRestCat').value;
     let img = document.getElementById('adminRestImg').value.trim();
-    if(!name) { showToast('أدخل اسم المطعم أولاً'); return; }
+    let lat = parseFloat(document.getElementById('adminRestLat').value);
+    let lng = parseFloat(document.getElementById('adminRestLng').value);
+    
+    if(!name || isNaN(lat)) { showToast('يرجى كتابة اسم المطعم والتقاط إحداثيات موقع الخريطة أولاً'); return; }
     let id = Date.now();
-    let newRest = { id, name, cat, img: img || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400', restaurantLat: 15.3694, restaurantLng: 44.1910, items: [] };
-    allRestaurants.push(newRest);
+    let newRest = { id, name, cat, img: img || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400', restaurantLat: lat, restaurantLng: lng, items: [] };
+    
+    await fetch(`${FIREBASE_URL}/restaurants/${id}.json`, {method:'PUT', body:JSON.stringify(newRest)});
     document.getElementById('adminRestName').value = '';
     document.getElementById('adminRestImg').value = '';
+    document.getElementById('adminRestLat').value = '';
+    document.getElementById('adminRestLng').value = '';
+    
+    showToast('🚀 تم حفظ المطعم وموقعه الجغرافي الجديد بـ Firebase');
+    await loadRestaurantsFromFirebase();
     renderAdminRestaurantsList();
     renderRestaurantsList();
-    showToast('تم إضافة المطعم الجديد');
-};
-window.addNewItem = function() {
-    let restId = document.getElementById('adminItemRestaurantSelect').value;
-    let name = document.getElementById('newItemName').value.trim();
-    let price = parseInt(document.getElementById('newItemPrice').value);
-    if(!restId || !name || !price) { showToast('أكمل جميع الحقول'); return; }
-    let rest = allRestaurants.find(r => r.id == restId);
-    if(rest) {
-        rest.items.push({n: name, p: price, d: "وصف جديد"});
-        showToast('تم إضافة الصنف بنجاح');
-        document.getElementById('newItemName').value = '';
-        document.getElementById('newItemPrice').value = '';
-        renderAdminRestaurantsList();
-    }
-};
-function populateRestaurantSelect() {
-    let select = document.getElementById('adminItemRestaurantSelect');
-    if(select) select.innerHTML = '<option value="">اختر مطعماً</option>' + allRestaurants.map(r => `<option value="${r.id}">${r.name}</option>`).join('');
-}
-window.saveDeliverySettings = function() {
-    let pricePerKm = document.getElementById('adminPricePerKm').value;
-    let minDelivery = document.getElementById('adminMinDelivery').value;
-    PRICE_PER_KM = parseInt(pricePerKm) || 180;
-    MIN_DELIVERY_PRICE = parseInt(minDelivery) || 550;
-    showToast('تم حفظ إعدادات التوصيل');
 };
 
-function initLogin() {
-    let roleCustomer = document.getElementById('roleCustomer'), roleDriver = document.getElementById('roleDriver'), loginPassword = document.getElementById('loginPassword'), loginBtn = document.getElementById('loginBtn'), nameInput = document.getElementById('loginName'), phoneInput = document.getElementById('loginPhone');
-    roleCustomer.onclick = () => { roleCustomer.classList.add('active'); roleDriver.classList.remove('active'); loginPassword.style.display = 'none'; };
-    roleDriver.onclick = () => { roleDriver.classList.add('active'); roleCustomer.classList.remove('active'); loginPassword.style.display = 'block'; };
-    loginBtn.onclick = async () => {
-        let isDriver = roleDriver.classList.contains('active');
-        let name = nameInput.value.trim();
-        let phone = phoneInput.value.trim();
-        let password = loginPassword.value;
-        if(!name || !phone){ showToast('أدخل البيانات المطلوبة'); return; }
-        if(isDriver && password !== DRIVER_PASSWORD){ showToast('رمز المندوب خاطئ'); return; }
-        let role = isDriver ? 'driver' : 'customer';
-        await fetch(`${FIREBASE_URL}/users/${phone}.json`, {method:'PUT', body:JSON.stringify({phone,name,role, isBusy:false})});
-        window.currentUser = {role, phone, name};
-        localStorage.setItem('waselny_user', JSON.stringify(window.currentUser));
-        document.getElementById('loginOverlay').style.display = 'none';
-        if(role === 'driver') showPage('driverPage');
-        else showPage('homePage');
-        showToast(`أهلاً بك، ${name}`);
-    };
+function populateRestaurantSelect() {
+    let select = document.getElementById('adminItemRestaurantSelect');
+    if(select) select.innerHTML = '<option value="">اختر مطعماً لعرض وتعديل أصنافه</option>' + allRestaurants.map(r => `<option value="${r.id}">${r.name}</option>`).join('');
 }
+
+window.loadAdminItemsForSelectedRestaurant = function() {
+    let select = document.getElementById('adminItemRestaurantSelect');
+    let restId = parseInt(select.value);
+    let targetRest = allRestaurants.find(r => r.id === restId);
+    let listDiv = document.getElementById('adminItemsList');
+    if(!targetRest || !listDiv) return;
+    
+    if(!targetRest.items || targetRest.items.length === 0) {
+        listDiv.innerHTML = '<p style="padding:10px; font-size:0.75rem;">لا توجد أصناف مضافة لهذا المطعم حالياً.</p>';
+    } else {
+        listDiv.innerHTML = targetRest.items.map((item, index) => `
+            <div style="display:flex; justify-content:space-between; align-items:center; padding:6px; border-bottom:1px solid #eee; font-size:0.75rem;">
+                <span>${item.n} - <strong>${item.p} ريال</strong></span>
+                <button onclick="deleteItemFromRestaurant(${restId}, ${index})" style="background:var(--danger); color:white; border:none; padding:2px 6px; border-radius:4px; cursor:pointer;">حذف</button>
+            </div>
+        `).join('');
+    }
+};
+
+window.addNewItem = async function() {
+    let select = document.getElementById('adminItemRestaurantSelect');
+    let restId = parseInt(select.value);
+    let name = document.getElementById('newItemName').value.trim();
+    let price = parseInt(document.getElementById('newItemPrice').value);
+    
+    if(isNaN(restId) || !name || isNaN(price)) return showToast('أكمل بيانات الصنف والسعر والمطعم');
+    let targetRest = allRestaurants.find(r => r.id === restId);
+    if(!targetRest) return;
+    
+    if(!targetRest.items) targetRest.items = [];
+    targetRest.items.push({n: name, p: price, d: "وجبة طازجة مضافة من لوحة التحكم"});
+    
+    let dbKey = targetRest.firebaseKey || targetRest.id;
+    await fetch(`${FIREBASE_URL}/restaurants/${dbKey}/items.json`, {method:'PUT', body:JSON.stringify(targetRest.items)});
+    
+    document.getElementById('newItemName').value = '';
+    document.getElementById('newItemPrice').value = '';
+    showToast('تمت إضافة الصنف الجديد لقاعدة البيانات');
+    window.loadAdminItemsForSelectedRestaurant();
+};
+
+window.deleteItemFromRestaurant = async function(restId, itemIndex) {
+    let targetRest = allRestaurants.find(r => r.id === restId);
+    if(!targetRest || !targetRest.items) return;
+    targetRest.items.splice(itemIndex, 1);
+    let dbKey = targetRest.firebaseKey || targetRest.id;
+    await fetch(`${FIREBASE_URL}/restaurants/${dbKey}/items.json`, {method:'PUT', body:JSON.stringify(targetRest.items)});
+    showToast('تم حذف الصنف من القائمة');
+    window.loadAdminItemsForSelectedRestaurant();
+};
+
+async function renderAdminOrders() {
+    await loadOrders();
+    let container = document.getElementById('adminOrdersList');
+    if(!container) return;
+    if(!window.allOrders.length) { container.innerHTML = '<p>لا توجد طلبات مسجلة بالسيرفر.</p>'; return; }
+    container.innerHTML = window.allOrders.map(o => `
+        <div style="border-bottom:1px solid #eee; padding:10px; background:#fff; margin-bottom:4px; border-radius:8px; font-size:0.75rem;">
+            <strong>طلب #${o.id}</strong> - ${o.restaurant} - إجمالي: ${o.total} ريال
+            <span style="color:var(--primary); font-weight:bold;">(${o.status})</span>
+            <button onclick="updateOrderStatus(${o.id})" style="float:left; background:var(--primary); color:white; border:none; border-radius:4px; padding:3px 8px; cursor:pointer;">تغيير الحالة</button>
+        </div>`).join('');
+}
+
+window.updateOrderStatus = async function(orderId) {
+    let newStatus = prompt("أدخل الحالة الجديدة للتحكم (pending, on_the_way, arrived, delivered):");
+    if(newStatus) {
+        await fetch(`${FIREBASE_URL}/orders/${orderId}/status.json`, {method:'PUT', body:JSON.stringify(newStatus)});
+        showToast('تم تحديث حالة الطلب الفورية بـ Firebase');
+        renderAdminOrders();
+    }
+};
+
+async function renderAdminUsers() {
+    await loadUsers();
+    let container = document.getElementById('adminUsersList');
+    if(!container) return;
+    container.innerHTML = window.allUsers.map(u => `<div style="padding:8px; border-bottom:1px solid #eee; background:#fff; margin-bottom:4px; border-radius:8px; font-size:0.75rem;"><strong>${u.name}</strong> - ${u.phone} - <span style="color:var(--primary)">(${u.role})</span></div>`).join('');
+}
+
+window.saveDeliverySettings = async function() {
+    let priceKm = document.getElementById('adminPricePerKm').value;
+    let minDel = document.getElementById('adminMinDelivery').value;
+    await fetch(`${FIREBASE_URL}/settings.json`, {method:'PUT', body:JSON.stringify({pricePerKm: priceKm, minDelivery: minDel})});
+    showToast('💾 تم حفظ ثوابت التوصيل لـ Firebase');
+    loadGlobalSettings();
+};
 
 function showPage(pageId) {
     document.querySelectorAll('.page').forEach(p=>p.classList.remove('active-page'));
     let targetPage = document.getElementById(pageId);
     if(targetPage) targetPage.classList.add('active-page');
-    
     document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
     let activeNav = document.querySelector(`.nav-item[data-page="${pageId}"]`);
     if(activeNav) activeNav.classList.add('active');
     
     let floatCartElem = document.getElementById('floatCart');
-    if(floatCartElem) {
-        floatCartElem.style.display = window.cart.length > 0 && pageId === 'menuPage' ? 'flex' : 'none';
-    }
+    if(floatCartElem) floatCartElem.style.display = window.cart.length > 0 && pageId === 'menuPage' ? 'flex' : 'none';
     
     if(pageId === 'restaurantsPage') { renderFilters(); renderRestaurantsList(); setTimeout(()=>{ renderCarousel(); updateCarousel(); startCarouselAuto(); },100); }
-    if(pageId === 'homePage') document.getElementById('trackOrderBtnHome').style.display = localStorage.getItem('currentTrackingOrder') ? 'block' : 'none';
-    if(pageId === 'adminPage') { renderAdminRestaurantsList(); populateRestaurantSelect(); }
+    if(pageId === 'homePage') {
+        let currentOrderTrack = localStorage.getItem('currentTrackingOrder');
+        document.getElementById('trackOrderBtnHome').style.display = currentOrderTrack ? 'block' : 'none';
+        if(currentOrderTrack) {
+            // تفعيل مستمع الخلفية الصامت للعميل لفتح التقييم عند التوصيل
+            if(!trackingInterval) {
+                trackingInterval = setInterval(async () => {
+                    let res = await fetch(`${FIREBASE_URL}/orders/${currentOrderTrack}.json`);
+                    let order = await res.json();
+                    if(order && order.status === 'delivered') {
+                        clearInterval(trackingInterval);
+                        trackingInterval = null;
+                        triggerDeliverySuccessFlow(currentOrderTrack, order.restaurant);
+                    }
+                }, 5000);
+            }
+        }
+    }
+    if(pageId === 'driverPage') { renderDriverOrdersContainers(); }
+    if(pageId === 'adminPage') { switchAdminTabFlow('live'); }
 }
+
+function initLogin() {
+    document.getElementById('loginOverlay').style.display = 'flex';
+    document.getElementById('loginBtn').onclick = async () => {
+        let name = document.getElementById('loginName').value.trim();
+        let phone = document.getElementById('loginPhone').value.trim();
+        if(!name || !phone){ showToast('أدخل الاسم ورقم الهاتف للبدء'); return; }
+        await fetch(`${FIREBASE_URL}/users/${phone}.json`, {method:'PUT', body:JSON.stringify({phone, name, role:'customer'})});
+        window.currentUser = {role:'customer', phone, name};
+        localStorage.setItem('waselny_user', JSON.stringify(window.currentUser));
+        document.getElementById('loginOverlay').style.display = 'none';
+        showPage('homePage');
+        showToast(`أهلاً بك يا ${name}`);
+    };
+}
+
+let driverLoginClickCount = 0;
+document.getElementById('shareApp').addEventListener('click', () => {
+    driverLoginClickCount++;
+    if(driverLoginClickCount >= 7) {
+        document.getElementById('loginOverlay').style.display = 'none';
+        document.getElementById('secretDriverOverlay').style.display = 'flex';
+        driverLoginClickCount = 0;
+    }
+    setTimeout(() => { driverLoginClickCount = 0; }, 3000);
+});
+
+window.loginAsDriver = async function() {
+    let name = document.getElementById('secretDriverName').value.trim();
+    let password = document.getElementById('secretDriverPassword').value;
+    if(!name || !password) { showToast('أدخل البيانات كاملة'); return; }
+    if(password !== DRIVER_PASSWORD) { showToast('كلمة السر غير صحيحة'); return; }
+    let phone = 'driver_' + Date.now();
+    await fetch(`${FIREBASE_URL}/users/${phone}.json`, {method:'PUT', body:JSON.stringify({phone, name, role:'driver'})});
+    window.currentUser = {role:'driver', phone, name};
+    localStorage.setItem('waselny_user', JSON.stringify(window.currentUser));
+    document.getElementById('secretDriverOverlay').style.display = 'none';
+    showPage('driverPage');
+    showToast(`مرحباً بك كابتن ${name} في لوحة التوصيل`);
+};
+
+window.closeSecretDriver = function() { 
+    document.getElementById('secretDriverOverlay').style.display = 'none'; 
+    if(!localStorage.getItem('waselny_user')) document.getElementById('loginOverlay').style.display = 'flex';
+};
+
+document.getElementById('versionNumber')?.addEventListener('click', function() {
+    clickCount++; if(clickCount===5){
+        let pwd = prompt("تحقق الصلاحية الأمنية للإدارة:");
+        if(pwd===ADMIN_PASSWORD){
+            window.currentUser = { role:'admin', name:'المدير العام', phone:'admin' };
+            localStorage.setItem('waselny_user', JSON.stringify(window.currentUser));
+            document.getElementById('loginOverlay').style.display = 'none';
+            showPage('adminPage');
+            showToast('تمت المزامنة بنجاح');
+        } clickCount=0;
+    }
+});
+let clickCount=0;
 
 document.querySelectorAll('.nav-item[data-page]').forEach(n=>{ n.onclick = ()=>showPage(n.dataset.page); });
 if(localStorage.getItem('darkMode') === 'true') document.body.classList.add('dark-mode');
@@ -917,57 +1355,23 @@ document.getElementById('whatsappSupport')?.addEventListener('click', ()=>window
 document.getElementById('settingsLogoutBtn')?.addEventListener('click', ()=>{ localStorage.removeItem('waselny_user'); location.reload(); });
 document.getElementById('driverLogoutBtn')?.addEventListener('click', ()=>{ localStorage.removeItem('waselny_user'); location.reload(); });
 
-let clickCount=0;
-document.getElementById('versionNumber')?.addEventListener('click', ()=>{
-    clickCount++; if(clickCount===5){
-        let pwd = prompt("كلمة مرور الإدارة للتحقق:");
-        if(pwd===ADMIN_PASSWORD){
-            window.currentUser = { role:'admin', name:'المدير العام', phone:'admin' };
-            localStorage.setItem('waselny_user', JSON.stringify(window.currentUser));
+// التشغيل والربط الكلي المباشر
+(async function() {
+    await loadGlobalSettings();
+    await loadRestaurantsFromFirebase();
+    if(localStorage.getItem('waselny_user')) {
+        try {
+            window.currentUser = JSON.parse(localStorage.getItem('waselny_user'));
             document.getElementById('loginOverlay').style.display = 'none';
-            showPage('adminPage');
-        } clickCount=0;
-    }
-});
-
-// إخفاء تسجيل المندوب من واجهة تسجيل الدخول وإضافته في مشاركة التطبيق
-let shareClickCountDriver = 0, shareTimeoutDriver;
-document.getElementById('shareApp')?.addEventListener('click', () => {
-    shareClickCountDriver++;
-    if(shareTimeoutDriver) clearTimeout(shareTimeoutDriver);
-    shareTimeoutDriver = setTimeout(() => { shareClickCountDriver = 0; }, 1000);
-    if(shareClickCountDriver === 7) {
-        let pwd = prompt("🔐 كلمة سر المندوب:");
-        if(pwd === "weesim737") {
-            let name = prompt("أدخل اسم المندوب:");
-            if(name && name.trim()) {
-                window.currentUser = { role:'driver', name: name.trim(), phone:'driver' };
-                localStorage.setItem('waselny_user', JSON.stringify(window.currentUser));
-                document.getElementById('loginOverlay').style.display = 'none';
-                showPage('driverPage');
-                showToast(`مرحباً مندوب ${name}`);
-            } else showToast("الاسم مطلوب");
-        } else if(pwd) showToast("كلمة السر غير صحيحة");
-        shareClickCountDriver = 0;
+            if(window.currentUser.role === 'driver') showPage('driverPage');
+            else if(window.currentUser.role === 'admin') showPage('adminPage');
+            else showPage('homePage');
+        } catch(e) { initLogin(); }
     } else {
-        // مشاركة التطبيق العادية
-        if(navigator.share) navigator.share({title:'وصل', text:'تطبيق توصيل سريع', url:window.location.href});
-        else showToast('تم نسخ الرابط');
+        initLogin();
     }
-});
-
-let savedUser = localStorage.getItem('waselny_user');
-if(savedUser){
-    try {
-        window.currentUser = JSON.parse(savedUser);
-        document.getElementById('loginOverlay').style.display = 'none';
-        if(window.currentUser.role === 'driver') showPage('driverPage');
-        else if(window.currentUser.role === 'admin') showPage('adminPage');
-        else showPage('homePage');
-    } catch(e){ initLogin(); }
-} else { initLogin(); }
-
-renderCategories(); renderOffers(); renderRestaurantsPreview(); initPaymentList();
+    renderCategories(); renderOffers(); renderRestaurantsPreview(); initPaymentList();
+})();
 </script>
 </body>
 </html>

@@ -57,19 +57,15 @@
         .offers-scroll::-webkit-scrollbar { display: none; }
         .offer-card { flex: 0 0 220px; background: linear-gradient(135deg, #f59e0b, #ea580c); border-radius: 14px; padding: 10px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
         .offer-text h4 { font-size: 0.85rem; color: white; font-weight: 800; }
-        .offer-text p { font-size: 0.55rem; color: rgba(255,255,255,0.9); }
-        .offer-badge { background: rgba(255,255,255,0.2); padding: 3px 8px; border-radius: 30px; font-size: 0.65rem; }
         
         .section-title { display: flex; align-items: center; gap: 6px; margin-bottom: 10px; }
-        .section-title h2 { font-size: 0.9rem; font-weight: 700; }
         .restaurants-preview { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
         .preview-card { background: var(--white); border-radius: 14px; display: flex; gap: 10px; padding: 8px; border: 1px solid var(--gray-light); cursor: pointer; }
         .preview-card:active { transform: scale(0.98); }
         .preview-img { width: 55px; height: 55px; border-radius: 10px; background-size: cover; }
         .preview-info { flex: 1; }
         .preview-name { font-weight: 800; font-size: 0.8rem; }
-        .preview-cuisine { font-size: 0.6rem; color: var(--gray); margin: 2px 0; }
-        .preview-price { text-align: center; min-width: 45px; }
+        .preview-cuisine { font-size: 0.6rem; color: var(--gray); }
         .preview-price .price { font-weight: 800; color: var(--primary); font-size: 0.8rem; }
         
         .restaurants-list { display: flex; flex-direction: column; gap: 10px; }
@@ -78,7 +74,6 @@
         .restaurant-item-info { flex: 1; }
         .restaurant-item-name { font-weight: 800; font-size: 0.8rem; }
         .restaurant-item-cat { font-size: 0.6rem; color: var(--gray); }
-        .restaurant-item-price .price { font-weight: 800; color: var(--primary); font-size: 0.8rem; }
         
         .menu-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin-top: 10px; }
         .menu-item-card { background: var(--white); border-radius: 20px; overflow: hidden; border: 1px solid var(--gray-light); box-shadow: var(--shadow); display: flex; flex-direction: column; transition: transform 0.2s; cursor: pointer; }
@@ -164,7 +159,7 @@
     <div class="logo-sub">W A S A L</div>
     <div class="work-hours"><span class="open-badge"></span><span>6 صباحاً - 12 منتصف الليل</span></div>
 </div>
-<div class="search-bar"><span class="search-icon">🔍</span><input type="text" id="searchInput" placeholder="ابحث عن مطعم أو منتج..."></div>
+<div class="search-bar"><span class="search-icon">🔍</span><input type="text" id="searchInput" placeholder="ابحث عن مطعم..."></div>
 
 <div class="container">
     <div id="homePage" class="page active-page">
@@ -188,10 +183,10 @@
 
     <div id="checkoutPage" class="page">
         <div class="back-btn" onclick="goBackToMenu()">🔙 رجوع</div>
-        <h3 style="margin-bottom:10px;">🧾 تفاصيل الطلب</h3>
+        <h3>🧾 تفاصيل الطلب</h3>
         <div id="checkoutOrderSummary" style="background:var(--white); border-radius:14px; padding:12px;"></div>
         <div class="location-section" style="margin-top:15px;">
-            <label style="font-weight:800;">📍 عنوان التوصيل</label>
+            <label>📍 عنوان التوصيل</label>
             <button class="current-location-btn" onclick="getCurrentLocationForCheckout()"><i class="fas fa-location-dot"></i> استخدم موقعي الحالي</button>
             <div class="geo-btn" onclick="initMapForCheckout()" style="background:var(--white); border:1px solid var(--gray-light); border-radius:30px; padding:9px; display:flex; justify-content:space-between; margin-bottom:8px; cursor:pointer;"><span id="checkoutLocationTxt">🗺️ حدد موقعك</span><i class="fas fa-map-marker-alt"></i></div>
             <input type="text" id="checkoutAddressManual" class="field-input" placeholder="✍️ اكتب عنوانك">
@@ -215,7 +210,7 @@
             <div id="darkModeToggle" style="display:flex; justify-content:space-between; padding:10px 0; cursor:pointer;"><span><i class="fas fa-moon"></i> الوضع الليلي</span><span id="darkModeIcon">⚫</span></div>
             <div id="whatsappSupport" style="display:flex; justify-content:space-between; padding:10px 0; cursor:pointer;"><span><i class="fab fa-whatsapp"></i> خدمة العملاء</span><span>⬅️</span></div>
             <div id="shareApp" style="display:flex; justify-content:space-between; padding:10px 0; cursor:pointer;"><span><i class="fas fa-share-alt"></i> مشاركة التطبيق</span><span>⬅️</span></div>
-            <div style="display:flex; justify-content:space-between; padding:10px 0;"><span><i class="fas fa-code-branch"></i> الإصدار</span><span id="versionNumber">v11.0 (40 مطعماً)</span></div>
+            <div style="display:flex; justify-content:space-between; padding:10px 0;"><span><i class="fas fa-code-branch"></i> الإصدار</span><span id="versionNumber">v12.0 (40 مطعماً)</span></div>
             <button id="settingsLogoutBtn" class="btn-primary" style="background:var(--danger);">تسجيل الخروج</button>
         </div>
     </div>
@@ -242,48 +237,48 @@
 <div id="map-overlay" class="map-overlay"><div id="map"></div><div class="map-controls"><div class="map-back" onclick="closeMap()">↩️ رجوع</div><div class="map-confirm" onclick="confirmMapLocation()">✅ تأكيد</div></div></div>
 
 <script>
-// ==================== المطاعم الـ 40 المستخرجة من الكود الأصلي ====================
+// ==================== قائمة المطاعم الكاملة (40 مطعماً) مع جميع الأصناف ====================
 const allRestaurantsData = [
-    { id: 1, name: "رويال بروستر", cat: "بروست", img: "https://images.unsplash.com/photo-1626645738196-c2a7c8d08f58?w=400", items: [{n:"وجبة بروست (4 قطع)",p:2200},{n:"زنجر سوبريم",p:2400},{n:"ستريبس",p:2000},{n:"مسحب رويال",p:2200},{n:"ساندوتش زنجر",p:1300},{n:"برجر لحم",p:1600},{n:"برجر دجاج",p:1400},{n:"تويستر",p:1100}] },
-    { id: 2, name: "البيك رويال", cat: "بروست", img: "https://images.unsplash.com/photo-1562967914-608f82629710?w=400", items: [{n:"بروست رويال",p:2400},{n:"فيليه سمك",p:2200},{n:"زنجر رويال",p:1600},{n:"روبيان مقلي",p:3500},{n:"بيج بيك",p:1800},{n:"مسحب دجاج",p:1300}] },
-    { id: 3, name: "شاورما هت", cat: "شاورما", img: "https://images.unsplash.com/photo-1644704170910-a0cdf183649b?w=400", items: [{n:"شاورما دجاج",p:1200},{n:"شاورما لحم",p:1800},{n:"وجبة شاورما",p:2200},{n:"شاورما عربي",p:1200}] },
-    { id: 4, name: "ستار برجر", cat: "برجر", img: "https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=400", items: [{n:"برجر لحم كلاسيك",p:1800},{n:"برجر دجاج مقرمش",p:1700},{n:"مشروم برجر",p:2200},{n:"باربيكيو برجر",p:2100}] },
-    { id: 5, name: "تراك برجر", cat: "برجر", img: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400", items: [{n:"كلاسيك لحم",p:1800},{n:"تراك لحم دبل",p:2600},{n:"مشروم لحم",p:2200},{n:"باربكيو لحم",p:2000}] },
-    { id: 6, name: "الشيباني جلوبال", cat: "مشاوي", img: "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=400", items: [{n:"فحسة لحم بلدي",p:4500},{n:"مشكل مشاوي",p:5500},{n:"كباب غنمي",p:4500},{n:"دجاج فحم",p:2400}] },
-    { id: 7, name: "كنتاكي", cat: "بروست", img: "https://images.unsplash.com/photo-1550547660-d9450f859349?w=400", items: [{n:"وجبة دجاج (3 قطع)",p:2000},{n:"وجبة تويستر",p:1500},{n:"سلة العائلة",p:6500}] },
-    { id: 8, name: "مدينة العصائر", cat: "عصائر", img: "https://images.unsplash.com/photo-1589733955941-5eeaf752f6dd?w=400", items: [{n:"كوكتيل فواكه",p:1200},{n:"عصير مانجو",p:800},{n:"ليمون بالنعناع",p:700},{n:"ميلك شيك",p:1200}] },
-    { id: 9, name: "البيت التركي", cat: "مشاوي", img: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=400", items: [{n:"كباب تركي",p:4000},{n:"شيش طاووق",p:3000},{n:"ريش غنمية",p:5500}] },
-    { id: 10, name: "هوت سبايسي", cat: "برجر", img: "https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?w=400", items: [{n:"وجبة بروست هوت سبايسي",p:2200},{n:"ساندوتش زنجر ناري",p:1400},{n:"تورتيلا هوت سبايسي",p:1300},{n:"برجر لحم مشوي",p:1600}] },
-    { id: 11, name: "ترند كافيه", cat: "عصائر", img: "https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=400", items: [{n:"إسبريسو",p:800},{n:"لاتيه",p:1200},{n:"كابتشينو",p:1200},{n:"موهيتو بلو",p:1200}] },
-    { id: 12, name: "ساك بروستر", cat: "بروست", img: "https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?w=400", items: [{n:"وجبة بروست ساك",p:2300},{n:"وجبة ستريبس",p:2100},{n:"ساندوتش زنجر العملاق",p:1500}] },
-    { id: 13, name: "سام بروستر", cat: "بروست", img: "https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?w=400", items: [{n:"وجبة بروست سام",p:2300},{n:"وجبة بروست حراق",p:2400},{n:"ساندوتش زنجر سام",p:1500}] },
-    { id: 14, name: "شواية أرخبيل سقطرى", cat: "مشاوي", img: "https://images.unsplash.com/photo-1544025162-d76694265947?w=400", items: [{n:"دجاج شواية (حبة)",p:4000},{n:"نصف دجاج مع الأرز",p:2200},{n:"نفر لحم بلدي",p:4500}] },
-    { id: 15, name: "فايف ستار برجر", cat: "برجر", img: "https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=400", items: [{n:"فايف ستار برجر لحم",p:2000},{n:"تشيكن برجر مقرمش",p:1600},{n:"دبل برجر",p:2800}] },
-    { id: 16, name: "حواء لا تنسى", cat: "شعبي", img: "https://images.unsplash.com/photo-1591261735099-e3776264e164?w=400", items: [{n:"مندي دجاج",p:2200},{n:"مظبي دجاج",p:2300},{n:"نفر لحم بلدي",p:4500}] },
-    { id: 17, name: "العم طه", cat: "وجبات سريعة", img: "https://images.unsplash.com/photo-1593001874117-c99c800e3eb7?w=400", items: [{n:"سندوتش زنجر",p:1300},{n:"شيش طاووق",p:1200},{n:"تورتيلا دجاج",p:1200}] },
-    { id: 18, name: "القرية التهامية", cat: "تهامي", img: "https://images.unsplash.com/photo-1544025162-d76694265947?w=400", items: [{n:"سمك ديرك",p:3500},{n:"صحن جمبري",p:4000},{n:"عصيدة تهامية",p:1200}] },
-    { id: 19, name: "أمين بيتزا", cat: "بيتزا", img: "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=400", items: [{n:"بيتزا أمين خاصة",p:2500},{n:"بيتزا دجاج",p:2200},{n:"بيتزا لحم",p:2300}] },
-    { id: 20, name: "نكهات كرسبي", cat: "وجبات سريعة", img: "https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?w=400", items: [{n:"وجبة كرسبي",p:2200},{n:"ساندوتش زنجر نكهات",p:1400},{n:"بطاطس نكهات",p:900}] },
-    { id: 21, name: "مطعم الأندلس", cat: "مشاوي", img: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=400", items: [{n:"نفر مشكل مشاوي",p:4500},{n:"كباب لحم",p:4000},{n:"دجاج فحم",p:3800}] },
-    { id: 22, name: "ديناميت", cat: "برجر", img: "https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?w=400", items: [{n:"ديناميت تشيكن",p:2500},{n:"ديناميت روبيان",p:3800},{n:"برجر ديناميت لحم",p:2200}] },
-    { id: 23, name: "تتبيلة", cat: "برجر", img: "https://images.unsplash.com/photo-1644704170910-a0cdf183649b?w=400", items: [{n:"برجر تتبيلة الخاص",p:2400},{n:"برجر دجاج مقرمش",p:1800},{n:"صحن شاورما عربي",p:2500}] },
-    { id: 24, name: "كنج برجر", cat: "برجر", img: "https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=400", items: [{n:"كنج برجر لحم",p:2800},{n:"رويال تشيكن",p:1900},{n:"فيليه سمك",p:1600}] },
-    { id: 25, name: "باب المندب", cat: "بحرية", img: "https://images.unsplash.com/photo-1567620832903-9fc6debc209f?w=400", items: [{n:"سمك ديرك",p:4000},{n:"صحن جمبري",p:4500},{n:"أرز صيادية",p:1000}] },
-    { id: 26, name: "البيك التهامي", cat: "بروست", img: "https://images.unsplash.com/photo-1562967914-608f82629710?w=400", items: [{n:"وجبة بروست تهامي",p:2200},{n:"زنجر تهامي",p:1400},{n:"تورتيلا البيك",p:1200}] },
-    { id: 27, name: "الضيعة", cat: "مشاوي", img: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=400", items: [{n:"مشكل مشاوي الضيعة",p:4800},{n:"كباب شامي",p:4200},{n:"شيش طاووق",p:3800}] },
-    { id: 28, name: "المأكولات الشامية", cat: "شامي", img: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=400", items: [{n:"مشوي مشكل",p:4500},{n:"كباب حلبي",p:4000},{n:"حمص بيروتي",p:1000}] },
-    { id: 29, name: "مطعم 99", cat: "برجر", img: "https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=400", items: [{n:"برجر 99 لحم",p:2600},{n:"وجبة سوبر زنجر",p:1800},{n:"تورتيلا 99",p:1300}] },
-    { id: 30, name: "فريش فرايز", cat: "وجبات سريعة", img: "https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=400", items: [{n:"فريش فرايز كلاسيك",p:1200},{n:"فرايز بالجبنة",p:1600},{n:"زنجر ساندوتش",p:1500}] },
-    { id: 31, name: "يوتيرن", cat: "برجر", img: "https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=400", items: [{n:"يوتيرن برجر",p:2500},{n:"وجبة سوبر زنجر",p:1900},{n:"تشيكن فيليه",p:1500}] },
+    { id: 1, name: "رويال بروستر", cat: "بروست", img: "https://images.unsplash.com/photo-1626645738196-c2a7c8d08f58?w=400", items: [{n:"وجبة بروست (4 قطع)",p:2200},{n:"زنجر سوبريم",p:2400},{n:"ستريبس (5 قطع)",p:2000},{n:"مسحب رويال",p:2200},{n:"ساندوتش زنجر",p:1300},{n:"برجر لحم",p:1600},{n:"برجر دجاج",p:1400},{n:"تويستر",p:1100},{n:"بطاطس (صحن)",p:600},{n:"مشروبات غازية",p:400}] },
+    { id: 2, name: "البيك رويال", cat: "بروست", img: "https://images.unsplash.com/photo-1562967914-608f82629710?w=400", items: [{n:"بروست رويال",p:2400},{n:"فيليه سمك",p:2200},{n:"زنجر رويال",p:1600},{n:"روبيان مقلي",p:3500},{n:"بيج بيك",p:1800},{n:"مسحب دجاج",p:1300},{n:"بطاطس",p:800},{n:"مشروبات غازية",p:400}] },
+    { id: 3, name: "شاورما هت", cat: "شاورما", img: "https://images.unsplash.com/photo-1644704170910-a0cdf183649b?w=400", items: [{n:"شاورما دجاج",p:1200},{n:"شاورما لحم",p:1800},{n:"شاورما عربي (صحن)",p:2200},{n:"هت بوكس عائلي",p:5500},{n:"بطاطس هت متبلة",p:700},{n:"مشروبات غازية",p:400}] },
+    { id: 4, name: "ستار برجر", cat: "برجر", img: "https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=400", items: [{n:"برجر لحم كلاسيك",p:1800},{n:"برجر دجاج مقرمش",p:1700},{n:"مشروم برجر",p:2200},{n:"باربيكيو برجر",p:2100},{n:"حلقات بصل",p:800},{n:"بطاطس ويدجز",p:900},{n:"ميلك شيك فراولة",p:1200}] },
+    { id: 5, name: "تراك برجر", cat: "برجر", img: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400", items: [{n:"كلاسيك لحم",p:1800},{n:"تراك لحم دبل",p:2600},{n:"مشروم لحم",p:2200},{n:"باربكيو لحم",p:2000},{n:"كلاسيك دجاج",p:1500},{n:"تراك دجاج سبايسي",p:1800},{n:"بطاطس مقلي",p:600}] },
+    { id: 6, name: "الشيباني جلوبال", cat: "مشاوي", img: "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=400", items: [{n:"فحسة لحم بلدي",p:4500},{n:"مشكل مشاوي",p:5500},{n:"كباب غنمي",p:4500},{n:"دجاج فحم",p:2400},{n:"ستيك لحم",p:6000},{n:"ارز مندي",p:800}] },
+    { id: 7, name: "كنتاكي", cat: "بروست", img: "https://images.unsplash.com/photo-1550547660-d9450f859349?w=400", items: [{n:"وجبة دينر ميل",p:2800},{n:"وجبة سوبر دينر",p:3500},{n:"وجبة مايتي زنجر",p:2600},{n:"وجبة تويستر",p:1800},{n:"زنجر برجر",p:1400},{n:"بطاطس",p:700},{n:"سلطة كول سلو",p:600}] },
+    { id: 8, name: "مدينة العصائر", cat: "عصائر", img: "https://images.unsplash.com/photo-1589733955941-5eeaf752f6dd?w=400", items: [{n:"كوكتيل فواكه",p:1200},{n:"عصير مانجو",p:800},{n:"عصير فراولة",p:900},{n:"ليمون بالنعناع",p:700},{n:"ميلك شيك",p:1200},{n:"كريب نوتيلا",p:2000}] },
+    { id: 9, name: "البيت التركي", cat: "مشاوي", img: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=400", items: [{n:"كباب تركي",p:4000},{n:"شيش طاووق",p:3000},{n:"مشكل البيت التركي",p:4500},{n:"ريش غنمية",p:5500},{n:"طاجن دجاج",p:2500},{n:"بقلاوة تركية",p:2000}] },
+    { id: 10, name: "هوت سبايسي", cat: "برجر", img: "https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?w=400", items: [{n:"وجبة بروست هوت سبايسي",p:2200},{n:"ساندوتش زنجر ناري",p:1400},{n:"تورتيلا هوت سبايسي",p:1300},{n:"برجر لحم مشوي",p:1600},{n:"بطاطس حلزوني",p:800},{n:"أصابع موزاريلا",p:1000}] },
+    { id: 11, name: "ترند كافيه", cat: "عصائر", img: "https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=400", items: [{n:"إسبريسو",p:800},{n:"لاتيه",p:1200},{n:"كابتشينو",p:1200},{n:"موهيتو بلو",p:1200},{n:"كريب نوتيلا",p:1800},{n:"وافل بلجيكي",p:1500}] },
+    { id: 12, name: "ساك بروستر", cat: "بروست", img: "https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?w=400", items: [{n:"وجبة بروست ساك",p:2300},{n:"وجبة ستريبس",p:2100},{n:"ساندوتش زنجر العملاق",p:1500},{n:"برجر لحم مشوي",p:1700},{n:"رول تورتيلا",p:1200}] },
+    { id: 13, name: "سام بروستر", cat: "بروست", img: "https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?w=400", items: [{n:"وجبة بروست سام",p:2300},{n:"وجبة بروست حراق",p:2400},{n:"ساندوتش زنجر سام",p:1500},{n:"برجر لحم",p:1700},{n:"تورتيلا سام",p:1200}] },
+    { id: 14, name: "شواية أرخبيل سقطرى", cat: "مشاوي", img: "https://images.unsplash.com/photo-1544025162-d76694265947?w=400", items: [{n:"دجاج شواية (حبة)",p:4000},{n:"نصف دجاج مع الأرز",p:2200},{n:"نفر لحم بلدي",p:4500},{n:"مشكل مشاوي",p:4000},{n:"كباب لحم",p:3500}] },
+    { id: 15, name: "فايف ستار برجر", cat: "برجر", img: "https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=400", items: [{n:"فايف ستار برجر لحم",p:2000},{n:"تشيكن برجر مقرمش",p:1600},{n:"دبل برجر",p:2800},{n:"وجبة ستريبس",p:2200},{n:"تورتيلا دجاج",p:1300}] },
+    { id: 16, name: "حواء لا تنسى", cat: "شعبي", img: "https://images.unsplash.com/photo-1591261735099-e3776264e164?w=400", items: [{n:"مندي دجاج",p:2200},{n:"مظبي دجاج",p:2300},{n:"نفر لحم بلدي",p:4500},{n:"زربيان دجاج",p:2400},{n:"برم لحم",p:4800}] },
+    { id: 17, name: "العم طه", cat: "وجبات سريعة", img: "https://images.unsplash.com/photo-1593001874117-c99c800e3eb7?w=400", items: [{n:"سندوتش زنجر",p:1300},{n:"شيش طاووق",p:1200},{n:"تورتيلا دجاج",p:1200},{n:"برجر لحم",p:1500},{n:"وجبة بروست",p:2200}] },
+    { id: 18, name: "القرية التهامية", cat: "تهامي", img: "https://images.unsplash.com/photo-1544025162-d76694265947?w=400", items: [{n:"سمك ديرك",p:3500},{n:"صحن جمبري",p:4000},{n:"مغزة تهامية",p:2800},{n:"عصيدة تهامية",p:1200}] },
+    { id: 19, name: "أمين بيتزا", cat: "بيتزا", img: "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=400", items: [{n:"بيتزا أمين خاصة",p:2500},{n:"بيتزا دجاج",p:2200},{n:"بيتزا لحم",p:2300},{n:"بيتزا خضروات",p:1800},{n:"فطيرة دجاج بالجبن",p:1200}] },
+    { id: 20, name: "نكهات كرسبي", cat: "وجبات سريعة", img: "https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?w=400", items: [{n:"وجبة كرسبي",p:2200},{n:"ساندوتش زنجر نكهات",p:1400},{n:"تورتيلا كرسبي",p:1200},{n:"بطاطس نكهات",p:900},{n:"أصابع موزاريلا",p:1100}] },
+    { id: 21, name: "مطعم الأندلس", cat: "مشاوي", img: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=400", items: [{n:"نفر مشكل مشاوي",p:4500},{n:"كباب لحم",p:4000},{n:"دجاج فحم",p:3800},{n:"ريش غنم",p:5000},{n:"فحسة لحم",p:2500}] },
+    { id: 22, name: "ديناميت", cat: "برجر", img: "https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?w=400", items: [{n:"ديناميت تشيكن",p:2500},{n:"ديناميت روبيان",p:3800},{n:"برجر ديناميت لحم",p:2200},{n:"ساندوتش زنجر ناري",p:1600},{n:"بطاطس بالجبنة",p:1200}] },
+    { id: 23, name: "تتبيلة", cat: "برجر", img: "https://images.unsplash.com/photo-1644704170910-a0cdf183649b?w=400", items: [{n:"برجر تتبيلة الخاص",p:2400},{n:"برجر دجاج مقرمش",p:1800},{n:"مشروم برجر",p:2600},{n:"صحن شاورما عربي",p:2500}] },
+    { id: 24, name: "كنج برجر", cat: "برجر", img: "https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=400", items: [{n:"كنج برجر لحم",p:2800},{n:"رويال تشيكن",p:1900},{n:"فيليه سمك",p:1600},{n:"ساندوتش زنجر",p:1500}] },
+    { id: 25, name: "باب المندب", cat: "بحرية", img: "https://images.unsplash.com/photo-1567620832903-9fc6debc209f?w=400", items: [{n:"سمك ديرك",p:4000},{n:"صحن جمبري",p:4500},{n:"أرز صيادية",p:1000},{n:"طاجن تونة",p:1500}] },
+    { id: 26, name: "البيك التهامي", cat: "بروست", img: "https://images.unsplash.com/photo-1562967914-608f82629710?w=400", items: [{n:"وجبة بروست تهامي",p:2200},{n:"زنجر تهامي",p:1400},{n:"تورتيلا البيك",p:1200},{n:"كبة تهامية",p:300}] },
+    { id: 27, name: "الضيعة", cat: "مشاوي", img: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=400", items: [{n:"مشكل مشاوي الضيعة",p:4800},{n:"كباب شامي",p:4200},{n:"شيش طاووق",p:3800},{n:"مندي دجاج",p:2500}] },
+    { id: 28, name: "المأكولات الشامية", cat: "شامي", img: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=400", items: [{n:"مشوي مشكل",p:4500},{n:"كباب حلبي",p:4000},{n:"عرايس لحم",p:2500},{n:"حمص بيروتي",p:1000}] },
+    { id: 29, name: "مطعم 99", cat: "برجر", img: "https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=400", items: [{n:"برجر 99 لحم",p:2600},{n:"وجبة سوبر زنجر",p:1800},{n:"تورتيلا 99",p:1300},{n:"ميلك شيك",p:1200}] },
+    { id: 30, name: "فريش فرايز", cat: "وجبات سريعة", img: "https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=400", items: [{n:"فريش فرايز كلاسيك",p:1200},{n:"فرايز بالجبنة",p:1600},{n:"زنجر ساندوتش",p:1500},{n:"تورتيلا دجاج",p:1400}] },
+    { id: 31, name: "يوتيرن", cat: "برجر", img: "https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=400", items: [{n:"يوتيرن برجر",p:2500},{n:"وجبة سوبر زنجر",p:1900},{n:"تشيكن فيليه",p:1500},{n:"بطاطس يوتيرن",p:800}] },
     { id: 32, name: "أرسو", cat: "برجر", img: "https://images.unsplash.com/photo-1589733955941-5eeaf752f6dd?w=400", items: [{n:"أرسو برجر لحم",p:2700},{n:"وجبة زنجر أرسو",p:2000},{n:"هوت دوج أرسو",p:1200}] },
     { id: 33, name: "شواية مسبوك", cat: "مشاوي", img: "https://images.unsplash.com/photo-1599321955419-785373199a8d?w=400", items: [{n:"حبة دجاج شواية مع الأرز",p:4800},{n:"نصف حبة",p:2400},{n:"ملوخية",p:700}] },
-    { id: 34, name: "كشري ستيشن", cat: "مصري", img: "https://images.unsplash.com/photo-1591261735099-e3776264e164?w=400", items: [{n:"كشري صغير",p:800},{n:"كشري وسط",p:1200},{n:"كشري كبير",p:1600}] },
+    { id: 34, name: "كشري ستيشن", cat: "مصري", img: "https://images.unsplash.com/photo-1591261735099-e3776264e164?w=400", items: [{n:"كشري صغير",p:800},{n:"كشري وسط",p:1200},{n:"كشري كبير",p:1600},{n:"أرز بلبن",p:700}] },
     { id: 35, name: "شواية المكلا", cat: "مشاوي", img: "https://images.unsplash.com/photo-1591261735099-e3776264e164?w=400", items: [{n:"دجاج شواية مع الأرز",p:4600},{n:"نصف حبة",p:2300},{n:"وجبة حنيذ",p:2500}] },
-    { id: 36, name: "قمة الضيافة", cat: "مندي", img: "https://images.unsplash.com/photo-1567620832903-9fc6debc209f?w=400", items: [{n:"نفر لحم مندي",p:7500},{n:"حبة دجاج مندي",p:4800}] },
+    { id: 36, name: "قمة الضيافة", cat: "مندي", img: "https://images.unsplash.com/photo-1567620832903-9fc6debc209f?w=400", items: [{n:"نفر لحم مندي",p:7500},{n:"حبة دجاج مندي",p:4800},{n:"نصف تيس",p:35000}] },
     { id: 37, name: "الرباش", cat: "شعبي", img: "https://images.unsplash.com/photo-1567620832903-9fc6debc209f?w=400", items: [{n:"زربيان لحم",p:7500},{n:"نفر لحم مندي",p:7200},{n:"زربيان دجاج",p:2800}] },
-    { id: 38, name: "القرموشي", cat: "فطور", img: "https://images.unsplash.com/photo-1591261735099-e3776264e164?w=400", items: [{n:"معصوب ملكي",p:2000},{n:"عريكة قرموشي",p:1800},{n:"فول قلاية",p:800}] },
+    { id: 38, name: "القرموشي", cat: "فطور", img: "https://images.unsplash.com/photo-1591261735099-e3776264e164?w=400", items: [{n:"معصوب ملكي",p:2000},{n:"عريكة قرموشي",p:1800},{n:"مطبق مالح",p:1000},{n:"فول قلاية",p:800}] },
     { id: 39, name: "خير زمان", cat: "مندي", img: "https://images.unsplash.com/photo-1591261735099-e3776264e164?w=400", items: [{n:"نفر لحم مندي",p:7400},{n:"برمة لحم",p:8000},{n:"حبة دجاج مندي",p:4600}] },
-    { id: 40, name: "خير زمان 2", cat: "شعبي", img: "https://images.unsplash.com/photo-1591261735099-e3776264e164?w=400", items: [{n:"نفر لحم مندي",p:7400},{n:"حبة دجاج مندي",p:4600},{n:"ملوخية",p:700}] }
+    { id: 40, name: "مطعم خير زمان", cat: "شعبي", img: "https://images.unsplash.com/photo-1591261735099-e3776264e164?w=400", items: [{n:"نفر لحم مندي",p:7400},{n:"حبة دجاج مندي",p:4600},{n:"ملوخية",p:700},{n:"شفوت يمني",p:1200}] }
 ];
 
 const FIREBASE_URL = "https://waselny-2812b-default-rtdb.firebaseio.com";
@@ -311,6 +306,7 @@ function getItemImage(itemName) {
     if(name.includes('سمك') || name.includes('جمبري')) return 'https://images.unsplash.com/photo-1567620832903-9fc6debc209f?w=300';
     if(name.includes('مندي')) return 'https://images.unsplash.com/photo-1591261735099-e3776264e164?w=300';
     if(name.includes('عصير')) return 'https://images.unsplash.com/photo-1589733955941-5eeaf752f6dd?w=300';
+    if(name.includes('بطاطس') || name.includes('فرايز')) return 'https://images.unsplash.com/photo-1585109649139-366815a0d713?w=300';
     return 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=300';
 }
 
@@ -332,11 +328,12 @@ function renderOffers() {
     document.getElementById('offersScroll').innerHTML = `
         <div class="offer-card" onclick="showPage('restaurantsPage')"><div class="offer-text"><h4>🔥 خصم 30%</h4><p>على أول طلب</p></div><div class="offer-badge">اطلب</div></div>
         <div class="offer-card" onclick="showToast('قريباً')"><div class="offer-text"><h4>🛒 توصيل مجاني</h4><p>لطلبات السوبر</p></div><div class="offer-badge">استفد</div></div>
+        <div class="offer-card" onclick="showPage('restaurantsPage')"><div class="offer-text"><h4>🍕 عروض البيتزا</h4><p>خصم 20%</p></div><div class="offer-badge">اطلب</div></div>
     `;
 }
 
 function renderRestaurantsPreview() {
-    let preview = allRestaurants.slice(0,4);
+    let preview = allRestaurants.slice(0,6);
     document.getElementById('restaurantsPreview').innerHTML = preview.map(r=>`<div class="preview-card" onclick="openRestaurantMenu(${r.id})"><div class="preview-img" style="background-image:url('${r.img}')"></div><div class="preview-info"><div class="preview-name">${r.name}</div><div class="preview-cuisine">${r.cat}</div></div><div class="preview-price"><div class="price">${r.items[0]?.p || 2200}</div><div>ريال</div></div></div>`).join('');
 }
 
@@ -432,7 +429,7 @@ function updateCheckoutSummary() {
     let totalFood = cart.reduce((s,i)=>s+(i.p*i.qty),0);
     let total = totalFood + deliveryCost;
     let itemsHtml = cart.map(i=>`<div style="display:flex; justify-content:space-between;"><span>${i.n} x${i.qty}</span><span>${i.p*i.qty} ريال</span></div>`).join('');
-    itemsHtml += `<div style="margin-top:10px;"><span>المجموع: ${totalFood} ريال</span></div>`;
+    itemsHtml += `<div style="margin-top:10px; padding-top:10px; border-top:1px solid #ddd;"><span>المجموع: ${totalFood} ريال</span></div>`;
     itemsHtml += `<div><span>🚚 التوصيل: ${deliveryCost} ريال</span></div>`;
     itemsHtml += `<div style="margin-top:10px; font-weight:800;"><span>الإجمالي: ${total} ريال</span></div>`;
     document.getElementById('checkoutOrderSummary').innerHTML = itemsHtml;
@@ -536,7 +533,6 @@ async function renderMyOrders() {
     document.getElementById('myOrdersContainer').innerHTML = html;
 }
 
-// واجهة المندوب
 async function refreshDriverPanel() {
     await loadOrders();
     let myActive = allOrders.find(o => o.driverId === currentUser?.phone && o.status !== 'delivered');
@@ -568,12 +564,11 @@ async function acceptOrder(id) {
 }
 function callCustomer(phone) { if(phone) window.location.href = `tel:${phone}`; }
 
-// إدارة المطاعم
 async function renderAdminRestaurantsList() {
     let container = document.getElementById('adminRestaurantsList');
-    if(container) container.innerHTML = allRestaurants.map(r => `<div style="display:flex; justify-content:space-between; padding:8px; border-bottom:1px solid #ddd;"><div><strong>${r.name}</strong><br><small>${r.cat}</small></div><button style="background:var(--danger); color:white; border:none; padding:4px 10px; border-radius:8px;" onclick="deleteRestaurant(${r.id})">حذف</button></div>`).join('');
+    if(container) container.innerHTML = allRestaurants.map(r => `<div style="display:flex; justify-content:space-between; padding:8px; border-bottom:1px solid #ddd;"><div><strong>${r.name}</strong><br><small>${r.cat} | ${r.items.length} صنف</small></div><button style="background:var(--danger); color:white; border:none; padding:4px 10px; border-radius:8px;" onclick="deleteRestaurant(${r.id})">حذف</button></div>`).join('');
 }
-async function deleteRestaurant(id) { if(confirm('حذف؟')) { allRestaurants = allRestaurants.filter(r=>r.id!==id); renderAdminRestaurantsList(); renderRestaurantsList(); showToast('تم الحذف'); } }
+async function deleteRestaurant(id) { if(confirm('حذف المطعم؟')) { allRestaurants = allRestaurants.filter(r=>r.id!==id); renderAdminRestaurantsList(); renderRestaurantsList(); showToast('تم الحذف'); } }
 async function addNewRestaurant() {
     let name = document.getElementById('adminRestName').value.trim();
     let cat = document.getElementById('adminRestCat').value;

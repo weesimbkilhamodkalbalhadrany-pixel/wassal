@@ -238,7 +238,6 @@
     <div id="homePage" class="page active-page">
         <div class="categories-grid" id="categoriesGrid"></div>
         <div class="offers-scroll" id="offersScroll"></div>
-        
         <div class="section-title"><i class="fas fa-th-large" style="color:var(--primary);"></i><h2>جميع الأقسام</h2></div>
         <div class="carousel-3d" style="margin-bottom:20px;">
             <div class="carousel-container" id="mainCarouselContainer"></div>
@@ -246,7 +245,6 @@
             <div class="carousel-btn next" onclick="changeMainCarouselSlide(1)">❯</div>
             <div class="carousel-dots" id="mainCarouselDots"></div>
         </div>
-
         <button id="trackOrderBtnHome" class="btn-primary" style="display:none; margin-top:10px;" onclick="viewMyTracking()">📍 تتبع طلبي الحالي</button>
     </div>
 
@@ -561,9 +559,9 @@ const DRIVER_PASSWORD = "weesim73741";
 const ADMIN_PASSWORD = "weesim73741";
 let MIN_DELIVERY_PRICE = 550, PRICE_PER_KM = 180;
 
-// ✅ تم تحديث إحداثيات المتجر إلى الموقع الذي أرسلته: https://maps.app.goo.gl/ixsynnxxvLfmqyLF8
-const RESTAURANT_LAT = 12.7855; // إحداثيات تقريبية للموقع في عدن
-const RESTAURANT_LNG = 45.0186;
+// ✅ تم تحديث إحداثيات المتجر إلى موقع صنعاء، اليمن (بيت بوس)
+const RESTAURANT_LAT = 15.3694; // إحداثيات صنعاء، اليمن
+const RESTAURANT_LNG = 44.1910;
 
 let currentUser = null, allOrders = [], allRestaurants = allRestaurantsData;
 let cart = [], currentRestaurant = null, currentCategory = null, currentItem = null;
@@ -849,32 +847,9 @@ window.openCategory = function(categoryId) {
     if (categoryId === 'shein') { showSheinPage(); return; }
     if (categoryId === 'supermarket') { renderSupermarketsList(); return; }
     if (categoryId === 'pharmacy') { renderPharmaciesList(); return; }
-    // الأقسام الفردية الأخرى
-    const category = categoryProductsData && categoryProductsData[categoryId];
-    if (category) {
-        currentCategory = { id: categoryId, name: category.name, products: category.products };
-        let productsHtml = `<div class="section-title"><h2>${category.name}</h2></div><div class="menu-grid">`;
-        category.products.forEach((p, idx) => {
-            productsHtml += `
-                <div class="menu-item-card" onclick="openProductModal('${categoryId}', ${p.id})">
-                    <div class="menu-item-img" style="background-image:url('${p.img}')"></div>
-                    <div class="menu-item-info">
-                        <div class="menu-item-name">${p.name}</div>
-                        <div class="menu-item-desc">${p.desc}</div>
-                        <div class="menu-item-price">${p.price} ريال</div>
-                    </div>
-                </div>
-            `;
-        });
-        productsHtml += `</div><button class="back-btn" onclick="showPage('homePage')">🔙 العودة للرئيسية</button>`;
-        document.getElementById('menuContent').innerHTML = productsHtml;
-        showPage('menuPage');
-    } else {
-        showToast('هذا القسم قيد التحضير');
-    }
 };
 
-// ==================== 5. شي إن (Shein) - يستخدم النافذة المنبثقة ====================
+// ==================== 5. شي إن (Shein) - نفس واجهة التحكم ====================
 function showSheinPage() {
     let html = `
         <div class="back-btn" onclick="showPage('homePage')">🔙 العودة للرئيسية</div>
@@ -909,12 +884,21 @@ function renderSheinProducts(category) {
     let productsHtml = `<div class="menu-grid">`;
     products.forEach(p => {
         productsHtml += `
-            <div class="menu-item-card" onclick="openProductModal('shein_${category}', ${p.id})">
+            <div class="menu-item-card">
                 <div class="menu-item-img" style="background-image:url('${p.img}')"></div>
                 <div class="menu-item-info">
                     <div class="menu-item-name">${p.name}</div>
                     <div class="menu-item-desc">${p.desc}</div>
                     <div class="menu-item-price">${p.price} ريال</div>
+                    
+                    <div class="item-controls" style="margin-top: 8px; display: flex; flex-direction: column; gap: 6px;">
+                        <div style="display: flex; align-items: center; justify-content: center; gap: 15px; background: var(--bg-light); padding: 5px; border-radius: 30px;">
+                            <button class="qty-btn" onclick="updateSheinItemQuantity('${category}', ${p.id}, -1)" style="width: 30px; height: 30px; border-radius: 50%; border: none; background: var(--primary); color: white; font-weight: bold; cursor: pointer;">-</button>
+                            <span id="qty_shein_${p.id}" style="font-weight: bold; min-width: 20px; text-align: center;">0</span>
+                            <button class="qty-btn" onclick="updateSheinItemQuantity('${category}', ${p.id}, 1)" style="width: 30px; height: 30px; border-radius: 50%; border: none; background: var(--primary); color: white; font-weight: bold; cursor: pointer;">+</button>
+                        </div>
+                        <textarea id="note_shein_${p.id}" rows="1" placeholder="📝 ملاحظة خاصة لهذا الصنف (اختياري)" style="width: 100%; padding: 6px; border-radius: 12px; border: 1px solid var(--gray-light); font-size: 0.8rem; background: var(--white);" oninput="updateSheinItemNote('${category}', ${p.id}, this.value)"></textarea>
+                    </div>
                 </div>
             </div>
         `;
@@ -922,56 +906,60 @@ function renderSheinProducts(category) {
     productsHtml += `</div>`;
     const container = document.getElementById('sheinProductsContainer');
     if (container) container.innerHTML = productsHtml;
+    // تحديث الأرقام الموجودة في السلة
+    updateSheinItemDisplay();
 }
-function openProductModal(sourceType, id) {
-    let item = null;
-    if (sourceType.startsWith('shein_')) {
-        const subCat = sourceType.split('_')[1];
-        item = sheinData[subCat].products.find(p => p.id == id);
-    } else {
-        // المنتجات العادية
-        const category = categoryProductsData && categoryProductsData[sourceType];
-        if (category) item = category.products.find(p => p.id == id);
-    }
-    if (!item) return;
-    currentModalItem = { ...item, sourceType };
-    document.getElementById('modalImg').src = getItemImage(item.name);
-    document.getElementById('modalTitle').innerText = item.name;
-    document.getElementById('modalDesc').innerText = item.desc;
-    document.getElementById('modalPrice').innerHTML = item.price + " ريال";
-    modalQuantity = 1; modalNote = "";
-    document.getElementById('modalQuantity').innerText = modalQuantity;
-    document.getElementById('modalNote').value = "";
-    document.getElementById('itemModal').style.display = 'flex';
+function updateSheinItemDisplay() {
+    // تحديث عرض الكمية لجميع أصناف شي إن
+    const categories = ['men', 'women', 'kids', 'watches'];
+    categories.forEach(cat => {
+        sheinData[cat].products.forEach(p => {
+            let existingIdx = cart.findIndex(i => i.name === p.name && i.sourceType === 'shein');
+            let count = existingIdx !== -1 ? cart[existingIdx].qty : 0;
+            let note = existingIdx !== -1 ? cart[existingIdx].note : '';
+            let qtySpan = document.getElementById(`qty_shein_${p.id}`);
+            if (qtySpan) qtySpan.innerText = count;
+            let noteField = document.getElementById(`note_shein_${p.id}`);
+            if (noteField) noteField.value = note;
+        });
+    });
 }
-document.getElementById('modalPlus').onclick = () => { modalQuantity++; document.getElementById('modalQuantity').innerText = modalQuantity; };
-document.getElementById('modalMinus').onclick = () => { if(modalQuantity > 1) modalQuantity--; document.getElementById('modalQuantity').innerText = modalQuantity; };
-document.getElementById('modalAddBtn').onclick = () => {
-    modalNote = document.getElementById('modalNote').value;
-    if(!currentModalItem) return;
-    const price = currentModalItem.price;
-    const name = currentModalItem.name;
-    const existingIdx = cart.findIndex(i => i.name === name && i.note === modalNote);
-    if(existingIdx !== -1) {
-        cart[existingIdx].qty += modalQuantity;
-    } else {
+function updateSheinItemQuantity(category, id, delta) {
+    const product = sheinData[category].products.find(p => p.id === id);
+    if (!product) return;
+    let existingIdx = cart.findIndex(i => i.name === product.name && i.sourceType === 'shein');
+    
+    if (existingIdx !== -1) {
+        let newQty = cart[existingIdx].qty + delta;
+        if (newQty <= 0) {
+            cart.splice(existingIdx, 1);
+        } else {
+            cart[existingIdx].qty = newQty;
+        }
+    } else if (delta > 0) {
         cart.push({
-            name: name,
-            p: price,
-            qty: modalQuantity,
-            note: modalNote,
-            type: 'product',
-            restaurant: null,
-            img: getItemImage(name)
+            name: product.name,
+            p: product.price,
+            qty: 1,
+            note: document.getElementById(`note_shein_${id}`)?.value || '',
+            restaurant: 'شي إن',
+            restaurantId: 10001,
+            type: 'shein',
+            sourceType: 'shein',
+            img: product.img
         });
     }
     updateCartDisplay();
-    showToast(`تمت إضافة ${name} ×${modalQuantity} إلى السلة`);
-    document.getElementById('itemModal').style.display = 'none';
-};
-document.getElementById('modalCloseBtn').onclick = () => {
-    document.getElementById('itemModal').style.display = 'none';
-};
+    updateSheinItemDisplay();
+}
+function updateSheinItemNote(category, id, note) {
+    const product = sheinData[category].products.find(p => p.id === id);
+    if (!product) return;
+    let existingIdx = cart.findIndex(i => i.name === product.name && i.sourceType === 'shein');
+    if (existingIdx !== -1) {
+        cart[existingIdx].note = note;
+    }
+}
 function renderSheinCarousel() {
     let container = document.getElementById('sheinCarouselContainer');
     if (!container) return;
@@ -1070,6 +1058,10 @@ function changeCartQty(idx, delta) {
     cart[idx].qty += delta;
     if(cart[idx].qty <= 0) cart.splice(idx, 1);
     updateCartDisplay();
+    // تحديث واجهة القائمة الحالية
+    if(currentRestaurant) {
+        // فقط تحقق مما إذا كنا في صفحة مطعم
+    }
 }
 
 // تحديد موقع العميل وحساب التوصيل (استخدام الموقع الجديد)
@@ -1150,7 +1142,7 @@ function closeTracking() { document.getElementById('trackFullscreen').style.disp
 function viewMyTracking() { let id=localStorage.getItem('currentTrackingOrder'); if(id) viewOrderTracking(parseInt(id)); else showToast('لا يوجد طلب نشط'); }
 async function renderMyOrders() { await loadOrders(); let myOrders=allOrders.filter(o=>o.customerPhone===currentUser?.phone); let html=myOrders.length?myOrders.map(o=>`<div style="padding:10px; border-bottom:1px solid #ddd; cursor:pointer;" onclick="viewOrderTracking(${o.id})"><strong>#${o.id}</strong> - ${o.restaurant} - ${o.total} ريال - ${o.status}</div>`).join(''):'<p>لا توجد طلبات</p>'; document.getElementById('myOrdersContainer').innerHTML=html; }
 
-// ==================== 7. واجهة المندوب (الإصلاح الكبير) ====================
+// ==================== 7. واجهة المندوب (مع إضافة ميزة السحب للتحديث) ====================
 let driverTab = 'available';
 window.switchDriverTab = function(tab) {
     driverTab = tab;
@@ -1199,13 +1191,13 @@ async function acceptOrder(id) {
     document.querySelector(`.driver-tab[data-driver-tab="active"]`).classList.add('active');
     refreshDriverPanel();
 }
+
 // ==================== تصحيح صفحة تفاصيل الطلب للمندوب (عرض الموقع والإصلاح) ====================
 async function viewDriverOrderDetail(orderId) {
     await loadOrders();
     let order = allOrders.find(o => o.id == orderId);
     if(!order) return;
     
-    // **إصلاح مشكلة undefined في الأصناف**
     let items = order.items || [];
     let itemsHtml = '<table class="items-table"><thead><tr><th>المنتج</th><th>الكمية</th><th>السعر</th></tr></thead><tbody>' + items.map(i=>`<tr><td>${i.name} ${i.note ? '<br><small>📝 '+i.note+'</small>' : ''}</td><td>${i.qty}</td><td>${i.price*i.qty} ريال</td></tr>`).join('') + '</tbody></table>';
     
@@ -1220,7 +1212,6 @@ async function viewDriverOrderDetail(orderId) {
             </div>
         `;
     }
-    // **إضافة عرض الإحداثيات في تفاصيل الطلب**
     let locationDisplay = `<div class="order-detail-row"><span class="order-detail-label">📍 عنوان التوصيل:</span><span class="order-detail-value">${order.address || 'لم يحدد'}</span></div>`;
     if(order.lat && order.lng) {
         locationDisplay += `<div class="order-detail-row"><span class="order-detail-label">🗺️ إحداثيات العميل:</span><span class="order-detail-value">${order.lat}, ${order.lng}</span></div>`;
@@ -1257,7 +1248,42 @@ window.confirmStatusChange = function(orderId, newStatus) {
 function goBackToDriver() { showPage('driverPage'); refreshDriverPanel(); }
 function callCustomer(phone) { if(phone) window.location.href = `tel:${phone}`; }
 
-// ==================== 8. الكاروسيل والإدارة ====================
+// ==================== 8. ميزة السحب للتحديث (Pull-to-Refresh) لواجهة المندوب ====================
+let startYDriver = 0;
+let isRefreshing = false;
+const driverContainer = document.getElementById('driverOrdersList');
+
+if (driverContainer) {
+    driverContainer.addEventListener('touchstart', (e) => {
+        if (driverContainer.scrollTop === 0) {
+            startYDriver = e.touches[0].clientY;
+        }
+    });
+
+    driverContainer.addEventListener('touchmove', (e) => {
+        const y = e.touches[0].clientY;
+        // إذا كان السحب للأسفل (y > startY) وأعلى الصفحة
+        if (startYDriver > 0 && y > startYDriver + 80 && driverContainer.scrollTop === 0 && !isRefreshing) {
+            isRefreshing = true;
+            showToast('🔄 جاري تحديث الطلبات...');
+            refreshDriverPanel().then(() => {
+                isRefreshing = false;
+                startYDriver = 0;
+                showToast('✅ تم تحديث الطلبات');
+            }).catch(() => {
+                isRefreshing = false;
+                startYDriver = 0;
+                showToast('❌ فشل التحديث');
+            });
+        }
+    });
+
+    driverContainer.addEventListener('touchend', () => {
+        startYDriver = 0;
+    });
+}
+
+// ==================== 9. الكاروسيل والإدارة ====================
 const mainSliderImages = [
     { image: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800', title: '🍔 أشهى المطاعم', desc: 'اطلب وجبتك المفضلة', category: 'restaurants' },
     { image: 'https://images.unsplash.com/photo-1578916171728-46686eac8d58?w=800', title: '🛒 سوبرماركت', desc: 'كل مستلزماتك في مكان واحد', category: 'supermarket' },
@@ -1338,14 +1364,14 @@ window.goToCarouselSlide=function(i){ carouselIndex=i; updateCarousel(); startCa
 let currentFilter="all";
 function renderFilters(){ const filters=['الكل','بروست','برجر','شاورما','بيتزا','مشاوي','عصائر']; let html=''; filters.forEach((f,i)=>{ let val=(i===0?'all':f); html+=`<div class="filter-btn ${currentFilter===val?'active':''}" data-filter="${val}">${f}</div>`; }); document.getElementById('filterButtons').innerHTML=html; document.querySelectorAll('.filter-btn').forEach(btn=>{ btn.onclick=()=>{ document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); currentFilter=btn.dataset.filter; renderRestaurantsList(); }; }); }
 
-// ==================== 9. الإدارة ====================
+// ==================== 10. الإدارة ====================
 async function renderAdminRestaurantsList() { let container=document.getElementById('adminRestaurantsList'); if(container) container.innerHTML=allRestaurants.map(r=>`<div style="display:flex; justify-content:space-between; padding:8px; border-bottom:1px solid #ddd;"><div><strong>${r.name}</strong><br><small>${r.cat} | ${r.items.length} صنف</small></div><button style="background:var(--danger); color:white; border:none; padding:4px 10px; border-radius:8px;" onclick="deleteRestaurant(${r.id})">حذف</button></div>`).join(''); }
 async function deleteRestaurant(id) { if(confirm('حذف المطعم؟')) { allRestaurants=allRestaurants.filter(r=>r.id!==id); renderAdminRestaurantsList(); renderRestaurantsList(); showToast('تم الحذف'); } }
 async function addNewRestaurant() { let name=document.getElementById('adminRestName').value.trim(); let cat=document.getElementById('adminRestCat').value; let img=document.getElementById('adminRestImg').value.trim(); if(!name) return showToast('أدخل اسم المطعم'); let id=Date.now(); allRestaurants.push({id,name,cat,img:img||'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400',items:[{n:"وجبة مميزة",p:1500,d:"وجبة لذيذة"}]}); renderAdminRestaurantsList(); renderRestaurantsList(); showToast('تم الإضافة'); }
 function addNewItem() { showToast('قيد التطوير'); }
 function saveDeliverySettings() { let km=document.getElementById('adminPricePerKm').value; let min=document.getElementById('adminMinDelivery').value; if(km) PRICE_PER_KM=parseInt(km); if(min) MIN_DELIVERY_PRICE=parseInt(min); showToast('تم حفظ الإعدادات'); }
 
-// ==================== 10. تسجيل الدخول والمحافظة على الجلسة (مع التحسين) ====================
+// ==================== 11. تسجيل الدخول والمحافظة على الجلسة ====================
 function initLogin() {
     let roleCustomer=document.getElementById('roleCustomer'), roleDriver=document.getElementById('roleDriver');
     let loginPasswordField = document.getElementById('loginPassword');
@@ -1354,7 +1380,7 @@ function initLogin() {
         roleCustomer.classList.add('active'); 
         roleDriver.classList.remove('active'); 
         document.getElementById('passwordField').style.display='none'; 
-        loginPasswordField.value = ""; // مسح كلمة السر عند تغيير الدور
+        loginPasswordField.value = "";
     };
     roleDriver.onclick=()=>{ 
         roleDriver.classList.add('active'); 
@@ -1376,7 +1402,6 @@ function initLogin() {
         }
         
         let role=isDriver?'driver':'customer';
-        // تحديث بيانات المستخدم في قاعدة البيانات
         await fetch(`${FIREBASE_URL}/users/${phone}.json`,{method:'PUT',body:JSON.stringify({phone,name,role,isBusy:false})});
         currentUser={role,phone,name};
         localStorage.setItem('waselny_user',JSON.stringify(currentUser));

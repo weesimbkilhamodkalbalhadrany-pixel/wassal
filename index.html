@@ -221,6 +221,12 @@
         .restaurant-hero-banner { width: 100%; height: 160px; border-radius: 20px; background-size: cover; background-position: center; position: relative; margin-bottom: 20px; overflow: hidden; box-shadow: var(--shadow); }
         .restaurant-hero-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.85) 30%, rgba(0,0,0,0.2)); padding: 16px; display: flex; flex-direction: column; justify-content: flex-end; color: white; }
         .hero-tag { position: absolute; top: 12px; right: 12px; background: var(--warning); color: #000; font-size: 0.65rem; font-weight: 800; padding: 4px 10px; border-radius: 30px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+
+        /* --- التعديلات الجديدة --- */
+        #driverPullRefreshContainer { /* وهمي، للسماح بالسحب للتحديث */ }
+        .pull-refresh-loader { text-align: center; padding: 10px; font-size: 0.8rem; display: none; color: var(--gray); }
+        .pull-refresh-loader.active { display: block; animation: spin 0.8s linear infinite; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
@@ -228,7 +234,7 @@
 <div class="header">
     <div class="store-badge"><i class="fas fa-store"></i> وصل | WASAL</div>
     <div class="bike-animation"><i class="fas fa-motorcycle"></i></div>
-    <div class="logo-main">وصال</div>
+    <div class="logo-main">وصل</div>
     <div class="logo-sub">W A S A L</div>
     <div class="work-hours"><span class="open-badge"></span><span>6 صباحاً - 12 منتصف الليل</span></div>
 </div>
@@ -322,7 +328,11 @@
             <div class="driver-tab active" data-driver-tab="available" onclick="switchDriverTab('available')"><i class="fas fa-list"></i> الطلبات المتاحة</div>
             <div class="driver-tab" data-driver-tab="active" onclick="switchDriverTab('active')"><i class="fas fa-truck"></i> طلباتي النشطة</div>
         </div>
-        <div class="driver-orders-container" id="driverOrdersList"></div>
+        <!-- حاوية المندوب مع سحب للتحديث -->
+        <div id="driverPullRefreshContainer">
+            <div id="pullRefreshLoader" class="pull-refresh-loader"><i class="fas fa-spinner"></i> جارٍ التحديث...</div>
+            <div class="driver-orders-container" id="driverOrdersList"></div>
+        </div>
         <button id="driverLogoutBtn" class="btn-primary" style="background:var(--danger); margin-top:12px;">تسجيل الخروج</button>
     </div>
 
@@ -331,7 +341,7 @@
         <div id="orderDetailDriverContent"></div>
     </div>
 
-    <div id="adminPage" class="page"><div style="background:var(--white); border-radius:14px; padding:14px;"><div class="back-btn" onclick="showPage('homePage')">🔙 رجوع</div><h2 style="color:var(--primary); margin:10px 0; font-size:1rem;">👨‍💼 لوحة الإدارة</h2><div class="admin-tabs" id="adminTabs"><button class="tab-btn active" data-tab="restaurants">🍔 المطاعم</button><button class="tab-btn" data-tab="items">🍽️ الأصناف</button><button class="tab-btn" data-tab="orders">📦 الطلبات</button><button class="tab-btn" data-tab="users">👥 المستخدمين</button><button class="tab-btn" data-tab="settings">⚙️ الإعدادات</button></div><div class="tab-content active-tab" id="tab-restaurants"><div class="admin-section"><h4>إضافة مطعم</h4><input type="text" id="adminRestName" class="field-input" placeholder="اسم المطعم"><select id="adminRestCat" class="field-input"><option>بروست</option><option>بيتزا</option><option>برجر</option><option>شاورما</option><option>مشاوي</option><option>عصائر</option></select><input type="text" id="adminRestImg" class="field-input" placeholder="رابط الصورة"><div class="geo-btn" onclick="initMapForAdmin()" style="background:var(--bg-light); padding:8px; border-radius:30px; text-align:center; margin-bottom:8px; cursor:pointer;">🗺️ اختر موقع المطعم</div><input type="hidden" id="adminRestLat"><input type="hidden" id="adminRestLng"><button class="btn-primary" onclick="addNewRestaurant()">➕ إضافة</button></div><div class="admin-section"><h4>قائمة المطاعم</h4><div id="adminRestaurantsList"></div></div></div><div class="tab-content" id="tab-items"><div class="admin-section"><select id="adminItemRestaurantSelect" class="field-input"></select><div id="adminItemsList"></div><div style="margin-top:10px;"><input type="text" id="newItemName" class="field-input" placeholder="اسم الصنف"><input type="number" id="newItemPrice" class="field-input" placeholder="السعر"><button class="btn-primary" onclick="addNewItem()">+ إضافة صنف</button></div></div></div><div class="tab-content" id="tab-orders"><div class="admin-section"><div id="adminOrdersList"></div></div></div><div class="tab-content" id="tab-users"><div class="admin-section"><div id="adminUsersList"></div></div></div><div class="tab-content" id="tab-settings"><div class="admin-section"><div><span>🚖 سعر الكيلومتر:</span><input type="number" id="adminPricePerKm" value="180" class="field-input"></div><div><span>💰 الحد الأدنى:</span><input type="number" id="adminMinDelivery" value="550" class="field-input"></div><button class="btn-primary" onclick="saveDeliverySettings()">💾 حفظ</button></div></div></div></div></div>
+    <div id="adminPage" class="page"><div style="background:var(--white); border-radius:14px; padding:14px;"><div class="back-btn" onclick="showPage('homePage')">🔙 رجوع</div><h2 style="color:var(--primary); margin:10px 0; font-size:1rem;">👨‍💼 لوحة الإدارة</h2><div class="admin-tabs" id="adminTabs"><button class="tab-btn active" data-tab="restaurants">🍔 المطاعم</button><button class="tab-btn" data-tab="items">🍽️ الأصناف</button><button class="tab-btn" data-tab="orders">📦 الطلبات</button><button class="tab-btn" data-tab="users">👥 المستخدمين</button><button class="tab-btn" data-tab="settings">⚙️ الإعدادات</button></div><div class="tab-content active-tab" id="tab-restaurants"><div class="admin-section"><h4>إضافة مطعم</h4><input type="text" id="adminRestName" class="field-input" placeholder="اسم المطعم"><select id="adminRestCat" class="field-input"><option>بروست</option><option>بيتزا</option><option>برجر</option><option>شاورما</option><option>مشاوي</option><option>عصائر</option></select><input type="text" id="adminRestImg" class="field-input" placeholder="رابط الصورة"><div class="geo-btn" onclick="initMapForAdmin()" style="background:var(--bg-light); padding:8px; border-radius:30px; text-align:center; margin-bottom:8px; cursor:pointer;">🗺️ اختر موقع المطعم</div><input type="hidden" id="adminRestLat"><input type="hidden" id="adminRestLng"><button class="btn-primary" onclick="addNewRestaurant()">➕ إضافة</button></div><div class="admin-section"><h4>قائمة المطاعم</h4><div id="adminRestaurantsList"></div></div></div><div class="tab-content" id="tab-items"><div class="admin-section"><select id="adminItemRestaurantSelect" class="field-input"></select><div id="adminItemsList"></div><div style="margin-top:10px;"><input type="text" id="newItemName" class="field-input" placeholder="اسم الصنف"><input type="number" id="newItemPrice" class="field-input" placeholder="السعر"><button class="btn-primary" onclick="addNewItem()">+ إضافة صنف</button></div></div></div><div class="tab-content" id="tab-orders"><div class="admin-section"><div id="adminOrdersList"></div></div></div><div class="tab-content" id="tab-users"><div class="admin-section"><div id="adminUsersList"></div></div></div><div class="tab-content" id="tab-settings"><div class="admin-section"><div><span>🚖 سعر الكيلومتر:</span><input type="number" id="adminPricePerKm" value="180" class="field-input"></div><div><span>💰 الحد الأدنى:</span><input type="number" id="adminMinDelivery" value="550" class="field-input"></div><button class="btn-primary" onclick="saveDeliverySettings()">💾 حفظ</button></div></div></div></div></div></div>
 </div>
 
 <!-- نافذة منبثقة للمنتج (للمنتجات من غير المطاعم مثل شي إن) -->
@@ -474,7 +484,7 @@
 <script>
 // ==================== 1. البيانات الثابتة ====================
 const allRestaurantsData = [
-    { id: 1, name: "رويال بروستر", cat: "بروست", img: "https://images.unsplash.com/photo-1626645738196-c2a7c8d08f58?w=400", items: [{n:"وجبة بروست (4 قطع)",p:2200,d:"دجاج مقرمش يقدم مع البطاطس والثومية"},{n:"وجبة زنجر سوبريم",p:2400,d:"ساندوتش زنجر حار مع الجبنة الذائبة"},{n:"وجبة ستريبس (5 قطع)",p:1000,d:"قطع استريبس الدجاج المقلي المقرمش"},{n:"ساندوتش زنجر",p:1300,d:"ساندوتش دجاج حار مقرمش"},{n:"برجر لحم",p:1600,d:"برجر لحم طازج مع الخضار"},{n:"برجر دجاج",p:1400,d:"برجر دجاج مقرمش"},{n:"تويستر",p:1100,d:"ساندوتش دجاج مع الخس والمايونيز"},{n:"بطاطس",p:600,d:"بطاطس مقلية ذهبية"}] },
+    { id: 1, name: "رويال بروستر", cat: "بروست", img: "https://images.unsplash.com/photo-1626645738196-c2a7c8d08f58?w=400", items: [{n:"وجبة بروست (4 قطع)",p:2200,d:"دجاج مقرمش يقدم مع البطاطس والثومية"},{n:"وجبة زنجر سوبريم",p:2400,d:"ساندوتش زنجر حار مع الجبنة الذائبة"},{n:"وجبة ستريبس (5 قطع)",p:100000000000000000,d:"قطع استريبس الدجاج المقلي المقرمش"},{n:"ساندوتش زنجر",p:1300,d:"ساندوتش دجاج حار مقرمش"},{n:"برجر لحم",p:1600,d:"برجر لحم طازج مع الخضار"},{n:"برجر دجاج",p:1400,d:"برجر دجاج مقرمش"},{n:"تويستر",p:1100,d:"ساندوتش دجاج مع الخس والمايونيز"},{n:"بطاطس",p:600,d:"بطاطس مقلية ذهبية"}] },
     { id: 2, name: "البيك رويال", cat: "بروست", img: "https://images.unsplash.com/photo-1562967914-608f82629710?w=400", items: [{n:"وجبة بروست رويال",p:2400,d:"دجاج ذهبي مقرمش"},{n:"فيليه سمك",p:2200,d:"شرائح فيليه سمك مقلي"},{n:"زنجر رويال",p:1600,d:"ساندوتش زنجر حار"},{n:"مسحب دجاج",p:1300,d:"دجاج مسحب مقرمش"},{n:"بطاطس",p:800,d:"بطاطس مقلية"}] },
     { id: 3, name: "شاورما هت", cat: "شاورما", img: "https://images.unsplash.com/photo-1644704170910-a0cdf183649b?w=400", items: [{n:"شاورما دجاج",p:1200,d:"شاورما دجاج متبلة"},{n:"شاورما لحم",p:1800,d:"شاورما لحم بلدي"},{n:"شاورما عربي",p:2200,d:"صحن شاورما كامل"},{n:"بطاطس",p:700,d:"بطاطس مقلية"}] },
     { id: 4, name: "ستار برجر", cat: "برجر", img: "https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=400", items: [{n:"برجر لحم كلاسيك",p:1800,d:"شريحة لحم بقري طازج"},{n:"برجر دجاج مقرمش",p:1700,d:"صدر دجاج مقرمش"},{n:"مشروم برجر",p:2200,d:"برجر لحم مع الفطر"},{n:"باربيكيو برجر",p:2100,d:"برجر بصوص الباربيكيو"}] },
@@ -1136,9 +1146,9 @@ async function confirmCheckoutOrder() {
     await fetch(`${FIREBASE_URL}/orders/${id}.json`, {method:'PUT', body:JSON.stringify(order)}); 
     localStorage.setItem('currentTrackingOrder', id); 
     let itemsText = cart.map(i=>`• ${i.name} x${i.qty} = ${i.p*i.qty} ريال ${i.note?' ('+i.note+')':''}`).join('\n'); 
-    let message = `🛍️ طلب جديد من وصال\n🍔 ${currentRestaurant.name}\n👤 ${currentUser.name}\n📞 ${currentUser.phone}\n📍 ${order.address}\n📝 ملاحظات عامة: ${generalNote || 'لا توجد'}\n\nالمنتجات:\n${itemsText}\n\n🚚 التوصيل: ${deliveryCost} ريال\n💰 الإجمالي: ${total} ريال\n\n📱 تتبع طلبك #${id}`; 
+    let message = `🛍️ طلب جديد من وصل\n🍔 ${currentRestaurant.name}\n👤 ${currentUser.name}\n📞 ${currentUser.phone}\n📍 ${order.address}\n📝 ملاحظات عامة: ${generalNote || 'لا توجد'}\n\nالمنتجات:\n${itemsText}\n\n🚚 التوصيل: ${deliveryCost} ريال\n💰 الإجمالي: ${total} ريال\n\n📱 تتبع طلبك #${id}`; 
     window.open(`https://wa.me/777215154?text=${encodeURIComponent(message)}`, '_blank'); 
-    showToast('✅ تم اعتماد طلبك'); 
+    showToast('✅ تم إرسال طلبك'); 
     cart = []; 
     customerLocation = null; 
     deliveryCost = 0; 
@@ -1173,8 +1183,46 @@ function closeTracking() { document.getElementById('trackFullscreen').style.disp
 function viewMyTracking() { let id = localStorage.getItem('currentTrackingOrder'); if(id) viewOrderTracking(parseInt(id)); else showToast('لا يوجد طلب نشط'); }
 async function renderMyOrders() { await loadOrders(); let myOrders = allOrders.filter(o=>o.customerPhone===currentUser?.phone); let html = myOrders.length?myOrders.map(o=>`<div style="padding:10px; border-bottom:1px solid #ddd; cursor:pointer;" onclick="viewOrderTracking(${o.id})"><strong>#${o.id}</strong> - ${o.restaurant} - ${o.total} ريال - ${o.status}</div>`).join(''):'<p>لا توجد طلبات</p>'; document.getElementById('myOrdersContainer').innerHTML = html; }
 
-// ==================== 7. واجهة المندوب ====================
+// ==================== 7. واجهة المندوب (مع التعديلات) ====================
 let driverTab = 'available';
+
+// ** ميزة سحب للتحديث (Pull-to-refresh) للمندوب **
+let pullStartY = 0;
+let isPulling = false;
+const driverListContainer = document.getElementById('driverOrdersList');
+if (driverListContainer) {
+    driverListContainer.addEventListener('touchstart', function(e) {
+        pullStartY = e.touches[0].clientY;
+        isPulling = false;
+    });
+
+    driverListContainer.addEventListener('touchmove', function(e) {
+        // التحقق إذا كان السحب للأسفل في بداية القائمة
+        if (this.scrollTop === 0) {
+            const currentY = e.touches[0].clientY;
+            const diff = currentY - pullStartY;
+            if (diff > 0) { // سحب للأسفل
+                isPulling = true;
+                e.preventDefault(); // منع التمرير العادي
+                document.getElementById('pullRefreshLoader').style.display = 'block';
+                document.getElementById('pullRefreshLoader').innerHTML = '<i class="fas fa-arrow-down"></i> اسحب لتحديث...';
+            }
+        }
+    });
+
+    driverListContainer.addEventListener('touchend', function(e) {
+        if (isPulling) {
+            document.getElementById('pullRefreshLoader').innerHTML = '<i class="fas fa-spinner fa-spin"></i> جارٍ التحديث...';
+            setTimeout(() => {
+                refreshDriverPanel();
+                document.getElementById('pullRefreshLoader').style.display = 'none';
+                isPulling = false;
+                showToast('✅ تم تحديث القائمة');
+            }, 800);
+        }
+    });
+}
+
 window.switchDriverTab = function(tab) {
     driverTab = tab;
     document.querySelectorAll('.driver-tab').forEach(t => t.classList.remove('active'));
@@ -1242,9 +1290,16 @@ async function viewDriverOrderDetail(orderId) {
             </div>
         `;
     }
+
+    // ** التعديل: إضافة موقع العميل وزر التتبع **
     let locationDisplay = `<div class="order-detail-row"><span class="order-detail-label">📍 عنوان التوصيل:</span><span class="order-detail-value">${order.address || 'لم يحدد'}</span></div>`;
     if(order.lat && order.lng) {
-        locationDisplay += `<div class="order-detail-row"><span class="order-detail-label">🗺️ إحداثيات العميل:</span><span class="order-detail-value">${order.lat}, ${order.lng}</span></div>`;
+        locationDisplay += `
+            <div class="order-detail-row"><span class="order-detail-label">🗺️ إحداثيات العميل:</span><span class="order-detail-value">${order.lat}, ${order.lng}</span></div>
+            <button class="driver-action-btn primary" onclick="openCustomerLocation(${order.lat}, ${order.lng})" style="margin: 10px 0; width:100%;">
+                <i class="fas fa-location-dot"></i> تتبع موقع العميل (عبر خرائط جوجل)
+            </button>
+        `;
     }
 
     let detailsHtml = `
@@ -1277,6 +1332,17 @@ window.confirmStatusChange = function(orderId, newStatus) {
 };
 function goBackToDriver() { showPage('driverPage'); refreshDriverPanel(); }
 function callCustomer(phone) { if(phone) window.location.href = `tel:${phone}`; }
+
+// ** التعديل: دالة لفتح موقع العميل مباشرة على خرائط جوجل **
+function openCustomerLocation(lat, lng) {
+    if (lat && lng) {
+        // فتح خرائط جوجل مع توجيه إلى موقع العميل
+        const googleMapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`;
+        window.open(googleMapsUrl, '_blank');
+    } else {
+        showToast('⚠️ لا توجد إحداثيات متاحة لهذا العميل');
+    }
+}
 
 // ==================== 8. الكاروسيل والإدارة ====================
 const mainSliderImages = [
@@ -1344,7 +1410,7 @@ window.goToMainCarouselSlide = function(i) {
 };
 
 const sliderImages = [
-    { image: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800", title: "عروض رويال", desc: "خصومات ملوكية تصل إلى 40%" },
+    { image: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800", title: "🔥 عروض الرويال", desc: "خصومات ملوكية تصل إلى 40%" },
     { image: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=800", title: "🚚 توصيل سريع وآمن", desc: "طعامك يصلك ساخناً دائماً" },
     { image: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=800", title: "🍢 أشهى المشاوي", desc: "أفضل المشاوي في المدينة" },
     { image: "https://images.unsplash.com/photo-1561758033-d89a9ad46330?w=800", title: "🥙 شاورما طازجة", desc: "شاورما دجاج ولحم بجودة عالية" }

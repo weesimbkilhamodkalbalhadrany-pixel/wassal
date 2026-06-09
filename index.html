@@ -1183,8 +1183,111 @@ function closeTracking() { document.getElementById('trackFullscreen').style.disp
 function viewMyTracking() { let id = localStorage.getItem('currentTrackingOrder'); if(id) viewOrderTracking(parseInt(id)); else showToast('لا يوجد طلب نشط'); }
 async function renderMyOrders() { await loadOrders(); let myOrders = allOrders.filter(o=>o.customerPhone===currentUser?.phone); let html = myOrders.length?myOrders.map(o=>`<div style="padding:10px; border-bottom:1px solid #ddd; cursor:pointer;" onclick="viewOrderTracking(${o.id})"><strong>#${o.id}</strong> - ${o.restaurant} - ${o.total} ريال - ${o.status}</div>`).join(''):'<p>لا توجد طلبات</p>'; document.getElementById('myOrdersContainer').innerHTML = html; }
 
-// ==================== 7. واجهة المندوب (مع التعديلات) ====================
+// ==================== 7. واجهة المندوب (مع التعديلات والصوت) ====================
 let driverTab = 'available';
+
+// ** نظام الصوت القوي والمزعج للمندوب **
+let audioContext = null;
+let isAudioReady = false;
+
+// دالة لإنشاء وتشغيل الصوت
+function playLoudAlertSound() {
+    try {
+        if (!audioContext) {
+            audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        if (audioContext.state === 'suspended') {
+            audioContext.resume().then(() => {
+                generateAlertSound();
+            }).catch(err => {
+                console.warn("Audio resume failed:", err);
+            });
+        } else {
+            generateAlertSound();
+        }
+    } catch (e) {
+        console.warn("Web Audio API not supported or error:", e);
+    }
+}
+
+function generateAlertSound() {
+    if (!audioContext) return;
+    
+    const now = audioContext.currentTime;
+    
+    // نغمة إنذار عالية التردد ومزعجة (مثل صفارة إنذار الطوارئ)
+    // إنشاء مذبذب (Oscillator) لنغمة حادة
+    const oscillator1 = audioContext.createOscillator();
+    const gainNode1 = audioContext.createGain();
+    
+    oscillator1.type = 'square'; // صوت مزعج ومميز
+    oscillator1.frequency.setValueAtTime(800, now);
+    oscillator1.frequency.setValueAtTime(900, now + 0.1);
+    oscillator1.frequency.setValueAtTime(700, now + 0.2);
+    oscillator1.frequency.setValueAtTime(1000, now + 0.3);
+    oscillator1.frequency.setValueAtTime(800, now + 0.4);
+    
+    gainNode1.gain.setValueAtTime(0.3, now); // جهاز عالي نسبياً
+    gainNode1.gain.exponentialRampToValueAtTime(0.01, now + 0.6);
+    
+    oscillator1.connect(gainNode1);
+    gainNode1.connect(audioContext.destination);
+    
+    oscillator1.start(now);
+    oscillator1.stop(now + 0.6);
+    
+    // إضافة صوت ثانٍ بنغمة مختلفة لزيادة الإزعاج (صوت جرس عالي)
+    const oscillator2 = audioContext.createOscillator();
+    const gainNode2 = audioContext.createGain();
+    
+    oscillator2.type = 'sawtooth';
+    oscillator2.frequency.setValueAtTime(1200, now);
+    oscillator2.frequency.setValueAtTime(1100, now + 0.15);
+    oscillator2.frequency.setValueAtTime(1300, now + 0.3);
+    oscillator2.frequency.setValueAtTime(1200, now + 0.45);
+    
+    gainNode2.gain.setValueAtTime(0.25, now);
+    gainNode2.gain.exponentialRampToValueAtTime(0.01, now + 0.5);
+    
+    oscillator2.connect(gainNode2);
+    gainNode2.connect(audioContext.destination);
+    
+    oscillator2.start(now);
+    oscillator2.stop(now + 0.5);
+    
+    // تكرار النغمة 3 مرات لضمان الانتباه
+    setTimeout(() => {
+        if (audioContext) {
+            const osc3 = audioContext.createOscillator();
+            const gain3 = audioContext.createGain();
+            osc3.type = 'square';
+            osc3.frequency.setValueAtTime(1000, audioContext.currentTime);
+            osc3.frequency.setValueAtTime(1100, audioContext.currentTime + 0.1);
+            gain3.gain.setValueAtTime(0.25, audioContext.currentTime);
+            gain3.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.4);
+            osc3.connect(gain3);
+            gain3.connect(audioContext.destination);
+            osc3.start(audioContext.currentTime);
+            osc3.stop(audioContext.currentTime + 0.4);
+        }
+    }, 700);
+}
+
+// دالة للتحقق من وجود طلبات جديدة وتشغيل الصوت
+let lastOrderCount = 0;
+
+function checkForNewOrders() {
+    if (currentUser?.role === 'driver' && driverTab === 'available') {
+        const availableOrders = allOrders.filter(o => o.status === 'pending');
+        const currentCount = availableOrders.length;
+        
+        if (currentCount > lastOrderCount) {
+            // طلب جديد وصل
+            playLoudAlertSound();
+        }
+        lastOrderCount = currentCount;
+    }
+}
 
 // ** ميزة سحب للتحديث (Pull-to-refresh) للمندوب **
 let pullStartY = 0;
@@ -1228,7 +1331,11 @@ window.switchDriverTab = function(tab) {
     document.querySelectorAll('.driver-tab').forEach(t => t.classList.remove('active'));
     document.querySelector(`.driver-tab[data-driver-tab="${tab}"]`).classList.add('active');
     refreshDriverPanel();
+    if (tab === 'available') {
+        lastOrderCount = allOrders.filter(o => o.status === 'pending').length;
+    }
 };
+
 async function refreshDriverPanel() {
     await loadOrders();
     let activeOrders = allOrders.filter(o => o.driverId === currentUser?.phone && o.status !== 'delivered');
@@ -1236,6 +1343,10 @@ async function refreshDriverPanel() {
     let completedOrders = allOrders.filter(o => o.driverId === currentUser?.phone && o.status === 'delivered');
     document.getElementById('activeOrdersCount').innerText = activeOrders.length;
     document.getElementById('completedOrdersCount').innerText = completedOrders.length;
+    
+    // التحقق من الطلبات الجديدة وتشغيل الصوت
+    checkForNewOrders();
+    
     let html = '';
     if(driverTab === 'available') {
         if(availableOrders.length === 0) html = `<div class="empty-orders"><i class="fas fa-motorcycle"></i><p>لا يوجد طلبات متاحة في الوقت الحالي!</p></div>`;
@@ -1258,6 +1369,7 @@ async function refreshDriverPanel() {
     }
     document.getElementById('driverOrdersList').innerHTML = html;
 }
+
 async function acceptOrder(id) {
     if(allOrders.find(o=>o.driverId===currentUser?.phone && o.status!=='delivered')) return showToast("⚠️ لديك طلب نشط حالياً");
     let o = allOrders.find(o=>o.id==id);
@@ -1473,6 +1585,8 @@ function initLogin() {
             document.getElementById('driverNameDisplay').innerText = name;
             refreshDriverPanel(); 
             setInterval(refreshDriverPanel,5000); 
+            // تفعيل الصوت عند الدخول كمندوب
+            playLoudAlertSound();
         }
         else showPage('homePage');
         showToast(`أهلاً ${name}`);

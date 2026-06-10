@@ -1156,7 +1156,11 @@ async function confirmCheckoutOrder() {
     updateCartDisplay(); 
     showPage('homePage'); 
     await loadOrders(); 
-    setTimeout(()=>viewOrderTracking(id), 2000); 
+    
+    // فتح واجهة التتبع فوراً وبشكل كامل
+    setTimeout(() => {
+        viewOrderTracking(id);
+    }, 1500); 
 }
 
 async function viewOrderTracking(id) { 
@@ -1175,7 +1179,27 @@ async function viewOrderTracking(id) {
     }); 
     stepsHtml += '</div>'; 
     let itemsListHtml = '<ul class="order-items-list">'+order.items.map(i=>`<li><span>${i.name} x${i.qty} ${i.note?'('+i.note+')':''}</span><span>${i.price*i.qty} ريال</span></li>`).join('')+'</ul>'; 
-    let details = `<div class="tracking-detail-card"><h3>📍 طلب #${order.id}</h3><div class="tracking-label">⏰ الوقت</div><div class="tracking-value">${new Date(order.createdAt).toLocaleString('ar-SA')}</div><div class="tracking-label">🍔 المطعم</div><div class="tracking-value">${order.restaurant}</div><div class="tracking-label">🧾 الأصناف</div>${itemsListHtml}<div style="display:flex; justify-content:space-between;"><span>المجموع</span><span>${order.totalFood} ريال</span></div><div><span>🚚 التوصيل</span><span>${order.deliveryCost} ريال</span></div><div style="font-weight:800;"><span>الإجمالي</span><span>${order.total} ريال</span></div></div>${stepsHtml}`; 
+    let details = `
+        <div class="tracking-detail-card" style="border: 2px solid var(--primary);">
+            <h3 style="font-size:1.3rem; color:var(--primary);">📍 طلب #${order.id}</h3>
+            <div class="tracking-label">⏰ الوقت</div>
+            <div class="tracking-value" style="font-size:1rem;">${new Date(order.createdAt).toLocaleString('ar-SA')}</div>
+            <div class="tracking-label">🍔 المطعم</div>
+            <div class="tracking-value" style="font-size:1rem;">${order.restaurant}</div>
+            <div class="tracking-label">🧾 الأصناف</div>
+            ${itemsListHtml}
+            <div style="display:flex; justify-content:space-between; font-size:1rem; margin:5px 0;">
+                <span>المجموع</span><span>${order.totalFood} ريال</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; font-size:1rem; margin:5px 0;">
+                <span>🚚 التوصيل</span><span>${order.deliveryCost} ريال</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; font-size:1.2rem; font-weight:800; border-top:2px solid var(--primary); padding-top:8px; margin-top:8px;">
+                <span>الإجمالي</span><span>${order.total} ريال</span>
+            </div>
+        </div>
+        ${stepsHtml}
+    `; 
     document.getElementById('trackingFullscreenContainer').innerHTML = details; 
     document.getElementById('trackFullscreen').style.display = 'block'; 
 }
@@ -1183,107 +1207,106 @@ function closeTracking() { document.getElementById('trackFullscreen').style.disp
 function viewMyTracking() { let id = localStorage.getItem('currentTrackingOrder'); if(id) viewOrderTracking(parseInt(id)); else showToast('لا يوجد طلب نشط'); }
 async function renderMyOrders() { await loadOrders(); let myOrders = allOrders.filter(o=>o.customerPhone===currentUser?.phone); let html = myOrders.length?myOrders.map(o=>`<div style="padding:10px; border-bottom:1px solid #ddd; cursor:pointer;" onclick="viewOrderTracking(${o.id})"><strong>#${o.id}</strong> - ${o.restaurant} - ${o.total} ريال - ${o.status}</div>`).join(''):'<p>لا توجد طلبات</p>'; document.getElementById('myOrdersContainer').innerHTML = html; }
 
-// ==================== 7. واجهة المندوب (مع التعديلات والصوت) ====================
+// ==================== 7. واجهة المندوب (مع التعديلات والصوت الجديد) ====================
 let driverTab = 'available';
 
-// ** نظام الصوت القوي والمزعج للمندوب **
+// ** نظام الصوت الجديد (أكثر إزعاجاً) **
 let audioContext = null;
 let isAudioReady = false;
+let lastOrderCount = 0; // متغير لتتبع عدد الطلبات السابقة
 
-// دالة لإنشاء وتشغيل الصوت
-function playLoudAlertSound() {
+// دالة لإنشاء وتشغيل الصوت الجديد (صوت إنذار شرطة/طوارئ)
+function playNewLoudAlertSound() {
     try {
         if (!audioContext) {
             audioContext = new (window.AudioContext || window.webkitAudioContext)();
         }
         if (audioContext.state === 'suspended') {
             audioContext.resume().then(() => {
-                generateAlertSound();
+                generateNewAlertSound();
             }).catch(err => {
                 console.warn("Audio resume failed:", err);
             });
         } else {
-            generateAlertSound();
+            generateNewAlertSound();
         }
     } catch (e) {
         console.warn("Web Audio API not supported or error:", e);
     }
 }
 
-function generateAlertSound() {
+function generateNewAlertSound() {
     if (!audioContext) return;
     
     const now = audioContext.currentTime;
     
-    // نغمة إنذار عالية التردد ومزعجة (مثل صفارة إنذار الطوارئ)
-    // إنشاء مذبذب (Oscillator) لنغمة حادة
-    const oscillator1 = audioContext.createOscillator();
-    const gainNode1 = audioContext.createGain();
+    // نغمة إنذار شرطة/طوارئ عالية ومزعجة
+    // نغمة 1: صفارة حادة
+    const osc1 = audioContext.createOscillator();
+    const gain1 = audioContext.createGain();
+    osc1.type = 'square';
+    osc1.frequency.setValueAtTime(950, now);
+    osc1.frequency.setValueAtTime(1050, now + 0.08);
+    osc1.frequency.setValueAtTime(850, now + 0.16);
+    osc1.frequency.setValueAtTime(1100, now + 0.24);
+    osc1.frequency.setValueAtTime(900, now + 0.32);
+    gain1.gain.setValueAtTime(0.35, now);
+    gain1.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
+    osc1.connect(gain1);
+    gain1.connect(audioContext.destination);
+    osc1.start(now);
+    osc1.stop(now + 0.4);
     
-    oscillator1.type = 'square'; // صوت مزعج ومميز
-    oscillator1.frequency.setValueAtTime(800, now);
-    oscillator1.frequency.setValueAtTime(900, now + 0.1);
-    oscillator1.frequency.setValueAtTime(700, now + 0.2);
-    oscillator1.frequency.setValueAtTime(1000, now + 0.3);
-    oscillator1.frequency.setValueAtTime(800, now + 0.4);
+    // نغمة 2: تداخل لزيادة الإزعاج
+    const osc2 = audioContext.createOscillator();
+    const gain2 = audioContext.createGain();
+    osc2.type = 'sawtooth';
+    osc2.frequency.setValueAtTime(1300, now);
+    osc2.frequency.setValueAtTime(1200, now + 0.1);
+    osc2.frequency.setValueAtTime(1400, now + 0.2);
+    osc2.frequency.setValueAtTime(1250, now + 0.3);
+    gain2.gain.setValueAtTime(0.25, now);
+    gain2.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
+    osc2.connect(gain2);
+    gain2.connect(audioContext.destination);
+    osc2.start(now);
+    osc2.stop(now + 0.35);
     
-    gainNode1.gain.setValueAtTime(0.3, now); // جهاز عالي نسبياً
-    gainNode1.gain.exponentialRampToValueAtTime(0.01, now + 0.6);
-    
-    oscillator1.connect(gainNode1);
-    gainNode1.connect(audioContext.destination);
-    
-    oscillator1.start(now);
-    oscillator1.stop(now + 0.6);
-    
-    // إضافة صوت ثانٍ بنغمة مختلفة لزيادة الإزعاج (صوت جرس عالي)
-    const oscillator2 = audioContext.createOscillator();
-    const gainNode2 = audioContext.createGain();
-    
-    oscillator2.type = 'sawtooth';
-    oscillator2.frequency.setValueAtTime(1200, now);
-    oscillator2.frequency.setValueAtTime(1100, now + 0.15);
-    oscillator2.frequency.setValueAtTime(1300, now + 0.3);
-    oscillator2.frequency.setValueAtTime(1200, now + 0.45);
-    
-    gainNode2.gain.setValueAtTime(0.25, now);
-    gainNode2.gain.exponentialRampToValueAtTime(0.01, now + 0.5);
-    
-    oscillator2.connect(gainNode2);
-    gainNode2.connect(audioContext.destination);
-    
-    oscillator2.start(now);
-    oscillator2.stop(now + 0.5);
-    
-    // تكرار النغمة 3 مرات لضمان الانتباه
-    setTimeout(() => {
-        if (audioContext) {
-            const osc3 = audioContext.createOscillator();
-            const gain3 = audioContext.createGain();
-            osc3.type = 'square';
-            osc3.frequency.setValueAtTime(1000, audioContext.currentTime);
-            osc3.frequency.setValueAtTime(1100, audioContext.currentTime + 0.1);
-            gain3.gain.setValueAtTime(0.25, audioContext.currentTime);
-            gain3.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.4);
-            osc3.connect(gain3);
-            gain3.connect(audioContext.destination);
-            osc3.start(audioContext.currentTime);
-            osc3.stop(audioContext.currentTime + 0.4);
-        }
-    }, 700);
+    // تكرار النغمة 3 مرات بقوة
+    for (let i = 0; i < 3; i++) {
+        setTimeout(() => {
+            if (audioContext) {
+                const osc3 = audioContext.createOscillator();
+                const gain3 = audioContext.createGain();
+                osc3.type = 'square';
+                osc3.frequency.setValueAtTime(1000, audioContext.currentTime);
+                osc3.frequency.setValueAtTime(1100, audioContext.currentTime + 0.08);
+                osc3.frequency.setValueAtTime(900, audioContext.currentTime + 0.16);
+                gain3.gain.setValueAtTime(0.3, audioContext.currentTime);
+                gain3.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+                osc3.connect(gain3);
+                gain3.connect(audioContext.destination);
+                osc3.start(audioContext.currentTime);
+                osc3.stop(audioContext.currentTime + 0.3);
+            }
+        }, 450 * (i + 1));
+    }
 }
 
-// دالة للتحقق من وجود طلبات جديدة وتشغيل الصوت
-let lastOrderCount = 0;
-
+// دالة للتحقق من وجود طلبات جديدة وتشغيل الصوت (فقط عند زيادة العدد)
 function checkForNewOrders() {
     if (currentUser?.role === 'driver' && driverTab === 'available') {
         const availableOrders = allOrders.filter(o => o.status === 'pending');
         const currentCount = availableOrders.length;
         
-        if (currentCount > lastOrderCount) {
+        // تشغيل الصوت فقط إذا زاد عدد الطلبات
+        if (currentCount > lastOrderCount && lastOrderCount > 0) {
             // طلب جديد وصل
-            playLoudAlertSound();
+            playNewLoudAlertSound();
+            // هزاز إذا كان متاحاً
+            if (navigator.vibrate) {
+                navigator.vibrate([200, 100, 200, 100, 300]);
+            }
         }
         lastOrderCount = currentCount;
     }
@@ -1331,6 +1354,7 @@ window.switchDriverTab = function(tab) {
     document.querySelectorAll('.driver-tab').forEach(t => t.classList.remove('active'));
     document.querySelector(`.driver-tab[data-driver-tab="${tab}"]`).classList.add('active');
     refreshDriverPanel();
+    // إعادة تعيين العداد عند التبديل لضمان عدم تكرار الصوت
     if (tab === 'available') {
         lastOrderCount = allOrders.filter(o => o.status === 'pending').length;
     }
@@ -1586,7 +1610,7 @@ function initLogin() {
             refreshDriverPanel(); 
             setInterval(refreshDriverPanel,5000); 
             // تفعيل الصوت عند الدخول كمندوب
-            playLoudAlertSound();
+            lastOrderCount = allOrders.filter(o => o.status === 'pending').length;
         }
         else showPage('homePage');
         showToast(`أهلاً ${name}`);
@@ -1623,6 +1647,14 @@ document.getElementById('modalConfirm').onclick = async () => {
         await updateOrder(pendingOrderId, { status: pendingStatus });
         if(pendingStatus === 'delivered') await updateUserBusy(currentUser.phone, false);
         showToast(`✅ تم تغيير الحالة إلى ${getStatusText(pendingStatus)}`);
+        // تحديث واجهة التتبع للعميل فوراً
+        if (pendingStatus) {
+            // إذا كان العميل في صفحة التتبع، نقوم بتحديثها
+            if (document.getElementById('trackFullscreen').style.display === 'block') {
+                let id = localStorage.getItem('currentTrackingOrder');
+                if (id) viewOrderTracking(parseInt(id));
+            }
+        }
         goBackToDriver();
         pendingOrderId = null;
         pendingStatus = null;

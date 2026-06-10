@@ -227,6 +227,23 @@
         .pull-refresh-loader { text-align: center; padding: 10px; font-size: 0.8rem; display: none; color: var(--gray); }
         .pull-refresh-loader.active { display: block; animation: spin 0.8s linear infinite; }
         @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        /* تفاعلات ونبض مضيء لحالات الطلب */
+        .step.active .circle {
+            animation: glowPulse 1s ease-in-out infinite;
+            box-shadow: 0 0 20px 10px rgba(15, 118, 110, 0.5);
+        }
+        .step.completed .circle {
+            box-shadow: 0 0 10px 5px rgba(16, 185, 129, 0.3);
+        }
+        @keyframes glowPulse {
+            0% { box-shadow: 0 0 10px 5px rgba(15, 118, 110, 0.4); }
+            50% { box-shadow: 0 0 30px 20px rgba(15, 118, 110, 0.8); }
+            100% { box-shadow: 0 0 10px 5px rgba(15, 118, 110, 0.4); }
+        }
+        .step .circle {
+            transition: all 0.3s ease;
+        }
     </style>
 </head>
 <body>
@@ -1208,7 +1225,7 @@ async function confirmCheckoutOrder() {
     await fetch(`${FIREBASE_URL}/orders/${id}.json`, {method:'PUT', body:JSON.stringify(order)}); 
     localStorage.setItem('currentTrackingOrder', id); 
     let itemsText = cart.map(i=>`• ${i.name} x${i.qty} = ${i.p*i.qty} ريال ${i.note?' ('+i.note+')':''}`).join('\n'); 
-    let message = `🛍️ طلب جديد من وصل\n🍔 ${currentRestaurant.name}\n👤 ${currentUser.name}\n📞 ${currentUser.phone}\n📍 ${order.address}\n📝 ملاحظات عامة: ${generalNote || 'لا توجد'}\n\nالمنتجات:\n${itemsText}\n\n🚚 التوصيل: ${deliveryCost} ريال\n💰 الإجمالي: ${total} ريال\n\n📱 تتبع طلبك #${id}`; 
+    let message = `🛍️ طلب جديد من وصل\n🍔 ${currentRestaurant.name}\n👤 ${currentUser.name}\n📞 ${currentUser.phone}\n📍 ${order.address}\n📝 ملاحظات عامة: ${generalNote || 'لا توجد'}\n\nالمنتجات:\n${itemsText}\n\n🚚 التوصيل: ${deliveryCost} ريال\n💰 الإجمالي: ${total} ريال\n\nعزيزي/عزيزتي، تابع تطبيقنا لتتبع حالة طلبك 😊`; 
     window.open(`https://wa.me/777215154?text=${encodeURIComponent(message)}`, '_blank'); 
     showToast('✅ تم إرسال طلبك'); 
     cart = []; 
@@ -1238,10 +1255,10 @@ function startAutoTracking(orderId) {
     hasNotified = { on_the_way: false, arrived: false, delivered: false };
     // التحقق الأولي للحالة
     checkOrderStatus(orderId);
-    // بدء التحديث كل 3 ثوانٍ
+    // بدء التحديث كل 0.7 ثانية (أقل من ثانية)
     trackingInterval = setInterval(() => {
         checkOrderStatus(orderId);
-    }, 3000);
+    }, 700);
 }
 
 function stopAutoTracking() {
@@ -1261,29 +1278,16 @@ async function checkOrderStatus(orderId) {
         viewOrderTracking(orderId);
     }
     
-    // التحقق من تغيير الحالة وإرسال إشعار
+    // التحقق من تغيير الحالة
     if (order.status !== lastOrderStatus) {
         lastOrderStatus = order.status;
-        handleStatusChange(order);
-    }
-}
-
-function handleStatusChange(order) {
-    const status = order.status;
-    const statusMessages = {
-        'on_the_way': '🚚 المندوب في الطريق إليك!',
-        'arrived': '📍 المندوب وصل الموقع!',
-        'delivered': '✅ تم التوصيل! شكراً لاستخدامك خدمتنا، نتمنى لك يوماً سعيداً 😊'
-    };
-    
-    if (statusMessages[status] && !hasNotified[status]) {
-        hasNotified[status] = true;
-        showToast(statusMessages[status]);
-        // تشغيل صوت للإشعار
-        playCustomerNotificationSound();
+        // تشغيل الصوت فقط، بدون إشعارات منبثقة (Toast)
+        if (order.status !== 'pending') {
+            playCustomerNotificationSound();
+        }
         
-        if (status === 'delivered') {
-            // إظهار نافذة التقييم بعد التوصيل
+        // إذا تم التوصيل، افتح التقييم
+        if (order.status === 'delivered') {
             setTimeout(() => {
                 openRatingModal(order.id);
             }, 2000);

@@ -561,7 +561,68 @@
 <script>
 // ==================== 1. البيانات الثابتة ====================
 const allRestaurantsData = [
-    { id: 1, name: "رويال بروستر", cat: "بروست", img: "https://images.unsplash.com/photo-1626645738196-c2a7c8d08f58?w=400", items: [{n:"وجبة بروست (4 قطع)",p:2200,d:"دجاج مقرمش يقدم مع البطاطس والثومية"},{n:"وجبة زنجر سوبريم",p:2400,d:"ساندوتش زنجر حار مع الجبنة الذائبة"},{n:"وجبة ستريبس (5 قطع)",p:100000000000000000,d:"قطع استريبس الدجاج المقلي المقرمش"},{n:"ساندوتش زنجر",p:1300,d:"ساندوتش دجاج حار مقرمش"},{n:"برجر لحم",p:1600,d:"برجر لحم طازج مع الخضار"},{n:"برجر دجاج",p:1400,d:"برجر دجاج مقرمش"},{n:"تويستر",p:1100,d:"ساندوتش دجاج مع الخس والمايونيز"},{n:"بطاطس",p:600,d:"بطاطس مقلية ذهبية"}] },
+    { 
+        id: 1, 
+        name: "رويال بروستر", 
+        cat: "بروست", 
+        img: "https://images.unsplash.com/photo-1626645738196-c2a7c8d08f58?w=400", 
+        items: [
+            // 1. بروست
+            {n:"بروست", p:1500, d:"دجاج مقرمش ذهبي يقدم مع البطاطس والثومية", img:"https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?w=300"},
+            {n:"نواعم الدجاج", p:2000, d:"قطع دجاج طرية ومقرمشة بنكهة مميزة", img:"https://images.unsplash.com/photo-1562967914-608f82629710?w=300"},
+            {n:"تشيكن ستريبس", p:1900, d:"أصابع دجاج مقلية ذهبية مقرمشة", img:"https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?w=300"},
+            {n:"تشيكن جريل", p:1900, d:"صدر دجاج مشوي بنكهة الأعشاب", img:"https://images.unsplash.com/photo-1594041680534-e8c8cdebd659?w=300"},
+            
+            // 2. البرجر
+            {n:"كلاسيك برجر", p:2200, d:"برجر لحم كلاسيكي مع الجبن والخضار الطازجة", img:"https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=300"},
+            {n:"بيف برجر", p:1700, d:"برجر لحم بقري شهي مع صوص خاص", img:"https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=300"},
+            {n:"تشيكن برجر", p:1700, d:"برجر دجاج مقرمش مع الخس والمايونيز", img:"https://images.unsplash.com/photo-1568051243858-627f094c731b?w=300"},
+            {n:"بيج تشيكن فيليه سبايسي", p:2400, d:"فيليه دجاج حار بحجم كبير مع صلصة حارة", img:"https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?w=300"},
+            
+            // 3. أطباق موسمية
+            {n:"جمبري", p:2700, d:"جمبري مقلي ذهبي يقدم مع صلصة الكوكتيل", img:"https://images.unsplash.com/photo-1625937759337-917a11eb7a78?w=300"},
+            
+            // 4. البيتزا
+            {n:"بيتزا ثمار البحر", p:3400, d:"بيتزا بحرية مع الجمبري والمأكولات البحرية", img:"https://images.unsplash.com/photo-1513104890138-7c749659a591?w=300"},
+            {n:"بيتزا سوبريم", p:3200, d:"بيتزا فاخرة مع البيبروني والفطر والفلفل", img:"https://images.unsplash.com/photo-1528137871618-79d0761e3a07?w=300"},
+            {n:"بيتزا سبايسي لحم", p:3000, d:"بيتزا لحم حارة مع الجبنة الذائبة", img:"https://images.unsplash.com/photo-1574126154517-d1e0d89e7344?w=300"},
+            {n:"بيتزا بالتونة", p:3000, d:"بيتزا تونة مع البصل والزيتون", img:"https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=300"},
+            
+            // 5. الخبز
+            {n:"خبز بان", p:100, d:"خبز طازج ناعم يقدم مع أي وجبة", img:"https://images.unsplash.com/photo-1509440159596-0249088772ff?w=300"},
+            {n:"خبز الثوم", p:600, d:"خبز محمص مع زبدة الثوم والأعشاب", img:"https://images.unsplash.com/photo-1626804475297-414d2f6b13c7?w=300"},
+            
+            // 6. السندوتشات
+            {n:"فاهيتا", p:1600, d:"ساندوتش دجاج فاهيتا مع الفلفل والبصل", img:"https://images.unsplash.com/photo-1533777857863-759f53d006d4?w=300"},
+            {n:"رويال ديلوكس", p:2500, d:"ساندوتش رويال ديلوكس مع دجاج وجبنة ذائبة", img:"https://images.unsplash.com/photo-1528735602780-2552fd46c7af?w=300"},
+            {n:"شيش طاووق", p:1600, d:"ساندوتش شيش طاووق دجاج متبل", img:"https://images.unsplash.com/photo-1626202158875-8ec7d8a9297c?w=300"},
+            {n:"راب عربي", p:1800, d:"راب دجاج عربي مع الخضار والصلصة", img:"https://images.unsplash.com/photo-1533421166382-0567d91892a7?w=300"},
+            
+            // 7. وجبات الأطفال
+            {n:"نواعم الدجاج (أطفال)", p:1100, d:"وجبة أطفال مكونة من نواعم دجاج مع بطاطس", img:"https://images.unsplash.com/photo-1565302583680-35096768f01f?w=300"},
+            {n:"بروست أطفال", p:1000, d:"بروست للأطفال مع بطاطس مقلية", img:"https://images.unsplash.com/photo-1620164042417-365e68e3cff9?w=300"},
+            {n:"تشيكن برجر (أطفال)", p:1100, d:"برجر دجاج صغير للأطفال مع بطاطس", img:"https://images.unsplash.com/photo-1626098784865-987bd13a052b?w=300"},
+            
+            // 8. وجبات خفيفة
+            {n:"شبس", p:400, d:"رقائق بطاطس مقرمشة", img:"https://images.unsplash.com/photo-1586473219033-8e6f33715fd2?w=300"},
+            {n:"لازانيا", p:2500, d:"لازانيا كلاسيكية باللحم والجبن", img:"https://images.unsplash.com/photo-1619895092536-0c22b9c678d3?w=300"},
+            {n:"سبد", p:2200, d:"سبد دجاج مع صلصة التارتار", img:"https://images.unsplash.com/photo-1581042630014-b09ba48692ea?w=300"},
+            
+            // 9. السلطات والمقبلات
+            {n:"ويدجز", p:1200, d:"بطاطس ويدجز مشوية مع البهارات", img:"https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=300"},
+            {n:"سلطة بار", p:1400, d:"سلطة طازجة مع تشكيلة من الخضار", img:"https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=300"},
+            {n:"حمص", p:600, d:"حمص طازج بالطحينة وزيت الزيتون", img:"https://images.unsplash.com/photo-1535285537214-bb20e22514a6?w=300"},
+            {n:"أرز", p:500, d:"أرز أبيض ناعم وبسمتي", img:"https://images.unsplash.com/photo-1586201375761-83865001e31c?w=300"},
+            {n:"ورق عنب", p:500, d:"ورق عنب محشي بالأرز واللحم", img:"https://images.unsplash.com/photo-1629203010746-e3314be6203a?w=300"},
+            
+            // 10. المشروبات
+            {n:"ماء", p:100, d:"ماء معدني نقي 500مل", img:"https://images.unsplash.com/photo-1616118132534-3816298c0968?w=300"},
+            {n:"مشروب غازي ون سي", p:250, d:"مشروب غازي بنكهة الليمون 330مل", img:"https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=300"},
+            {n:"آيسكريم", p:600, d:"آيسكريم فانيليا مع شوكولاتة", img:"https://images.unsplash.com/photo-1560008511-11c63416b52e?w=300"},
+            {n:"مشروب غازي", p:250, d:"مشروب غازي كولا 330مل", img:"https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=300"},
+            {n:"عصير هنية", p:200, d:"عصير طبيعي بنكهة الفواكه", img:"https://images.unsplash.com/photo-1589733955941-5eeaf752f6dd?w=300"}
+        ] 
+    },
     { id: 2, name: "البيك رويال", cat: "بروست", img: "https://images.unsplash.com/photo-1562967914-608f82629710?w=400", items: [{n:"وجبة بروست رويال",p:2400,d:"دجاج ذهبي مقرمش"},{n:"فيليه سمك",p:2200,d:"شرائح فيليه سمك مقلي"},{n:"زنجر رويال",p:1600,d:"ساندوتش زنجر حار"},{n:"مسحب دجاج",p:1300,d:"دجاج مسحب مقرمش"},{n:"بطاطس",p:800,d:"بطاطس مقلية"}] },
     { id: 3, name: "شاورما هت", cat: "شاورما", img: "https://images.unsplash.com/photo-1644704170910-a0cdf183649b?w=400", items: [{n:"شاورما دجاج",p:1200,d:"شاورما دجاج متبلة"},{n:"شاورما لحم",p:1800,d:"شاورما لحم بلدي"},{n:"شاورما عربي",p:2200,d:"صحن شاورما كامل"},{n:"بطاطس",p:700,d:"بطاطس مقلية"}] },
     { id: 4, name: "ستار برجر", cat: "برجر", img: "https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=400", items: [{n:"برجر لحم كلاسيك",p:1800,d:"شريحة لحم بقري طازج"},{n:"برجر دجاج مقرمش",p:1700,d:"صدر دجاج مقرمش"},{n:"مشروم برجر",p:2200,d:"برجر لحم مع الفطر"},{n:"باربيكيو برجر",p:2100,d:"برجر بصوص الباربيكيو"}] },
@@ -728,7 +789,7 @@ function openRestaurantMenu(id) {
 
         itemsHtml += `
             <div class="menu-item-card">
-                <div class="menu-item-img" style="background-image:url('${getItemImage(item.n)}')"></div>
+                <div class="menu-item-img" style="background-image:url('${item.img || getItemImage(item.n)}')"></div>
                 <div class="menu-item-info">
                     <div class="menu-item-name">${item.n}</div>
                     <div class="menu-item-desc">${item.d || "وجبة لذيذة"}</div>
@@ -771,7 +832,7 @@ function updateItemQuantity(idx, restaurantId, delta) {
             note: document.getElementById(`note_${restaurantId}_${idx}`)?.value || '',
             restaurant: currentRestaurant.name,
             restaurantId: restaurantId,
-            img: getItemImage(item.n)
+            img: item.img || getItemImage(item.n)
         });
     }
     updateCartDisplay();

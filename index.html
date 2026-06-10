@@ -669,7 +669,7 @@ function getItemImage(itemName) {
 
 async function loadOrders() { try { let res = await fetch(`${FIREBASE_URL}/orders.json`); let data = await res.json(); allOrders = data ? Object.values(data).sort((a,b)=>b.id-a.id) : []; } catch(e){} }
 async function updateOrder(id, updates) { await fetch(`${FIREBASE_URL}/orders/${id}.json`, { method: 'PATCH', body: JSON.stringify(updates) }); await loadOrders(); }
-async function updateUserBusy(phone, isBusy) { await fetch(`${FIREBASE_URL}/users/${phone}.json`, { method: 'PATCH`, body: JSON.stringify({ isBusy }) }); }
+async function updateUserBusy(phone, isBusy) { await fetch(`${FIREBASE_URL}/users/${phone}.json`, { method: 'PATCH', body: JSON.stringify({ isBusy }) }); }
 function getStatusText(st) { const m = {pending:'قيد المراجعة', on_the_way:'في الطريق', arrived:'وصل الموقع', delivered:'تم التوصيل'}; return m[st] || st; }
 
 // ==================== 4. واجهات المستخدم ====================
@@ -1845,51 +1845,86 @@ async function addNewRestaurant() { let name=document.getElementById('adminRestN
 function addNewItem() { showToast('قيد التطوير'); }
 function saveDeliverySettings() { let km=document.getElementById('adminPricePerKm').value; let min=document.getElementById('adminMinDelivery').value; if(km) PRICE_PER_KM=parseInt(km); if(min) MIN_DELIVERY_PRICE=parseInt(min); showToast('تم حفظ الإعدادات'); }
 
-// ==================== 13. تسجيل الدخول ====================
+// ==================== 13. تسجيل الدخول (المصحح) ====================
 function initLogin() {
-    let roleCustomer=document.getElementById('roleCustomer'), roleDriver=document.getElementById('roleDriver');
-    let loginPasswordField = document.getElementById('loginPassword');
-    
-    roleCustomer.onclick=()=>{ 
-        roleCustomer.classList.add('active'); 
-        roleDriver.classList.remove('active'); 
-        document.getElementById('passwordField').style.display='none'; 
-        loginPasswordField.value = "";
-    };
-    roleDriver.onclick=()=>{ 
-        roleDriver.classList.add('active'); 
-        roleCustomer.classList.remove('active'); 
-        document.getElementById('passwordField').style.display='block';
-        loginPasswordField.focus();
-    };
-    
-    document.getElementById('loginBtn').onclick=async()=>{
-        let isDriver=roleDriver.classList.contains('active');
-        let name=document.getElementById('loginName').value.trim();
-        let phone=document.getElementById('loginPhone').value.trim();
-        if(!name||!phone) return showToast('أدخل الاسم ورقم الهاتف');
+    const roleCustomer = document.getElementById('roleCustomer');
+    const roleDriver = document.getElementById('roleDriver');
+    const passwordField = document.getElementById('passwordField');
+    const loginPassword = document.getElementById('loginPassword');
+    const loginName = document.getElementById('loginName');
+    const loginPhone = document.getElementById('loginPhone');
+    const loginBtn = document.getElementById('loginBtn');
+    const loginOverlay = document.getElementById('loginOverlay');
+
+    if (!loginBtn) return;
+
+    // عند الضغط على زر عميل
+    roleCustomer.onclick = function() {
+        roleCustomer.style.background = "#fff";
+        roleCustomer.style.color = "#0f766e";
+        roleCustomer.style.boxShadow = "0 5px 15px rgba(0,0,0,0.1)";
         
-        if(isDriver) {
-            let password = loginPasswordField.value.trim();
-            if(!password) return showToast('أدخل كلمة السر للمندوب');
-            if(password !== DRIVER_PASSWORD) return showToast('❌ كلمة سر المندوب غير صحيحة!');
+        roleDriver.style.background = "transparent";
+        roleDriver.style.color = "rgba(255,255,255,0.8)";
+        roleDriver.style.boxShadow = "none";
+        
+        passwordField.style.display = 'none';
+    };
+
+    // عند الضغط على زر مندوب
+    roleDriver.onclick = function() {
+        roleDriver.style.background = "#fff";
+        roleDriver.style.color = "#0f766e";
+        roleDriver.style.boxShadow = "0 5px 15px rgba(0,0,0,0.1)";
+        
+        roleCustomer.style.background = "transparent";
+        roleCustomer.style.color = "rgba(255,255,255,0.8)";
+        roleCustomer.style.boxShadow = "none";
+        
+        passwordField.style.display = 'block';
+    };
+
+    // عند الضغط على زر دخول
+    loginBtn.onclick = async function() {
+        let isDriver = roleDriver.classList.contains('active');
+        let name = loginName.value.trim();
+        let phone = loginPhone.value.trim();
+        let password = loginPassword.value.trim();
+        
+        if (!name || !phone) { 
+            showToast('يرجى إدخال الاسم ورقم الهاتف');
+            return; 
         }
+
+        if (isDriver) {
+            if (!password) {
+                showToast('⚠️ المندوب يجب أن يدخل كلمة السر!');
+                return;
+            }
+            if (password !== DRIVER_PASSWORD) {
+                showToast('❌ كلمة السر للمندوب غير صحيحة!');
+                return;
+            }
+        }
+
+        let role = isDriver ? 'driver' : 'customer';
+        await fetch(`${FIREBASE_URL}/users/${phone}.json`, {
+            method: 'PUT',
+            body: JSON.stringify({ phone, name, role, isBusy: false })
+        });
+        currentUser = { role, phone, name };
+        localStorage.setItem('waselny_user', JSON.stringify(currentUser));
+        loginOverlay.style.display = 'none';
         
-        let role=isDriver?'driver':'customer';
-        await fetch(`${FIREBASE_URL}/users/${phone}.json`,{method:'PUT',body:JSON.stringify({phone,name,role,isBusy:false})});
-        currentUser={role,phone,name};
-        localStorage.setItem('waselny_user',JSON.stringify(currentUser));
-        document.getElementById('loginOverlay').style.display='none';
-        
-        if(role==='driver') { 
+        if (role === 'driver') { 
             showPage('driverPage'); 
             document.getElementById('driverNameDisplay').innerText = name;
             refreshDriverPanel(); 
-            setInterval(refreshDriverPanel,5000); 
-            // تفعيل الصوت عند الدخول كمندوب
+            setInterval(refreshDriverPanel, 5000); 
             lastOrderCount = allOrders.filter(o => o.status === 'pending').length;
+        } else {
+            showPage('homePage');
         }
-        else showPage('homePage');
         showToast(`أهلاً ${name}`);
     };
 }
@@ -1945,99 +1980,14 @@ if(savedUser){
         else showPage('homePage');
     }catch(e){ initLogin(); }
 }else{ initLogin(); }
+
+// بدء تشغيل الكاروسيل
 renderMainCarousel();
-function initLogin() {
-    const roleCustomer = document.getElementById('roleCustomer');
-    const roleDriver = document.getElementById('roleDriver');
-    const passwordField = document.getElementById('passwordField'); 
-    const loginPassword = document.getElementById('loginPassword');
-    const loginName = document.getElementById('loginName');
-    const loginPhone = document.getElementById('loginPhone');
-    const loginBtn = document.getElementById('loginBtn');
-    const loginOverlay = document.getElementById('loginOverlay');
-
-    if (!loginBtn) return; 
-
-    // متغير لحفظ الدور الحالي (افتراضياً عميل)
-    let currentRole = "customer";
-
-    // عند الضغط على زر عميل
-    if (roleCustomer) {
-        roleCustomer.onclick = function() {
-            roleCustomer.style.background = "#fff";
-            roleCustomer.style.color = "#0f766e";
-            roleCustomer.style.boxShadow = "0 5px 15px rgba(0,0,0,0.1)";
-            
-            if (roleDriver) {
-                roleDriver.style.background = "transparent";
-                roleDriver.style.color = "rgba(255,255,255,0.8)";
-            }
-            
-            if (passwordField) passwordField.style.display = 'none';
-            currentRole = "customer";
-        };
-    }
-
-    // عند الضغط على زر مندوب
-    if (roleDriver) {
-        roleDriver.onclick = function() {
-            roleDriver.style.background = "#fff";
-            roleDriver.style.color = "#0f766e";
-            roleDriver.style.boxShadow = "0 5px 15px rgba(0,0,0,0.1)";
-            
-            if (roleCustomer) {
-                roleCustomer.style.background = "transparent";
-                roleCustomer.style.color = "rgba(255,255,255,0.8)";
-                roleCustomer.style.boxShadow = "none";
-            }
-            
-            if (passwordField) passwordField.style.display = 'block';
-            currentRole = "driver";
-        };
-    }
-
-    // عند الضغط على زر دخول
-    loginBtn.onclick = () => {
-        let name = loginName.value.trim();
-        let phone = loginPhone.value.trim();
-        let password = loginPassword ? loginPassword.value.trim() : "";
-        
-        if (!name || !phone) { 
-            alert('يرجى إدخال الاسم ورقم الهاتف'); 
-            return; 
-        }
-
-        // التحقق الإضافي للمندوب بكلمة السر الجديدة
-        if (currentRole === "driver") {
-            if (!password) {
-                alert('⚠️ المندوب يجب أن يدخل كلمة السر!');
-                return;
-            }
-            // التحقق من كلمة السر الخاصة بك
-            if (password !== "weesim73741") {
-                alert('❌ كلمة السر للمندوب غير صحيحة!');
-                return;
-            }
-        }
-
-        // حفظ البيانات في الكائن الموحد وفي الـ LocalStorage
-        window.currentUser = { role: currentRole, phone: phone, name: name };
-        localStorage.setItem('waselny_user', JSON.stringify(window.currentUser));
-        
-        if (loginOverlay) loginOverlay.style.display = 'none';
-        
-        if (typeof showPage === 'function') {
-            if (currentRole === "driver") {
-                let driverNameDisplay = document.getElementById("driverNameDisplay");
-                if (driverNameDisplay) driverNameDisplay.innerText = name;
-                showPage('driverPage');
-            } else {
-                showPage('homePage');
-            }
-        }
-    };
-}
-renderCategories(); renderOffers(); initPaymentList(); renderFilters(); renderRestaurantsList();
+renderCategories();
+renderOffers();
+initPaymentList();
+renderFilters();
+renderRestaurantsList();
 </script>
 </body>
 </html>

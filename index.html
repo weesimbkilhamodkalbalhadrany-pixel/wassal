@@ -378,6 +378,66 @@
     </div>
 </div>
 
+<div id="ratingModal" class="item-modal-overlay">
+    <div class="item-modal-card">
+        <div class="modal-content">
+            <h3 style="text-align:center; font-size:1.3rem; color:var(--primary);">⭐ تقييم الطلب</h3>
+            <p style="text-align:center; font-size:0.8rem; color:var(--gray); margin-bottom:15px;">شكراً لاستخدامك خدمتنا! نتمنى لك يوماً سعيداً 😊</p>
+            
+            <div style="margin-bottom:10px;">
+                <label style="font-weight:700; font-size:0.8rem;">تقييم المندوب</label>
+                <div class="stars" data-category="driver" style="display:flex; gap:10px; font-size:1.5rem; cursor:pointer;">
+                    <i class="far fa-star" data-value="1"></i>
+                    <i class="far fa-star" data-value="2"></i>
+                    <i class="far fa-star" data-value="3"></i>
+                    <i class="far fa-star" data-value="4"></i>
+                    <i class="far fa-star" data-value="5"></i>
+                </div>
+            </div>
+            
+            <div style="margin-bottom:10px;">
+                <label style="font-weight:700; font-size:0.8rem;">تقييم الخدمة</label>
+                <div class="stars" data-category="service" style="display:flex; gap:10px; font-size:1.5rem; cursor:pointer;">
+                    <i class="far fa-star" data-value="1"></i>
+                    <i class="far fa-star" data-value="2"></i>
+                    <i class="far fa-star" data-value="3"></i>
+                    <i class="far fa-star" data-value="4"></i>
+                    <i class="far fa-star" data-value="5"></i>
+                </div>
+            </div>
+            
+            <div style="margin-bottom:10px;">
+                <label style="font-weight:700; font-size:0.8rem;">سرعة التوصيل</label>
+                <div class="stars" data-category="speed" style="display:flex; gap:10px; font-size:1.5rem; cursor:pointer;">
+                    <i class="far fa-star" data-value="1"></i>
+                    <i class="far fa-star" data-value="2"></i>
+                    <i class="far fa-star" data-value="3"></i>
+                    <i class="far fa-star" data-value="4"></i>
+                    <i class="far fa-star" data-value="5"></i>
+                </div>
+            </div>
+            
+            <div style="margin-bottom:15px;">
+                <label style="font-weight:700; font-size:0.8rem;">تقييم المطعم</label>
+                <div class="stars" data-category="restaurant" style="display:flex; gap:10px; font-size:1.5rem; cursor:pointer;">
+                    <i class="far fa-star" data-value="1"></i>
+                    <i class="far fa-star" data-value="2"></i>
+                    <i class="far fa-star" data-value="3"></i>
+                    <i class="far fa-star" data-value="4"></i>
+                    <i class="far fa-star" data-value="5"></i>
+                </div>
+            </div>
+            
+            <textarea id="ratingComment" rows="2" placeholder="أضف تعليقك (اختياري)" style="width:100%; padding:8px; border-radius:12px; border:1px solid var(--gray-light); font-size:0.8rem; margin-bottom:15px;"></textarea>
+            
+            <div class="modal-actions">
+                <button class="btn-add-modal" onclick="submitRating()" style="flex:1;">إرسال التقييم</button>
+                <button class="btn-close-modal" onclick="closeRating()" style="flex:0.5;">تخطي</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div id="floatCart" class="float-cart" onclick="goToCheckout()"><div><span id="cartCount">0</span> أصناف | <span id="cartTotal">0</span> ريال</div><div>عرض السلة <i class="fas fa-chevron-left"></i></div></div>
 <div class="cart-sidebar" id="cartSidebar">
     <div class="cart-header"><span>🛒 سلة الطلبات</span><span class="cart-close" onclick="toggleCart()">✕</span></div>
@@ -581,6 +641,8 @@ let map, marker, currentMapMode = null;
 let modalQuantity = 1, modalNote = "";
 let currentModalItem = null, currentModalSourceIsRestaurant = false;
 let pendingOrderId = null, pendingStatus = null;
+let trackingInterval = null;
+let lastOrderStatus = null;
 
 // ==================== 3. الدوال المساعدة ====================
 function showToast(msg) { let t = document.getElementById('toastMsg'); t.innerText = msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2500); }
@@ -607,7 +669,7 @@ function getItemImage(itemName) {
 
 async function loadOrders() { try { let res = await fetch(`${FIREBASE_URL}/orders.json`); let data = await res.json(); allOrders = data ? Object.values(data).sort((a,b)=>b.id-a.id) : []; } catch(e){} }
 async function updateOrder(id, updates) { await fetch(`${FIREBASE_URL}/orders/${id}.json`, { method: 'PATCH', body: JSON.stringify(updates) }); await loadOrders(); }
-async function updateUserBusy(phone, isBusy) { await fetch(`${FIREBASE_URL}/users/${phone}.json`, { method: 'PATCH', body: JSON.stringify({ isBusy }) }); }
+async function updateUserBusy(phone, isBusy) { await fetch(`${FIREBASE_URL}/users/${phone}.json`, { method: 'PATCH`, body: JSON.stringify({ isBusy }) }); }
 function getStatusText(st) { const m = {pending:'قيد المراجعة', on_the_way:'في الطريق', arrived:'وصل الموقع', delivered:'تم التوصيل'}; return m[st] || st; }
 
 // ==================== 4. واجهات المستخدم ====================
@@ -1160,9 +1222,211 @@ async function confirmCheckoutOrder() {
     // فتح واجهة التتبع فوراً وبشكل كامل
     setTimeout(() => {
         viewOrderTracking(id);
+        // بدء التحديث التلقائي
+        startAutoTracking(id);
     }, 1500); 
 }
 
+// ==================== 7. نظام التتبع التلقائي وإشعارات العميل ====================
+let autoTrackingId = null;
+let hasNotified = { on_the_way: false, arrived: false, delivered: false };
+
+function startAutoTracking(orderId) {
+    if (trackingInterval) clearInterval(trackingInterval);
+    autoTrackingId = orderId;
+    // إعادة تعيين الإشعارات
+    hasNotified = { on_the_way: false, arrived: false, delivered: false };
+    // التحقق الأولي للحالة
+    checkOrderStatus(orderId);
+    // بدء التحديث كل 3 ثوانٍ
+    trackingInterval = setInterval(() => {
+        checkOrderStatus(orderId);
+    }, 3000);
+}
+
+function stopAutoTracking() {
+    if (trackingInterval) {
+        clearInterval(trackingInterval);
+        trackingInterval = null;
+    }
+}
+
+async function checkOrderStatus(orderId) {
+    await loadOrders();
+    let order = allOrders.find(o => o.id == orderId);
+    if (!order) return;
+    
+    // تحديث واجهة التتبع إذا كانت مفتوحة
+    if (document.getElementById('trackFullscreen').style.display === 'block') {
+        viewOrderTracking(orderId);
+    }
+    
+    // التحقق من تغيير الحالة وإرسال إشعار
+    if (order.status !== lastOrderStatus) {
+        lastOrderStatus = order.status;
+        handleStatusChange(order);
+    }
+}
+
+function handleStatusChange(order) {
+    const status = order.status;
+    const statusMessages = {
+        'on_the_way': '🚚 المندوب في الطريق إليك!',
+        'arrived': '📍 المندوب وصل الموقع!',
+        'delivered': '✅ تم التوصيل! شكراً لاستخدامك خدمتنا، نتمنى لك يوماً سعيداً 😊'
+    };
+    
+    if (statusMessages[status] && !hasNotified[status]) {
+        hasNotified[status] = true;
+        showToast(statusMessages[status]);
+        // تشغيل صوت للإشعار
+        playCustomerNotificationSound();
+        
+        if (status === 'delivered') {
+            // إظهار نافذة التقييم بعد التوصيل
+            setTimeout(() => {
+                openRatingModal(order.id);
+            }, 2000);
+        }
+    }
+}
+
+// صوت إشعار للعميل (لطيف)
+function playCustomerNotificationSound() {
+    try {
+        if (!audioContext) {
+            audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        if (audioContext.state === 'suspended') {
+            audioContext.resume().then(() => {
+                generateCustomerSound();
+            });
+        } else {
+            generateCustomerSound();
+        }
+    } catch (e) {
+        console.warn("Audio not supported");
+    }
+}
+
+function generateCustomerSound() {
+    if (!audioContext) return;
+    const now = audioContext.currentTime;
+    
+    // صوت جرس ناعم ولطيف
+    const osc = audioContext.createOscillator();
+    const gain = audioContext.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(800, now);
+    osc.frequency.setValueAtTime(1000, now + 0.1);
+    osc.frequency.setValueAtTime(1200, now + 0.2);
+    gain.gain.setValueAtTime(0.2, now);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+    osc.connect(gain);
+    gain.connect(audioContext.destination);
+    osc.start(now);
+    osc.stop(now + 0.3);
+    
+    // تكرار مرة أخرى
+    setTimeout(() => {
+        if (audioContext) {
+            const osc2 = audioContext.createOscillator();
+            const gain2 = audioContext.createGain();
+            osc2.type = 'sine';
+            osc2.frequency.setValueAtTime(900, audioContext.currentTime);
+            osc2.frequency.setValueAtTime(1100, audioContext.currentTime + 0.1);
+            gain2.gain.setValueAtTime(0.15, audioContext.currentTime);
+            gain2.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+            osc2.connect(gain2);
+            gain2.connect(audioContext.destination);
+            osc2.start(audioContext.currentTime);
+            osc2.stop(audioContext.currentTime + 0.3);
+        }
+    }, 400);
+}
+
+// ==================== 8. نظام التقييم ====================
+let currentRatingOrderId = null;
+let ratingData = { driver: 0, service: 0, speed: 0, restaurant: 0 };
+
+function openRatingModal(orderId) {
+    currentRatingOrderId = orderId;
+    ratingData = { driver: 0, service: 0, speed: 0, restaurant: 0 };
+    // إعادة تعيين النجوم
+    document.querySelectorAll('.stars').forEach(container => {
+        container.querySelectorAll('.fa-star').forEach(star => {
+            star.classList.remove('fas');
+            star.classList.add('far');
+        });
+    });
+    document.getElementById('ratingComment').value = '';
+    document.getElementById('ratingModal').style.display = 'flex';
+}
+
+function closeRating() {
+    document.getElementById('ratingModal').style.display = 'none';
+    // إيقاف التتبع التلقائي بعد التقييم
+    stopAutoTracking();
+}
+
+// تفعيل نظام النجوم
+document.querySelectorAll('.stars').forEach(container => {
+    container.addEventListener('click', function(e) {
+        const star = e.target.closest('.fa-star');
+        if (!star) return;
+        const value = parseInt(star.dataset.value);
+        const category = this.dataset.category;
+        ratingData[category] = value;
+        
+        // تحديث التصميم
+        this.querySelectorAll('.fa-star').forEach(s => {
+            const val = parseInt(s.dataset.value);
+            if (val <= value) {
+                s.classList.remove('far');
+                s.classList.add('fas');
+            } else {
+                s.classList.remove('fas');
+                s.classList.add('far');
+            }
+        });
+    });
+});
+
+async function submitRating() {
+    // التحقق من أن جميع التقييمات قد تمت
+    if (ratingData.driver === 0 || ratingData.service === 0 || ratingData.speed === 0 || ratingData.restaurant === 0) {
+        showToast('⚠️ يرجى تقييم جميع الفئات');
+        return;
+    }
+    
+    const comment = document.getElementById('ratingComment').value.trim();
+    const rating = {
+        orderId: currentRatingOrderId,
+        ...ratingData,
+        comment: comment,
+        customerName: currentUser?.name || 'زائر',
+        customerPhone: currentUser?.phone || '',
+        createdAt: new Date().toISOString()
+    };
+    
+    // حفظ التقييم في قاعدة البيانات
+    try {
+        await fetch(`${FIREBASE_URL}/ratings/${currentRatingOrderId}.json`, {
+            method: 'PUT',
+            body: JSON.stringify(rating)
+        });
+        showToast('⭐ شكراً لك على تقييمك!');
+        closeRating();
+        // إغلاق صفحة التتبع
+        document.getElementById('trackFullscreen').style.display = 'none';
+        stopAutoTracking();
+    } catch (e) {
+        showToast('حدث خطأ أثناء حفظ التقييم');
+        console.error(e);
+    }
+}
+
+// ==================== 9. واجهة التتبع للعميل ====================
 async function viewOrderTracking(id) { 
     await loadOrders(); 
     let order = allOrders.find(o=>o.id==id); 
@@ -1203,26 +1467,39 @@ async function viewOrderTracking(id) {
     document.getElementById('trackingFullscreenContainer').innerHTML = details; 
     document.getElementById('trackFullscreen').style.display = 'block'; 
 }
-function closeTracking() { document.getElementById('trackFullscreen').style.display = 'none'; }
-function viewMyTracking() { let id = localStorage.getItem('currentTrackingOrder'); if(id) viewOrderTracking(parseInt(id)); else showToast('لا يوجد طلب نشط'); }
-async function renderMyOrders() { await loadOrders(); let myOrders = allOrders.filter(o=>o.customerPhone===currentUser?.phone); let html = myOrders.length?myOrders.map(o=>`<div style="padding:10px; border-bottom:1px solid #ddd; cursor:pointer;" onclick="viewOrderTracking(${o.id})"><strong>#${o.id}</strong> - ${o.restaurant} - ${o.total} ريال - ${o.status}</div>`).join(''):'<p>لا توجد طلبات</p>'; document.getElementById('myOrdersContainer').innerHTML = html; }
+function closeTracking() { 
+    document.getElementById('trackFullscreen').style.display = 'none'; 
+    stopAutoTracking();
+}
+function viewMyTracking() { 
+    let id = localStorage.getItem('currentTrackingOrder'); 
+    if(id) {
+        viewOrderTracking(parseInt(id));
+        startAutoTracking(parseInt(id));
+    } else showToast('لا يوجد طلب نشط'); 
+}
+async function renderMyOrders() { 
+    await loadOrders(); 
+    let myOrders = allOrders.filter(o=>o.customerPhone===currentUser?.phone); 
+    let html = myOrders.length?myOrders.map(o=>`<div style="padding:10px; border-bottom:1px solid #ddd; cursor:pointer;" onclick="viewOrderTracking(${o.id}); startAutoTracking(${o.id})"><strong>#${o.id}</strong> - ${o.restaurant} - ${o.total} ريال - ${o.status}</div>`).join(''):'<p>لا توجد طلبات</p>'; 
+    document.getElementById('myOrdersContainer').innerHTML = html; 
+}
 
-// ==================== 7. واجهة المندوب (مع التعديلات والصوت الجديد) ====================
+// ==================== 10. واجهة المندوب (مع التعديلات والصوت الجديد) ====================
 let driverTab = 'available';
 
 // ** نظام الصوت الجديد (أكثر إزعاجاً) **
-let audioContext = null;
-let isAudioReady = false;
+let driverAudioContext = null;
 let lastOrderCount = 0; // متغير لتتبع عدد الطلبات السابقة
 
 // دالة لإنشاء وتشغيل الصوت الجديد (صوت إنذار شرطة/طوارئ)
 function playNewLoudAlertSound() {
     try {
-        if (!audioContext) {
-            audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        if (!driverAudioContext) {
+            driverAudioContext = new (window.AudioContext || window.webkitAudioContext)();
         }
-        if (audioContext.state === 'suspended') {
-            audioContext.resume().then(() => {
+        if (driverAudioContext.state === 'suspended') {
+            driverAudioContext.resume().then(() => {
                 generateNewAlertSound();
             }).catch(err => {
                 console.warn("Audio resume failed:", err);
@@ -1236,14 +1513,14 @@ function playNewLoudAlertSound() {
 }
 
 function generateNewAlertSound() {
-    if (!audioContext) return;
+    if (!driverAudioContext) return;
     
-    const now = audioContext.currentTime;
+    const now = driverAudioContext.currentTime;
     
     // نغمة إنذار شرطة/طوارئ عالية ومزعجة
     // نغمة 1: صفارة حادة
-    const osc1 = audioContext.createOscillator();
-    const gain1 = audioContext.createGain();
+    const osc1 = driverAudioContext.createOscillator();
+    const gain1 = driverAudioContext.createGain();
     osc1.type = 'square';
     osc1.frequency.setValueAtTime(950, now);
     osc1.frequency.setValueAtTime(1050, now + 0.08);
@@ -1253,13 +1530,13 @@ function generateNewAlertSound() {
     gain1.gain.setValueAtTime(0.35, now);
     gain1.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
     osc1.connect(gain1);
-    gain1.connect(audioContext.destination);
+    gain1.connect(driverAudioContext.destination);
     osc1.start(now);
     osc1.stop(now + 0.4);
     
     // نغمة 2: تداخل لزيادة الإزعاج
-    const osc2 = audioContext.createOscillator();
-    const gain2 = audioContext.createGain();
+    const osc2 = driverAudioContext.createOscillator();
+    const gain2 = driverAudioContext.createGain();
     osc2.type = 'sawtooth';
     osc2.frequency.setValueAtTime(1300, now);
     osc2.frequency.setValueAtTime(1200, now + 0.1);
@@ -1268,26 +1545,26 @@ function generateNewAlertSound() {
     gain2.gain.setValueAtTime(0.25, now);
     gain2.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
     osc2.connect(gain2);
-    gain2.connect(audioContext.destination);
+    gain2.connect(driverAudioContext.destination);
     osc2.start(now);
     osc2.stop(now + 0.35);
     
     // تكرار النغمة 3 مرات بقوة
     for (let i = 0; i < 3; i++) {
         setTimeout(() => {
-            if (audioContext) {
-                const osc3 = audioContext.createOscillator();
-                const gain3 = audioContext.createGain();
+            if (driverAudioContext) {
+                const osc3 = driverAudioContext.createOscillator();
+                const gain3 = driverAudioContext.createGain();
                 osc3.type = 'square';
-                osc3.frequency.setValueAtTime(1000, audioContext.currentTime);
-                osc3.frequency.setValueAtTime(1100, audioContext.currentTime + 0.08);
-                osc3.frequency.setValueAtTime(900, audioContext.currentTime + 0.16);
-                gain3.gain.setValueAtTime(0.3, audioContext.currentTime);
-                gain3.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+                osc3.frequency.setValueAtTime(1000, driverAudioContext.currentTime);
+                osc3.frequency.setValueAtTime(1100, driverAudioContext.currentTime + 0.08);
+                osc3.frequency.setValueAtTime(900, driverAudioContext.currentTime + 0.16);
+                gain3.gain.setValueAtTime(0.3, driverAudioContext.currentTime);
+                gain3.gain.exponentialRampToValueAtTime(0.01, driverAudioContext.currentTime + 0.3);
                 osc3.connect(gain3);
-                gain3.connect(audioContext.destination);
-                osc3.start(audioContext.currentTime);
-                osc3.stop(audioContext.currentTime + 0.3);
+                gain3.connect(driverAudioContext.destination);
+                osc3.start(driverAudioContext.currentTime);
+                osc3.stop(driverAudioContext.currentTime + 0.3);
             }
         }, 450 * (i + 1));
     }
@@ -1480,7 +1757,7 @@ function openCustomerLocation(lat, lng) {
     }
 }
 
-// ==================== 8. الكاروسيل والإدارة ====================
+// ==================== 11. الكاروسيل والإدارة ====================
 const mainSliderImages = [
     { image: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800', title: '🍔 أشهى المطاعم', desc: 'اطلب وجبتك المفضلة', category: 'restaurants' },
     { image: 'https://images.unsplash.com/photo-1578916171728-46686eac8d58?w=800', title: '🛒 سوبرماركت', desc: 'كل مستلزماتك في مكان واحد', category: 'supermarket' },
@@ -1561,14 +1838,14 @@ window.goToCarouselSlide=function(i){ carouselIndex=i; updateCarousel(); startCa
 let currentFilter="all";
 function renderFilters(){ const filters=['الكل','بروست','برجر','شاورما','بيتزا','مشاوي','عصائر']; let html=''; filters.forEach((f,i)=>{ let val=(i===0?'all':f); html+=`<div class="filter-btn ${currentFilter===val?'active':''}" data-filter="${val}">${f}</div>`; }); document.getElementById('filterButtons').innerHTML=html; document.querySelectorAll('.filter-btn').forEach(btn=>{ btn.onclick=()=>{ document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); currentFilter=btn.dataset.filter; renderRestaurantsList(); }; }); }
 
-// ==================== 9. الإدارة ====================
+// ==================== 12. الإدارة ====================
 async function renderAdminRestaurantsList() { let container=document.getElementById('adminRestaurantsList'); if(container) container.innerHTML=allRestaurants.map(r=>`<div style="display:flex; justify-content:space-between; padding:8px; border-bottom:1px solid #ddd;"><div><strong>${r.name}</strong><br><small>${r.cat} | ${r.items.length} صنف</small></div><button style="background:var(--danger); color:white; border:none; padding:4px 10px; border-radius:8px;" onclick="deleteRestaurant(${r.id})">حذف</button></div>`).join(''); }
 async function deleteRestaurant(id) { if(confirm('حذف المطعم؟')) { allRestaurants=allRestaurants.filter(r=>r.id!==id); renderAdminRestaurantsList(); renderRestaurantsList(); showToast('تم الحذف'); } }
 async function addNewRestaurant() { let name=document.getElementById('adminRestName').value.trim(); let cat=document.getElementById('adminRestCat').value; let img=document.getElementById('adminRestImg').value.trim(); if(!name) return showToast('أدخل اسم المطعم'); let id=Date.now(); allRestaurants.push({id,name,cat,img:img||'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400',items:[{n:"وجبة مميزة",p:1500,d:"وجبة لذيذة"}]}); renderAdminRestaurantsList(); renderRestaurantsList(); showToast('تم الإضافة'); }
 function addNewItem() { showToast('قيد التطوير'); }
 function saveDeliverySettings() { let km=document.getElementById('adminPricePerKm').value; let min=document.getElementById('adminMinDelivery').value; if(km) PRICE_PER_KM=parseInt(km); if(min) MIN_DELIVERY_PRICE=parseInt(min); showToast('تم حفظ الإعدادات'); }
 
-// ==================== 10. تسجيل الدخول ====================
+// ==================== 13. تسجيل الدخول ====================
 function initLogin() {
     let roleCustomer=document.getElementById('roleCustomer'), roleDriver=document.getElementById('roleDriver');
     let loginPasswordField = document.getElementById('loginPassword');
@@ -1647,14 +1924,6 @@ document.getElementById('modalConfirm').onclick = async () => {
         await updateOrder(pendingOrderId, { status: pendingStatus });
         if(pendingStatus === 'delivered') await updateUserBusy(currentUser.phone, false);
         showToast(`✅ تم تغيير الحالة إلى ${getStatusText(pendingStatus)}`);
-        // تحديث واجهة التتبع للعميل فوراً
-        if (pendingStatus) {
-            // إذا كان العميل في صفحة التتبع، نقوم بتحديثها
-            if (document.getElementById('trackFullscreen').style.display === 'block') {
-                let id = localStorage.getItem('currentTrackingOrder');
-                if (id) viewOrderTracking(parseInt(id));
-            }
-        }
         goBackToDriver();
         pendingOrderId = null;
         pendingStatus = null;

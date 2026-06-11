@@ -3,115 +3,105 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
-    <title>وصل | WASAL - توصيل سريع</title>
+    <title>وصال | WASAL - توصيل سريع</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <style>
-        *{margin:0;padding:0;box-sizing:border-box;font-family:'Cairo',sans-serif;-webkit-tap-highlight-color:transparent;touch-action:manipulation;}
-        :root{--primary:#0f766e;--primary-light:#14b8a6;--primary-dark:#0d5c56;--bg-light:#f8fafc;--white:#ffffff;--dark:#1e293b;--gray:#64748b;--gray-light:#e2e8f0;--danger:#ef4444;--success:#10b981;--warning:#f59e0b;--shadow:0 4px 6px -1px rgba(0,0,0,0.05);--shadow-md:0 10px 15px -3px rgba(0,0,0,0.08);}
-        body{background:var(--bg-light);color:var(--dark);direction:rtl;}
-        .dark-mode{--bg-light:#0f172a;--white:#1e293b;--gray-light:#334155;--dark:#cbd5e1;}
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Cairo', sans-serif; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+        :root { --primary: #0f766e; --primary-light: #14b8a6; --primary-dark: #0d5c56; --bg-light: #f8fafc; --white: #ffffff; --dark: #1e293b; --gray: #64748b; --gray-light: #e2e8f0; --danger: #ef4444; --success: #10b981; --warning: #f59e0b; --shadow: 0 4px 6px -1px rgba(0,0,0,0.05); --shadow-md: 0 10px 15px -3px rgba(0,0,0,0.08); }
+        body { background: var(--bg-light); color: var(--dark); direction: rtl; }
+        body.dark-mode { --bg-light: #0f172a; --white: #1e293b; --gray-light: #334155; --dark: #cbd5e1; }
         
-        /* === Header === */
-        .header{background:linear-gradient(135deg,var(--primary),var(--primary-dark));padding:18px 16px 22px;border-radius:0 0 28px 28px;text-align:center;color:white;}
-        .logo-main{font-size:1.8rem;font-weight:900;}
-        .work-hours{background:rgba(255,255,255,0.1);padding:4px 12px;border-radius:30px;display:inline-block;font-size:0.7rem;margin-top:6px;}
+        .header { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); padding: 18px 16px 22px; border-radius: 0 0 28px 28px; text-align: center; color: white; }
+        .logo-main { font-size: 1.8rem; font-weight: 900; }
+        .work-hours { background: rgba(255,255,255,0.1); padding: 4px 12px; border-radius: 30px; display: inline-block; font-size: 0.7rem; margin-top: 6px; }
         
-        .container{padding:0 14px 80px;max-width:600px;margin:0 auto;}
-        .page{display:none;animation:fadeIn 0.2s;}
-        .active-page{display:block;}
-        @keyframes fadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+        .container { padding: 0 14px 80px; max-width: 600px; margin: 0 auto; }
+        .page { display: none; animation: fadeIn 0.2s; }
+        .active-page { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
         
-        /* === Categories === */
-        .cat-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px;}
-        .cat-card{background:white;border-radius:14px;padding:12px;text-align:center;box-shadow:var(--shadow);border:1px solid var(--gray-light);cursor:pointer;transition:0.1s;}
-        .cat-card:active{transform:scale(0.97);}
-        .cat-icon{font-size:1.8rem;}
-        .cat-card h3{font-size:0.85rem;font-weight:800;}
+        .categories-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 20px; }
+        .category-card { background: var(--white); border-radius: 14px; padding: 12px 6px; text-align: center; box-shadow: var(--shadow); border: 1px solid var(--gray-light); cursor: pointer; transition: 0.1s; }
+        .category-card:active { transform: scale(0.97); }
+        .category-icon { font-size: 2rem; margin-bottom: 6px; }
+        .category-card h3 { font-size: 0.85rem; font-weight: 800; }
         
-        .restaurant-list{display:flex;flex-direction:column;gap:10px;}
-        .rest-item{background:white;border-radius:14px;padding:8px;display:flex;gap:10px;border:1px solid var(--gray-light);cursor:pointer;align-items:center;transition:0.1s;}
-        .rest-item:active{transform:scale(0.98);}
-        .rest-img{width:60px;height:60px;border-radius:10px;background-size:cover;flex-shrink:0;}
-        .rest-info{flex:1;}
-        .rest-name{font-weight:800;font-size:0.8rem;}
-        .rest-cat{font-size:0.6rem;color:var(--gray);}
+        .restaurant-list { display: flex; flex-direction: column; gap: 10px; }
+        .rest-item { background: var(--white); border-radius: 14px; padding: 8px; display: flex; gap: 10px; border: 1px solid var(--gray-light); cursor: pointer; align-items: center; transition: 0.1s; }
+        .rest-item:active { transform: scale(0.98); }
+        .rest-img { width: 60px; height: 60px; border-radius: 10px; background-size: cover; flex-shrink: 0; }
+        .rest-info { flex: 1; }
+        .rest-name { font-weight: 800; font-size: 0.8rem; }
+        .rest-cat { font-size: 0.6rem; color: var(--gray); }
         
-        /* === Menu === */
-        .menu-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px;}
-        .menu-item-card{background:white;border-radius:14px;overflow:hidden;border:1px solid var(--gray-light);padding-bottom:10px;}
-        .menu-item-img{height:110px;background-size:cover;background-position:center;}
-        .menu-item-info{padding:10px;}
-        .menu-item-name{font-weight:800;font-size:0.85rem;}
-        .menu-item-price{color:var(--primary);font-weight:800;margin-top:4px;}
-        .item-ctrl{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:6px;}
-        .qty-btn{width:30px;height:30px;border-radius:50%;border:none;background:var(--primary);color:white;font-weight:bold;cursor:pointer;}
-        .qty-btn:active{transform:scale(0.9);}
+        .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 10px; }
+        .menu-item-card { background: var(--white); border-radius: 14px; overflow: hidden; border: 1px solid var(--gray-light); padding-bottom: 10px; }
+        .menu-item-img { height: 110px; background-size: cover; background-position: center; }
+        .menu-item-info { padding: 10px; }
+        .menu-item-name { font-weight: 800; font-size: 0.85rem; }
+        .menu-item-price { color: var(--primary); font-weight: 800; margin-top: 4px; }
+        .item-ctrl { display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 6px; }
+        .qty-btn { width: 30px; height: 30px; border-radius: 50%; border: none; background: var(--primary); color: white; font-weight: bold; cursor: pointer; }
+        .qty-btn:active { transform: scale(0.9); }
         
-        /* === Driver Page (Pull to Refresh) === */
-        .driver-header{background:linear-gradient(135deg,var(--primary-dark),var(--primary));color:white;padding:16px;border-radius:16px;margin-bottom:16px;text-align:center;}
-        .driver-stats{display:flex;gap:10px;margin-bottom:16px;}
-        .stat-box{background:white;flex:1;border-radius:12px;padding:10px;text-align:center;box-shadow:var(--shadow);}
-        .stat-box .num{font-size:1.4rem;font-weight:800;color:var(--primary);}
-        .stat-box .lbl{font-size:0.7rem;color:var(--gray);}
-        .tabs{display:flex;background:white;border-radius:40px;padding:4px;margin-bottom:16px;box-shadow:var(--shadow);}
-        .tab{flex:1;text-align:center;padding:10px;border-radius:30px;font-weight:700;font-size:0.8rem;color:var(--gray);cursor:pointer;transition:0.2s;}
-        .tab.active{background:var(--primary);color:white;}
+        .float-cart { position: fixed; bottom: 70px; left: 14px; right: 14px; background: linear-gradient(135deg, var(--primary-dark), var(--primary)); color: white; padding: 12px 20px; border-radius: 50px; display: flex; justify-content: space-between; align-items: center; z-index: 999; cursor: pointer; display: none; font-weight: 700; box-shadow: 0 6px 16px rgba(15,118,110,0.3); }
+        .checkout-btn { width: 100%; padding: 12px; background: var(--warning); color: white; border: none; border-radius: 40px; font-weight: 800; cursor: pointer; font-size: 0.9rem; }
+        .field-input { width: 100%; padding: 10px 14px; border-radius: 30px; border: 1px solid var(--gray-light); background: var(--white); font-size: 0.85rem; margin-bottom: 10px; }
         
-        #driverOrdersContainer{background:white;border-radius:16px;padding:10px;border:1px solid var(--gray-light);min-height:200px;position:relative;overflow-y:auto;max-height:60vh;}
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--white); display: flex; justify-content: space-around; padding: 8px 8px 12px; border-top: 1px solid var(--gray-light); border-radius: 20px 20px 0 0; z-index: 100; }
+        .nav-item { text-align: center; cursor: pointer; color: var(--gray); font-size: 0.65rem; font-weight: 700; padding: 4px 8px; border-radius: 12px; transition: 0.1s; }
+        .nav-item.active { color: var(--primary); background: rgba(15,118,110,0.08); }
+        .nav-icon { font-size: 1.2rem; display: block; margin-bottom: 2px; }
+        
+        .toast { position: fixed; bottom: 80px; left: 20px; right: 20px; background: var(--dark); color: white; padding: 12px; border-radius: 30px; text-align: center; z-index: 2000; display: none; font-weight: 600; }
+        .toast.show { display: block; animation: slideUp 0.3s; }
+        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        
+        .login-overlay { position: fixed; inset: 0; background: #0f766e; z-index: 10000; display: flex; align-items: center; justify-content: center; padding: 20px; }
+        .login-box { background: white; border-radius: 32px; padding: 32px 24px; max-width: 340px; width: 100%; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.2); }
+        .login-box h2 { font-size: 1.8rem; font-weight: 900; color: #0f766e; }
+        .role-switch { display: flex; gap: 10px; margin: 16px 0; background: #f1f5f9; padding: 4px; border-radius: 40px; }
+        .role-btn { flex: 1; padding: 10px; border-radius: 30px; font-weight: 700; cursor: pointer; transition: 0.2s; }
+        .role-btn.active { background: white; color: #0f766e; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        .input-field { width: 100%; padding: 12px; border: 1px solid #e2e8f0; border-radius: 40px; margin-bottom: 10px; font-size: 0.9rem; }
+        .login-btn { width: 100%; padding: 14px; background: #f59e0b; color: white; border: none; border-radius: 40px; font-weight: 800; font-size: 1rem; cursor: pointer; }
+        
+        .back-btn { display: inline-flex; align-items: center; gap: 6px; background: white; padding: 6px 14px; border-radius: 30px; margin-bottom: 12px; font-weight: 700; font-size: 0.8rem; cursor: pointer; box-shadow: var(--shadow); border: 1px solid var(--gray-light); }
+        .logout-btn { width: 100%; padding: 12px; background: var(--danger); color: white; border: none; border-radius: 40px; font-weight: 800; margin-top: 16px; cursor: pointer; }
+        
+        /* Driver Styles */
+        .driver-header { background: linear-gradient(135deg, var(--primary-dark), var(--primary)); color: white; padding: 16px; border-radius: 16px; margin-bottom: 16px; text-align: center; }
+        .driver-stats { display: flex; gap: 10px; margin-bottom: 16px; }
+        .stat-box { background: white; flex: 1; border-radius: 12px; padding: 10px; text-align: center; box-shadow: var(--shadow); }
+        .stat-box .num { font-size: 1.4rem; font-weight: 800; color: var(--primary); }
+        .stat-box .lbl { font-size: 0.7rem; color: var(--gray); }
+        .tabs { display: flex; background: white; border-radius: 40px; padding: 4px; margin-bottom: 16px; box-shadow: var(--shadow); }
+        .tab { flex: 1; text-align: center; padding: 10px; border-radius: 30px; font-weight: 700; font-size: 0.8rem; color: var(--gray); cursor: pointer; transition: 0.2s; }
+        .tab.active { background: var(--primary); color: white; }
+        
+        #driverOrdersContainer { background: white; border-radius: 16px; padding: 10px; border: 1px solid var(--gray-light); min-height: 200px; position: relative; overflow-y: auto; max-height: 60vh; }
         /* Pull Indicator */
-        #pullIndicator{height:0;overflow:hidden;text-align:center;color:var(--gray);font-size:0.8rem;transition:height 0.25s ease;display:flex;align-items:center;justify-content:center;gap:6px;background:var(--bg-light);border-radius:16px 16px 0 0;}
-        #pullIndicator i{font-size:1rem;}
+        #pullIndicator { height: 0; overflow: hidden; text-align: center; color: var(--gray); font-size: 0.8rem; transition: height 0.25s ease; display: flex; align-items: center; justify-content: center; gap: 6px; background: var(--bg-light); border-radius: 16px 16px 0 0; }
+        #pullIndicator i { font-size: 1rem; }
         
-        .d-order-card{background:var(--bg-light);border-radius:12px;padding:12px;margin-bottom:10px;border-right:4px solid var(--primary);}
-        .d-order-header{display:flex;justify-content:space-between;margin-bottom:6px;}
-        .d-order-id{font-weight:800;color:var(--primary);}
-        .d-status{font-size:0.65rem;padding:2px 10px;border-radius:12px;background:var(--warning);color:white;}
-        .d-status.delivered{background:var(--success);}
-        .d-status.ontheway{background:var(--primary-light);}
-        .d-actions{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap;}
-        .d-btn{flex:1;min-width:50px;padding:6px;border:none;border-radius:20px;font-weight:700;font-size:0.7rem;color:white;cursor:pointer;}
-        .d-btn.accept{background:var(--primary);}
-        .d-btn.reject{background:var(--danger);}
-        .d-btn.call{background:#25D366;}
-        .d-btn.warning{background:var(--warning);}
-        .d-btn.success{background:var(--success);}
-        .empty-state{text-align:center;padding:30px;color:var(--gray);}
-        .empty-state i{font-size:2rem;margin-bottom:10px;}
-        
-        /* === Float Cart === */
-        .float-cart{position:fixed;bottom:70px;left:14px;right:14px;background:linear-gradient(135deg,var(--primary-dark),var(--primary));color:white;padding:12px 20px;border-radius:50px;display:flex;justify-content:space-between;align-items:center;z-index:999;cursor:pointer;display:none;font-weight:700;box-shadow:0 6px 16px rgba(15,118,110,0.3);}
-        .checkout-btn{width:100%;padding:12px;background:var(--warning);color:white;border:none;border-radius:40px;font-weight:800;cursor:pointer;font-size:0.9rem;}
-        .field-input{width:100%;padding:10px 14px;border-radius:30px;border:1px solid var(--gray-light);background:var(--white);font-size:0.85rem;margin-bottom:10px;}
-        
-        /* === Bottom Nav === */
-        .bottom-nav{position:fixed;bottom:0;left:0;right:0;background:var(--white);display:flex;justify-content:space-around;padding:8px 8px 12px;border-top:1px solid var(--gray-light);border-radius:20px 20px 0 0;z-index:100;}
-        .nav-item{text-align:center;cursor:pointer;color:var(--gray);font-size:0.65rem;font-weight:700;padding:4px 8px;border-radius:12px;transition:0.1s;}
-        .nav-item.active{color:var(--primary);background:rgba(15,118,110,0.08);}
-        .nav-icon{font-size:1.2rem;display:block;margin-bottom:2px;}
-        
-        /* === Toast === */
-        .toast{position:fixed;bottom:80px;left:20px;right:20px;background:var(--dark);color:white;padding:12px;border-radius:30px;text-align:center;z-index:2000;display:none;font-weight:600;}
-        .toast.show{display:block;animation:slideUp 0.3s;}
-        @keyframes slideUp{from{transform:translateY(20px);opacity:0;}to{transform:translateY(0);opacity:1;}}
-        
-        /* === Login === */
-        .login-overlay{position:fixed;inset:0;background:#0f766e;z-index:10000;display:flex;align-items:center;justify-content:center;padding:20px;}
-        .login-box{background:white;border-radius:32px;padding:32px 24px;max-width:340px;width:100%;text-align:center;box-shadow:0 20px 40px rgba(0,0,0,0.2);}
-        .login-box h2{font-size:1.8rem;font-weight:900;color:#0f766e;}
-        .role-switch{display:flex;gap:10px;margin:16px 0;background:#f1f5f9;padding:4px;border-radius:40px;}
-        .role-btn{flex:1;padding:10px;border-radius:30px;font-weight:700;cursor:pointer;transition:0.2s;}
-        .role-btn.active{background:white;color:#0f766e;box-shadow:0 2px 8px rgba(0,0,0,0.05);}
-        .input-field{width:100%;padding:12px;border:1px solid #e2e8f0;border-radius:40px;margin-bottom:10px;font-size:0.9rem;}
-        .login-btn{width:100%;padding:14px;background:#f59e0b;color:white;border:none;border-radius:40px;font-weight:800;font-size:1rem;cursor:pointer;}
-        
-        .back-btn{display:inline-flex;align-items:center;gap:6px;background:white;padding:6px 14px;border-radius:30px;margin-bottom:12px;font-weight:700;font-size:0.8rem;cursor:pointer;box-shadow:var(--shadow);border:1px solid var(--gray-light);}
-        .logout-btn{width:100%;padding:12px;background:var(--danger);color:white;border:none;border-radius:40px;font-weight:800;margin-top:16px;cursor:pointer;}
-        .order-detail-card{background:white;border-radius:16px;padding:16px;box-shadow:var(--shadow);border:1px solid var(--gray-light);}
-        .detail-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--gray-light);}
-        .detail-row:last-child{border-bottom:none;}
+        .d-order-card { background: var(--bg-light); border-radius: 12px; padding: 12px; margin-bottom: 10px; border-right: 4px solid var(--primary); }
+        .d-order-header { display: flex; justify-content: space-between; margin-bottom: 6px; }
+        .d-order-id { font-weight: 800; color: var(--primary); }
+        .d-status { font-size: 0.65rem; padding: 2px 10px; border-radius: 12px; background: var(--warning); color: white; }
+        .d-status.delivered { background: var(--success); }
+        .d-status.ontheway { background: var(--primary-light); }
+        .d-actions { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
+        .d-btn { flex: 1; min-width: 50px; padding: 6px; border: none; border-radius: 20px; font-weight: 700; font-size: 0.7rem; color: white; cursor: pointer; }
+        .d-btn.accept { background: var(--primary); }
+        .d-btn.reject { background: var(--danger); }
+        .d-btn.call { background: #25D366; }
+        .d-btn.warning { background: var(--warning); }
+        .d-btn.success { background: var(--success); }
+        .empty-state { text-align: center; padding: 30px; color: var(--gray); }
+        .empty-state i { font-size: 2rem; margin-bottom: 10px; }
     </style>
 </head>
 <body>
@@ -147,7 +137,7 @@
                 <div id="myOrdersList" style="background:white; border-radius:14px; padding:12px; border:1px solid var(--gray-light);"></div>
             </div>
 
-            <!-- DRIVER (معدلة – بدون تحديث تلقائي) -->
+            <!-- DRIVER (Pull to Refresh ONLY) -->
             <div id="driverPage" class="page">
                 <div class="driver-header"><h2>التوصيل</h2><p id="driverNameDisplay" style="opacity:0.8;">مرحباً، مندوب</p></div>
                 <div class="driver-stats">
@@ -220,9 +210,7 @@
     </div>
 
     <script>
-        // ================================================================
-        // 1. البيانات (مبسطة لتخفيف الحمل)
-        // ================================================================
+        // ==================== DATA ====================
         const allRestaurants = [
             { id: 1, name: "رويال بروستر", cat: "بروست", img: "https://images.unsplash.com/photo-1626645738196-c2a7c8d08f58?w=400", items: [
                 { n: "بروست دجاج", p: 1500 }, { n: "ماء", p: 100 }, { n: "عصير برتقال", p: 200 }, { n: "بطاطس", p: 800 }] },
@@ -235,21 +223,18 @@
             { id: 5, name: "الشيباني جلوبال", cat: "مشاوي", img: "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=400", items: [
                 { n: "كباب غنمي", p: 4500 }, { n: "دجاج فحم", p: 2400 }, { n: "أرز", p: 1000 }] }
         ];
-
         const supermarkets = [
             { id: 101, name: "سوبرماركت خير زمان", img: "https://images.unsplash.com/photo-1578916171728-46686eac8d58?w=400", items: [
                 { n: "أرز بسمتي 5كجم", p: 850 }, { n: "زيت نباتي 1.8ل", p: 1200 }, { n: "سكر 2كجم", p: 450 }] },
             { id: 102, name: "سوبرماركت اورنج", img: "https://images.unsplash.com/photo-1542838132-92c53300491e?w=400", items: [
                 { n: "أرز بسمتي 5كجم", p: 900 }, { n: "زيت نباتي 1.8ل", p: 1100 }, { n: "سكر 2كجم", p: 400 }] }
         ];
-
         const pharmacies = [
             { id: 201, name: "صيدلية عصام", img: "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=400", items: [
                 { n: "بانادول أدفانس", p: 450 }, { n: "فيتامين سي", p: 1200 }, { n: "كريم ترطيب", p: 650 }] },
             { id: 202, name: "صيدلية ابن حيان", img: "https://images.unsplash.com/photo-1543286386-2e659306cd6c?w=400", items: [
                 { n: "بانادول", p: 400 }, { n: "فيتامين سي", p: 1300 }, { n: "كريم ترطيب", p: 600 }] }
         ];
-
         const sheinProducts = [
             { id: 301, name: "قميص رسمي", price: 8900, img: "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=300" },
             { id: 302, name: "تي شيرت رياضي", price: 3500, img: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=300" },
@@ -257,12 +242,9 @@
             { id: 304, name: "ساعة كرونوغراف", price: 25000, img: "https://images.unsplash.com/photo-1524805444758-089113d48a6d?w=300" }
         ];
 
-        // ================================================================
-        // 2. إعدادات Firebase
-        // ================================================================
+        // ==================== CONFIG ====================
         const FIREBASE_URL = "https://waselny-2812b-default-rtdb.firebaseio.com";
         const DRIVER_PASSWORD = "weesim73741";
-
         let currentUser = null;
         let allOrders = [];
         let cart = [];
@@ -270,9 +252,7 @@
         let currentDriverTab = 'available';
         let lastOrderCount = 0;
 
-        // ================================================================
-        // 3. دوال مساعدة
-        // ================================================================
+        // ==================== HELPERS ====================
         function showToast(msg) {
             const t = document.getElementById('toastMsg');
             t.textContent = msg;
@@ -280,11 +260,9 @@
             clearTimeout(t._hide);
             t._hide = setTimeout(() => t.classList.remove('show'), 2500);
         }
-
         function getStatusText(s) {
             return { pending: 'قيد المراجعة', on_the_way: 'في الطريق', arrived: 'وصل الموقع', delivered: 'تم التوصيل' }[s] || s;
         }
-
         function getItemImage(name) {
             const n = name.toLowerCase();
             if (n.includes('برجر')) return 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=300';
@@ -295,37 +273,20 @@
             return 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=300';
         }
 
-        // ================================================================
-        // 4. دوال Firebase (مع تخزين مؤقت لتقليل الاستهلاك)
-        // ================================================================
-        let ordersCache = {};
-        let lastCacheTime = 0;
-
-        async function loadOrders(force = false) {
-            const now = Date.now();
-            if (!force && now - lastCacheTime < 5000 && Object.keys(ordersCache).length > 0) {
-                allOrders = Object.values(ordersCache).sort((a, b) => b.id - a.id);
-                return;
-            }
+        // ==================== FIREBASE ====================
+        async function loadOrders() {
             try {
                 const res = await fetch(`${FIREBASE_URL}/orders.json`);
                 const data = await res.json();
-                ordersCache = data || {};
-                lastCacheTime = now;
-                allOrders = Object.values(ordersCache).sort((a, b) => b.id - a.id);
+                allOrders = data ? Object.values(data).sort((a, b) => b.id - a.id) : [];
             } catch (e) { console.warn(e); }
         }
-
         async function updateOrder(id, updates) {
             await fetch(`${FIREBASE_URL}/orders/${id}.json`, { method: 'PATCH', body: JSON.stringify(updates) });
-            // تحديث الكاش مباشرة
-            if (ordersCache[id]) Object.assign(ordersCache[id], updates);
-            await loadOrders(true);
+            await loadOrders();
         }
 
-        // ================================================================
-        // 5. التنقل وعرض الصفحات
-        // ================================================================
+        // ==================== NAVIGATION ====================
         function showPage(id) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.getElementById(id).classList.add('active');
@@ -339,9 +300,7 @@
             document.getElementById('floatCart').style.display = (cart.length > 0 && id !== 'checkoutPage') ? 'flex' : 'none';
         }
 
-        // ================================================================
-        // 6. الصفحة الرئيسية
-        // ================================================================
+        // ==================== HOME ====================
         function renderHomeRestaurants() {
             const container = document.getElementById('homeRestList');
             container.innerHTML = allRestaurants.map(r => `
@@ -351,7 +310,6 @@
                 </div>
             `).join('');
         }
-
         function openCategory(type) {
             let items = [];
             let title = '';
@@ -397,7 +355,6 @@
             document.getElementById('menuContent').innerHTML = html;
             showPage('menuPage');
         }
-
         function openRestaurant(id) {
             currentRestaurant = allRestaurants.find(r => r.id === id);
             if (!currentRestaurant) return;
@@ -425,9 +382,7 @@
             showPage('menuPage');
         }
 
-        // ================================================================
-        // 7. السلة
-        // ================================================================
+        // ==================== CART ====================
         function updateCart(idx, delta) {
             const item = currentRestaurant.items[idx];
             const cartItem = cart.find(i => i.name === item.n && i.restId === currentRestaurant.id);
@@ -444,7 +399,6 @@
             }
             updateCartUI();
         }
-
         function updateSheinCart(idx, delta) {
             const product = sheinProducts[idx];
             const cartItem = cart.find(i => i.name === product.name && i.type === 'shein');
@@ -461,7 +415,6 @@
             }
             updateCartUI();
         }
-
         function updateCartUI() {
             const total = cart.reduce((s, i) => s + (i.p * i.qty), 0);
             const count = cart.reduce((s, i) => s + i.qty, 0);
@@ -470,7 +423,6 @@
             document.getElementById('cartNav').querySelector('.nav-icon').textContent = count > 0 ? '🛒(' + count + ')' : '🛒';
             document.getElementById('floatCart').style.display = (cart.length > 0 && !document.getElementById('checkoutPage').classList.contains('active')) ? 'flex' : 'none';
         }
-
         function renderCheckout() {
             if (cart.length === 0) {
                 document.getElementById('checkoutContent').innerHTML = `<div class="empty-state"><i class="fas fa-shopping-cart"></i><p>السلة فارغة</p><button class="back-btn" onclick="showPage('homePage')" style="margin-top:12px;">🔙 اذهب للتسوق</button></div>`;
@@ -486,9 +438,7 @@
             document.getElementById('checkoutContent').innerHTML = html;
         }
 
-        // ================================================================
-        // 8. الطلبات
-        // ================================================================
+        // ==================== ORDERS ====================
         async function placeOrder() {
             const address = document.getElementById('addressInput').value.trim();
             if (!address) return showToast('يرجى كتابة العنوان');
@@ -514,10 +464,9 @@
             cart = [];
             updateCartUI();
             showPage('homePage');
-            await loadOrders(true);
+            await loadOrders();
             if (currentUser.role === 'customer') renderMyOrders();
         }
-
         function renderMyOrders() {
             const container = document.getElementById('myOrdersList');
             const myOrders = allOrders.filter(o => o.customerPhone === currentUser?.phone);
@@ -532,9 +481,7 @@
             `).join('');
         }
 
-        // ================================================================
-        // 9. واجهة المندوب (سريعة جداً + سحب للتحديث) - تم إزالة التحديث التلقائي
-        // ================================================================
+        // ==================== DRIVER (SLOW AUTO-REFRESH REMOVED) ====================
         function switchDriverTab(tab) {
             currentDriverTab = tab;
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
@@ -552,7 +499,6 @@
             let list = [];
             if (currentDriverTab === 'available') {
                 list = allOrders.filter(o => o.status === 'pending');
-                // تنبيه صوتي خفيف عند ظهور طلب جديد
                 if (list.length > lastOrderCount && lastOrderCount > 0) {
                     if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
                 }
@@ -622,9 +568,7 @@
             else showToast('⚠️ لا يوجد رقم');
         }
 
-        // ================================================================
-        // 🎯 ميزة "السحب للتحديث" (Pull-to-Refresh) – تعمل في صفحة المندوب
-        // ================================================================
+        // ==================== PULL-TO-REFRESH ====================
         function initPullToRefresh() {
             const container = document.getElementById('driverOrdersContainer');
             const indicator = document.getElementById('pullIndicator');
@@ -673,9 +617,7 @@
             }, { passive: true });
         }
 
-        // ================================================================
-        // 10. تسجيل الدخول
-        // ================================================================
+        // ==================== LOGIN ====================
         function initLogin() {
             const roleCustomer = document.getElementById('roleCustomer');
             const roleDriver = document.getElementById('roleDriver');
@@ -726,9 +668,7 @@
             location.reload();
         }
 
-        // ================================================================
-        // 11. تشغيل التطبيق
-        // ================================================================
+        // ==================== BOOT ====================
         (async function() {
             const saved = localStorage.getItem('waselny_user');
             if (saved) {
@@ -749,19 +689,16 @@
                 } catch (e) { initLogin(); }
             } else { initLogin(); }
 
-            // التنقل
             document.querySelectorAll('.nav-item[data-page]').forEach(el => {
                 el.addEventListener('click', () => showPage(el.dataset.page));
             });
 
-            // Dark mode
             document.getElementById('darkModeToggle').addEventListener('click', () => {
                 document.body.classList.toggle('dark-mode');
                 localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
             });
             if (localStorage.getItem('darkMode') === 'true') document.body.classList.add('dark-mode');
 
-            // WhatsApp
             document.getElementById('whatsappSupport').addEventListener('click', () => {
                 window.open('https://wa.me/777215154', '_blank');
             });

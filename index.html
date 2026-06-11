@@ -6,8 +6,9 @@
     <title>وصال | WASAL - توصيل سريع</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
+    </script>
     <style>
         * {
             margin: 0;
@@ -36,6 +37,7 @@
             background: var(--bg-light);
             color: var(--dark);
             direction: rtl;
+            overflow-x: hidden;
         }
         body.dark-mode {
             --bg-light: #0f172a;
@@ -161,7 +163,7 @@
         }
         .page {
             display: none;
-            animation: fadeIn 0.2s ease-out;
+            animation: fadeIn 0.15s ease-out;
         }
         .active-page {
             display: block;
@@ -169,7 +171,7 @@
         @keyframes fadeIn {
             from {
                 opacity: 0;
-                transform: translateY(8px);
+                transform: translateY(6px);
             }
             to {
                 opacity: 1;
@@ -190,7 +192,7 @@
             box-shadow: var(--shadow);
             border: 1px solid var(--gray-light);
             cursor: pointer;
-            transition: 0.1s;
+            transition: transform 0.1s;
         }
         .category-card:active {
             transform: scale(0.97);
@@ -218,14 +220,15 @@
             display: none;
         }
         .offer-card {
-            flex: 0 0 220px;
+            flex: 0 0 200px;
             background: linear-gradient(135deg, #f59e0b, #ea580c);
             border-radius: 14px;
-            padding: 10px;
+            padding: 10px 16px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             cursor: pointer;
+            min-height: 70px;
         }
         .offer-card:active {
             transform: scale(0.98);
@@ -258,7 +261,7 @@
         .carousel-3d {
             position: relative;
             width: 100%;
-            height: 280px;
+            height: 240px;
             margin-bottom: 20px;
             perspective: 1200px;
             overflow: hidden;
@@ -273,14 +276,14 @@
         .carousel-slide {
             position: absolute;
             width: 86%;
-            height: 260px;
+            height: 220px;
             left: 7%;
             top: 10px;
             background-size: cover;
             background-position: center;
             border-radius: 24px;
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
-            transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
             cursor: pointer;
             border: 2px solid rgba(255, 255, 255, 0.3);
         }
@@ -347,6 +350,7 @@
             border-radius: 50%;
             background: rgba(255, 255, 255, 0.6);
             cursor: pointer;
+            transition: 0.3s;
         }
         .carousel-dot.active {
             width: 28px;
@@ -355,7 +359,7 @@
         }
         .filter-buttons {
             display: flex;
-            gap: 10px;
+            gap: 8px;
             margin-bottom: 14px;
             flex-wrap: wrap;
         }
@@ -368,10 +372,12 @@
             color: var(--gray);
             border: 1px solid var(--gray-light);
             cursor: pointer;
+            transition: 0.15s;
         }
         .filter-btn.active {
             background: var(--primary);
             color: white;
+            border-color: var(--primary);
         }
         .restaurants-list {
             display: flex;
@@ -387,6 +393,7 @@
             gap: 10px;
             border: 1px solid var(--gray-light);
             cursor: pointer;
+            transition: transform 0.1s;
         }
         .restaurant-item:active {
             transform: scale(0.98);
@@ -396,9 +403,11 @@
             height: 60px;
             border-radius: 10px;
             background-size: cover;
+            flex-shrink: 0;
         }
         .restaurant-item-info {
             flex: 1;
+            min-width: 0;
         }
         .restaurant-item-name {
             font-weight: 800;
@@ -439,44 +448,43 @@
             box-shadow: var(--shadow);
             display: flex;
             flex-direction: column;
-            transition: transform 0.2s;
+            transition: transform 0.15s;
             padding-bottom: 10px;
         }
         .menu-item-card:active {
-            transform: scale(0.98);
+            transform: scale(0.97);
         }
         .menu-item-img {
-            height: 125px;
+            height: 120px;
             background-size: cover;
             background-position: center;
             width: 100%;
+            flex-shrink: 0;
         }
         .menu-item-info {
-            padding: 12px;
+            padding: 10px 10px 0;
+            flex: 1;
         }
         .menu-item-name {
             font-weight: 800;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             color: var(--dark);
         }
         .menu-item-price {
             color: var(--primary);
             font-weight: 800;
-            font-size: 0.9rem;
-            margin-top: 6px;
-        }
-        .menu-item-desc {
-            font-size: 0.7rem;
-            color: var(--gray);
+            font-size: 0.85rem;
             margin-top: 4px;
         }
+        .menu-item-desc {
+            font-size: 0.65rem;
+            color: var(--gray);
+            margin-top: 2px;
+        }
         .item-controls {
-            margin-top: 10px;
+            margin-top: 8px;
             border-top: 1px solid var(--gray-light);
             padding-top: 8px;
-        }
-        .item-controls .qty-btn:active {
-            transform: scale(0.9);
         }
         .item-note {
             width: 100%;
@@ -523,7 +531,7 @@
             height: 100%;
             background: var(--white);
             z-index: 10001;
-            transition: left 0.3s;
+            transition: left 0.25s ease;
             display: flex;
             flex-direction: column;
             box-shadow: -2px 0 15px rgba(0, 0, 0, 0.2);
@@ -563,9 +571,11 @@
             height: 50px;
             border-radius: 10px;
             background-size: cover;
+            flex-shrink: 0;
         }
         .cart-item-details {
             flex: 1;
+            min-width: 0;
         }
         .cart-item-details h4 {
             font-size: 0.8rem;
@@ -582,6 +592,7 @@
             display: flex;
             align-items: center;
             gap: 8px;
+            flex-shrink: 0;
         }
         .qty-btn {
             width: 26px;
@@ -640,7 +651,7 @@
             color: var(--gray);
             font-size: 0.65rem;
             font-weight: 700;
-            padding: 4px 12px;
+            padding: 4px 8px;
             border-radius: 16px;
             transition: 0.15s;
             display: flex;
@@ -700,10 +711,12 @@
             justify-content: space-between;
             align-items: center;
             margin: 20px 0;
+            gap: 4px;
         }
         .step {
             text-align: center;
             flex: 1;
+            min-width: 0;
         }
         .step .circle {
             width: 40px;
@@ -717,25 +730,41 @@
             border: 2px solid var(--gray-light);
             font-size: 1rem;
             color: var(--gray);
+            transition: all 0.3s ease;
         }
         .step.active .circle {
             background: var(--primary);
             border-color: var(--primary);
             color: white;
+            animation: glowPulse 1s ease-in-out infinite;
+            box-shadow: 0 0 20px 10px rgba(15, 118, 110, 0.5);
         }
         .step.completed .circle {
             background: var(--success);
             border-color: var(--success);
             color: white;
+            box-shadow: 0 0 10px 5px rgba(16, 185, 129, 0.3);
+        }
+        @keyframes glowPulse {
+            0% {
+                box-shadow: 0 0 10px 5px rgba(15, 118, 110, 0.4);
+            }
+            50% {
+                box-shadow: 0 0 30px 20px rgba(15, 118, 110, 0.8);
+            }
+            100% {
+                box-shadow: 0 0 10px 5px rgba(15, 118, 110, 0.4);
+            }
         }
         .step-label {
             font-size: 0.6rem;
             font-weight: 600;
         }
         .step-connector {
-            flex: 0.5;
+            flex: 0.3;
             height: 3px;
             background: var(--gray-light);
+            transition: 0.3s;
         }
         .step-connector.completed {
             background: var(--success);
@@ -805,6 +834,7 @@
             border-bottom: 1px solid var(--gray-light);
             cursor: pointer;
             gap: 12px;
+            transition: 0.15s;
         }
         .payment-option.active {
             background: rgba(15, 118, 110, 0.06);
@@ -869,6 +899,7 @@
             cursor: pointer;
             font-size: 0.8rem;
             color: var(--gray);
+            transition: 0.15s;
         }
         .role-btn.active {
             background: var(--primary);
@@ -936,32 +967,6 @@
         }
         .tab-content.active-tab {
             display: block;
-        }
-        .quick-actions {
-            display: flex;
-            gap: 6px;
-            margin-top: 8px;
-        }
-        .quick-btn {
-            flex: 1;
-            padding: 7px;
-            border-radius: 20px;
-            font-size: 0.65rem;
-            border: none;
-            font-weight: 700;
-            cursor: pointer;
-        }
-        .quick-btn-call {
-            background: #25D366;
-            color: white;
-        }
-        .quick-btn-restaurant {
-            background: var(--warning);
-            color: white;
-        }
-        .quick-btn-deliver {
-            background: var(--primary-light);
-            color: var(--primary-dark);
         }
         .driver-stats {
             display: flex;
@@ -1084,6 +1089,7 @@
             border-radius: 20px;
             padding: 16px;
             border: 1px solid var(--gray-light);
+            min-height: 150px;
         }
         .driver-order-card {
             background: var(--bg-light);
@@ -1092,7 +1098,7 @@
             margin-bottom: 12px;
             border-right: 4px solid var(--primary);
             cursor: pointer;
-            transition: 0.1s;
+            transition: transform 0.1s;
         }
         .driver-order-card:active {
             transform: scale(0.98);
@@ -1134,6 +1140,7 @@
         .driver-order-actions {
             display: flex;
             gap: 8px;
+            flex-wrap: wrap;
         }
         .driver-action-btn {
             flex: 1;
@@ -1144,6 +1151,7 @@
             border: none;
             cursor: pointer;
             transition: 0.2s;
+            min-width: 60px;
         }
         .driver-action-btn.primary {
             background: var(--primary);
@@ -1455,43 +1463,6 @@
             border-radius: 30px;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
         }
-        .pull-refresh-loader {
-            text-align: center;
-            padding: 10px;
-            font-size: 0.8rem;
-            display: none;
-            color: var(--gray);
-        }
-        .pull-refresh-loader.active {
-            display: block;
-            animation: spin 0.8s linear infinite;
-        }
-        @keyframes spin {
-            100% {
-                transform: rotate(360deg);
-            }
-        }
-        .step.active .circle {
-            animation: glowPulse 1s ease-in-out infinite;
-            box-shadow: 0 0 20px 10px rgba(15, 118, 110, 0.5);
-        }
-        .step.completed .circle {
-            box-shadow: 0 0 10px 5px rgba(16, 185, 129, 0.3);
-        }
-        @keyframes glowPulse {
-            0% {
-                box-shadow: 0 0 10px 5px rgba(15, 118, 110, 0.4);
-            }
-            50% {
-                box-shadow: 0 0 30px 20px rgba(15, 118, 110, 0.8);
-            }
-            100% {
-                box-shadow: 0 0 10px 5px rgba(15, 118, 110, 0.4);
-            }
-        }
-        .step .circle {
-            transition: all 0.3s ease;
-        }
         .category-tabs-wrapper {
             display: flex;
             gap: 8px;
@@ -1531,6 +1502,108 @@
             margin: 10px 0 6px 0;
             padding-bottom: 4px;
             border-bottom: 2px solid var(--primary-light);
+        }
+        .qty-btn-sm {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            border: none;
+            background: var(--primary);
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            transition: 0.1s;
+        }
+        .qty-btn-sm:active {
+            transform: scale(0.9);
+        }
+        .qty-display {
+            font-weight: bold;
+            min-width: 20px;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+        .item-controls-inner {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            background: var(--bg-light);
+            padding: 5px;
+            border-radius: 30px;
+        }
+        @media (max-width: 480px) {
+            .menu-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+            }
+            .menu-item-img {
+                height: 100px;
+            }
+            .carousel-3d {
+                height: 200px;
+            }
+            .carousel-slide {
+                height: 180px;
+            }
+            .category-card {
+                padding: 10px 4px;
+            }
+            .category-icon {
+                font-size: 1.6rem;
+            }
+            .offer-card {
+                flex: 0 0 160px;
+                padding: 8px 12px;
+                min-height: 60px;
+            }
+            .offer-text h4 {
+                font-size: 0.75rem;
+            }
+        }
+        @media (min-width: 768px) {
+            .menu-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            .container {
+                padding: 0 30px 80px;
+                max-width: 900px;
+                margin: 0 auto;
+            }
+            .categories-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+        .btn-loading {
+            opacity: 0.7;
+            pointer-events: none;
+            position: relative;
+        }
+        .btn-loading::after {
+            content: '⏳';
+            margin-right: 8px;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin {
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+        .badge-pulse {
+            animation: badgePulse 1.5s ease-in-out infinite;
+        }
+        @keyframes badgePulse {
+            0%,
+            100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.1);
+            }
         }
     </style>
 </head>
@@ -1586,7 +1659,7 @@
                 <button class="current-location-btn" onclick="getCurrentLocationForCheckout()"><i class="fas fa-location-dot"></i> استخدم موقعي الحالي</button>
                 <div class="geo-btn" onclick="initMapForCheckout()"><span id="checkoutLocationTxt">🗺️ حدد موقعك من الخريطة</span><i class="fas fa-map-marker-alt" style="color:var(--primary)"></i></div>
                 <input type="text" id="checkoutAddressManual" class="field-input" placeholder="✍️ أو اكتب عنوانك يدوياً التفصيلي">
-                <div id="deliveryCostDisplay" style="display:none; background:var(--primary-dark); border-radius:14px; padding:10px; margin:10px 0; color:white; display:flex; justify-content:space-between; font-weight:700; font-size:0.8rem;"><div>🚚 سعر التوصيل</div><div><strong id="deliveryCostValue">0</strong> ريال</div></div>
+                <div id="deliveryCostDisplay" style="display:none; background:var(--primary-dark); border-radius:14px; padding:10px; margin:10px 0; color:white; display:none; justify-content:space-between; font-weight:700; font-size:0.8rem;"><div>🚚 سعر التوصيل</div><div><strong id="deliveryCostValue">0</strong> ريال</div></div>
             </div>
             <div class="payment-method" style="margin-top:15px;">
                 <label style="font-weight:800; font-size:0.8rem;">💰 وسيلة الدفع</label>
@@ -1634,7 +1707,7 @@
                 <div class="driver-tab" data-driver-tab="active" onclick="switchDriverTab('active')"><i class="fas fa-truck"></i> طلباتي النشطة</div>
             </div>
             <div id="driverPullRefreshContainer">
-                <div id="pullRefreshLoader" class="pull-refresh-loader"><i class="fas fa-spinner"></i> جارٍ التحديث...</div>
+                <div id="pullRefreshLoader" class="pull-refresh-loader" style="display:none; text-align:center; padding:10px; font-size:0.8rem; color:var(--gray);"><i class="fas fa-spinner fa-spin"></i> جارٍ التحديث...</div>
                 <div class="driver-orders-container" id="driverOrdersList"></div>
             </div>
             <button id="driverLogoutBtn" class="btn-primary" style="background:var(--danger); margin-top:12px;">تسجيل الخروج</button>
@@ -1674,10 +1747,10 @@
 
     <div id="confirmationModal" class="confirmation-modal">
         <div class="modal-card">
-            <h4 id="modalTitle">تأكيد</h4>
-            <p id="modalMessage"></p>
-            <button id="modalConfirm" class="btn-small">نعم</button>
-            <button id="modalCancel" class="btn-small">إلغاء</button>
+            <h4 id="modalTitle" style="margin-bottom:8px;">تأكيد</h4>
+            <p id="modalMessage" style="margin-bottom:15px; font-size:0.9rem;"></p>
+            <button id="modalConfirm" class="btn-small" style="background:var(--primary); color:white;">نعم</button>
+            <button id="modalCancel" class="btn-small" style="background:var(--gray-light);">إلغاء</button>
         </div>
     </div>
 
@@ -1716,7 +1789,7 @@
                         <i class="far fa-star" data-value="5"></i>
                     </div>
                 </div>
-                <div style="margin-bottom:15px;">
+                <div style="margin-bottom:10px;">
                     <label style="font-weight:700; font-size:0.8rem;">تقييم المطعم</label>
                     <div class="stars" data-category="restaurant" style="display:flex; gap:10px; font-size:1.5rem; cursor:pointer;">
                         <i class="far fa-star" data-value="1"></i>
@@ -1784,7 +1857,7 @@
     <div id="map-overlay" class="map-overlay"><div id="map"></div><div class="map-controls"><div class="map-back" onclick="closeMap()">↩️ رجوع</div><div class="map-confirm" onclick="confirmMapLocation()">✅ تأكيد</div></div></div>
 
     <script>
-        // ==================== 1. البيانات الثابتة ====================
+        // ==================== 1. البيانات الثابتة (مخزنة محلياً للسرعة) ====================
         const allRestaurantsData = [
             { id: 1, name: "رويال بروستر", cat: "بروست", img: "https://images.unsplash.com/photo-1626645738196-c2a7c8d08f58?w=400",
                 items: [
@@ -2185,12 +2258,16 @@
         let trackingInterval = null;
         let lastOrderStatus = null;
         let pendingModalAction = null;
+        let ordersCache = {};
+        let ordersCacheTime = 0;
+        const CACHE_TTL = 3000;
 
         // ==================== 3. الدوال المساعدة ====================
         function showToast(msg) { let t = document.getElementById('toastMsg');
             t.innerText = msg;
             t.classList.add('show');
-            setTimeout(() => t.classList.remove('show'), 2500); }
+            clearTimeout(t._hideTimer);
+            t._hideTimer = setTimeout(() => t.classList.remove('show'), 2500); }
 
         function calculateDistance(lat1, lng1, lat2, lng2) { const R = 6371; const dLat = (lat2 - lat1) * Math.PI / 180; const dLng = (
                 lng2 - lng1) * Math.PI / 180; const a = Math.sin(dLat / 2) ** 2 + Math.cos(lat1 * Math.PI / 180) * Math
@@ -2213,20 +2290,48 @@
             return 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=300';
         }
 
-        async function loadOrders() { try { let res = await fetch(`${FIREBASE_URL}/orders.json`); let data = await res
-                    .json();
-                allOrders = data ? Object.values(data).sort((a, b) => b.id - a.id) : []; } catch (e) {} }
-
-        async function updateOrder(id, updates) { await fetch(`${FIREBASE_URL}/orders/${id}.json`, { method: 'PATCH',
-                body: JSON.stringify(updates) }); await loadOrders(); }
-
-        async function updateUserBusy(phone, isBusy) { await fetch(`${FIREBASE_URL}/users/${phone}.json`, { method: 'PATCH',
-                body: JSON.stringify({ isBusy }) }); }
-
         function getStatusText(st) { const m = { pending: 'قيد المراجعة', on_the_way: 'في الطريق', arrived: 'وصل الموقع',
                 delivered: 'تم التوصيل' }; return m[st] || st; }
 
-        // ==================== 4. واجهات المستخدم ====================
+        // ==================== 4. تحميل الطلبات مع التخزين المؤقت (Caching) ====================
+        async function loadOrders(force = false) {
+            const now = Date.now();
+            if (!force && now - ordersCacheTime < CACHE_TTL && Object.keys(ordersCache).length > 0) {
+                allOrders = Object.values(ordersCache).sort((a, b) => b.id - a.id);
+                return;
+            }
+            try {
+                let res = await fetch(`${FIREBASE_URL}/orders.json`);
+                let data = await res.json();
+                ordersCache = data || {};
+                ordersCacheTime = now;
+                allOrders = Object.values(ordersCache).sort((a, b) => b.id - a.id);
+            } catch (e) {
+                console.warn("Firebase load error:", e);
+            }
+        }
+
+        async function updateOrder(id, updates) {
+            try {
+                await fetch(`${FIREBASE_URL}/orders/${id}.json`, { method: 'PATCH', body: JSON.stringify(updates) });
+                // تحديث الكاش مباشرة
+                if (ordersCache[id]) {
+                    Object.assign(ordersCache[id], updates);
+                }
+                await loadOrders(true);
+            } catch (e) {
+                console.error("Update error:", e);
+                await loadOrders(true);
+            }
+        }
+
+        async function updateUserBusy(phone, isBusy) {
+            try {
+                await fetch(`${FIREBASE_URL}/users/${phone}.json`, { method: 'PATCH', body: JSON.stringify({ isBusy }) });
+            } catch (e) { console.warn(e); }
+        }
+
+        // ==================== 5. واجهات المستخدم ====================
         function renderCategories() {
             document.getElementById('categoriesGrid').innerHTML = `
         <div class="category-card" onclick="openCategory('restaurants')"><div class="category-icon">🍔</div><h3>مطاعم وجبات</h3><p>أشهى الأطباق</p></div>
@@ -2247,9 +2352,11 @@
         function renderRestaurantsList() {
             let filtered = allRestaurants;
             if (currentFilter !== 'all') filtered = allRestaurants.filter(r => r.cat.includes(currentFilter));
-            document.getElementById('restaurantsList').innerHTML = filtered.map(r =>
+            let container = document.getElementById('restaurantsList');
+            let html = filtered.map(r =>
                 `<div class="restaurant-item" onclick="openRestaurantMenu(${r.id})"><div class="restaurant-item-img" style="background-image:url('${r.img}')"></div><div class="restaurant-item-info"><div class="restaurant-item-name">${r.name}</div><div class="restaurant-item-cat">${r.cat}</div><div class="restaurant-item-stats"><span>⭐ 4.7</span><span>📍 2.5 كيلو</span></div></div><div class="restaurant-item-price"><div class="price">${r.items[0]?.p || 2200}</div><div>ريال</div></div></div>`
             ).join('');
+            container.innerHTML = html;
         }
 
         function openRestaurantMenu(id) {
@@ -2261,12 +2368,8 @@
             let heroImage = getItemImage(heroItem.n);
 
             let categories = [...new Set(currentRestaurant.items.map(i => i.cat || 'أخرى'))];
-            let tabsHtml = `
-        <div class="category-tabs-wrapper" id="menuCategoryTabs">
-          <button class="category-tab-btn active" data-cat="all" onclick="filterMenuCategory('all')">الكل</button>
-          ${categories.map(c => `<button class="category-tab-btn" data-cat="${c}" onclick="filterMenuCategory('${c}')">${c}</button>`).join('')}
-        </div>
-      `;
+            let tabsHtml =
+                `<div class="category-tabs-wrapper" id="menuCategoryTabs"><button class="category-tab-btn active" data-cat="all" onclick="filterMenuCategory('all')">الكل${categories.map(c => `<button class="category-tab-btn" data-cat="${c}" onclick="filterMenuCategory('${c}')">${c}</button>`).join('')}</div>`;
 
             let itemsHtml = `
         <div class="restaurant-hero-banner" style="background-image:url('${heroImage}')">
@@ -2296,10 +2399,10 @@
                 <div class="menu-item-price">${item.p} ريال</div>
                 
                 <div class="item-controls" style="margin-top:8px; display:flex; flex-direction:column; gap:6px;">
-                  <div style="display:flex; align-items:center; justify-content:center; gap:15px; background:var(--bg-light); padding:5px; border-radius:30px;">
-                    <button class="qty-btn" onclick="updateItemQuantity(${idx}, ${currentRestaurant.id}, -1)" style="width:30px; height:30px; border-radius:50%; border:none; background:var(--primary); color:white; font-weight:bold; cursor:pointer;">-</button>
-                    <span id="qty_${currentRestaurant.id}_${idx}" style="font-weight:bold; min-width:20px; text-align:center;">${count}</span>
-                    <button class="qty-btn" onclick="updateItemQuantity(${idx}, ${currentRestaurant.id}, 1)" style="width:30px; height:30px; border-radius:50%; border:none; background:var(--primary); color:white; font-weight:bold; cursor:pointer;">+</button>
+                  <div class="item-controls-inner">
+                    <button class="qty-btn-sm" onclick="updateItemQuantity(${idx}, ${currentRestaurant.id}, -1)">-</button>
+                    <span class="qty-display" id="qty_${currentRestaurant.id}_${idx}">${count}</span>
+                    <button class="qty-btn-sm" onclick="updateItemQuantity(${idx}, ${currentRestaurant.id}, 1)">+</button>
                   </div>
                   <textarea id="note_${currentRestaurant.id}_${idx}" rows="1" placeholder="📝 ملاحظة خاصة لهذا الصنف (اختياري)" style="width:100%; padding:6px; border-radius:12px; border:1px solid var(--gray-light); font-size:0.8rem; background:var(--white);" oninput="updateItemNote(${idx}, ${currentRestaurant.id}, this.value)">${note}</textarea>
                 </div>
@@ -2315,13 +2418,10 @@
 
         window.filterMenuCategory = function(cat) {
             document.querySelectorAll('#menuCategoryTabs .category-tab-btn').forEach(b => b.classList.remove('active'));
-            document.querySelector(`#menuCategoryTabs .category-tab-btn[data-cat="${cat}"]`).classList.add('active');
+            let activeBtn = document.querySelector(`#menuCategoryTabs .category-tab-btn[data-cat="${cat}"]`);
+            if (activeBtn) activeBtn.classList.add('active');
             document.querySelectorAll('#menuItemsGrid .menu-item-card').forEach(el => {
-                if (cat === 'all' || el.dataset.cat === cat) {
-                    el.style.display = '';
-                } else {
-                    el.style.display = 'none';
-                }
+                el.style.display = (cat === 'all' || el.dataset.cat === cat) ? '' : 'none';
             });
         };
 
@@ -2331,11 +2431,8 @@
 
             if (existingIdx !== -1) {
                 let newQty = cart[existingIdx].qty + delta;
-                if (newQty <= 0) {
-                    cart.splice(existingIdx, 1);
-                } else {
-                    cart[existingIdx].qty = newQty;
-                }
+                if (newQty <= 0) cart.splice(existingIdx, 1);
+                else cart[existingIdx].qty = newQty;
             } else if (delta > 0) {
                 cart.push({
                     name: item.n,
@@ -2356,9 +2453,7 @@
         function updateItemNote(idx, restaurantId, note) {
             const item = allRestaurants.find(r => r.id == restaurantId).items[idx];
             let existingIdx = cart.findIndex(i => i.name === item.n && i.restaurantId == restaurantId);
-            if (existingIdx !== -1) {
-                cart[existingIdx].note = note;
-            }
+            if (existingIdx !== -1) cart[existingIdx].note = note;
         }
 
         function openSupermarketMenu(id) {
@@ -2369,6 +2464,7 @@
             currentRestaurant.items.forEach((item, idx) => {
                 let cartItem = cart.find(i => i.name === item.n && i.restaurantId === id);
                 let count = cartItem ? cartItem.qty : 0;
+                let note = cartItem ? (cartItem.note || '') : '';
                 itemsHtml += `
               <div class="menu-item-card">
                 <div class="menu-item-img" style="background-image:url('${getItemImage(item.n)}')"></div>
@@ -2376,14 +2472,13 @@
                   <div class="menu-item-name">${item.n}</div>
                   <div class="menu-item-desc">${item.d || "منتج مميز"}</div>
                   <div class="menu-item-price">${item.p} ريال</div>
-                  
                   <div class="item-controls" style="margin-top:8px; display:flex; flex-direction:column; gap:6px;">
-                    <div style="display:flex; align-items:center; justify-content:center; gap:15px; background:var(--bg-light); padding:5px; border-radius:30px;">
-                      <button class="qty-btn" onclick="updateSupermarketItemQuantity(${idx}, '${id}', -1)" style="width:30px; height:30px; border-radius:50%; border:none; background:var(--primary); color:white; font-weight:bold; cursor:pointer;">-</button>
-                      <span id="qty_${id}_${idx}" style="font-weight:bold; min-width:20px; text-align:center;">${count}</span>
-                      <button class="qty-btn" onclick="updateSupermarketItemQuantity(${idx}, '${id}', 1)" style="width:30px; height:30px; border-radius:50%; border:none; background:var(--primary); color:white; font-weight:bold; cursor:pointer;">+</button>
+                    <div class="item-controls-inner">
+                      <button class="qty-btn-sm" onclick="updateSupermarketItemQuantity(${idx}, '${id}', -1)">-</button>
+                      <span class="qty-display" id="qty_${id}_${idx}">${count}</span>
+                      <button class="qty-btn-sm" onclick="updateSupermarketItemQuantity(${idx}, '${id}', 1)">+</button>
                     </div>
-                    <textarea id="note_${id}_${idx}" rows="1" placeholder="📝 ملاحظة خاصة لهذا الصنف (اختياري)" style="width:100%; padding:6px; border-radius:12px; border:1px solid var(--gray-light); font-size:0.8rem; background:var(--white);" oninput="updateSupermarketItemNote(${idx}, '${id}', this.value)">${cartItem ? (cartItem.note || '') : ''}</textarea>
+                    <textarea id="note_${id}_${idx}" rows="1" placeholder="📝 ملاحظة خاصة" style="width:100%; padding:6px; border-radius:12px; border:1px solid var(--gray-light); font-size:0.8rem; background:var(--white);" oninput="updateSupermarketItemNote(${idx}, '${id}', this.value)">${note}</textarea>
                   </div>
                 </div>
               </div>
@@ -2427,6 +2522,7 @@
             currentRestaurant.items.forEach((item, idx) => {
                 let cartItem = cart.find(i => i.name === item.n && i.restaurantId === id);
                 let count = cartItem ? cartItem.qty : 0;
+                let note = cartItem ? (cartItem.note || '') : '';
                 itemsHtml += `
               <div class="menu-item-card">
                 <div class="menu-item-img" style="background-image:url('${getItemImage(item.n)}')"></div>
@@ -2434,14 +2530,13 @@
                   <div class="menu-item-name">${item.n}</div>
                   <div class="menu-item-desc">${item.d || "منتج صحي"}</div>
                   <div class="menu-item-price">${item.p} ريال</div>
-                  
                   <div class="item-controls" style="margin-top:8px; display:flex; flex-direction:column; gap:6px;">
-                    <div style="display:flex; align-items:center; justify-content:center; gap:15px; background:var(--bg-light); padding:5px; border-radius:30px;">
-                      <button class="qty-btn" onclick="updatePharmacyItemQuantity(${idx}, '${id}', -1)" style="width:30px; height:30px; border-radius:50%; border:none; background:var(--primary); color:white; font-weight:bold; cursor:pointer;">-</button>
-                      <span id="qty_${id}_${idx}" style="font-weight:bold; min-width:20px; text-align:center;">${count}</span>
-                      <button class="qty-btn" onclick="updatePharmacyItemQuantity(${idx}, '${id}', 1)" style="width:30px; height:30px; border-radius:50%; border:none; background:var(--primary); color:white; font-weight:bold; cursor:pointer;">+</button>
+                    <div class="item-controls-inner">
+                      <button class="qty-btn-sm" onclick="updatePharmacyItemQuantity(${idx}, '${id}', -1)">-</button>
+                      <span class="qty-display" id="qty_${id}_${idx}">${count}</span>
+                      <button class="qty-btn-sm" onclick="updatePharmacyItemQuantity(${idx}, '${id}', 1)">+</button>
                     </div>
-                    <textarea id="note_${id}_${idx}" rows="1" placeholder="📝 ملاحظة خاصة لهذا الصنف (اختياري)" style="width:100%; padding:6px; border-radius:12px; border:1px solid var(--gray-light); font-size:0.8rem; background:var(--white);" oninput="updatePharmacyItemNote(${idx}, '${id}', this.value)">${cartItem ? (cartItem.note || '') : ''}</textarea>
+                    <textarea id="note_${id}_${idx}" rows="1" placeholder="📝 ملاحظة خاصة" style="width:100%; padding:6px; border-radius:12px; border:1px solid var(--gray-light); font-size:0.8rem; background:var(--white);" oninput="updatePharmacyItemNote(${idx}, '${id}', this.value)">${note}</textarea>
                   </div>
                 </div>
               </div>
@@ -2526,7 +2621,7 @@
             if (categoryId === 'pharmacy') { renderPharmaciesList(); return; }
         };
 
-        // ==================== 5. شي إن (Shein) ====================
+        // ==================== 6. شي إن (Shein) ====================
         function showSheinPage() {
             let html = `
           <div class="back-btn" onclick="showPage('homePage')">🔙 العودة للرئيسية</div>
@@ -2569,14 +2664,13 @@
                   <div class="menu-item-name">${p.name}</div>
                   <div class="menu-item-desc">${p.desc}</div>
                   <div class="menu-item-price">${p.price} ريال</div>
-                  
                   <div class="item-controls" style="margin-top:8px; display:flex; flex-direction:column; gap:6px;">
-                    <div style="display:flex; align-items:center; justify-content:center; gap:15px; background:var(--bg-light); padding:5px; border-radius:30px;">
-                      <button class="qty-btn" onclick="updateSheinItemQuantity('${category}', ${p.id}, -1)" style="width:30px; height:30px; border-radius:50%; border:none; background:var(--primary); color:white; font-weight:bold; cursor:pointer;">-</button>
-                      <span id="qty_shein_${p.id}" style="font-weight:bold; min-width:20px; text-align:center;">0</span>
-                      <button class="qty-btn" onclick="updateSheinItemQuantity('${category}', ${p.id}, 1)" style="width:30px; height:30px; border-radius:50%; border:none; background:var(--primary); color:white; font-weight:bold; cursor:pointer;">+</button>
+                    <div class="item-controls-inner">
+                      <button class="qty-btn-sm" onclick="updateSheinItemQuantity('${category}', ${p.id}, -1)">-</button>
+                      <span class="qty-display" id="qty_shein_${p.id}">0</span>
+                      <button class="qty-btn-sm" onclick="updateSheinItemQuantity('${category}', ${p.id}, 1)">+</button>
                     </div>
-                    <textarea id="note_shein_${p.id}" rows="1" placeholder="📝 ملاحظة خاصة لهذا الصنف (اختياري)" style="width:100%; padding:6px; border-radius:12px; border:1px solid var(--gray-light); font-size:0.8rem; background:var(--white);" oninput="updateSheinItemNote('${category}', ${p.id}, this.value)"></textarea>
+                    <textarea id="note_shein_${p.id}" rows="1" placeholder="📝 ملاحظة خاصة" style="width:100%; padding:6px; border-radius:12px; border:1px solid var(--gray-light); font-size:0.8rem; background:var(--white);" oninput="updateSheinItemNote('${category}', ${p.id}, this.value)"></textarea>
                   </div>
                 </div>
               </div>
@@ -2610,11 +2704,8 @@
 
             if (existingIdx !== -1) {
                 let newQty = cart[existingIdx].qty + delta;
-                if (newQty <= 0) {
-                    cart.splice(existingIdx, 1);
-                } else {
-                    cart[existingIdx].qty = newQty;
-                }
+                if (newQty <= 0) cart.splice(existingIdx, 1);
+                else cart[existingIdx].qty = newQty;
             } else if (delta > 0) {
                 cart.push({
                     name: product.name,
@@ -2636,9 +2727,7 @@
             const product = sheinData[category].products.find(p => p.id === id);
             if (!product) return;
             let existingIdx = cart.findIndex(i => i.name === product.name && i.sourceType === 'shein');
-            if (existingIdx !== -1) {
-                cart[existingIdx].note = note;
-            }
+            if (existingIdx !== -1) cart[existingIdx].note = note;
         }
 
         function renderSheinCarousel() {
@@ -2706,7 +2795,7 @@
             startSheinCarouselAuto();
         };
 
-        // ==================== 6. السلة والدفع وتحديد الموقع ====================
+        // ==================== 7. السلة والدفع وتحديد الموقع ====================
         function updateCartDisplay() {
             let total = cart.reduce((s, i) => s + (i.p * i.qty), 0);
             let itemsCount = cart.reduce((s, i) => s + i.qty, 0);
@@ -2754,43 +2843,65 @@
             updateCartDisplay();
         }
 
-        function getCurrentLocationForCheckout() { if (navigator.geolocation) { navigator.geolocation.getCurrentPosition(
-                    pos => { customerLocation = { lat: pos.coords.latitude, lng: pos.coords.longitude };
-                        document.getElementById('checkoutLocationTxt').innerHTML = '✅ تم تحديد موقعك';
-                        updateDeliveryCost();
-                        showToast("تم تحديد موقعك"); }, () => showToast("فشل تحديد الموقع")); } else showToast(
-                "المتصفح لا يدعم الموقع"); }
+        function getCurrentLocationForCheckout() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(pos => {
+                    customerLocation = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+                    document.getElementById('checkoutLocationTxt').innerHTML = '✅ تم تحديد موقعك';
+                    updateDeliveryCost();
+                    showToast("تم تحديد موقعك");
+                }, () => showToast("فشل تحديد الموقع"), { enableHighAccuracy: true, timeout: 8000 });
+            } else showToast("المتصفح لا يدعم الموقع");
+        }
 
-        function initMapForCheckout() { currentMapMode = 'checkout';
+        function initMapForCheckout() {
+            currentMapMode = 'checkout';
             document.getElementById('map-overlay').style.display = 'flex';
-            setTimeout(() => { if (!map) { map = L.map('map').setView([RESTAURANT_LAT, RESTAURANT_LNG], 14);
+            setTimeout(() => {
+                if (!map) {
+                    map = L.map('map').setView([RESTAURANT_LAT, RESTAURANT_LNG], 14);
                     L.tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', { subdomains: ['mt0', 'mt1',
                             'mt2', 'mt3'] }).addTo(map);
                     marker = L.marker([RESTAURANT_LAT, RESTAURANT_LNG], { draggable: true }).addTo(map);
-                    map.on('click', e => marker.setLatLng(e.latlng)); } if (customerLocation) marker.setLatLng(
-                    customerLocation);
-                map.invalidateSize(); }, 100); }
+                    map.on('click', e => marker.setLatLng(e.latlng));
+                }
+                if (customerLocation) marker.setLatLng(customerLocation);
+                map.invalidateSize();
+            }, 100);
+        }
 
-        function initMapForAdmin() { currentMapMode = 'admin';
+        function initMapForAdmin() {
+            currentMapMode = 'admin';
             document.getElementById('map-overlay').style.display = 'flex';
-            setTimeout(() => { if (!map) { map = L.map('map').setView([RESTAURANT_LAT, RESTAURANT_LNG], 14);
+            setTimeout(() => {
+                if (!map) {
+                    map = L.map('map').setView([RESTAURANT_LAT, RESTAURANT_LNG], 14);
                     L.tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', { subdomains: ['mt0', 'mt1',
                             'mt2', 'mt3'] }).addTo(map);
                     marker = L.marker([RESTAURANT_LAT, RESTAURANT_LNG], { draggable: true }).addTo(map);
-                    map.on('click', e => marker.setLatLng(e.latlng)); }
-                map.invalidateSize(); }, 100); }
+                    map.on('click', e => marker.setLatLng(e.latlng));
+                }
+                map.invalidateSize();
+            }, 100);
+        }
 
         function closeMap() { document.getElementById('map-overlay').style.display = 'none'; }
 
-        function confirmMapLocation() { if (!map || !marker) return; let pos = marker.getLatLng(); if (currentMapMode ===
-                'checkout') { customerLocation = { lat: pos.lat, lng: pos.lng };
+        function confirmMapLocation() {
+            if (!map || !marker) return;
+            let pos = marker.getLatLng();
+            if (currentMapMode === 'checkout') {
+                customerLocation = { lat: pos.lat, lng: pos.lng };
                 document.getElementById('checkoutLocationTxt').innerHTML = '✅ تم تحديد الموقع';
                 updateDeliveryCost();
-                closeMap(); } else if (currentMapMode === 'admin') { document.getElementById('adminRestLat').value = pos
-                    .lat;
+                closeMap();
+            } else if (currentMapMode === 'admin') {
+                document.getElementById('adminRestLat').value = pos.lat;
                 document.getElementById('adminRestLng').value = pos.lng;
                 showToast("تم تحديد موقع المطعم");
-                closeMap(); } }
+                closeMap();
+            }
+        }
 
         function updateDeliveryCost() {
             if (!customerLocation) return;
@@ -2799,7 +2910,8 @@
             let roundedPrice = roundToNearestHundred(rawPrice);
             deliveryCost = Math.max(roundedPrice, MIN_DELIVERY_PRICE);
             if (deliveryCost < MIN_DELIVERY_PRICE) deliveryCost = MIN_DELIVERY_PRICE;
-            document.getElementById('deliveryCostDisplay').style.display = 'flex';
+            let display = document.getElementById('deliveryCostDisplay');
+            display.style.display = 'flex';
             document.getElementById('deliveryCostValue').innerText = deliveryCost;
             updateCheckoutSummary();
         }
@@ -2868,29 +2980,34 @@
                 paymentMethod: selectedPaymentMethod,
                 generalNote: generalNote
             };
-            await fetch(`${FIREBASE_URL}/orders/${id}.json`, { method: 'PUT', body: JSON.stringify(order) });
-            localStorage.setItem('currentTrackingOrder', id);
-            let itemsText = cart.map(i =>
-                `• ${i.name} x${i.qty} = ${i.p*i.qty} ريال ${i.note?' ('+i.note+')':''}`).join('\n');
-            let message =
-                `🛍️ طلب جديد من وصل\n🍔 ${currentRestaurant.name}\n👤 ${currentUser.name}\n📞 ${currentUser.phone}\n📍 ${order.address}\n📝 ملاحظات عامة: ${generalNote || 'لا توجد'}\n\nالمنتجات:\n${itemsText}\n\n🚚 التوصيل: ${deliveryCost} ريال\n💰 الإجمالي: ${total} ريال\n\nعزيزي/عزيزتي، تابع تطبيقنا لتتبع حالة طلبك 😊`;
-            window.open(`https://wa.me/777215154?text=${encodeURIComponent(message)}`, '_blank');
-            showToast('✅ تم إرسال طلبك');
-            cart = [];
-            customerLocation = null;
-            deliveryCost = 0;
-            document.getElementById('cartOrderNote').value = '';
-            updateCartDisplay();
-            showPage('homePage');
-            await loadOrders();
+            try {
+                await fetch(`${FIREBASE_URL}/orders/${id}.json`, { method: 'PUT', body: JSON.stringify(order) });
+                localStorage.setItem('currentTrackingOrder', id);
+                let itemsText = cart.map(i =>
+                    `• ${i.name} x${i.qty} = ${i.p*i.qty} ريال ${i.note?' ('+i.note+')':''}`).join('\n');
+                let message =
+                    `🛍️ طلب جديد من وصل\n🍔 ${currentRestaurant.name}\n👤 ${currentUser.name}\n📞 ${currentUser.phone}\n📍 ${order.address}\n📝 ملاحظات عامة: ${generalNote || 'لا توجد'}\n\nالمنتجات:\n${itemsText}\n\n🚚 التوصيل: ${deliveryCost} ريال\n💰 الإجمالي: ${total} ريال\n\nعزيزي/عزيزتي، تابع تطبيقنا لتتبع حالة طلبك 😊`;
+                window.open(`https://wa.me/777215154?text=${encodeURIComponent(message)}`, '_blank');
+                showToast('✅ تم إرسال طلبك');
+                cart = [];
+                customerLocation = null;
+                deliveryCost = 0;
+                document.getElementById('cartOrderNote').value = '';
+                updateCartDisplay();
+                showPage('homePage');
+                await loadOrders(true);
 
-            setTimeout(() => {
-                viewOrderTracking(id);
-                startAutoTracking(id);
-            }, 1500);
+                setTimeout(() => {
+                    viewOrderTracking(id);
+                    startAutoTracking(id);
+                }, 1500);
+            } catch (e) {
+                showToast('حدث خطأ أثناء إرسال الطلب');
+                console.error(e);
+            }
         }
 
-        // ==================== 7. نظام التتبع التلقائي ====================
+        // ==================== 8. نظام التتبع التلقائي (محسن) ====================
         let autoTrackingId = null;
         let hasNotified = { on_the_way: false, arrived: false, delivered: false };
 
@@ -2899,7 +3016,8 @@
             autoTrackingId = orderId;
             hasNotified = { on_the_way: false, arrived: false, delivered: false };
             checkOrderStatus(orderId);
-            trackingInterval = setInterval(() => { checkOrderStatus(orderId); }, 3000);
+            // زيادة الفاصل الزمني لتقليل الضغط على الخادم
+            trackingInterval = setInterval(() => { checkOrderStatus(orderId); }, 4000);
         }
 
         function stopAutoTracking() {
@@ -2970,7 +3088,7 @@
             }, 400);
         }
 
-        // ==================== 8. نظام التقييم ====================
+        // ==================== 9. نظام التقييم ====================
         let currentRatingOrderId = null;
         let ratingData = { driver: 0, service: 0, speed: 0, restaurant: 0 };
 
@@ -3038,7 +3156,7 @@
             }
         }
 
-        // ==================== 9. واجهة التتبع للعميل ====================
+        // ==================== 10. واجهة التتبع للعميل ====================
         async function viewOrderTracking(id) {
             await loadOrders();
             let order = allOrders.find(o => o.id == id);
@@ -3095,10 +3213,11 @@
             document.getElementById('myOrdersContainer').innerHTML = html;
         }
 
-        // ==================== 10. واجهة المندوب ====================
+        // ==================== 11. واجهة المندوب (محسنة) ====================
         let driverTab = 'available';
         let driverAudioContext = null;
         let lastOrderCount = 0;
+        let driverRefreshTimer = null;
 
         function playNewLoudAlertSound() {
             try {
@@ -3171,40 +3290,6 @@
                 }
                 lastOrderCount = currentCount;
             }
-        }
-
-        let pullStartY = 0;
-        let isPulling = false;
-        const driverListContainer = document.getElementById('driverOrdersList');
-        if (driverListContainer) {
-            driverListContainer.addEventListener('touchstart', function(e) {
-                pullStartY = e.touches[0].clientY;
-                isPulling = false;
-            });
-            driverListContainer.addEventListener('touchmove', function(e) {
-                if (this.scrollTop === 0) {
-                    const currentY = e.touches[0].clientY;
-                    const diff = currentY - pullStartY;
-                    if (diff > 0) {
-                        isPulling = true;
-                        e.preventDefault();
-                        document.getElementById('pullRefreshLoader').style.display = 'block';
-                        document.getElementById('pullRefreshLoader').innerHTML = '<i class="fas fa-arrow-down"></i> اسحب لتحديث...';
-                    }
-                }
-            });
-            driverListContainer.addEventListener('touchend', function(e) {
-                if (isPulling) {
-                    document.getElementById('pullRefreshLoader').innerHTML =
-                        '<i class="fas fa-spinner fa-spin"></i> جارٍ التحديث...';
-                    setTimeout(() => {
-                        refreshDriverPanel();
-                        document.getElementById('pullRefreshLoader').style.display = 'none';
-                        isPulling = false;
-                        showToast('✅ تم تحديث القائمة');
-                    }, 800);
-                }
-            });
         }
 
         window.switchDriverTab = function(tab) {
@@ -3354,7 +3439,7 @@
                 window.open(googleMapsUrl, '_blank'); } else { showToast('⚠️ لا توجد إحداثيات متاحة لهذا العميل'); }
         }
 
-        // ==================== 11. الكاروسيل والإدارة ====================
+        // ==================== 12. الكاروسيل والإدارة ====================
         const mainSliderImages = [
             { image: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800', title: '🍔 أشهى المطاعم',
                 desc: 'اطلب وجبتك المفضلة', category: 'restaurants' },
@@ -3498,7 +3583,7 @@
                 };
             }); }
 
-        // ==================== 12. الإدارة ====================
+        // ==================== 13. الإدارة ====================
         async function renderAdminRestaurantsList() { let container = document.getElementById('adminRestaurantsList'); if (
                 container) container.innerHTML = allRestaurants.map(r =>
                 `<div style="display:flex; justify-content:space-between; padding:8px; border-bottom:1px solid #ddd;"><div><strong>${r.name}</strong><br><small>${r.cat} | ${r.items.length} صنف</small></div><button style="background:var(--danger); color:white; border:none; padding:4px 10px; border-radius:8px;" onclick="deleteRestaurant(${r.id})">حذف</button></div>`
@@ -3527,7 +3612,7 @@
                 MIN_DELIVERY_PRICE = parseInt(min);
             showToast('تم حفظ الإعدادات'); }
 
-        // ==================== 13. تسجيل الدخول ====================
+        // ==================== 14. تسجيل الدخول ====================
         function initLogin() {
             const roleCustomer = document.getElementById('roleCustomer');
             const roleDriver = document.getElementById('roleDriver');
@@ -3588,7 +3673,9 @@
                 if (role === 'driver') { showPage('driverPage');
                     document.getElementById('driverNameDisplay').innerText = name;
                     refreshDriverPanel();
-                    setInterval(refreshDriverPanel, 1500);
+                    // استخدام setInterval مع فترة أطول لتقليل الضغط
+                    if (driverRefreshTimer) clearInterval(driverRefreshTimer);
+                    driverRefreshTimer = setInterval(refreshDriverPanel, 3000);
                     lastOrderCount = allOrders.filter(o => o.status === 'pending').length; } else { showPage(
                     'homePage'); }
                 showToast(`أهلاً ${name}`);
@@ -3664,6 +3751,7 @@
             document.getElementById('confirmationModal').classList.remove('open');
         };
 
+        // ==================== 15. التهيئة الأولية ====================
         let savedUser = localStorage.getItem('waselny_user');
         if (savedUser) {
             try {
@@ -3671,7 +3759,8 @@
                 document.getElementById('loginOverlay').style.display = 'none';
                 if (currentUser.role === 'driver') { showPage('driverPage');
                     refreshDriverPanel();
-                    setInterval(refreshDriverPanel, 1500); } else showPage('homePage');
+                    if (driverRefreshTimer) clearInterval(driverRefreshTimer);
+                    driverRefreshTimer = setInterval(refreshDriverPanel, 3000); } else showPage('homePage');
             } catch (e) { initLogin(); }
         } else { initLogin(); }
 
@@ -3683,6 +3772,34 @@
         renderFilters();
         renderRestaurantsList();
         startMainCarouselAuto();
+
+        // استماع للصفحات للتبديل
+        document.addEventListener('visibilitychange', function() {
+            if (document.hidden) {
+                // توقف التحديثات في الخلفية لتقليل الاستهلاك
+                if (trackingInterval) {
+                    clearInterval(trackingInterval);
+                    trackingInterval = null;
+                }
+                if (driverRefreshTimer) {
+                    clearInterval(driverRefreshTimer);
+                    driverRefreshTimer = null;
+                }
+            } else {
+                // استئناف عند العودة
+                if (currentUser?.role === 'driver') {
+                    if (!driverRefreshTimer) driverRefreshTimer = setInterval(refreshDriverPanel, 3000);
+                    refreshDriverPanel();
+                }
+                if (autoTrackingId) {
+                    if (!trackingInterval) startAutoTracking(autoTrackingId);
+                }
+            }
+        });
+
+        console.log("✅ تم تحميل التطبيق بنجاح - نسخة محسنة وسريعة");
+        console.log("📦 عدد المطاعم:", allRestaurants.length);
+        console.log("🛒 السلة:", cart.length);
     </script>
 </body>
 </html>

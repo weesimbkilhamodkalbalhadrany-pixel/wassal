@@ -51,7 +51,6 @@
             overflow: hidden;
             color: white;
             text-align: center;
-            cursor: pointer;
         }
         .store-badge {
             position: absolute;
@@ -97,14 +96,12 @@
             background-clip: text;
             color: transparent;
             display: inline-block;
-            pointer-events: none;
         }
         .logo-sub {
             font-size: 0.6rem;
             letter-spacing: 3px;
             margin-top: 4px;
             opacity: 0.8;
-            pointer-events: none;
         }
         .work-hours {
             display: flex;
@@ -1535,72 +1532,11 @@
             padding-bottom: 4px;
             border-bottom: 2px solid var(--primary-light);
         }
-        /* تنسيق جدول الإدارة */
-        .admin-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.7rem;
-        }
-        .admin-table th, .admin-table td {
-            border-bottom: 1px solid var(--gray-light);
-            padding: 8px 4px;
-            text-align: center;
-        }
-        .action-btn-small {
-            border: none;
-            border-radius: 20px;
-            padding: 4px 8px;
-            margin: 2px;
-            color: white;
-            cursor: pointer;
-            font-size: 0.65rem;
-        }
-        .admin-password-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.9);
-            z-index: 100001;
-            display: none;
-            align-items: center;
-            justify-content: center;
-        }
-        .admin-password-modal.open {
-            display: flex;
-        }
-        .admin-password-card {
-            background: var(--white);
-            padding: 24px;
-            border-radius: 32px;
-            text-align: center;
-            width: 85%;
-            max-width: 320px;
-        }
-        .admin-password-card input {
-            width: 100%;
-            padding: 12px;
-            border-radius: 40px;
-            border: 1px solid var(--gray-light);
-            margin: 12px 0;
-            font-size: 0.9rem;
-        }
-        .admin-password-card button {
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 40px;
-            font-weight: 700;
-            width: 100%;
-            cursor: pointer;
-        }
     </style>
 </head>
 <body>
 
-    <div class="header" id="headerLogoArea">
+    <div class="header">
         <div class="store-badge"><i class="fas fa-store"></i> وصل | WASAL</div>
         <div class="bike-animation"><i class="fas fa-motorcycle"></i></div>
         <div class="logo-main">وصل</div>
@@ -1688,7 +1624,6 @@
             <div class="driver-header-new">
                 <h2>التوصيل</h2>
                 <p>مرحباً، <span id="driverNameDisplay"></span></p>
-                <button id="manualRefreshBtn" class="btn-primary" style="background:var(--primary-light); margin-top:8px; padding:6px 16px; font-size:0.8rem; width:auto;"><i class="fas fa-sync-alt"></i> تحديث القائمة</button>
             </div>
             <div class="stats-row">
                 <div class="stat-card-new"><div class="stat-value" id="activeOrdersCount">0</div><div class="stat-label">طلبات نشطة</div></div>
@@ -1710,61 +1645,7 @@
             <div id="orderDetailDriverContent"></div>
         </div>
 
-        <div id="adminPage" class="page">
-            <div style="background:var(--white); border-radius:14px; padding:14px;">
-                <div class="back-btn" onclick="showPage('homePage')">🔙 رجوع</div>
-                <h2 style="color:var(--primary); margin:10px 0; font-size:1rem;">👨‍💼 لوحة الإدارة</h2>
-                <div class="admin-tabs" id="adminTabs">
-                    <button class="tab-btn active" data-tab="orders">📦 الطلبات</button>
-                    <button class="tab-btn" data-tab="users">👥 العملاء</button>
-                    <button class="tab-btn" data-tab="drivers">🛵 المناديب</button>
-                    <button class="tab-btn" data-tab="settings">⚙️ الإعدادات</button>
-                    <button class="tab-btn" data-tab="restaurants">🍔 المطاعم</button>
-                </div>
-                <div class="tab-content active-tab" id="tab-orders">
-                    <div class="admin-section">
-                        <h4>جميع الطلبات</h4>
-                        <div id="adminOrdersList"></div>
-                    </div>
-                </div>
-                <div class="tab-content" id="tab-users">
-                    <div class="admin-section">
-                        <h4>جميع العملاء المسجلين</h4>
-                        <div id="adminUsersList"></div>
-                    </div>
-                </div>
-                <div class="tab-content" id="tab-drivers">
-                    <div class="admin-section">
-                        <h4>جميع المناديب المسجلين</h4>
-                        <div id="adminDriversList"></div>
-                    </div>
-                </div>
-                <div class="tab-content" id="tab-settings">
-                    <div class="admin-section">
-                        <h4>إعدادات التوصيل</h4>
-                        <div><span>🚖 سعر الكيلومتر:</span><input type="number" id="adminPricePerKm" value="180" class="field-input"></div>
-                        <div><span>💰 الحد الأدنى:</span><input type="number" id="adminMinDelivery" value="550" class="field-input"></div>
-                        <button class="btn-primary" onclick="saveDeliverySettings()">💾 حفظ</button>
-                    </div>
-                </div>
-                <div class="tab-content" id="tab-restaurants">
-                    <div class="admin-section">
-                        <h4>إضافة مطعم</h4>
-                        <input type="text" id="adminRestName" class="field-input" placeholder="اسم المطعم">
-                        <select id="adminRestCat" class="field-input">
-                            <option>بروست</option><option>بيتزا</option><option>برجر</option>
-                            <option>شاورما</option><option>مشاوي</option><option>عصائر</option>
-                        </select>
-                        <input type="text" id="adminRestImg" class="field-input" placeholder="رابط الصورة">
-                        <button class="btn-primary" onclick="addNewRestaurant()">➕ إضافة</button>
-                    </div>
-                    <div class="admin-section">
-                        <h4>قائمة المطاعم</h4>
-                        <div id="adminRestaurantsList"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <div id="adminPage" class="page"><div style="background:var(--white); border-radius:14px; padding:14px;"><div class="back-btn" onclick="showPage('homePage')">🔙 رجوع</div><h2 style="color:var(--primary); margin:10px 0; font-size:1rem;">👨‍💼 لوحة الإدارة</h2><div class="admin-tabs" id="adminTabs"><button class="tab-btn active" data-tab="restaurants">🍔 المطاعم</button><button class="tab-btn" data-tab="items">🍽️ الأصناف</button><button class="tab-btn" data-tab="orders">📦 الطلبات</button><button class="tab-btn" data-tab="users">👥 المستخدمين</button><button class="tab-btn" data-tab="settings">⚙️ الإعدادات</button></div><div class="tab-content active-tab" id="tab-restaurants"><div class="admin-section"><h4>إضافة مطعم</h4><input type="text" id="adminRestName" class="field-input" placeholder="اسم المطعم"><select id="adminRestCat" class="field-input"><option>بروست</option><option>بيتزا</option><option>برجر</option><option>شاورما</option><option>مشاوي</option><option>عصائر</option></select><input type="text" id="adminRestImg" class="field-input" placeholder="رابط الصورة"><div class="geo-btn" onclick="initMapForAdmin()" style="background:var(--bg-light); padding:8px; border-radius:30px; text-align:center; margin-bottom:8px; cursor:pointer;">🗺️ اختر موقع المطعم</div><input type="hidden" id="adminRestLat"><input type="hidden" id="adminRestLng"><button class="btn-primary" onclick="addNewRestaurant()">➕ إضافة</button></div><div class="admin-section"><h4>قائمة المطاعم</h4><div id="adminRestaurantsList"></div></div></div><div class="tab-content" id="tab-items"><div class="admin-section"><select id="adminItemRestaurantSelect" class="field-input"></select><div id="adminItemsList"></div><div style="margin-top:10px;"><input type="text" id="newItemName" class="field-input" placeholder="اسم الصنف"><input type="number" id="newItemPrice" class="field-input" placeholder="السعر"><button class="btn-primary" onclick="addNewItem()">+ إضافة صنف</button></div></div></div><div class="tab-content" id="tab-orders"><div class="admin-section"><div id="adminOrdersList"></div></div></div><div class="tab-content" id="tab-users"><div class="admin-section"><div id="adminUsersList"></div></div></div><div class="tab-content" id="tab-settings"><div class="admin-section"><div><span>🚖 سعر الكيلومتر:</span><input type="number" id="adminPricePerKm" value="180" class="field-input"></div><div><span>💰 الحد الأدنى:</span><input type="number" id="adminMinDelivery" value="550" class="field-input"></div><button class="btn-primary" onclick="saveDeliverySettings()">💾 حفظ</button></div></div></div></div></div>
     </div>
 
     <div id="itemModal" class="item-modal-overlay">
@@ -1901,16 +1782,6 @@
     </div>
     <div id="trackFullscreen" class="tracking-fullscreen"><div id="trackingFullscreenContainer"></div><button class="btn-primary" onclick="closeTracking()" style="margin-top:12px;">إغلاق</button></div>
     <div id="map-overlay" class="map-overlay"><div id="map"></div><div class="map-controls"><div class="map-back" onclick="closeMap()">↩️ رجوع</div><div class="map-confirm" onclick="confirmMapLocation()">✅ تأكيد</div></div></div>
-
-    <!-- Admin Password Modal -->
-    <div id="adminPasswordModal" class="admin-password-modal">
-        <div class="admin-password-card">
-            <h2 style="color:var(--primary); margin-bottom:10px;">🔐 الدخول إلى لوحة الإدارة</h2>
-            <input type="password" id="adminPasswordInput" placeholder="أدخل كلمة السر">
-            <button id="adminPasswordSubmitBtn">دخول</button>
-            <p id="adminPasswordError" style="color:var(--danger); font-size:0.7rem; margin-top:8px; display:none;">كلمة السر غير صحيحة</p>
-        </div>
-    </div>
 
     <script>
         // ==================== 1. البيانات الثابتة ====================
@@ -2287,7 +2158,7 @@
         // ==================== 2. الإعدادات الأساسية ====================
         const FIREBASE_URL = "https://waselny-2812b-default-rtdb.firebaseio.com";
         const DRIVER_PASSWORD = "weesim73741";
-        const ADMIN_PASSWORD = "weesim737412828";
+        const ADMIN_PASSWORD = "weesim73741";
         let MIN_DELIVERY_PRICE = 550,
             PRICE_PER_KM = 180;
 
@@ -2314,14 +2185,6 @@
         let trackingInterval = null;
         let lastOrderStatus = null;
         let pendingModalAction = null;
-        let lastOrdersHash = "";
-        let isAdminAuthenticated = false;
-        let isPollingActive = true;
-        let pollingTimer = null;
-
-        // متغيرات لتحديث الصوت
-        let driverAudioContext = null;
-        let lastAvailableCount = 0;
 
         // ==================== 3. الدوال المساعدة ====================
         function showToast(msg) { let t = document.getElementById('toastMsg');
@@ -2350,87 +2213,18 @@
             return 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=300';
         }
 
-        async function loadOrders(force = false) {
-            try {
-                let res = await fetch(`${FIREBASE_URL}/orders.json`);
-                let data = await res.json();
-                let newOrders = data ? Object.values(data).sort((a, b) => b.id - a.id) : [];
-                let hash = JSON.stringify(newOrders.map(o => o.id + o.status + o.driverId));
-                if (hash !== lastOrdersHash || force) {
-                    lastOrdersHash = hash;
-                    allOrders = newOrders;
-                    if (currentUser?.role === 'driver') refreshDriverPanel();
-                    else if (currentUser?.role === 'customer') {
-                        let trackingId = localStorage.getItem('currentTrackingOrder');
-                        if (trackingId) updateTrackingViewIfOpen(parseInt(trackingId));
-                    }
-                }
-            } catch (e) { console.warn("Failed to load orders", e); }
-        }
+        async function loadOrders() { try { let res = await fetch(`${FIREBASE_URL}/orders.json`); let data = await res
+                    .json();
+                allOrders = data ? Object.values(data).sort((a, b) => b.id - a.id) : []; } catch (e) {} }
 
-        async function updateOrder(id, updates) {
-            await fetch(`${FIREBASE_URL}/orders/${id}.json`, { method: 'PATCH', body: JSON.stringify(updates) });
-            await loadOrders(true);
-            if (currentUser?.role === 'driver') refreshDriverPanel();
-        }
+        async function updateOrder(id, updates) { await fetch(`${FIREBASE_URL}/orders/${id}.json`, { method: 'PATCH',
+                body: JSON.stringify(updates) }); await loadOrders(); }
 
-        async function updateUserBusy(phone, isBusy) {
-            await fetch(`${FIREBASE_URL}/users/${phone}.json`, { method: 'PATCH', body: JSON.stringify({ isBusy }) });
-        }
+        async function updateUserBusy(phone, isBusy) { await fetch(`${FIREBASE_URL}/users/${phone}.json`, { method: 'PATCH',
+                body: JSON.stringify({ isBusy }) }); }
 
-        function getStatusText(st) {
-            const m = { pending: 'قيد المراجعة', accepted: 'تم القبول', on_the_way: 'في الطريق', arrived: 'وصل الموقع',
-                delivered: 'تم التوصيل' };
-            return m[st] || st;
-        }
-
-        function updateTrackingViewIfOpen(orderId) {
-            let order = allOrders.find(o => o.id == orderId);
-            let container = document.getElementById('trackingFullscreenContainer');
-            if (order && container && document.getElementById('trackFullscreen').style.display === 'block') {
-                let stepsHtml = generateTrackingSteps(order.status);
-                let itemsHtml = '<ul class="order-items-list">' + order.items.map(i =>
-                    `<li><span>${i.name} x${i.qty} ${i.note ? '(' + i.note + ')' : ''}</span><span>${i.price * i.qty} ريال</span></li>`
-                ).join('') + '</ul>';
-                let details = `
-                    <div class="tracking-detail-card">
-                        <h3 style="font-size:1.3rem; color:var(--primary);">📍 طلب #${order.id}</h3>
-                        <div class="tracking-label">⏰ الوقت</div>
-                        <div class="tracking-value">${new Date(order.createdAt).toLocaleString('ar-SA')}</div>
-                        <div class="tracking-label">🍔 المطعم</div>
-                        <div class="tracking-value">${order.restaurant}</div>
-                        <div class="tracking-label">🧾 الأصناف</div>
-                        ${itemsHtml}
-                        <div style="display:flex; justify-content:space-between;"><span>المجموع</span><span>${order.totalFood} ريال</span></div>
-                        <div style="display:flex; justify-content:space-between;"><span>🚚 التوصيل</span><span>${order.deliveryCost} ريال</span></div>
-                        <div style="display:flex; justify-content:space-between; font-weight:800;"><span>الإجمالي</span><span>${order.total} ريال</span></div>
-                    </div>
-                    ${stepsHtml}
-                `;
-                container.innerHTML = details;
-                if (order.status === 'delivered') {
-                    setTimeout(() => openRatingModal(order.id), 500);
-                }
-            }
-        }
-
-        function generateTrackingSteps(status) {
-            let steps = ['pending', 'on_the_way', 'arrived', 'delivered'];
-            let idx = steps.indexOf(status);
-            let stepsHtml = '<div class="tracking-steps">';
-            steps.forEach((s, i) => {
-                let cls = (i < idx) ? 'completed' : (i === idx ? 'active' : '');
-                let icon = { pending: 'fa-clock', on_the_way: 'fa-truck', arrived: 'fa-map-marker-alt',
-                    delivered: 'fa-check-circle' } [s];
-                let label = { pending: 'قيد المراجعة', on_the_way: 'في الطريق', arrived: 'وصل الموقع',
-                    delivered: 'تم التوصيل' } [s];
-                stepsHtml += `<div class="step ${cls}"><div class="circle"><i class="fas ${icon}"></i></div><div class="step-label">${label}</div></div>`;
-                if (i < steps.length - 1) stepsHtml += `<div class="step-connector ${i < idx ? 'completed' : ''}"></div>`;
-            });
-            stepsHtml += '</div>';
-            if (status === 'delivered') stepsHtml += `<div class="toast" style="display:block; background:var(--success); margin-top:12px;">🎉 شكراً لاستخدامك خدمتنا نتمنى لك يوماً سعيداً 😊</div>`;
-            return stepsHtml;
-        }
+        function getStatusText(st) { const m = { pending: 'قيد المراجعة', on_the_way: 'في الطريق', arrived: 'وصل الموقع',
+                delivered: 'تم التوصيل' }; return m[st] || st; }
 
         // ==================== 4. واجهات المستخدم ====================
         function renderCategories() {
@@ -3088,7 +2882,7 @@
             document.getElementById('cartOrderNote').value = '';
             updateCartDisplay();
             showPage('homePage');
-            await loadOrders(true);
+            await loadOrders();
 
             setTimeout(() => {
                 viewOrderTracking(id);
@@ -3098,10 +2892,12 @@
 
         // ==================== 7. نظام التتبع التلقائي ====================
         let autoTrackingId = null;
+        let hasNotified = { on_the_way: false, arrived: false, delivered: false };
 
         function startAutoTracking(orderId) {
             if (trackingInterval) clearInterval(trackingInterval);
             autoTrackingId = orderId;
+            hasNotified = { on_the_way: false, arrived: false, delivered: false };
             checkOrderStatus(orderId);
             trackingInterval = setInterval(() => { checkOrderStatus(orderId); }, 3000);
         }
@@ -3119,18 +2915,19 @@
             if (document.getElementById('trackFullscreen').style.display === 'block') {
                 viewOrderTracking(orderId);
             }
+
             if (order.status !== lastOrderStatus) {
                 lastOrderStatus = order.status;
                 if (order.status !== 'pending') {
                     playCustomerNotificationSound();
                 }
+
                 if (order.status === 'delivered') {
-                    setTimeout(() => openRatingModal(order.id), 800);
+                    setTimeout(() => { openRatingModal(order.id); }, 2000);
                 }
             }
         }
 
-        let audioContext = null;
         function playCustomerNotificationSound() {
             try {
                 if (!audioContext) { audioContext = new(window.AudioContext || window.webkitAudioContext)(); }
@@ -3180,7 +2977,7 @@
         function openRatingModal(orderId) {
             currentRatingOrderId = orderId;
             ratingData = { driver: 0, service: 0, speed: 0, restaurant: 0 };
-            document.querySelectorAll('#ratingModal .stars').forEach(container => {
+            document.querySelectorAll('.stars').forEach(container => {
                 container.querySelectorAll('.fa-star').forEach(star => {
                     star.classList.remove('fas');
                     star.classList.add('far');
@@ -3193,7 +2990,7 @@
         function closeRating() { document.getElementById('ratingModal').style.display = 'none';
             stopAutoTracking(); }
 
-        document.querySelectorAll('#ratingModal .stars').forEach(container => {
+        document.querySelectorAll('.stars').forEach(container => {
             container.addEventListener('click', function(e) {
                 const star = e.target.closest('.fa-star');
                 if (!star) return;
@@ -3298,8 +3095,10 @@
             document.getElementById('myOrdersContainer').innerHTML = html;
         }
 
-        // ==================== 10. واجهة المندوب المحسنة ====================
+        // ==================== 10. واجهة المندوب ====================
         let driverTab = 'available';
+        let driverAudioContext = null;
+        let lastOrderCount = 0;
 
         function playNewLoudAlertSound() {
             try {
@@ -3366,11 +3165,11 @@
             if (currentUser?.role === 'driver' && driverTab === 'available') {
                 const availableOrders = allOrders.filter(o => o.status === 'pending');
                 const currentCount = availableOrders.length;
-                if (currentCount > lastAvailableCount && lastAvailableCount > 0) {
+                if (currentCount > lastOrderCount && lastOrderCount > 0) {
                     playNewLoudAlertSound();
                     if (navigator.vibrate) { navigator.vibrate([200, 100, 200, 100, 300]); }
                 }
-                lastAvailableCount = currentCount;
+                lastOrderCount = currentCount;
             }
         }
 
@@ -3414,7 +3213,7 @@
             document.querySelector(`.driver-tab[data-driver-tab="${tab}"]`).classList.add('active');
             refreshDriverPanel();
             if (tab === 'available') {
-                lastAvailableCount = allOrders.filter(o => o.status === 'pending').length;
+                lastOrderCount = allOrders.filter(o => o.status === 'pending').length;
             }
         };
 
@@ -3435,8 +3234,8 @@
                 <div class="driver-order-header"><span class="driver-order-id">#${o.id}</span><span class="driver-order-status">متاح</span></div>
                 <div class="driver-order-details"><div><i class="fas fa-store"></i> ${o.restaurant || o.service}</div><div><i class="fas fa-money-bill"></i> ${o.total || o.price} ريال</div><div><i class="fas fa-map-marker-alt"></i> ${o.address || o.destinationAddress}</div></div>
                 <div class="driver-order-actions">
-                  <button class="driver-action-btn primary" onclick="acceptOrder(${o.id})"><i class="fas fa-check-circle"></i> قبول</button>
-                  <button class="driver-action-btn danger" onclick="rejectOrder(${o.id})"><i class="fas fa-times-circle"></i> رفض</button>
+                  <button class="driver-action-btn primary" onclick="showConfirmationModal(${o.id}, 'accept')"><i class="fas fa-check-circle"></i> قبول</button>
+                  <button class="driver-action-btn danger" onclick="showConfirmationModal(${o.id}, 'reject')"><i class="fas fa-times-circle"></i> رفض</button>
                   <button class="driver-action-btn call" onclick="callCustomer('${o.customerPhone || o.phone}')"><i class="fas fa-phone"></i> اتصال</button>
                 </div>
               </div>
@@ -3453,6 +3252,15 @@
             `).join('');
             }
             document.getElementById('driverOrdersList').innerHTML = html;
+        }
+
+        function showConfirmationModal(orderId, action) {
+            pendingOrderId = orderId;
+            pendingModalAction = action;
+            let actionText = action === 'accept' ? 'قبول الطلب' : 'رفض الطلب';
+            document.getElementById('modalTitle').innerText = 'تأكيد العملية';
+            document.getElementById('modalMessage').innerText = `هل أنت متأكد من ${actionText} للطلب #${orderId}?`;
+            document.getElementById('confirmationModal').classList.add('open');
         }
 
         async function acceptOrder(id) {
@@ -3482,7 +3290,7 @@
             if (!order) return;
             let items = order.items || [];
             let itemsHtml =
-                '<table class="items-table"><thead></tr><th>المنتج</th><th>الكمية</th><th>السعر</th></table></thead><tbody>' +
+                '<table class="items-table"><thead><tr><th>المنتج</th><th>الكمية</th><th>السعر</th></tr></thead><tbody>' +
                 items.map(i =>
                     `<tr><td>${i.name} ${i.note ? '<br><small>📝 '+i.note+'</small>' : ''}</td><td>${i.qty}</td><td>${i.price*i.qty} ريال</td></tr>`
                     ).join('') + '</tbody></table>';
@@ -3527,16 +3335,13 @@
             showPage('orderDetailDriverPage');
         }
 
-        window.confirmStatusChange = async function(orderId, newStatus) {
-            if (!confirm(`هل أنت متأكد من تغيير حالة الطلب إلى "${getStatusText(newStatus)}"?`)) return;
-            await updateOrder(orderId, { status: newStatus });
-            if (newStatus === 'delivered') {
-                await updateUserBusy(currentUser.phone, false);
-                showToast("✅ تم تسليم الطلب بنجاح");
-            }
-            showToast(`تم تغيير الحالة إلى ${getStatusText(newStatus)}`);
-            await refreshDriverPanel();
-            goBackToDriver();
+        window.confirmStatusChange = function(orderId, newStatus) {
+            pendingOrderId = orderId;
+            pendingStatus = newStatus;
+            document.getElementById('modalTitle').innerText = 'تأكيد تغيير الحالة';
+            document.getElementById('modalMessage').innerText =
+                `هل أنت متأكد من تغيير حالة الطلب إلى "${getStatusText(newStatus)}"?`;
+            document.getElementById('confirmationModal').classList.add('open');
         };
 
         function goBackToDriver() { showPage('driverPage');
@@ -3549,129 +3354,7 @@
                 window.open(googleMapsUrl, '_blank'); } else { showToast('⚠️ لا توجد إحداثيات متاحة لهذا العميل'); }
         }
 
-        // ==================== 11. نظام الإدارة ====================
-        document.getElementById('headerLogoArea').addEventListener('click', function(e) {
-            if (e.target.closest('.store-badge') || e.target.closest('.bike-animation') || e.target.closest('.work-hours')) return;
-            let clickCount = parseInt(this.dataset.clicks || 0) + 1;
-            this.dataset.clicks = clickCount;
-            if (clickCount === 7) {
-                this.dataset.clicks = 0;
-                document.getElementById('adminPasswordModal').classList.add('open');
-            }
-            setTimeout(() => { this.dataset.clicks = 0; }, 1000);
-        });
-
-        document.getElementById('adminPasswordSubmitBtn').addEventListener('click', function() {
-            const password = document.getElementById('adminPasswordInput').value;
-            if (password === ADMIN_PASSWORD) {
-                document.getElementById('adminPasswordModal').classList.remove('open');
-                document.getElementById('adminPasswordInput').value = '';
-                document.getElementById('adminPasswordError').style.display = 'none';
-                isAdminAuthenticated = true;
-                showPage('adminPage');
-                renderAdminPanel();
-            } else {
-                document.getElementById('adminPasswordError').style.display = 'block';
-            }
-        });
-
-        document.getElementById('adminPasswordModal').addEventListener('click', function(e) {
-            if (e.target === this) {
-                this.classList.remove('open');
-                document.getElementById('adminPasswordInput').value = '';
-                document.getElementById('adminPasswordError').style.display = 'none';
-            }
-        });
-
-        async function renderAdminPanel() {
-            await loadOrders();
-            renderAdminOrders();
-            renderAdminUsers();
-            renderAdminDrivers();
-            renderAdminRestaurantsList();
-        }
-
-        function renderAdminOrders() {
-            const container = document.getElementById('adminOrdersList');
-            if (allOrders.length === 0) {
-                container.innerHTML = '<p style="text-align:center; color:var(--gray);">لا توجد طلبات بعد.</p>';
-                return;
-            }
-            let html = `<table class="admin-table"><thead><tr><th>#</th><th>العميل</th><th>المطعم</th><th>المبلغ</th><th>الحالة</th><th>المندوب</th><th>إجراءات</th></tr></thead><tbody>`;
-            allOrders.forEach(o => {
-                html += `<tr>
-                    <td>${o.id}</td>
-                    <td>${o.customerName || 'غير معروف'}</td>
-                    <td>${o.restaurant || o.service || 'غير محدد'}</td>
-                    <td>${o.total || o.price || 0} ريال</td>
-                    <td><span class="driver-order-status" style="background:${o.status === 'delivered' ? 'var(--success)' : (o.status === 'on_the_way' ? 'var(--primary-light)' : 'var(--warning)')}; color:white; padding:2px 8px; border-radius:12px; font-size:0.65rem;">${getStatusText(o.status)}</span></td>
-                    <td>${o.driverName || 'لم يُسنَد'}</td>
-                    <td>
-                        <button class="action-btn-small" style="background:var(--warning);" onclick="adminAssignOrder(${o.id})">إسناد</button>
-                        <button class="action-btn-small" style="background:var(--primary);" onclick="adminChangeStatus(${o.id}, 'on_the_way')">في الطريق</button>
-                        <button class="action-btn-small" style="background:var(--success);" onclick="adminChangeStatus(${o.id}, 'delivered')">تسليم</button>
-                    </td>
-                </tr>`;
-            });
-            html += `</tbody></table>`;
-            container.innerHTML = html;
-        }
-
-        async function adminAssignOrder(id) {
-            const driverPhone = prompt('أدخل رقم هاتف المندوب لإسناد الطلب إليه:');
-            if (!driverPhone) return;
-            const users = await loadUsersFromFirebase();
-            const driver = users.find(u => u.role === 'driver' && u.phone === driverPhone);
-            if (!driver) { showToast('المندوب غير موجود أو ليس مندوباً'); return; }
-            await updateOrder(id, { driverId: driverPhone, driverName: driver.name });
-            showToast(`تم إسناد الطلب إلى ${driver.name}`);
-            renderAdminOrders();
-        }
-
-        async function adminChangeStatus(id, status) {
-            await updateOrder(id, { status });
-            showToast(`تم تغيير الحالة إلى ${getStatusText(status)}`);
-            renderAdminOrders();
-        }
-
-        async function loadUsersFromFirebase() {
-            try { let res = await fetch(`${FIREBASE_URL}/users.json`); let data = await res.json(); return data ? Object.values(data) : []; } catch(e) { return []; }
-        }
-
-        async function renderAdminUsers() {
-            const users = await loadUsersFromFirebase();
-            const container = document.getElementById('adminUsersList');
-            const customers = users.filter(u => u.role === 'customer');
-            if (customers.length === 0) {
-                container.innerHTML = '<p style="text-align:center; color:var(--gray);">لا يوجد عملاء مسجلون.</p>';
-                return;
-            }
-            let html = `<table class="admin-table"><thead><tr><th>الاسم</th><th>رقم الهاتف</th></tr></thead><tbody>`;
-            customers.forEach(u => {
-                html += `<tr><td>${u.name}</td><td>${u.phone}</td></tr>`;
-            });
-            html += `</tbody></table>`;
-            container.innerHTML = html;
-        }
-
-        async function renderAdminDrivers() {
-            const users = await loadUsersFromFirebase();
-            const container = document.getElementById('adminDriversList');
-            const drivers = users.filter(u => u.role === 'driver');
-            if (drivers.length === 0) {
-                container.innerHTML = '<p style="text-align:center; color:var(--gray);">لا يوجد مناديب مسجلون.</p>';
-                return;
-            }
-            let html = `<table class="admin-table"><thead><tr><th>الاسم</th><th>رقم الهاتف</th><th>الحالة</th></tr></thead><tbody>`;
-            drivers.forEach(u => {
-                const status = u.isBusy ? 'مشغول' : 'متاح';
-                html += `<tr><td>${u.name}</td><td>${u.phone}</td><td><span style="color:${u.isBusy ? 'var(--danger)' : 'var(--success)'};">${status}</span></td></tr>`;
-            });
-            html += `</tbody></table>`;
-            container.innerHTML = html;
-        }
-
-        // ==================== 12. الكاروسيل والإدارة ====================
+        // ==================== 11. الكاروسيل والإدارة ====================
         const mainSliderImages = [
             { image: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800', title: '🍔 أشهى المطاعم',
                 desc: 'اطلب وجبتك المفضلة', category: 'restaurants' },
@@ -3815,7 +3498,7 @@
                 };
             }); }
 
-        // ==================== 13. الإدارة - المطاعم ====================
+        // ==================== 12. الإدارة ====================
         async function renderAdminRestaurantsList() { let container = document.getElementById('adminRestaurantsList'); if (
                 container) container.innerHTML = allRestaurants.map(r =>
                 `<div style="display:flex; justify-content:space-between; padding:8px; border-bottom:1px solid #ddd;"><div><strong>${r.name}</strong><br><small>${r.cat} | ${r.items.length} صنف</small></div><button style="background:var(--danger); color:white; border:none; padding:4px 10px; border-radius:8px;" onclick="deleteRestaurant(${r.id})">حذف</button></div>`
@@ -3844,7 +3527,7 @@
                 MIN_DELIVERY_PRICE = parseInt(min);
             showToast('تم حفظ الإعدادات'); }
 
-        // ==================== 14. تسجيل الدخول ====================
+        // ==================== 13. تسجيل الدخول ====================
         function initLogin() {
             const roleCustomer = document.getElementById('roleCustomer');
             const roleDriver = document.getElementById('roleDriver');
@@ -3902,14 +3585,12 @@
                 localStorage.setItem('waselny_user', JSON.stringify(currentUser));
                 loginOverlay.style.display = 'none';
 
-                if (role === 'driver') {
-                    showPage('driverPage');
+                if (role === 'driver') { showPage('driverPage');
                     document.getElementById('driverNameDisplay').innerText = name;
                     refreshDriverPanel();
-                    lastAvailableCount = allOrders.filter(o => o.status === 'pending').length;
-                } else {
-                    showPage('homePage');
-                }
+                    setInterval(refreshDriverPanel, 1500);
+                    lastOrderCount = allOrders.filter(o => o.status === 'pending').length; } else { showPage(
+                    'homePage'); }
                 showToast(`أهلاً ${name}`);
             };
         }
@@ -3990,13 +3671,11 @@
                 document.getElementById('loginOverlay').style.display = 'none';
                 if (currentUser.role === 'driver') { showPage('driverPage');
                     refreshDriverPanel();
-                    document.getElementById('driverNameDisplay').innerText = currentUser.name;
-                    lastAvailableCount = allOrders.filter(o => o.status === 'pending').length;
-                } else showPage('homePage');
+                    setInterval(refreshDriverPanel, 1500); } else showPage('homePage');
             } catch (e) { initLogin(); }
         } else { initLogin(); }
 
-        // بدء تشغيل الكاروسيل والـ Polling المحسن
+        // بدء تشغيل الكاروسيل
         renderMainCarousel();
         renderCategories();
         renderOffers();
@@ -4004,9 +3683,6 @@
         renderFilters();
         renderRestaurantsList();
         startMainCarouselAuto();
-        loadOrders(true);
-        if (pollingTimer) clearInterval(pollingTimer);
-        pollingTimer = setInterval(() => { if (currentUser) loadOrders(); }, 3000);
     </script>
 </body>
 </html>

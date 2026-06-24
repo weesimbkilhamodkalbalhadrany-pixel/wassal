@@ -329,6 +329,16 @@
         .geo-btn { background: var(--white); border: 1px solid var(--gray-light); border-radius: 30px; padding: 9px; display: flex; justify-content: space-between; margin-bottom: 8px; cursor: pointer; }
         .current-location-btn { width: 100%; padding: 8px; border-radius: 30px; background: var(--primary-light); color: white; border: none; font-weight: 700; font-size: 0.8rem; margin-bottom: 8px; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; }
         .current-location-btn:active { transform: scale(0.97); }
+        
+        /* تحسينات واجهة التقييم */
+        .rating-stars-wrapper { display: flex; gap: 5px; font-size: 1.5rem; cursor: pointer; }
+        .rating-stars-wrapper .fa-star { color: var(--gray-light); transition: color 0.1s; }
+        .rating-stars-wrapper .fa-star.active { color: var(--warning); }
+        .rating-stars-wrapper .fa-star:active { transform: scale(1.1); }
+        
+        /* واجهة تتبع محسنة */
+        .tracking-header-card { background: var(--white); border-radius: 16px; padding: 16px; border-bottom: 3px solid var(--primary); margin-bottom: 16px; }
+        .tracking-status-icon { width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin: 0 auto 10px; }
     </style>
 </head>
 <body>
@@ -530,14 +540,22 @@
         </div>
     </div>
 
+    <!-- [تم الإصلاح] نافذة التقييم المحسنة -->
     <div id="ratingModal" class="item-modal-overlay">
         <div class="item-modal-card">
-            <div class="modal-content">
-                <h3 style="text-align:center; font-size:1.3rem; color:var(--primary);">⭐ تقييم الطلب</h3>
-                <p style="text-align:center; font-size:0.8rem; color:var(--gray); margin-bottom:15px;">شكراً لاستخدامك خدمتنا! نتمنى لك يوماً سعيداً 😊</p>
-                <div style="margin-bottom:10px;">
-                    <label style="font-weight:700; font-size:0.8rem;">تقييم المندوب</label>
-                    <div class="stars" data-category="driver" style="display:flex; gap:10px; font-size:1.5rem; cursor:pointer;">
+            <div class="modal-content" style="text-align: center;">
+                <div style="display: flex; justify-content: center; margin-bottom: 15px;">
+                    <i class="fas fa-star" style="font-size: 3rem; color: var(--warning);"></i>
+                </div>
+                <h3 style="font-size: 1.3rem; color: var(--primary); margin-bottom: 5px;">⭐ تقييم الطلب</h3>
+                <p style="font-size: 0.85rem; color: var(--gray); margin-bottom: 20px;">شكراً لاستخدامك خدمتنا! نتمنى لك يوماً سعيداً 😊</p>
+                
+                <div style="margin-bottom: 20px; text-align: right;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                        <label style="font-weight: 700; font-size: 0.85rem;">تقييم المندوب</label>
+                        <span id="rating_driver_text" style="font-size: 0.8rem; color: var(--gray);">لم يتم التقييم</span>
+                    </div>
+                    <div class="rating-stars-wrapper" data-category="driver" data-rating="0">
                         <i class="far fa-star" data-value="1"></i>
                         <i class="far fa-star" data-value="2"></i>
                         <i class="far fa-star" data-value="3"></i>
@@ -545,9 +563,13 @@
                         <i class="far fa-star" data-value="5"></i>
                     </div>
                 </div>
-                <div style="margin-bottom:10px;">
-                    <label style="font-weight:700; font-size:0.8rem;">تقييم الخدمة</label>
-                    <div class="stars" data-category="service" style="display:flex; gap:10px; font-size:1.5rem; cursor:pointer;">
+
+                <div style="margin-bottom: 20px; text-align: right;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                        <label style="font-weight: 700; font-size: 0.85rem;">تقييم الخدمة</label>
+                        <span id="rating_service_text" style="font-size: 0.8rem; color: var(--gray);">لم يتم التقييم</span>
+                    </div>
+                    <div class="rating-stars-wrapper" data-category="service" data-rating="0">
                         <i class="far fa-star" data-value="1"></i>
                         <i class="far fa-star" data-value="2"></i>
                         <i class="far fa-star" data-value="3"></i>
@@ -555,9 +577,13 @@
                         <i class="far fa-star" data-value="5"></i>
                     </div>
                 </div>
-                <div style="margin-bottom:10px;">
-                    <label style="font-weight:700; font-size:0.8rem;">سرعة التوصيل</label>
-                    <div class="stars" data-category="speed" style="display:flex; gap:10px; font-size:1.5rem; cursor:pointer;">
+
+                <div style="margin-bottom: 20px; text-align: right;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                        <label style="font-weight: 700; font-size: 0.85rem;">سرعة التوصيل</label>
+                        <span id="rating_speed_text" style="font-size: 0.8rem; color: var(--gray);">لم يتم التقييم</span>
+                    </div>
+                    <div class="rating-stars-wrapper" data-category="speed" data-rating="0">
                         <i class="far fa-star" data-value="1"></i>
                         <i class="far fa-star" data-value="2"></i>
                         <i class="far fa-star" data-value="3"></i>
@@ -565,9 +591,13 @@
                         <i class="far fa-star" data-value="5"></i>
                     </div>
                 </div>
-                <div style="margin-bottom:15px;">
-                    <label style="font-weight:700; font-size:0.8rem;">تقييم المطعم</label>
-                    <div class="stars" data-category="restaurant" style="display:flex; gap:10px; font-size:1.5rem; cursor:pointer;">
+
+                <div style="margin-bottom: 20px; text-align: right;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                        <label style="font-weight: 700; font-size: 0.85rem;">تقييم المطعم</label>
+                        <span id="rating_restaurant_text" style="font-size: 0.8rem; color: var(--gray);">لم يتم التقييم</span>
+                    </div>
+                    <div class="rating-stars-wrapper" data-category="restaurant" data-rating="0">
                         <i class="far fa-star" data-value="1"></i>
                         <i class="far fa-star" data-value="2"></i>
                         <i class="far fa-star" data-value="3"></i>
@@ -575,10 +605,15 @@
                         <i class="far fa-star" data-value="5"></i>
                     </div>
                 </div>
-                <textarea id="ratingComment" rows="2" placeholder="أضف تعليقك (اختياري)" style="width:100%; padding:8px; border-radius:12px; border:1px solid var(--gray-light); font-size:0.8rem; margin-bottom:15px;"></textarea>
-                <div class="modal-actions">
-                    <button class="btn-add-modal" onclick="submitRating()" style="flex:1;">إرسال التقييم</button>
-                    <button class="btn-close-modal" onclick="closeRating()" style="flex:0.5;">تخطي</button>
+
+                <div style="margin-bottom: 20px; text-align: right;">
+                    <label style="font-weight: 700; font-size: 0.85rem; display: block; margin-bottom: 4px;">📝 أضف تعليقك (اختياري)</label>
+                    <textarea id="ratingComment" rows="2" placeholder="انطباعك عن التجربة..." style="width:100%; padding:10px; border-radius:12px; border:1px solid var(--gray-light); font-size:0.8rem; background:var(--bg-light);"></textarea>
+                </div>
+                
+                <div class="modal-actions" style="display: flex; gap: 10px; margin-top: 15px;">
+                    <button class="btn-add-modal" onclick="submitRating()" style="flex: 2;">إرسال التقييم</button>
+                    <button class="btn-close-modal" onclick="closeRating()" style="flex: 1;">تخطي</button>
                 </div>
             </div>
         </div>
@@ -1719,33 +1754,34 @@
             document.getElementById('deliveryCostValueNew').innerText = deliveryCostNew;
         }
 
-        // [تم التعديل] تحسين عرض الأصناف وتفاصيل الطلب
+        // [تم التعديل] تحسين عرض الأصناف وتفاصيل الطلب (جدول مرتب)
         function updateCheckoutSummary() {
             if (!currentRestaurant) return;
             let totalFood = cart.reduce((s, i) => s + (i.p * i.qty), 0);
             let total = totalFood + deliveryCost;
             
             let itemsHtml = `
-                <div style="background: var(--bg-light); border-radius: 12px; padding: 12px; margin: 12px 0;">
-                    <div style="display: flex; justify-content: space-between; font-weight: 700; color: var(--gray); border-bottom: 1px solid var(--gray-light); padding-bottom: 6px; margin-bottom: 6px;">
-                        <span>الصنف</span>
-                        <span>الكمية</span>
-                        <span>السعر</span>
+                <div style="background: var(--bg-light); border-radius: 12px; padding: 16px; margin: 12px 0; border: 1px solid var(--gray-light);">
+                    <div style="display: flex; justify-content: space-between; font-weight: 700; color: var(--gray); border-bottom: 2px solid var(--gray-light); padding-bottom: 10px; margin-bottom: 10px;">
+                        <span style="flex: 2;">الصنف</span>
+                        <span style="flex: 1; text-align: center;">الكمية</span>
+                        <span style="flex: 1; text-align: left;">الإجمالي</span>
                     </div>
                     ${cart.map(i => `
-                        <div style="display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px dashed var(--gray-light);">
-                            <div style="flex: 1;">
-                                <span style="font-weight: 700;">${i.name}</span>
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--gray-light);">
+                            <div style="flex: 2;">
+                                <div style="font-weight: 700; font-size: 0.9rem;">${i.name}</div>
+                                <div style="font-size: 0.7rem; color: var(--gray);">${i.p} ريال / صنف</div>
                                 ${i.note ? `<div style="font-size: 0.7rem; color: var(--gray);">📝 ${i.note}</div>` : ''}
                             </div>
-                            <div style="margin: 0 15px;">x${i.qty}</div>
-                            <div style="font-weight: 700; color: var(--primary);">${i.p * i.qty} ريال</div>
+                            <div style="flex: 1; text-align: center; font-weight: 600;">x${i.qty}</div>
+                            <div style="flex: 1; text-align: left; font-weight: 700; color: var(--primary);">${i.p * i.qty} ريال</div>
                         </div>
                     `).join('')}
-                    <div style="margin-top: 8px; display: flex; flex-direction: column; gap: 4px;">
-                        <div style="display: flex; justify-content: space-between; font-size: 0.9rem;"><span>المجموع</span><span>${totalFood} ريال</span></div>
-                        <div style="display: flex; justify-content: space-between; font-size: 0.9rem;"><span>🚚 التوصيل</span><span>${deliveryCost} ريال</span></div>
-                        <div style="display: flex; justify-content: space-between; font-size: 1.1rem; font-weight: 800; color: var(--primary-dark); border-top: 2px solid var(--primary-light); padding-top: 8px; margin-top: 4px;"><span>الإجمالي</span><span>${total} ريال</span></div>
+                    <div style="margin-top: 12px; display: flex; flex-direction: column; gap: 4px; border-top: 2px solid var(--gray-light); padding-top: 12px;">
+                        <div style="display: flex; justify-content: space-between; font-size: 0.9rem;"><span>مجموع الأصناف</span><span>${totalFood} ريال</span></div>
+                        <div style="display: flex; justify-content: space-between; font-size: 0.9rem;"><span>🚚 رسوم التوصيل</span><span>${deliveryCost} ريال</span></div>
+                        <div style="display: flex; justify-content: space-between; font-size: 1.2rem; font-weight: 800; color: var(--primary-dark); border-top: 2px solid var(--primary-light); padding-top: 8px; margin-top: 4px;"><span>الإجمالي النهائي</span><span>${total} ريال</span></div>
                     </div>
                 </div>
             `;
@@ -1955,19 +1991,26 @@
             }, 400);
         }
 
-        // ==================== 8. نظام التقييم ====================
+        // ==================== 8. نظام التقييم (تم الإصلاح) ====================
         let currentRatingOrderId = null;
         let ratingData = { driver: 0, service: 0, speed: 0, restaurant: 0 };
 
         function openRatingModal(orderId) {
             currentRatingOrderId = orderId;
             ratingData = { driver: 0, service: 0, speed: 0, restaurant: 0 };
-            document.querySelectorAll('.stars').forEach(container => {
-                container.querySelectorAll('.fa-star').forEach(star => {
-                    star.classList.remove('fas');
+            
+            // إعادة تعيين النجوم في النافذة المنبثقة
+            document.querySelectorAll('.rating-stars-wrapper').forEach(wrapper => {
+                const stars = wrapper.querySelectorAll('.fa-star');
+                stars.forEach(star => {
+                    star.classList.remove('active', 'fas');
                     star.classList.add('far');
                 });
+                const cat = wrapper.dataset.category;
+                document.getElementById(`rating_${cat}_text`).innerText = 'لم يتم التقييم';
+                wrapper.dataset.rating = '0';
             });
+            
             document.getElementById('ratingComment').value = '';
             document.getElementById('ratingModal').style.display = 'flex';
         }
@@ -1975,22 +2018,35 @@
         function closeRating() { document.getElementById('ratingModal').style.display = 'none';
             stopAutoTracking(); }
 
-        document.querySelectorAll('.stars').forEach(container => {
-            container.addEventListener('click', function(e) {
-                const star = e.target.closest('.fa-star');
-                if (!star) return;
-                const value = parseInt(star.dataset.value);
-                const category = this.dataset.category;
-                ratingData[category] = value;
-                this.querySelectorAll('.fa-star').forEach(s => {
-                    const val = parseInt(s.dataset.value);
-                    if (val <= value) {
-                        s.classList.remove('far');
-                        s.classList.add('fas');
-                    } else {
-                        s.classList.remove('fas');
-                        s.classList.add('far');
-                    }
+        // إضافة حدث النقر على النجوم (دالة جديدة)
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.rating-stars-wrapper').forEach(wrapper => {
+                wrapper.addEventListener('click', function(e) {
+                    const star = e.target.closest('.fa-star');
+                    if (!star) return;
+                    
+                    const value = parseInt(star.dataset.value);
+                    const category = this.dataset.category;
+                    
+                    // تحديث البيانات
+                    ratingData[category] = value;
+                    
+                    // تحديث واجهة النجوم
+                    const stars = this.querySelectorAll('.fa-star');
+                    stars.forEach(s => {
+                        const val = parseInt(s.dataset.value);
+                        if (val <= value) {
+                            s.classList.remove('far');
+                            s.classList.add('fas', 'active');
+                        } else {
+                            s.classList.remove('fas', 'active');
+                            s.classList.add('far');
+                        }
+                    });
+                    
+                    // تحديث النص
+                    const label = document.getElementById(`rating_${category}_text`);
+                    if (label) label.innerText = `${value} من 5 نجوم`;
                 });
             });
         });
@@ -1998,7 +2054,7 @@
         async function submitRating() {
             if (ratingData.driver === 0 || ratingData.service === 0 || ratingData.speed === 0 || ratingData
                 .restaurant === 0) {
-                showToast('⚠️ يرجى تقييم جميع الفئات');
+                showToast('⚠️ يرجى تقييم جميع الفئات (النجوم الذهبية تعني التقييم)');
                 return;
             }
             const comment = document.getElementById('ratingComment').value.trim();
@@ -2023,61 +2079,88 @@
             }
         }
 
-        // ==================== 9. واجهة التتبع للعميل ====================
+        // ==================== 9. واجهة التتبع للعميل (تم إعادة التصميم بالكامل) ====================
         async function viewOrderTracking(id) {
             await loadOrders();
             let order = allOrders.find(o => o.id == id);
             if (!order) return;
             let steps = ['pending', 'on_the_way', 'arrived', 'delivered'];
             let idx = steps.indexOf(order.status);
-            let stepsHtml = '<div class="tracking-steps">';
+            
+            // بناء شريط التتبع بأيقونات ملونة
+            let stepsHtml = `
+                <div class="tracking-header-card">
+                    <h3 style="font-size:1.2rem; color:var(--primary); text-align:center;">📍 تتبع الطلب #${order.id}</h3>
+                    <div style="text-align:center; margin-top:5px; font-size:0.85rem; color:var(--gray);">${new Date(order.createdAt).toLocaleString('ar-SA')}</div>
+                </div>
+                <div style="background:var(--white); padding:16px; border-radius:14px; margin-bottom:16px; border:1px solid var(--gray-light);">
+                    <div class="tracking-steps">
+            `;
             steps.forEach((s, i) => {
                 let cls = (i < idx) ? 'completed' : (i === idx ? 'active' : '');
-                let icon = { pending: 'fa-clock', on_the_way: 'fa-truck', arrived: 'fa-map-marker-alt',
-                    delivered: 'fa-check-circle' } [s];
+                let icon = { pending: 'fa-clock', on_the_way: 'fa-motorcycle', arrived: 'fa-map-location-dot',
+                    delivered: 'fa-check-double' } [s];
                 let label = { pending: 'قيد المراجعة', on_the_way: 'في الطريق', arrived: 'وصل الموقع',
                     delivered: 'تم التوصيل' } [s];
-                stepsHtml +=
-                    `<div class="step ${cls}"><div class="circle"><i class="fas ${icon}"></i></div><div class="step-label">${label}</div></div>`;
+                stepsHtml += `
+                    <div class="step ${cls}">
+                        <div class="circle"><i class="fas ${icon}"></i></div>
+                        <div class="step-label">${label}</div>
+                    </div>`;
                 if (i < steps.length - 1) stepsHtml += `<div class="step-connector ${i<idx?'completed':''}"></div>`;
             });
-            stepsHtml += '</div>';
+            stepsHtml += `</div></div>`;
 
-            // [تم التعديل] تحسين عرض الأصناف في التتبع
+            // بناء جدول الأصناف داخل التتبع
             let itemsListHtml = `
-                <div style="background: var(--bg-light); border-radius: 12px; padding: 12px; margin: 12px 0;">
-                    <div style="display: flex; justify-content: space-between; font-weight: 700; color: var(--gray); border-bottom: 1px solid var(--gray-light); padding-bottom: 4px; margin-bottom: 4px;">
-                        <span>الصنف</span>
-                        <span>الكمية</span>
-                        <span>السعر</span>
+                <div style="background: var(--bg-light); border-radius: 12px; padding: 16px; margin: 12px 0;">
+                    <div style="display: flex; justify-content: space-between; font-weight: 700; color: var(--gray); border-bottom: 2px solid var(--gray-light); padding-bottom: 10px; margin-bottom: 10px;">
+                        <span style="flex: 2;">الصنف</span>
+                        <span style="flex: 1; text-align: center;">الكمية</span>
+                        <span style="flex: 1; text-align: left;">الإجمالي</span>
                     </div>
                     ${order.items.map(i => `
-                        <div style="display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px dashed var(--gray-light);">
-                            <div style="flex: 1;">
-                                <span style="font-weight: 700;">${i.name}</span>
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--gray-light);">
+                            <div style="flex: 2;">
+                                <div style="font-weight: 700; font-size: 0.9rem;">${i.name}</div>
+                                <div style="font-size: 0.7rem; color: var(--gray);">${i.price} ريال / صنف</div>
                                 ${i.note ? `<div style="font-size: 0.7rem; color: var(--gray);">📝 ${i.note}</div>` : ''}
                             </div>
-                            <div style="margin: 0 15px;">x${i.qty}</div>
-                            <div style="font-weight: 700; color: var(--primary);">${i.price * i.qty} ريال</div>
+                            <div style="flex: 1; text-align: center; font-weight: 600;">x${i.qty}</div>
+                            <div style="flex: 1; text-align: left; font-weight: 700; color: var(--primary);">${i.price * i.qty} ريال</div>
                         </div>
                     `).join('')}
+                    <div style="margin-top: 12px; display: flex; flex-direction: column; gap: 4px; border-top: 2px solid var(--gray-light); padding-top: 12px;">
+                        <div style="display: flex; justify-content: space-between; font-size: 0.9rem;"><span>مجموع الأصناف</span><span>${order.totalFood || 0} ريال</span></div>
+                        <div style="display: flex; justify-content: space-between; font-size: 0.9rem;"><span>🚚 رسوم التوصيل</span><span>${order.deliveryCost || 0} ريال</span></div>
+                        <div style="display: flex; justify-content: space-between; font-size: 1.2rem; font-weight: 800; color: var(--primary-dark); border-top: 2px solid var(--primary-light); padding-top: 8px; margin-top: 4px;"><span>الإجمالي النهائي</span><span>${order.total || 0} ريال</span></div>
+                    </div>
                 </div>
             `;
 
             let details = `
-          <div class="tracking-detail-card" style="border:2px solid var(--primary);">
-            <h3 style="font-size:1.3rem; color:var(--primary);">📍 طلب #${order.id}</h3>
-            <div class="tracking-label">⏰ الوقت</div>
-            <div class="tracking-value" style="font-size:1rem;">${new Date(order.createdAt).toLocaleString('ar-SA')}</div>
-            <div class="tracking-label">🍔 المطعم</div>
-            <div class="tracking-value" style="font-size:1rem;">${order.restaurant}</div>
-            <div class="tracking-label">🧾 الأصناف</div>
-            ${itemsListHtml}
-            <div style="display:flex; justify-content:space-between; font-size:1rem; margin:5px 0;"><span>المجموع</span><span>${order.totalFood} ريال</span></div>
-            <div style="display:flex; justify-content:space-between; font-size:1rem; margin:5px 0;"><span>🚚 التوصيل</span><span>${order.deliveryCost} ريال</span></div>
-            <div style="display:flex; justify-content:space-between; font-size:1.2rem; font-weight:800; border-top:2px solid var(--primary); padding-top:8px; margin-top:8px;"><span>الإجمالي</span><span>${order.total} ريال</span></div>
+          <div style="background:var(--white); border-radius:14px; padding:16px; border:1px solid var(--gray-light); margin-bottom:16px;">
+            <div style="display:flex; gap:8px; margin-bottom:10px; flex-wrap:wrap;">
+                <div style="flex:1; background:var(--bg-light); padding:8px; border-radius:8px; text-align:center;">
+                    <div style="font-size:0.7rem; color:var(--gray);">المطعم</div>
+                    <div style="font-weight:800; font-size:0.9rem;">${order.restaurant}</div>
+                </div>
+                <div style="flex:1; background:var(--bg-light); padding:8px; border-radius:8px; text-align:center;">
+                    <div style="font-size:0.7rem; color:var(--gray);">حالة الطلب</div>
+                    <div style="font-weight:800; font-size:0.9rem; color:${order.status === 'delivered' ? 'var(--success)' : (order.status === 'on_the_way' ? 'var(--primary-light)' : 'var(--warning)')}">${getStatusText(order.status)}</div>
+                </div>
+            </div>
+            <div style="display:flex; gap:8px; flex-wrap:wrap; justify-content:space-between; background:var(--bg-light); padding:10px; border-radius:8px;">
+                <div><i class="fas fa-user" style="color:var(--primary);"></i> ${order.customerName}</div>
+                <div><i class="fas fa-phone" style="color:var(--primary);"></i> ${order.customerPhone}</div>
+                <div><i class="fas fa-map-marker-alt" style="color:var(--primary);"></i> ${order.address}</div>
+            </div>
           </div>
+          ${itemsListHtml}
           ${stepsHtml}
+          <div style="margin-top:10px; background:var(--gray-light); border-radius:10px; padding:10px; font-size:0.8rem; color:var(--gray); text-align:center;">
+              💡 سيتم تحديث حالة طلبك تلقائياً كل 3 ثوانٍ
+          </div>
         `;
             document.getElementById('trackingFullscreenContainer').innerHTML = details;
             document.getElementById('trackFullscreen').style.display = 'block';

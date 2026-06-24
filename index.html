@@ -327,6 +327,8 @@
         .menu-category-title { font-size: 0.85rem; font-weight: 800; color: var(--primary); margin: 10px 0 6px 0; padding-bottom: 4px; border-bottom: 2px solid var(--primary-light); }
         
         .geo-btn { background: var(--white); border: 1px solid var(--gray-light); border-radius: 30px; padding: 9px; display: flex; justify-content: space-between; margin-bottom: 8px; cursor: pointer; }
+        .current-location-btn { width: 100%; padding: 8px; border-radius: 30px; background: var(--primary-light); color: white; border: none; font-weight: 700; font-size: 0.8rem; margin-bottom: 8px; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; }
+        .current-location-btn:active { transform: scale(0.97); }
     </style>
 </head>
 <body>
@@ -420,11 +422,12 @@
             <div style="background:var(--white); border-radius:14px; padding:12px; border:1px solid var(--gray-light);">
                 <div class="location-section">
                     <label style="font-weight:800; font-size:0.8rem;">📍 موقع الانطلاق (من)</label>
-                    <button class="current-location-btn" onclick="getCurrentLocationForDelivery()"><i class="fas fa-location-dot"></i> استخدم موقعي الحالي</button>
+                    <button class="current-location-btn" onclick="getCurrentLocationForDelivery()"><i class="fas fa-location-dot"></i> استخدم موقعي الحالي (الانطلاق)</button>
                     <div class="geo-btn" onclick="initMapForCheckout('delivery_from')"><span id="deliveryFromTxt">🗺️ حدد موقع الانطلاق</span><i class="fas fa-map-marker-alt" style="color:var(--primary)"></i></div>
                     <input type="text" id="deliveryFromManual" class="field-input" placeholder="✍️ أو اكتب عنوان الانطلاق يدوياً">
                     
                     <label style="font-weight:800; font-size:0.8rem; margin-top:8px;">📍 موقع الوصول (إلى)</label>
+                    <button class="current-location-btn" onclick="getCurrentLocationForDeliveryTo()"><i class="fas fa-location-dot"></i> استخدم موقعي الحالي (الوجهة)</button>
                     <div class="geo-btn" onclick="initMapForCheckout('delivery_to')"><span id="deliveryToTxt">🗺️ حدد وجهتك من الخريطة</span><i class="fas fa-map-marker-alt" style="color:var(--primary)"></i></div>
                     <input type="text" id="deliveryToManual" class="field-input" placeholder="✍️ أو اكتب عنوان الوصول يدوياً">
                     
@@ -444,7 +447,10 @@
             <button class="checkout-btn" onclick="confirmDeliveryOrder()" style="width:100%; padding:12px; background:#f59e0b; color:white; border:none; border-radius:40px; font-weight:800; margin-top:15px;">✅ إرسال طلب التوصيل</button>
         </div>
 
-        <div id="ordersPage" class="page"><div id="myOrdersContainer" style="background:var(--white); border-radius:14px; padding:12px; text-align:center;"><span style="font-size:1.5rem;">📦</span><p>لا توجد طلبات</p></div><button class="btn-primary" onclick="renderMyOrders()" style="margin-top:10px;">تحديث</button></div>
+        <div id="ordersPage" class="page">
+            <div id="myOrdersContainer" style="background:var(--white); border-radius:14px; padding:12px;"></div>
+            <button class="btn-primary" onclick="renderMyOrders()" style="margin-top:10px;">تحديث</button>
+        </div>
 
         <div id="settingsPage" class="page">
             <div style="background:var(--white); border-radius:14px; padding:14px; border:1px solid var(--gray-light);">
@@ -1607,6 +1613,35 @@
                         showToast("تم تحديد موقعك"); }, () => showToast("فشل تحديد الموقع")); } else showToast(
                 "المتصفح لا يدعم الموقع"); }
 
+        // إضافة دوال تحديد الموقع لخدمة "وصلي"
+        function getCurrentLocationForDelivery() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    pos => {
+                        deliveryFrom = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+                        document.getElementById('deliveryFromTxt').innerHTML = '✅ تم تحديد موقع الانطلاق الحالي';
+                        updateDeliveryCostNew();
+                        showToast("تم تحديد موقع الانطلاق");
+                    },
+                    () => showToast("فشل تحديد موقع الانطلاق، يرجى استخدام الخريطة أو الكتابة اليدوية")
+                );
+            } else showToast("المتصفح لا يدعم تحديد الموقع");
+        }
+
+        function getCurrentLocationForDeliveryTo() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    pos => {
+                        deliveryTo = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+                        document.getElementById('deliveryToTxt').innerHTML = '✅ تم تحديد موقع الوصول الحالي';
+                        updateDeliveryCostNew();
+                        showToast("تم تحديد موقع الوصول");
+                    },
+                    () => showToast("فشل تحديد موقع الوصول، يرجى استخدام الخريطة أو الكتابة اليدوية")
+                );
+            } else showToast("المتصفح لا يدعم تحديد الموقع");
+        }
+
         function initMapForCheckout(mode) {
             currentMapMode = mode;
             document.getElementById('map-overlay').style.display = 'flex';
@@ -1684,17 +1719,45 @@
             document.getElementById('deliveryCostValueNew').innerText = deliveryCostNew;
         }
 
+        // [تم التعديل] تحسين عرض الأصناف وتفاصيل الطلب
         function updateCheckoutSummary() {
             if (!currentRestaurant) return;
             let totalFood = cart.reduce((s, i) => s + (i.p * i.qty), 0);
             let total = totalFood + deliveryCost;
-            let itemsHtml = cart.map(i =>
-                    `<div style="display:flex; justify-content:space-between;"><span>${i.name} x${i.qty}${i.note ? ' ('+i.note+')' : ''}</span><span>${i.p*i.qty} ريال</span></div>`
-                    ).join('');
-            itemsHtml +=
-                `<div><span>المجموع: ${totalFood} ريال</span></div><div><span>🚚 التوصيل: ${deliveryCost} ريال</span></div><div><span>الإجمالي: ${total} ريال</span></div>`;
-            document.getElementById('checkoutOrderSummary').innerHTML =
-                `<h4>🍽️ ${currentRestaurant.name}</h4>${itemsHtml}`;
+            
+            let itemsHtml = `
+                <div style="background: var(--bg-light); border-radius: 12px; padding: 12px; margin: 12px 0;">
+                    <div style="display: flex; justify-content: space-between; font-weight: 700; color: var(--gray); border-bottom: 1px solid var(--gray-light); padding-bottom: 6px; margin-bottom: 6px;">
+                        <span>الصنف</span>
+                        <span>الكمية</span>
+                        <span>السعر</span>
+                    </div>
+                    ${cart.map(i => `
+                        <div style="display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px dashed var(--gray-light);">
+                            <div style="flex: 1;">
+                                <span style="font-weight: 700;">${i.name}</span>
+                                ${i.note ? `<div style="font-size: 0.7rem; color: var(--gray);">📝 ${i.note}</div>` : ''}
+                            </div>
+                            <div style="margin: 0 15px;">x${i.qty}</div>
+                            <div style="font-weight: 700; color: var(--primary);">${i.p * i.qty} ريال</div>
+                        </div>
+                    `).join('')}
+                    <div style="margin-top: 8px; display: flex; flex-direction: column; gap: 4px;">
+                        <div style="display: flex; justify-content: space-between; font-size: 0.9rem;"><span>المجموع</span><span>${totalFood} ريال</span></div>
+                        <div style="display: flex; justify-content: space-between; font-size: 0.9rem;"><span>🚚 التوصيل</span><span>${deliveryCost} ريال</span></div>
+                        <div style="display: flex; justify-content: space-between; font-size: 1.1rem; font-weight: 800; color: var(--primary-dark); border-top: 2px solid var(--primary-light); padding-top: 8px; margin-top: 4px;"><span>الإجمالي</span><span>${total} ريال</span></div>
+                    </div>
+                </div>
+            `;
+            document.getElementById('checkoutOrderSummary').innerHTML = `
+                <div style="padding: 10px; background: var(--white); border-radius: 14px; border: 1px solid var(--gray-light);">
+                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px; border-bottom: 1px solid var(--gray-light); padding-bottom: 8px;">
+                        <i class="fas fa-store" style="color: var(--primary);"></i>
+                        <h4 style="font-weight: 800; margin: 0;">${currentRestaurant.name}</h4>
+                    </div>
+                    ${itemsHtml}
+                </div>
+            `;
         }
 
         function initPaymentList() {
@@ -1979,9 +2042,28 @@
                 if (i < steps.length - 1) stepsHtml += `<div class="step-connector ${i<idx?'completed':''}"></div>`;
             });
             stepsHtml += '</div>';
-            let itemsListHtml = '<ul class="order-items-list">' + order.items.map(i =>
-                    `<li><span>${i.name} x${i.qty} ${i.note?'('+i.note+')':''}</span><span>${i.price*i.qty} ريال</span></li>`
-                    ).join('') + '</ul>';
+
+            // [تم التعديل] تحسين عرض الأصناف في التتبع
+            let itemsListHtml = `
+                <div style="background: var(--bg-light); border-radius: 12px; padding: 12px; margin: 12px 0;">
+                    <div style="display: flex; justify-content: space-between; font-weight: 700; color: var(--gray); border-bottom: 1px solid var(--gray-light); padding-bottom: 4px; margin-bottom: 4px;">
+                        <span>الصنف</span>
+                        <span>الكمية</span>
+                        <span>السعر</span>
+                    </div>
+                    ${order.items.map(i => `
+                        <div style="display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px dashed var(--gray-light);">
+                            <div style="flex: 1;">
+                                <span style="font-weight: 700;">${i.name}</span>
+                                ${i.note ? `<div style="font-size: 0.7rem; color: var(--gray);">📝 ${i.note}</div>` : ''}
+                            </div>
+                            <div style="margin: 0 15px;">x${i.qty}</div>
+                            <div style="font-weight: 700; color: var(--primary);">${i.price * i.qty} ريال</div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+
             let details = `
           <div class="tracking-detail-card" style="border:2px solid var(--primary);">
             <h3 style="font-size:1.3rem; color:var(--primary);">📍 طلب #${order.id}</h3>
@@ -2008,12 +2090,33 @@
                     parseInt(id));
                 startAutoTracking(parseInt(id)); } else showToast('لا يوجد طلب نشط'); }
 
+        // [تم التعديل] تحسين قائمة طلباتي لتبدو أكثر تناسقاً
         async function renderMyOrders() {
             await loadOrders();
             let myOrders = allOrders.filter(o => o.customerPhone === currentUser?.phone);
-            let html = myOrders.length ? myOrders.map(o =>
-                `<div style="padding:10px; border-bottom:1px solid #ddd; cursor:pointer;" onclick="viewOrderTracking(${o.id}); startAutoTracking(${o.id})"><strong>#${o.id}</strong> - ${o.restaurant} - ${o.total} ريال - ${o.status}</div>`
-                ).join('') : '<p>لا توجد طلبات</p>';
+            if (myOrders.length === 0) {
+                document.getElementById('myOrdersContainer').innerHTML = `
+                    <div style="text-align: center; padding: 30px; color: var(--gray);">
+                        <i class="fas fa-clipboard-list" style="font-size: 3rem; opacity: 0.5; margin-bottom: 10px;"></i>
+                        <p style="font-weight: 700;">لا توجد طلبات سابقة</p>
+                        <p style="font-size: 0.8rem;">ابدأ بتقديم طلبك الأول الآن!</p>
+                    </div>
+                `;
+                return;
+            }
+            let html = myOrders.map(o => `
+                <div class="driver-order-card" onclick="viewOrderTracking(${o.id}); startAutoTracking(${o.id})" style="cursor: pointer; border-right: 5px solid ${o.status === 'delivered' ? 'var(--success)' : (o.status === 'pending' ? 'var(--warning)' : 'var(--primary)')};">
+                    <div class="driver-order-header">
+                        <span class="driver-order-id">#${o.id}</span>
+                        <span class="driver-order-status ${o.status === 'delivered' ? 'delivered' : (o.status === 'on_the_way' ? 'on_the_way' : '')}">${getStatusText(o.status)}</span>
+                    </div>
+                    <div class="driver-order-details">
+                        <div><i class="fas fa-store"></i> ${o.restaurant || o.service}</div>
+                        <div><i class="fas fa-money-bill"></i> ${o.total} ريال</div>
+                        <div><i class="far fa-calendar-alt"></i> ${new Date(o.createdAt).toLocaleString('ar-SA', { hour: '2-digit', minute: '2-digit', day: 'numeric', month: 'numeric', year: 'numeric' })}</div>
+                    </div>
+                </div>
+            `).join('');
             document.getElementById('myOrdersContainer').innerHTML = html;
         }
 

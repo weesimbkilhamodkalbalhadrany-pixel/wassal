@@ -37,7 +37,6 @@
         .category-card h3 { font-size: 0.85rem; font-weight: 800; }
         .category-card p { font-size: 0.6rem; color: var(--gray); margin-top: 2px; }
 
-        /* شريط خدمة وصلي */
         .delivery-bar { display: flex; align-items: center; justify-content: center; gap: 10px; background: linear-gradient(135deg, var(--primary-light), var(--primary)); color: white; padding: 10px 15px; border-radius: 16px; margin-bottom: 15px; cursor: pointer; box-shadow: var(--shadow-md); transition: transform 0.1s; }
         .delivery-bar:active { transform: scale(0.97); }
         .delivery-bar i { font-size: 1.3rem; }
@@ -81,19 +80,24 @@
         .restaurant-item-price { text-align: center; min-width: 50px; }
         .restaurant-item-price .price { font-weight: 800; color: var(--primary); font-size: 0.8rem; }
         
+        /* تنسيق جديد لعرض الأصناف (أكثر جمالاً ووضوحاً) */
         .menu-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin-top: 10px; }
-        .menu-item-card { background: var(--white); border-radius: 20px; overflow: hidden; border: 1px solid var(--gray-light); box-shadow: var(--shadow); display: flex; flex-direction: column; transition: transform 0.2s; padding-bottom: 10px; }
+        .menu-item-card { background: var(--white); border-radius: 20px; overflow: hidden; border: 1px solid var(--gray-light); box-shadow: var(--shadow); display: flex; flex-direction: column; transition: transform 0.2s; padding-bottom: 12px; position: relative; }
         .menu-item-card:active { transform: scale(0.98); }
-        .menu-item-img { height: 125px; background-size: cover; background-position: center; width: 100%; }
-        .menu-item-info { padding: 12px; }
-        .menu-item-name { font-weight: 800; font-size: 0.85rem; color: var(--dark); }
-        .menu-item-price { color: var(--primary); font-weight: 800; font-size: 0.9rem; margin-top: 6px; }
-        .menu-item-desc { font-size: 0.7rem; color: var(--gray); margin-top: 4px; }
-        .item-controls { margin-top: 10px; border-top: 1px solid var(--gray-light); padding-top: 8px; }
-        .item-controls .qty-btn:active { transform: scale(0.9); }
-        .item-note { width: 100%; padding: 6px 10px; border-radius: 20px; border: 1px solid var(--gray-light); background: var(--white); font-size: 0.75rem; resize: vertical; min-height: 30px; transition: 0.2s; font-family: 'Cairo', sans-serif; }
+        .menu-item-img { height: 140px; background-size: cover; background-position: center; width: 100%; position: relative; }
+        .item-badge { position: absolute; top: 10px; right: 10px; background: var(--warning); color: #000; padding: 4px 12px; border-radius: 20px; font-size: 0.65rem; font-weight: 800; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+        .menu-item-info { padding: 12px 12px 0; display: flex; flex-direction: column; gap: 4px; }
+        .menu-item-name { font-weight: 800; font-size: 0.95rem; color: var(--dark); line-height: 1.3; }
+        .menu-item-desc { font-size: 0.7rem; color: var(--gray); line-height: 1.4; }
+        .menu-item-price { color: var(--primary); font-weight: 800; font-size: 1.1rem; margin-top: 2px; }
+        .item-controls { margin-top: 8px; display: flex; flex-direction: column; gap: 8px; padding: 0 12px; }
+        .item-controls .qty-wrap { display: flex; align-items: center; justify-content: center; gap: 15px; background: var(--bg-light); padding: 6px; border-radius: 30px; }
+        .item-controls .qty-btn { width: 34px; height: 34px; border-radius: 50%; border: none; background: var(--primary); color: white; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; transition: 0.1s; }
+        .item-controls .qty-btn:active { transform: scale(0.9); background: var(--primary-dark); }
+        .item-controls .qty-display { font-weight: bold; min-width: 20px; text-align: center; font-size: 1rem; }
+        .item-note { width: 100%; padding: 8px 12px; border-radius: 20px; border: 1px solid var(--gray-light); background: var(--white); font-size: 0.75rem; resize: vertical; min-height: 32px; transition: 0.2s; font-family: 'Cairo', sans-serif; }
         .item-note:focus { border-color: var(--primary-light); outline: none; box-shadow: 0 0 0 2px rgba(20,184,166,0.2); }
-        
+
         .float-cart { position: fixed; bottom: 70px; left: 14px; right: 14px; background: linear-gradient(135deg, var(--primary-dark), var(--primary)); color: white; padding: 12px 20px; border-radius: 50px; display: flex; justify-content: space-between; align-items: center; z-index: 1000; cursor: pointer; display: none; font-size: 0.85rem; font-weight: 700; box-shadow: 0 6px 16px rgba(15,118,110,0.3); }
         .cart-sidebar { position: fixed; top: 0; left: -100%; width: 85%; max-width: 320px; height: 100%; background: var(--white); z-index: 10001; transition: left 0.3s; display: flex; flex-direction: column; box-shadow: -2px 0 15px rgba(0,0,0,0.2); }
         .cart-sidebar.open { left: 0; }
@@ -106,7 +110,7 @@
         .cart-item-details h4 { font-size: 0.8rem; font-weight: 800; color: var(--dark); }
         .cart-item-details div { font-size: 0.75rem; color: var(--primary); font-weight: 700; margin-top: 2px; }
         .cart-qty-controls { display: flex; align-items: center; gap: 8px; }
-        .qty-btn { width: 26px; height: 26px; border-radius: 50%; background: var(--primary); border: none; color: white; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .qty-btn-small { width: 26px; height: 26px; border-radius: 50%; background: var(--primary); border: none; color: white; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; }
         .cart-footer { padding: 14px; border-top: 1px solid var(--gray-light); background: var(--white); }
         .cart-total { display: flex; justify-content: space-between; font-weight: 800; margin-bottom: 12px; font-size: 0.95rem; }
         .checkout-btn { width: 100%; padding: 12px; background: var(--warning); color: white; border: none; border-radius: 30px; font-weight: 800; cursor: pointer; font-size: 0.9rem; box-shadow: 0 4px 10px rgba(245,158,11,0.2); }
@@ -243,77 +247,16 @@
         .restaurant-hero-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.85) 30%, rgba(0,0,0,0.2)); padding: 16px; display: flex; flex-direction: column; justify-content: flex-end; color: white; }
         .hero-tag { position: absolute; top: 12px; right: 12px; background: var(--warning); color: #000; font-size: 0.65rem; font-weight: 800; padding: 4px 10px; border-radius: 30px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
         
-        /* --- ميزة السحب للتحديث (Pull to Refresh) مثل كروم --- */
-        #driverPullRefreshContainer {
-            position: relative;
-            overflow: hidden;
-            touch-action: pan-y; /* يسمح بالتمرير العمودي فقط */
-        }
-
-        .pull-to-refresh-circle {
-            position: absolute;
-            top: -50px;
-            left: 50%;
-            transform: translateX(-50%) rotate(0deg);
-            width: 40px;
-            height: 40px;
-            background: var(--white);
-            border-radius: 50%;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.15);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 999;
-            transition: transform 0.1s linear, top 0.1s linear, opacity 0.1s linear;
-            opacity: 0;
-        }
-
-        .pull-to-refresh-circle i {
-            color: var(--primary);
-            font-size: 1.1rem;
-            transition: transform 0.1s linear;
-        }
-
-        /* حالة الدوران المستمر عند جلب البيانات */
-        .pull-to-refresh-circle.refreshing {
-            animation: chromeSpin 0.8s linear infinite !important;
-            top: 15px !important;
-            opacity: 1 !important;
-        }
-
-        @keyframes chromeSpin {
-            100% { transform: translateX(-50%) rotate(360deg); }
-        }
-
-        /* --- تحسينات سلاسة واجهة المندوب والبطاقات --- */
-        .driver-order-card {
-            background: var(--white);
-            border-radius: 18px;
-            padding: 16px;
-            margin-bottom: 14px;
-            border: 1px solid var(--gray-light);
-            border-right: 5px solid var(--primary);
-            box-shadow: var(--shadow);
-            transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s;
-            will-change: transform; /* لتحسين أداء الأنيميشن على الهواتف */
-        }
-
-        /* تأثير اللمس الفوري السلس للمناديب أثناء العمل المكثف */
-        .driver-order-card:active {
-            transform: scale(0.97);
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-        }
-
-        .driver-action-btn {
-            position: relative;
-            overflow: hidden;
-            transition: all 0.2s ease;
-        }
-
-        .driver-action-btn:active {
-            transform: scale(0.95);
-            filter: brightness(0.9);
-        }
+        #driverPullRefreshContainer { position: relative; overflow: hidden; touch-action: pan-y; }
+        .pull-to-refresh-circle { position: absolute; top: -50px; left: 50%; transform: translateX(-50%) rotate(0deg); width: 40px; height: 40px; background: var(--white); border-radius: 50%; box-shadow: 0 3px 10px rgba(0,0,0,0.15); display: flex; align-items: center; justify-content: center; z-index: 999; transition: transform 0.1s linear, top 0.1s linear, opacity 0.1s linear; opacity: 0; }
+        .pull-to-refresh-circle i { color: var(--primary); font-size: 1.1rem; transition: transform 0.1s linear; }
+        .pull-to-refresh-circle.refreshing { animation: chromeSpin 0.8s linear infinite !important; top: 15px !important; opacity: 1 !important; }
+        @keyframes chromeSpin { 100% { transform: translateX(-50%) rotate(360deg); } }
+        
+        .driver-order-card { background: var(--white); border-radius: 18px; padding: 16px; margin-bottom: 14px; border: 1px solid var(--gray-light); border-right: 5px solid var(--primary); box-shadow: var(--shadow); transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s; will-change: transform; }
+        .driver-order-card:active { transform: scale(0.97); box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .driver-action-btn { position: relative; overflow: hidden; transition: all 0.2s ease; }
+        .driver-action-btn:active { transform: scale(0.95); filter: brightness(0.9); }
         
         .step.active .circle { animation: glowPulse 1s ease-in-out infinite; box-shadow: 0 0 20px 10px rgba(15,118,110,0.5); }
         .step.completed .circle { box-shadow: 0 0 10px 5px rgba(16,185,129,0.3); }
@@ -330,13 +273,11 @@
         .current-location-btn { width: 100%; padding: 8px; border-radius: 30px; background: var(--primary-light); color: white; border: none; font-weight: 700; font-size: 0.8rem; margin-bottom: 8px; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; }
         .current-location-btn:active { transform: scale(0.97); }
         
-        /* تحسينات واجهة التقييم */
         .rating-stars-wrapper { display: flex; gap: 5px; font-size: 1.5rem; cursor: pointer; }
         .rating-stars-wrapper .fa-star { color: var(--gray-light); transition: color 0.1s; }
         .rating-stars-wrapper .fa-star.active { color: var(--warning); }
         .rating-stars-wrapper .fa-star:active { transform: scale(1.1); }
         
-        /* واجهة تتبع محسنة */
         .tracking-header-card { background: var(--white); border-radius: 16px; padding: 16px; border-bottom: 3px solid var(--primary); margin-bottom: 16px; }
         .tracking-status-icon { width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin: 0 auto 10px; }
     </style>
@@ -344,9 +285,9 @@
 <body>
 
     <div class="header">
-        <div class="store-badge"><i class="fas fa-store"></i> وصل | WASAL</div>
+        <div class="store-badge"><i class="fas fa-store"></i> وصال | WASAL</div>
         <div class="bike-animation"><i class="fas fa-motorcycle"></i></div>
-        <div class="logo-main">وصل</div>
+        <div class="logo-main">وصال</div>
         <div class="logo-sub">W A S A L</div>
         <div class="work-hours"><span class="open-badge"></span><span>6 صباحاً - 12 منتصف الليل</span></div>
     </div>
@@ -356,7 +297,7 @@
         <div id="homePage" class="page active-page">
             <div class="categories-grid" id="categoriesGrid"></div>
             
-            <!-- شريط خدمة "وصلي" (موضوع تحت الفئات) -->
+            <!-- شريط خدمة "وصلي" -->
             <div class="delivery-bar" onclick="openCategory('delivery')">
                 <i class="fas fa-motorcycle"></i>
                 <div style="display:flex; flex-direction:column; align-items:center; line-height:1.3;">
@@ -425,7 +366,7 @@
             <button class="checkout-btn" onclick="confirmCheckoutOrder()" style="width:100%; padding:12px; background:#f59e0b; color:white; border:none; border-radius:40px; font-weight:800; margin-top:15px;">✅ تأكيد الطلب وإرسال عبر واتساب</button>
         </div>
 
-        <!-- صفحة خدمة وصلي (من موقع إلى موقع) -->
+        <!-- صفحة خدمة وصلي -->
         <div id="deliveryPage" class="page">
             <div class="back-btn" onclick="showPage('homePage')">🔙 رجوع</div>
             <h3 style="margin-bottom:10px;">🛵 طلب توصيل (وصلي)</h3>
@@ -473,7 +414,7 @@
             </div>
         </div>
 
-        <!-- واجهة المندوب المحدثة والسلسة -->
+        <!-- واجهة المندوب -->
         <div id="driverPage" class="page">
             <div class="driver-header-new">
                 <h2>التوصيل</h2>
@@ -488,9 +429,7 @@
                 <div class="driver-tab" data-driver-tab="active" onclick="switchDriverTab('active')"><i class="fas fa-truck"></i> طلباتي النشطة</div>
             </div>
             
-            <!-- الحاوية الذكية المدعومة بالسحب للتحديث -->
             <div id="driverPullRefreshContainer">
-                <!-- الدائرة التفاعلية المحاكية لجوجل كروم -->
                 <div id="chromeRefreshIndicator" class="pull-to-refresh-circle">
                     <i class="fas fa-arrow-down" id="chromeRefreshIcon"></i>
                 </div>
@@ -540,7 +479,6 @@
         </div>
     </div>
 
-    <!-- [تم الإصلاح] نافذة التقييم المحسنة -->
     <div id="ratingModal" class="item-modal-overlay">
         <div class="item-modal-card">
             <div class="modal-content" style="text-align: center;">
@@ -649,7 +587,7 @@
         <div class="login-card" style="background:rgba(255,255,255,0.12); backdrop-filter:blur(25px); -webkit-backdrop-filter:blur(25px); border-radius:40px; padding:32px 24px 36px; width:90%; max-width:360px; box-shadow:0 25px 60px rgba(0,0,0,0.3),0 0 30px rgba(20,184,166,0.2); border:1px solid rgba(255,255,255,0.25); text-align:center; color:white; animation:loginFadeIn 0.5s ease;">
             <div style="margin-bottom:28px;">
                 <i class="fas fa-motorcycle" style="font-size:3rem; display:block; margin-bottom:8px; text-shadow:0 5px 15px rgba(0,0,0,0.3);"></i>
-                <h2 style="font-size:2rem; font-weight:900; margin:0; letter-spacing:2px;">وصل</h2>
+                <h2 style="font-size:2rem; font-weight:900; margin:0; letter-spacing:2px;">وصال</h2>
                 <p style="font-size:0.7rem; opacity:0.8; margin-top:4px; letter-spacing:4px;">W A S A L</p>
             </div>
             <div class="role-buttons" style="display:flex; gap:12px; margin-bottom:24px; background:rgba(255,255,255,0.1); padding:6px; border-radius:50px; backdrop-filter:blur(10px);">
@@ -1174,20 +1112,21 @@
 
                 itemsHtml += `
             <div class="menu-item-card" data-cat="${catAttr}">
-              <div class="menu-item-img" style="background-image:url('${getItemImage(item.n)}')"></div>
+              <div class="menu-item-img" style="background-image:url('${getItemImage(item.n)}')">
+                ${idx === 0 ? `<span class="item-badge">🔥 مميز</span>` : ''}
+              </div>
               <div class="menu-item-info">
                 <div class="menu-item-name">${item.n}</div>
                 <div class="menu-item-desc">${item.d || "وجبة لذيذة"}</div>
                 <div class="menu-item-price">${item.p} ريال</div>
-                
-                <div class="item-controls" style="margin-top:8px; display:flex; flex-direction:column; gap:6px;">
-                  <div style="display:flex; align-items:center; justify-content:center; gap:15px; background:var(--bg-light); padding:5px; border-radius:30px;">
-                    <button class="qty-btn" onclick="updateItemQuantity(${idx}, ${currentRestaurant.id}, -1)" style="width:30px; height:30px; border-radius:50%; border:none; background:var(--primary); color:white; font-weight:bold; cursor:pointer;">-</button>
-                    <span id="qty_${currentRestaurant.id}_${idx}" style="font-weight:bold; min-width:20px; text-align:center;">${count}</span>
-                    <button class="qty-btn" onclick="updateItemQuantity(${idx}, ${currentRestaurant.id}, 1)" style="width:30px; height:30px; border-radius:50%; border:none; background:var(--primary); color:white; font-weight:bold; cursor:pointer;">+</button>
-                  </div>
-                  <textarea id="note_${currentRestaurant.id}_${idx}" rows="1" placeholder="📝 ملاحظة خاصة لهذا الصنف (اختياري)" style="width:100%; padding:6px; border-radius:12px; border:1px solid var(--gray-light); font-size:0.8rem; background:var(--white);" oninput="updateItemNote(${idx}, ${currentRestaurant.id}, this.value)">${note}</textarea>
+              </div>
+              <div class="item-controls">
+                <div class="qty-wrap">
+                  <button class="qty-btn" onclick="updateItemQuantity(${idx}, ${currentRestaurant.id}, -1)">-</button>
+                  <span class="qty-display" id="qty_${currentRestaurant.id}_${idx}">${count}</span>
+                  <button class="qty-btn" onclick="updateItemQuantity(${idx}, ${currentRestaurant.id}, 1)">+</button>
                 </div>
+                <textarea class="item-note" id="note_${currentRestaurant.id}_${idx}" rows="1" placeholder="📝 ملاحظة خاصة (اختياري)" oninput="updateItemNote(${idx}, ${currentRestaurant.id}, this.value)">${note}</textarea>
               </div>
             </div>
           `;
@@ -1261,15 +1200,14 @@
                   <div class="menu-item-name">${item.n}</div>
                   <div class="menu-item-desc">${item.d || "منتج مميز"}</div>
                   <div class="menu-item-price">${item.p} ريال</div>
-                  
-                  <div class="item-controls" style="margin-top:8px; display:flex; flex-direction:column; gap:6px;">
-                    <div style="display:flex; align-items:center; justify-content:center; gap:15px; background:var(--bg-light); padding:5px; border-radius:30px;">
-                      <button class="qty-btn" onclick="updateSupermarketItemQuantity(${idx}, '${id}', -1)" style="width:30px; height:30px; border-radius:50%; border:none; background:var(--primary); color:white; font-weight:bold; cursor:pointer;">-</button>
-                      <span id="qty_${id}_${idx}" style="font-weight:bold; min-width:20px; text-align:center;">${count}</span>
-                      <button class="qty-btn" onclick="updateSupermarketItemQuantity(${idx}, '${id}', 1)" style="width:30px; height:30px; border-radius:50%; border:none; background:var(--primary); color:white; font-weight:bold; cursor:pointer;">+</button>
-                    </div>
-                    <textarea id="note_${id}_${idx}" rows="1" placeholder="📝 ملاحظة خاصة لهذا الصنف (اختياري)" style="width:100%; padding:6px; border-radius:12px; border:1px solid var(--gray-light); font-size:0.8rem; background:var(--white);" oninput="updateSupermarketItemNote(${idx}, '${id}', this.value)">${cartItem ? (cartItem.note || '') : ''}</textarea>
+                </div>
+                <div class="item-controls">
+                  <div class="qty-wrap">
+                    <button class="qty-btn" onclick="updateSupermarketItemQuantity(${idx}, '${id}', -1)">-</button>
+                    <span class="qty-display" id="qty_${id}_${idx}">${count}</span>
+                    <button class="qty-btn" onclick="updateSupermarketItemQuantity(${idx}, '${id}', 1)">+</button>
                   </div>
+                  <textarea class="item-note" id="note_${id}_${idx}" rows="1" placeholder="📝 ملاحظة خاصة (اختياري)" oninput="updateSupermarketItemNote(${idx}, '${id}', this.value)">${cartItem ? (cartItem.note || '') : ''}</textarea>
                 </div>
               </div>
             `;
@@ -1319,15 +1257,14 @@
                   <div class="menu-item-name">${item.n}</div>
                   <div class="menu-item-desc">${item.d || "منتج صحي"}</div>
                   <div class="menu-item-price">${item.p} ريال</div>
-                  
-                  <div class="item-controls" style="margin-top:8px; display:flex; flex-direction:column; gap:6px;">
-                    <div style="display:flex; align-items:center; justify-content:center; gap:15px; background:var(--bg-light); padding:5px; border-radius:30px;">
-                      <button class="qty-btn" onclick="updatePharmacyItemQuantity(${idx}, '${id}', -1)" style="width:30px; height:30px; border-radius:50%; border:none; background:var(--primary); color:white; font-weight:bold; cursor:pointer;">-</button>
-                      <span id="qty_${id}_${idx}" style="font-weight:bold; min-width:20px; text-align:center;">${count}</span>
-                      <button class="qty-btn" onclick="updatePharmacyItemQuantity(${idx}, '${id}', 1)" style="width:30px; height:30px; border-radius:50%; border:none; background:var(--primary); color:white; font-weight:bold; cursor:pointer;">+</button>
-                    </div>
-                    <textarea id="note_${id}_${idx}" rows="1" placeholder="📝 ملاحظة خاصة لهذا الصنف (اختياري)" style="width:100%; padding:6px; border-radius:12px; border:1px solid var(--gray-light); font-size:0.8rem; background:var(--white);" oninput="updatePharmacyItemNote(${idx}, '${id}', this.value)">${cartItem ? (cartItem.note || '') : ''}</textarea>
+                </div>
+                <div class="item-controls">
+                  <div class="qty-wrap">
+                    <button class="qty-btn" onclick="updatePharmacyItemQuantity(${idx}, '${id}', -1)">-</button>
+                    <span class="qty-display" id="qty_${id}_${idx}">${count}</span>
+                    <button class="qty-btn" onclick="updatePharmacyItemQuantity(${idx}, '${id}', 1)">+</button>
                   </div>
+                  <textarea class="item-note" id="note_${id}_${idx}" rows="1" placeholder="📝 ملاحظة خاصة (اختياري)" oninput="updatePharmacyItemNote(${idx}, '${id}', this.value)">${cartItem ? (cartItem.note || '') : ''}</textarea>
                 </div>
               </div>
             `;
@@ -1456,15 +1393,14 @@
                   <div class="menu-item-name">${p.name}</div>
                   <div class="menu-item-desc">${p.desc}</div>
                   <div class="menu-item-price">${p.price} ريال</div>
-                  
-                  <div class="item-controls" style="margin-top:8px; display:flex; flex-direction:column; gap:6px;">
-                    <div style="display:flex; align-items:center; justify-content:center; gap:15px; background:var(--bg-light); padding:5px; border-radius:30px;">
-                      <button class="qty-btn" onclick="updateSheinItemQuantity('${category}', ${p.id}, -1)" style="width:30px; height:30px; border-radius:50%; border:none; background:var(--primary); color:white; font-weight:bold; cursor:pointer;">-</button>
-                      <span id="qty_shein_${p.id}" style="font-weight:bold; min-width:20px; text-align:center;">0</span>
-                      <button class="qty-btn" onclick="updateSheinItemQuantity('${category}', ${p.id}, 1)" style="width:30px; height:30px; border-radius:50%; border:none; background:var(--primary); color:white; font-weight:bold; cursor:pointer;">+</button>
-                    </div>
-                    <textarea id="note_shein_${p.id}" rows="1" placeholder="📝 ملاحظة خاصة لهذا الصنف (اختياري)" style="width:100%; padding:6px; border-radius:12px; border:1px solid var(--gray-light); font-size:0.8rem; background:var(--white);" oninput="updateSheinItemNote('${category}', ${p.id}, this.value)"></textarea>
+                </div>
+                <div class="item-controls">
+                  <div class="qty-wrap">
+                    <button class="qty-btn" onclick="updateSheinItemQuantity('${category}', ${p.id}, -1)">-</button>
+                    <span class="qty-display" id="qty_shein_${p.id}">0</span>
+                    <button class="qty-btn" onclick="updateSheinItemQuantity('${category}', ${p.id}, 1)">+</button>
                   </div>
+                  <textarea class="item-note" id="note_shein_${p.id}" rows="1" placeholder="📝 ملاحظة خاصة (اختياري)" oninput="updateSheinItemNote('${category}', ${p.id}, this.value)"></textarea>
                 </div>
               </div>
             `;
@@ -1620,9 +1556,9 @@
                     <div>${item.p * item.qty} ريال</div>
                   </div>
                   <div class="cart-qty-controls">
-                    <button class="qty-btn" onclick="changeCartQty(${i}, 1)">+</button>
+                    <button class="qty-btn-small" onclick="changeCartQty(${i}, 1)">+</button>
                     <span>${item.qty}</span>
-                    <button class="qty-btn" onclick="changeCartQty(${i}, -1)">-</button>
+                    <button class="qty-btn-small" onclick="changeCartQty(${i}, -1)">-</button>
                   </div>
                 </div>
               `).join('');
@@ -1852,7 +1788,7 @@
             let itemsText = cart.map(i =>
                 `• ${i.name} x${i.qty} = ${i.p*i.qty} ريال ${i.note?' ('+i.note+')':''}`).join('\n');
             let message =
-                `🛍️ طلب جديد من وصل\n🍔 ${currentRestaurant.name}\n👤 ${currentUser.name}\n📞 ${currentUser.phone}\n📍 ${order.address}\n📝 ملاحظات عامة: ${generalNote || 'لا توجد'}\n\nالمنتجات:\n${itemsText}\n\n🚚 التوصيل: ${deliveryCost} ريال\n💰 الإجمالي: ${total} ريال\n\nعزيزي/عزيزتي، تابع تطبيقنا لتتبع حالة طلبك 😊`;
+                `🛍️ طلب جديد من وصال\n🍔 ${currentRestaurant.name}\n👤 ${currentUser.name}\n📞 ${currentUser.phone}\n📍 ${order.address}\n📝 ملاحظات عامة: ${generalNote || 'لا توجد'}\n\nالمنتجات:\n${itemsText}\n\n🚚 التوصيل: ${deliveryCost} ريال\n💰 الإجمالي: ${total} ريال\n\nعزيزي/عزيزتي، تابع تطبيقنا لتتبع حالة طلبك 😊`;
             window.open(`https://wa.me/777215154?text=${encodeURIComponent(message)}`, '_blank');
             showToast('✅ تم إرسال طلبك');
             cart = [];
@@ -1898,7 +1834,7 @@
             localStorage.setItem('currentTrackingOrder', id);
             
             let message =
-                `🛵 طلب توصيل شخصي جديد من وصل\n📦 من: ${order.fromAddress}\n📍 إلى: ${order.toAddress}\n👤 اسم المرسل: ${order.recipientName}\n📞 رقم المرسل: ${order.recipientPhone}\n📝 ملاحظات: ${note || 'لا توجد'}\n\n🚚 التوصيل: ${total} ريال\n💰 الإجمالي: ${total} ريال\n\nعزيزي/عزيزتي، تابع تطبيقنا لتتبع حالة طلبك 😊`;
+                `🛵 طلب توصيل شخصي جديد من وصال\n📦 من: ${order.fromAddress}\n📍 إلى: ${order.toAddress}\n👤 اسم المرسل: ${order.recipientName}\n📞 رقم المرسل: ${order.recipientPhone}\n📝 ملاحظات: ${note || 'لا توجد'}\n\n🚚 التوصيل: ${total} ريال\n💰 الإجمالي: ${total} ريال\n\nعزيزي/عزيزتي، تابع تطبيقنا لتتبع حالة طلبك 😊`;
             window.open(`https://wa.me/777215154?text=${encodeURIComponent(message)}`, '_blank');
             showToast('✅ تم إرسال طلب التوصيل');
             deliveryFrom = null; deliveryTo = null; deliveryCostNew = 0;
@@ -1911,7 +1847,7 @@
                 startAutoTracking(id); }, 1500);
         }
 
-        // ==================== 7. نظام التتبع التلقائي ====================
+        // ==================== 7. نظام التتبع التلقائي (تم تحسينه لتوفير البيانات) ====================
         let autoTrackingId = null;
         let hasNotified = { on_the_way: false, arrived: false, delivered: false };
 
@@ -1920,7 +1856,8 @@
             autoTrackingId = orderId;
             hasNotified = { on_the_way: false, arrived: false, delivered: false };
             checkOrderStatus(orderId);
-            trackingInterval = setInterval(() => { checkOrderStatus(orderId); }, 3000);
+            // تم زيادة الوقت من 3 ثوانٍ إلى 6 ثوانٍ لتقليل استهلاك البيانات
+            trackingInterval = setInterval(() => { checkOrderStatus(orderId); }, 6000);
         }
 
         function stopAutoTracking() {
@@ -1929,6 +1866,9 @@
         }
 
         async function checkOrderStatus(orderId) {
+            // إذا كانت الصفحة غير مرئية، توقف عن جلب البيانات لتوفير الإنترنت
+            if (document.hidden) return;
+            
             await loadOrders();
             let order = allOrders.find(o => o.id == orderId);
             if (!order) return;
@@ -1991,7 +1931,7 @@
             }, 400);
         }
 
-        // ==================== 8. نظام التقييم (تم الإصلاح) ====================
+        // ==================== 8. نظام التقييم ====================
         let currentRatingOrderId = null;
         let ratingData = { driver: 0, service: 0, speed: 0, restaurant: 0 };
 
@@ -1999,7 +1939,6 @@
             currentRatingOrderId = orderId;
             ratingData = { driver: 0, service: 0, speed: 0, restaurant: 0 };
             
-            // إعادة تعيين النجوم في النافذة المنبثقة
             document.querySelectorAll('.rating-stars-wrapper').forEach(wrapper => {
                 const stars = wrapper.querySelectorAll('.fa-star');
                 stars.forEach(star => {
@@ -2018,7 +1957,6 @@
         function closeRating() { document.getElementById('ratingModal').style.display = 'none';
             stopAutoTracking(); }
 
-        // إضافة حدث النقر على النجوم (دالة جديدة)
         document.addEventListener('DOMContentLoaded', function() {
             document.querySelectorAll('.rating-stars-wrapper').forEach(wrapper => {
                 wrapper.addEventListener('click', function(e) {
@@ -2028,10 +1966,8 @@
                     const value = parseInt(star.dataset.value);
                     const category = this.dataset.category;
                     
-                    // تحديث البيانات
                     ratingData[category] = value;
                     
-                    // تحديث واجهة النجوم
                     const stars = this.querySelectorAll('.fa-star');
                     stars.forEach(s => {
                         const val = parseInt(s.dataset.value);
@@ -2044,7 +1980,6 @@
                         }
                     });
                     
-                    // تحديث النص
                     const label = document.getElementById(`rating_${category}_text`);
                     if (label) label.innerText = `${value} من 5 نجوم`;
                 });
@@ -2079,7 +2014,7 @@
             }
         }
 
-        // ==================== 9. واجهة التتبع للعميل (تم إعادة التصميم بالكامل) ====================
+        // ==================== 9. واجهة التتبع للعميل ====================
         async function viewOrderTracking(id) {
             await loadOrders();
             let order = allOrders.find(o => o.id == id);
@@ -2087,7 +2022,6 @@
             let steps = ['pending', 'on_the_way', 'arrived', 'delivered'];
             let idx = steps.indexOf(order.status);
             
-            // بناء شريط التتبع بأيقونات ملونة
             let stepsHtml = `
                 <div class="tracking-header-card">
                     <h3 style="font-size:1.2rem; color:var(--primary); text-align:center;">📍 تتبع الطلب #${order.id}</h3>
@@ -2111,7 +2045,6 @@
             });
             stepsHtml += `</div></div>`;
 
-            // بناء جدول الأصناف داخل التتبع
             let itemsListHtml = `
                 <div style="background: var(--bg-light); border-radius: 12px; padding: 16px; margin: 12px 0;">
                     <div style="display: flex; justify-content: space-between; font-weight: 700; color: var(--gray); border-bottom: 2px solid var(--gray-light); padding-bottom: 10px; margin-bottom: 10px;">
@@ -2159,7 +2092,7 @@
           ${itemsListHtml}
           ${stepsHtml}
           <div style="margin-top:10px; background:var(--gray-light); border-radius:10px; padding:10px; font-size:0.8rem; color:var(--gray); text-align:center;">
-              💡 سيتم تحديث حالة طلبك تلقائياً كل 3 ثوانٍ
+              💡 سيتم تحديث حالة طلبك تلقائياً كل 6 ثوانٍ (للتوفير والسرعة)
           </div>
         `;
             document.getElementById('trackingFullscreenContainer').innerHTML = details;
@@ -2173,7 +2106,6 @@
                     parseInt(id));
                 startAutoTracking(parseInt(id)); } else showToast('لا يوجد طلب نشط'); }
 
-        // [تم التعديل] تحسين قائمة طلباتي لتبدو أكثر تناسقاً
         async function renderMyOrders() {
             await loadOrders();
             let myOrders = allOrders.filter(o => o.customerPhone === currentUser?.phone);
@@ -2203,21 +2135,19 @@
             document.getElementById('myOrdersContainer').innerHTML = html;
         }
 
-        // ==================== 10. واجهة المندوب (أسرع وأقوى، مع ميزة السحب للتحديث الجديدة) ====================
+        // ==================== 10. واجهة المندوب (أسرع وأقوى، مع ميزة السحب للتحديث) ====================
         let driverTab = 'available';
 
-        // ==================== ميزة السحب للتحديث التفاعلية (Chrome Style) ====================
         const pullContainer = document.getElementById('driverPullRefreshContainer');
         const refreshIndicator = document.getElementById('chromeRefreshIndicator');
         const refreshIcon = document.getElementById('chromeRefreshIcon');
 
         let touchStartY = 0;
         let pullDistance = 0;
-        const triggerThreshold = 80; // المسافة المطلوبة لزناد التحديث (بكسل)
-        const maxPullDistance = 130; // الحد الأقصى للسحب لمنع التشويه
+        const triggerThreshold = 80;
+        const maxPullDistance = 130;
 
         pullContainer.addEventListener('touchstart', function(e) {
-            // التنشيط فقط عندما يكون المستخدم في أعلى الحاوية تماماً لتجنب تداخل التمرير العادي
             if (window.scrollY === 0 || pullContainer.scrollTop === 0) {
                 touchStartY = e.touches[0].clientY;
             } else {
@@ -2231,20 +2161,15 @@
             const currentY = e.touches[0].clientY;
             const diff = currentY - touchStartY;
             
-            // إذا كان السحب للأسفل
             if (diff > 0) {
-                // تطبيق مقاومة تدريجية للسحب لجعل الحركة تبدو طبيعية وسلسة
                 pullDistance = Math.min(diff * 0.4, maxPullDistance);
                 
-                // إظهار وتحريك الدائرة مثل كروم
                 refreshIndicator.style.top = `${pullDistance - 40}px`;
                 refreshIndicator.style.opacity = Math.min(pullDistance / triggerThreshold, 1);
                 
-                // تدوير السهم مع زيادة السحب
                 const rotation = Math.min((pullDistance / triggerThreshold) * 180, 180);
                 refreshIndicator.style.transform = `translateX(-50%) rotate(${rotation}deg)`;
                 
-                // تغيير الأيقونة إذا تجاوز حد التحديث للاستعداد للترك
                 if (pullDistance >= triggerThreshold) {
                     refreshIcon.className = "fas fa-arrow-up";
                 } else {
@@ -2256,26 +2181,16 @@
         pullContainer.addEventListener('touchend', function() {
             if (touchStartY === 0) return;
             
-            // التحقق من وصول السحب للحد المطلوب
             if (pullDistance >= triggerThreshold) {
-                // تفعيل وضع جلب البيانات الدوار المباشر
                 refreshIndicator.classList.add('refreshing');
                 refreshIcon.className = "fas fa-spinner";
                 
-                // استدعاء دالة التحديث الفعلية الخاصة بنظامك 
-                if (typeof refreshDriverPanel === 'function') {
-                    // محاكاة انتهاء الجلب برمجياً بسلاسة بعد ثانية ونصف
-                    setTimeout(() => {
-                        refreshDriverPanel(); // تحديث طلبات المندوب
-                        resetChromePullRefresh();
-                        if (typeof showToast === 'function') showToast("🔄 تم تحديث الطلبات فوراً");
-                    }, 1200);
-                } else {
-                    // حماية في حال لم تكن الدالة الأساسية مجهزة
-                    setTimeout(resetChromePullRefresh, 1200);
-                }
+                setTimeout(() => {
+                    refreshDriverPanel();
+                    resetChromePullRefresh();
+                    if (typeof showToast === 'function') showToast("🔄 تم تحديث الطلبات فوراً");
+                }, 1200);
             } else {
-                // إلغاء السحب وإرجاع الدائرة لمكانها
                 resetChromePullRefresh();
             }
             
@@ -2283,7 +2198,6 @@
             pullDistance = 0;
         });
 
-        // إرجاع المؤشر للحالة الافتراضية بنعومة
         function resetChromePullRefresh() {
             refreshIndicator.classList.remove('refreshing');
             refreshIndicator.style.top = '-50px';
@@ -2300,6 +2214,7 @@
         };
 
         async function refreshDriverPanel() {
+            if (document.hidden) return; // توفير البيانات: لا تجلب إذا كانت الصفحة في الخلفية
             await loadOrders();
             let activeOrders = allOrders.filter(o => o.driverId === currentUser?.phone && o.status !== 'delivered');
             let availableOrders = allOrders.filter(o => o.status === 'pending');
@@ -2717,7 +2632,7 @@
             localStorage.setItem('darkMode', document.body.classList.contains('dark-mode')); });
         document.getElementById('whatsappSupport')?.addEventListener('click', () => window.open('https://wa.me/777215154',
             '_blank'));
-        document.getElementById('shareApp')?.addEventListener('click', () => { if (navigator.share) navigator.share({ title: 'وصل',
+        document.getElementById('shareApp')?.addEventListener('click', () => { if (navigator.share) navigator.share({ title: 'وصال',
                 text: 'تطبيق توصيل', url: location.href }); });
         document.getElementById('settingsLogoutBtn')?.addEventListener('click', () => { localStorage.removeItem(
                 'waselny_user');

@@ -9,258 +9,1537 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <style>
-        /* [ نفس كود الـ CSS الخاص بك ... ] */
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Cairo', sans-serif; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
-        :root { --primary: #0f766e; --primary-light: #14b8a6; --primary-dark: #0d5c56; --bg-light: #f8fafc; --white: #ffffff; --dark: #1e293b; --gray: #64748b; --gray-light: #e2e8f0; --danger: #ef4444; --success: #10b981; --warning: #f59e0b; --shadow: 0 4px 6px -1px rgba(0,0,0,0.05); --shadow-md: 0 10px 15px -3px rgba(0,0,0,0.08); }
-        body { background: var(--bg-light); color: var(--dark); direction: rtl; }
-        body.dark-mode { --bg-light: #0f172a; --white: #1e293b; --gray-light: #334155; --dark: #cbd5e1; }
-        .header { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); padding: 18px 16px 22px; border-radius: 0 0 28px 28px; position: relative; overflow: hidden; color: white; text-align: center; }
-        .store-badge { position: absolute; top: 10px; left: 12px; background: rgba(255,255,255,0.2); backdrop-filter: blur(6px); padding: 4px 10px; border-radius: 30px; font-size: 0.7rem; display: flex; gap: 6px; }
-        .bike-animation { position: absolute; bottom: 10px; right: -50px; font-size: 1.8rem; opacity: 0.2; animation: bikeMove 8s linear infinite; }
-        @keyframes bikeMove { 0% { right: -50px; opacity: 0.2; } 10% { opacity: 0.5; } 90% { opacity: 0.5; } 100% { right: 100%; opacity: 0.2; } }
-        .logo-main { font-size: 1.8rem; font-weight: 900; background: linear-gradient(135deg, #fff, #ccfbf1); -webkit-background-clip: text; background-clip: text; color: transparent; display: inline-block; }
-        .logo-sub { font-size: 0.6rem; letter-spacing: 3px; margin-top: 4px; opacity: 0.8; }
-        .work-hours { display: flex; justify-content: center; gap: 6px; background: rgba(255,255,255,0.1); padding: 4px 12px; border-radius: 50px; width: fit-content; margin: 8px auto 0; font-size: 0.65rem; }
-        .open-badge { width: 7px; height: 7px; background: #22c55e; border-radius: 50%; display: inline-block; animation: pulse 1.5s infinite; }
-        @keyframes pulse { 0% { opacity: 0.5; transform: scale(0.8); } 100% { opacity: 1; transform: scale(1.2); } }
-        .search-bar { margin: -14px 14px 14px; position: relative; z-index: 10; }
-        .search-bar input { width: 100%; padding: 12px 16px; border-radius: 40px; border: none; background: var(--white); box-shadow: 0 4px 12px rgba(0,0,0,0.08); font-size: 0.85rem; padding-right: 42px; color: var(--dark); }
-        .search-bar .search-icon { position: absolute; right: 16px; top: 50%; transform: translateY(-50%); color: var(--gray); font-size: 0.95rem; }
-        .container { padding: 0 14px 80px; }
-        .page { display: none; animation: fadeIn 0.2s ease-out; }
-        .active-page { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-        .categories-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 10px; }
-        .category-card { background: var(--white); border-radius: 14px; padding: 12px 6px; text-align: center; box-shadow: var(--shadow); border: 1px solid var(--gray-light); cursor: pointer; transition: 0.1s; }
-        .category-card:active { transform: scale(0.97); }
-        .category-icon { font-size: 2rem; margin-bottom: 6px; }
-        .category-card h3 { font-size: 0.85rem; font-weight: 800; }
-        .category-card p { font-size: 0.6rem; color: var(--gray); margin-top: 2px; }
-        .delivery-bar { display: flex; align-items: center; justify-content: center; gap: 10px; background: linear-gradient(135deg, var(--primary-light), var(--primary)); color: white; padding: 10px 15px; border-radius: 16px; margin-bottom: 15px; cursor: pointer; box-shadow: var(--shadow-md); transition: transform 0.1s; }
-        .delivery-bar:active { transform: scale(0.97); }
-        .delivery-bar i { font-size: 1.3rem; }
-        .delivery-bar span { font-weight: 800; font-size: 0.9rem; }
-        .delivery-bar small { font-size: 0.75rem; opacity: 0.9; }
-        .offers-scroll { display: flex; gap: 12px; overflow-x: auto; margin-bottom: 20px; }
-        .offers-scroll::-webkit-scrollbar { display: none; }
-        .offer-card { flex: 0 0 220px; background: linear-gradient(135deg, #f59e0b, #ea580c); border-radius: 14px; padding: 10px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
-        .offer-card:active { transform: scale(0.98); }
-        .offer-text h4 { font-size: 0.85rem; color: white; font-weight: 800; }
-        .offer-text p { font-size: 0.55rem; color: rgba(255,255,255,0.9); }
-        .offer-badge { background: rgba(255,255,255,0.2); padding: 3px 8px; border-radius: 30px; font-size: 0.65rem; }
-        .section-title { display: flex; align-items: center; gap: 6px; margin-bottom: 10px; }
-        .section-title h2 { font-size: 0.9rem; font-weight: 700; }
-        .carousel-3d { position: relative; width: 100%; height: 280px; margin-bottom: 20px; perspective: 1200px; overflow: hidden; border-radius: 24px; }
-        .carousel-container { position: relative; width: 100%; height: 100%; transform-style: preserve-3d; }
-        .carousel-slide { position: absolute; width: 86%; height: 260px; left: 7%; top: 10px; background-size: cover; background-position: center; border-radius: 24px; box-shadow: 0 15px 35px rgba(0,0,0,0.3); transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94); cursor: pointer; border: 2px solid rgba(255,255,255,0.3); }
-        .carousel-slide.active { opacity: 1; transform: scale(1.05) translateZ(25px); box-shadow: 0 25px 40px rgba(0,0,0,0.5); z-index: 10; border-color: var(--primary-light); }
-        .carousel-slide .slide-caption { position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(transparent, rgba(0,0,0,0.85)); padding: 15px; color: white; border-radius: 0 0 24px 24px; }
-        .carousel-slide .slide-caption h4 { font-size: 1.1rem; font-weight: 800; }
-        .carousel-slide .slide-caption p { font-size: 0.75rem; }
-        .carousel-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.6); width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; color: white; font-size: 1rem; z-index: 20; backdrop-filter: blur(4px); }
-        .carousel-btn.prev { right: 15px; }
-        .carousel-btn.next { left: 15px; }
-        .carousel-dots { position: absolute; bottom: -5px; left: 0; right: 0; display: flex; justify-content: center; gap: 10px; z-index: 20; }
-        .carousel-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.6); cursor: pointer; }
-        .carousel-dot.active { width: 28px; border-radius: 6px; background: var(--primary-light); }
-        .filter-buttons { display: flex; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; }
-        .filter-btn { background: var(--white); padding: 5px 14px; border-radius: 30px; font-size: 0.7rem; font-weight: 600; color: var(--gray); border: 1px solid var(--gray-light); cursor: pointer; }
-        .filter-btn.active { background: var(--primary); color: white; }
-        .restaurants-list { display: flex; flex-direction: column; gap: 10px; }
-        .restaurant-item { background: var(--white); border-radius: 14px; padding: 8px; display: flex; align-items: center; gap: 10px; border: 1px solid var(--gray-light); cursor: pointer; }
-        .restaurant-item:active { transform: scale(0.98); }
-        .restaurant-item-img { width: 60px; height: 60px; border-radius: 10px; background-size: cover; }
-        .restaurant-item-info { flex: 1; }
-        .restaurant-item-name { font-weight: 800; font-size: 0.8rem; }
-        .restaurant-item-cat { font-size: 0.6rem; color: var(--gray); margin-top: 2px; }
-        .restaurant-item-stats { display: flex; gap: 8px; margin-top: 4px; font-size: 0.55rem; color: var(--gray); }
-        .restaurant-item-price { text-align: center; min-width: 50px; }
-        .restaurant-item-price .price { font-weight: 800; color: var(--primary); font-size: 0.8rem; }
-        .menu-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin-top: 10px; }
-        .menu-item-card { background: var(--white); border-radius: 20px; overflow: hidden; border: 1px solid var(--gray-light); box-shadow: var(--shadow); display: flex; flex-direction: column; transition: transform 0.2s; padding-bottom: 12px; position: relative; }
-        .menu-item-card:active { transform: scale(0.98); }
-        .menu-item-img { height: 140px; background-size: cover; background-position: center; width: 100%; position: relative; }
-        .item-badge { position: absolute; top: 10px; right: 10px; background: var(--warning); color: #000; padding: 4px 12px; border-radius: 20px; font-size: 0.65rem; font-weight: 800; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
-        .menu-item-info { padding: 12px 12px 0; display: flex; flex-direction: column; gap: 4px; }
-        .menu-item-name { font-weight: 800; font-size: 0.95rem; color: var(--dark); line-height: 1.3; }
-        .menu-item-desc { font-size: 0.7rem; color: var(--gray); line-height: 1.4; }
-        .menu-item-price { color: var(--primary); font-weight: 800; font-size: 1.1rem; margin-top: 2px; }
-        .item-controls { margin-top: 8px; display: flex; flex-direction: column; gap: 8px; padding: 0 12px; }
-        .item-controls .qty-wrap { display: flex; align-items: center; justify-content: center; gap: 15px; background: var(--bg-light); padding: 6px; border-radius: 30px; }
-        .item-controls .qty-btn { width: 34px; height: 34px; border-radius: 50%; border: none; background: var(--primary); color: white; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; transition: 0.1s; }
-        .item-controls .qty-btn:active { transform: scale(0.9); background: var(--primary-dark); }
-        .item-controls .qty-display { font-weight: bold; min-width: 20px; text-align: center; font-size: 1rem; }
-        .item-note { width: 100%; padding: 8px 12px; border-radius: 20px; border: 1px solid var(--gray-light); background: var(--white); font-size: 0.75rem; resize: vertical; min-height: 32px; transition: 0.2s; font-family: 'Cairo', sans-serif; }
-        .item-note:focus { border-color: var(--primary-light); outline: none; box-shadow: 0 0 0 2px rgba(20,184,166,0.2); }
-        .float-cart { position: fixed; bottom: 70px; left: 14px; right: 14px; background: linear-gradient(135deg, var(--primary-dark), var(--primary)); color: white; padding: 12px 20px; border-radius: 50px; display: flex; justify-content: space-between; align-items: center; z-index: 1000; cursor: pointer; display: none; font-size: 0.85rem; font-weight: 700; box-shadow: 0 6px 16px rgba(15,118,110,0.3); }
-        .cart-sidebar { position: fixed; top: 0; left: -100%; width: 85%; max-width: 320px; height: 100%; background: var(--white); z-index: 10001; transition: left 0.3s; display: flex; flex-direction: column; box-shadow: -2px 0 15px rgba(0,0,0,0.2); }
-        .cart-sidebar.open { left: 0; }
-        .cart-header { padding: 14px; background: var(--primary); color: white; display: flex; justify-content: space-between; align-items: center; font-weight: 700; }
-        .cart-close { cursor: pointer; font-size: 1.2rem; }
-        .cart-items { flex: 1; overflow-y: auto; padding: 12px; }
-        .cart-item { display: flex; gap: 10px; padding: 10px; background: var(--bg-light); border-radius: 14px; margin-bottom: 10px; align-items: center; }
-        .cart-item-img { width: 50px; height: 50px; border-radius: 10px; background-size: cover; }
-        .cart-item-details { flex: 1; }
-        .cart-item-details h4 { font-size: 0.8rem; font-weight: 800; color: var(--dark); }
-        .cart-item-details div { font-size: 0.75rem; color: var(--primary); font-weight: 700; margin-top: 2px; }
-        .cart-qty-controls { display: flex; align-items: center; gap: 8px; }
-        .qty-btn-small { width: 26px; height: 26px; border-radius: 50%; background: var(--primary); border: none; color: white; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-        .cart-footer { padding: 14px; border-top: 1px solid var(--gray-light); background: var(--white); }
-        .cart-total { display: flex; justify-content: space-between; font-weight: 800; margin-bottom: 12px; font-size: 0.95rem; }
-        .checkout-btn { width: 100%; padding: 12px; background: var(--warning); color: white; border: none; border-radius: 30px; font-weight: 800; cursor: pointer; font-size: 0.9rem; box-shadow: 0 4px 10px rgba(245,158,11,0.2); }
-        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--white); display: flex; justify-content: space-around; padding: 8px 8px 12px; box-shadow: 0 -4px 16px rgba(0,0,0,0.06); z-index: 100; border-radius: 24px 24px 0 0; border-top: 1px solid var(--gray-light); }
-        .nav-item { text-align: center; cursor: pointer; color: var(--gray); font-size: 0.65rem; font-weight: 700; padding: 4px 12px; border-radius: 16px; transition: 0.15s; display: flex; flex-direction: column; align-items: center; position: relative; }
-        .nav-item.active { color: var(--primary); background: rgba(15,118,110,0.08); }
-        .nav-icon { font-size: 1.25rem; display: block; margin-bottom: 2px; }
-        .nav-badge { position: absolute; top: 1px; right: 18px; background: var(--danger); color: white; font-size: 0.55rem; font-weight: 800; padding: 1px 5px; border-radius: 10px; border: 2px solid var(--white); }
-        .back-btn { display: inline-flex; align-items: center; gap: 6px; background: var(--white); padding: 6px 14px; border-radius: 30px; margin-bottom: 14px; cursor: pointer; font-size: 0.75rem; font-weight: 700; box-shadow: var(--shadow); border: 1px solid var(--gray-light); }
-        .tracking-fullscreen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-light); z-index: 15000; overflow-y: auto; padding: 16px; display: none; }
-        .tracking-steps { display: flex; justify-content: space-between; align-items: center; margin: 20px 0; }
-        .step { text-align: center; flex: 1; }
-        .step .circle { width: 40px; height: 40px; background: var(--white); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 6px; border: 2px solid var(--gray-light); font-size: 1rem; color: var(--gray); }
-        .step.active .circle { background: var(--primary); border-color: var(--primary); color: white; }
-        .step.completed .circle { background: var(--success); border-color: var(--success); color: white; }
-        .step-label { font-size: 0.6rem; font-weight: 600; }
-        .step-connector { flex: 0.5; height: 3px; background: var(--gray-light); }
-        .step-connector.completed { background: var(--success); }
-        .step.active .circle { animation: glowPulse 1s ease-in-out infinite; box-shadow: 0 0 20px 10px rgba(15,118,110,0.5); }
-        .step.completed .circle { box-shadow: 0 0 10px 5px rgba(16,185,129,0.3); }
-        @keyframes glowPulse { 0% { box-shadow: 0 0 10px 5px rgba(15,118,110,0.4); } 50% { box-shadow: 0 0 30px 20px rgba(15,118,110,0.8); } 100% { box-shadow: 0 0 10px 5px rgba(15,118,110,0.4); } }
-        .step .circle { transition: all 0.3s ease; }
-        .field-input { width: 100%; padding: 11px 16px; border-radius: 30px; border: 1px solid var(--gray-light); background: var(--white); font-size: 0.85rem; margin-bottom: 12px; color: var(--dark); }
-        .btn-primary { background: var(--primary); color: white; border: none; padding: 11px; border-radius: 40px; width: 100%; font-weight: 700; cursor: pointer; font-size: 0.9rem; }
-        .toast { position: fixed; bottom: 85px; left: 20px; right: 20px; background: var(--dark); color: white; padding: 12px; border-radius: 30px; text-align: center; z-index: 3000; display: none; font-size: 0.8rem; font-weight: 600; box-shadow: var(--shadow-md); }
-        .toast.show { display: block; animation: slideUp 0.3s forwards; }
-        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        .payment-list { border: 1px solid var(--gray-light); border-radius: 16px; overflow: hidden; margin: 12px 0; background: var(--white); }
-        .payment-option { display: flex; align-items: center; padding: 12px; border-bottom: 1px solid var(--gray-light); cursor: pointer; gap: 12px; }
-        .payment-option.active { background: rgba(15,118,110,0.06); border-right: 4px solid var(--primary); }
-        .payment-icon { width: 30px; font-size: 1.1rem; color: var(--primary); text-align: center; }
-        .payment-name { flex: 1; font-weight: 700; font-size: 0.8rem; }
-        .account-number { background: #f1f5f9; padding: 10px 14px; border-radius: 25px; display: flex; justify-content: space-between; align-items: center; margin: 8px 0; direction: ltr; font-family: monospace; font-size: 0.85rem; font-weight: 700; }
-        #loginOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--primary-dark); z-index: 100000; display: flex; align-items: center; justify-content: center; }
-        .login-card { background: var(--white); border-radius: 32px; padding: 24px; width: 90%; max-width: 320px; text-align: center; box-shadow: var(--shadow-md); }
-        .role-buttons { display: flex; gap: 10px; margin-bottom: 16px; }
-        .role-btn { flex: 1; padding: 10px; border-radius: 40px; background: var(--gray-light); font-weight: 700; cursor: pointer; font-size: 0.8rem; color: var(--gray); }
-        .role-btn.active { background: var(--primary); color: white; }
-        .map-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 10000; display: none; flex-direction: column; }
-        #map { flex: 1; width: 100%; }
-        .map-controls { display: flex; background: var(--primary-dark); }
-        .map-confirm, .map-back { flex: 1; color: white; padding: 14px; text-align: center; font-weight: 700; cursor: pointer; }
-        .admin-section, .driver-panel { background: var(--white); border-radius: 14px; padding: 12px; margin-bottom: 12px; border: 1px solid var(--gray-light); }
-        .admin-tabs { display: flex; gap: 5px; margin-bottom: 14px; border-bottom: 1px solid var(--gray-light); overflow-x: auto; }
-        .tab-btn { padding: 8px 12px; background: transparent; border: none; font-weight: 700; color: var(--gray); font-size: 0.8rem; cursor: pointer; white-space: nowrap; }
-        .tab-btn.active { color: var(--primary); border-bottom: 3px solid var(--primary); }
-        .tab-content { display: none; }
-        .tab-content.active-tab { display: block; }
-        .quick-actions { display: flex; gap: 6px; margin-top: 8px; }
-        .quick-btn { flex: 1; padding: 7px; border-radius: 20px; font-size: 0.65rem; border: none; font-weight: 700; cursor: pointer; }
-        .quick-btn-call { background: #25D366; color: white; }
-        .quick-btn-restaurant { background: var(--warning); color: white; }
-        .quick-btn-deliver { background: var(--primary-light); color: var(--primary-dark); }
-        .driver-header-new { background: linear-gradient(135deg, var(--primary-dark), var(--primary)); color: white; padding: 20px; border-radius: 20px; margin-bottom: 20px; text-align: center; position: relative; }
-        .driver-header-new h2 { font-size: 1.5rem; font-weight: 800; margin-bottom: 5px; }
-        .driver-header-new p { font-size: 0.7rem; opacity: 0.9; }
-        .driver-tabs { display: flex; gap: 8px; margin-bottom: 20px; background: var(--white); padding: 8px; border-radius: 50px; border: 1px solid var(--gray-light); }
-        .driver-tab { flex: 1; padding: 8px; border-radius: 40px; text-align: center; font-weight: 700; font-size: 0.75rem; cursor: pointer; transition: 0.2s; background: transparent; color: var(--gray); }
-        .driver-tab.active { background: var(--primary); color: white; box-shadow: 0 2px 8px rgba(15,118,110,0.2); }
-        .driver-tab i { margin-left: 6px; }
-        .driver-orders-container { background: var(--white); border-radius: 20px; padding: 16px; border: 1px solid var(--gray-light); }
-        .driver-order-card { background: var(--bg-light); border-radius: 12px; padding: 12px 14px; margin-bottom: 10px; border-right: 4px solid var(--primary); cursor: pointer; transition: 0.1s; display: flex; flex-direction: column; gap: 6px; }
-        .driver-order-card:active { transform: scale(0.98); }
-        .driver-order-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
-        .driver-order-id { font-weight: 800; color: var(--primary); font-size: 0.85rem; }
-        .driver-order-status { background: var(--warning); color: white; padding: 2px 10px; border-radius: 20px; font-size: 0.6rem; font-weight: 700; display: inline-block; }
-        .driver-order-status.delivered { background: var(--success); }
-        .driver-order-status.on_the_way { background: var(--primary-light); }
-        .driver-order-details { font-size: 0.75rem; color: var(--gray); line-height: 1.4; }
-        .driver-order-details i { width: 18px; color: var(--primary); }
-        .driver-order-actions { display: flex; gap: 8px; margin-top: 4px; }
-        .driver-action-btn { flex: 1; padding: 8px 0; border-radius: 30px; font-size: 0.7rem; font-weight: 700; border: none; cursor: pointer; transition: 0.2s; }
-        .driver-action-btn:active { transform: scale(0.96); }
-        .driver-action-btn.primary { background: var(--primary); color: white; }
-        .driver-action-btn.warning { background: var(--warning); color: white; }
-        .driver-action-btn.success { background: var(--success); color: white; }
-        .driver-action-btn.call { background: #25D366; color: white; }
-        .driver-action-btn.danger { background: var(--danger); color: white; }
-        .empty-orders { text-align: center; padding: 30px; color: var(--gray); font-size: 0.8rem; }
-        .empty-orders i { font-size: 2.5rem; margin-bottom: 10px; opacity: 0.5; }
-        .stats-row { display: flex; gap: 12px; margin-bottom: 20px; }
-        .stat-card-new { background: var(--white); border-radius: 16px; padding: 12px; text-align: center; flex: 1; border: 1px solid var(--gray-light); }
-        .stat-card-new .stat-value { font-size: 1.3rem; font-weight: 800; color: var(--primary); }
-        .stat-card-new .stat-label { font-size: 0.65rem; color: var(--gray); margin-top: 4px; }
-        .order-detail-card { background: var(--white); border-radius: 20px; padding: 20px; margin-bottom: 20px; border: 1px solid var(--gray-light); }
-        .order-detail-header { border-bottom: 2px solid var(--primary-light); padding-bottom: 12px; margin-bottom: 16px; }
-        .order-detail-header h3 { font-size: 1.1rem; color: var(--primary); }
-        .order-detail-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px dashed var(--gray-light); }
-        .order-detail-label { font-weight: 700; color: var(--dark); }
-        .order-detail-value { color: var(--gray); }
-        .items-table { width: 100%; margin: 12px 0; border-collapse: collapse; }
-        .items-table th, .items-table td { padding: 8px; text-align: right; border-bottom: 1px solid var(--gray-light); font-size: 0.8rem; }
-        .items-table th { background: var(--bg-light); font-weight: 800; color: var(--primary); }
-        .order-status-buttons { display: flex; gap: 12px; margin: 20px 0; justify-content: center; flex-wrap: wrap; }
-        .item-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); backdrop-filter: blur(4px); z-index: 20000; display: none; align-items: center; justify-content: center; }
-        .item-modal-card { background: var(--white); border-radius: 32px; width: 90%; max-width: 380px; max-height: 85vh; overflow-y: auto; box-shadow: var(--shadow-md); animation: modalFadeIn 0.2s ease; direction: rtl; }
-        @keyframes modalFadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
-        .modal-img { width: 100%; height: 160px; object-fit: cover; border-radius: 32px 32px 0 0; background-color: var(--gray-light); }
-        .modal-content { padding: 20px; }
-        .modal-content h3 { font-size: 1.2rem; margin-bottom: 6px; color: var(--dark); }
-        .modal-desc { font-size: 0.75rem; color: var(--gray); margin-bottom: 15px; line-height: 1.5; }
-        .modal-price { font-size: 1.3rem; font-weight: 800; color: var(--primary); margin-bottom: 15px; }
-        .modal-quantity { display: flex; align-items: center; justify-content: center; gap: 20px; margin-bottom: 20px; background: var(--bg-light); padding: 12px; border-radius: 60px; }
-        .modal-quantity button { width: 48px; height: 48px; border-radius: 50%; background: var(--primary); color: white; border: none; font-size: 1.4rem; font-weight: 800; cursor: pointer; transition: 0.1s; }
-        .modal-quantity button:active { transform: scale(0.95); background: var(--primary-dark); }
-        .modal-quantity span { font-size: 1.6rem; font-weight: 800; min-width: 50px; text-align: center; color: var(--dark); }
-        .modal-note { display: block; }
-        .modal-note textarea { width: 100%; padding: 12px; border-radius: 20px; border: 1px solid var(--gray-light); background: var(--white); font-size: 0.8rem; margin-top: 6px; resize: vertical; }
-        .modal-actions { display: flex; gap: 12px; margin-top: 20px; }
-        .modal-actions button { flex: 1; padding: 12px; border-radius: 40px; font-weight: 800; font-size: 0.9rem; border: none; cursor: pointer; transition: 0.1s; }
-        .modal-actions button:active { transform: scale(0.97); }
-        .btn-add-modal { background: var(--warning); color: white; }
-        .btn-close-modal { background: var(--gray-light); color: var(--dark); }
-        .confirmation-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(8px); z-index: 40000; display: flex; align-items: center; justify-content: center; visibility: hidden; opacity: 0; transition: 0.2s; }
-        .confirmation-modal.open { visibility: visible; opacity: 1; }
-        .modal-card { background: var(--white); border-radius: 48px; padding: 28px; width: 85%; max-width: 320px; text-align: center; }
-        .btn-small { padding: 8px 20px; border-radius: 30px; border: none; background: var(--primary-light); margin: 10px 5px; cursor: pointer; font-weight: 700; }
-        .restaurant-hero-banner { width: 100%; height: 160px; border-radius: 20px; background-size: cover; background-position: center; position: relative; margin-bottom: 20px; overflow: hidden; box-shadow: var(--shadow); }
-        .restaurant-hero-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.85) 30%, rgba(0,0,0,0.2)); padding: 16px; display: flex; flex-direction: column; justify-content: flex-end; color: white; }
-        .hero-tag { position: absolute; top: 12px; right: 12px; background: var(--warning); color: #000; font-size: 0.65rem; font-weight: 800; padding: 4px 10px; border-radius: 30px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
-        #driverPullRefreshContainer { position: relative; overflow: hidden; touch-action: pan-y; }
-        .pull-to-refresh-circle { position: absolute; top: -50px; left: 50%; transform: translateX(-50%) rotate(0deg); width: 40px; height: 40px; background: var(--white); border-radius: 50%; box-shadow: 0 3px 10px rgba(0,0,0,0.15); display: flex; align-items: center; justify-content: center; z-index: 999; transition: transform 0.1s linear, top 0.1s linear, opacity 0.1s linear; opacity: 0; }
-        .pull-to-refresh-circle i { color: var(--primary); font-size: 1.1rem; transition: transform 0.1s linear; }
-        .pull-to-refresh-circle.refreshing { animation: chromeSpin 0.8s linear infinite !important; top: 15px !important; opacity: 1 !important; }
-        @keyframes chromeSpin { 100% { transform: translateX(-50%) rotate(360deg); } }
-        .driver-order-card { background: var(--white); border-radius: 18px; padding: 16px; margin-bottom: 14px; border: 1px solid var(--gray-light); border-right: 5px solid var(--primary); box-shadow: var(--shadow); transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s; will-change: transform; }
-        .driver-order-card:active { transform: scale(0.97); box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-        .driver-action-btn { position: relative; overflow: hidden; transition: all 0.2s ease; }
-        .driver-action-btn:active { transform: scale(0.95); filter: brightness(0.9); }
-        .step.active .circle { animation: glowPulse 1s ease-in-out infinite; box-shadow: 0 0 20px 10px rgba(15,118,110,0.5); }
-        .step.completed .circle { box-shadow: 0 0 10px 5px rgba(16,185,129,0.3); }
-        @keyframes glowPulse { 0% { box-shadow: 0 0 10px 5px rgba(15,118,110,0.4); } 50% { box-shadow: 0 0 30px 20px rgba(15,118,110,0.8); } 100% { box-shadow: 0 0 10px 5px rgba(15,118,110,0.4); } }
-        .step .circle { transition: all 0.3s ease; }
-        .category-tabs-wrapper { display: flex; gap: 8px; overflow-x: auto; padding: 4px 0 12px 0; margin-bottom: 6px; scrollbar-width: none; -ms-overflow-style: none; }
-        .category-tabs-wrapper::-webkit-scrollbar { display: none; }
-        .category-tab-btn { padding: 6px 18px; border-radius: 30px; background: var(--gray-light); color: var(--gray); font-size: 0.75rem; font-weight: 700; border: none; cursor: pointer; white-space: nowrap; transition: 0.2s; }
-        .category-tab-btn.active { background: var(--primary); color: white; box-shadow: 0 2px 8px rgba(15,118,110,0.2); }
-        .category-tab-btn:active { transform: scale(0.95); }
-        .menu-category-title { font-size: 0.85rem; font-weight: 800; color: var(--primary); margin: 10px 0 6px 0; padding-bottom: 4px; border-bottom: 2px solid var(--primary-light); }
-        .geo-btn { background: var(--white); border: 1px solid var(--gray-light); border-radius: 30px; padding: 9px; display: flex; justify-content: space-between; margin-bottom: 8px; cursor: pointer; }
-        .current-location-btn { width: 100%; padding: 8px; border-radius: 30px; background: var(--primary-light); color: white; border: none; font-weight: 700; font-size: 0.8rem; margin-bottom: 8px; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; }
-        .current-location-btn:active { transform: scale(0.97); }
-        .rating-stars-wrapper { display: flex; gap: 5px; font-size: 1.5rem; cursor: pointer; }
-        .rating-stars-wrapper .fa-star { color: var(--gray-light); transition: color 0.1s; }
-        .rating-stars-wrapper .fa-star.active { color: var(--warning); }
-        .rating-stars-wrapper .fa-star:active { transform: scale(1.1); }
-        .tracking-header-card { background: var(--white); border-radius: 16px; padding: 16px; border-bottom: 3px solid var(--primary); margin-bottom: 16px; }
-        .tracking-status-icon { width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin: 0 auto 10px; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Cairo', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+        }
+        :root {
+            --primary: #0f766e;
+            --primary-light: #14b8a6;
+            --primary-dark: #0d5c56;
+            --bg-light: #f8fafc;
+            --white: #ffffff;
+            --dark: #1e293b;
+            --gray: #64748b;
+            --gray-light: #e2e8f0;
+            --danger: #ef4444;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.08);
+        }
+        body {
+            background: var(--bg-light);
+            color: var(--dark);
+            direction: rtl;
+        }
+        body.dark-mode {
+            --bg-light: #0f172a;
+            --white: #1e293b;
+            --gray-light: #334155;
+            --dark: #cbd5e1;
+        }
+        .header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            padding: 18px 16px 22px;
+            border-radius: 0 0 28px 28px;
+            position: relative;
+            overflow: hidden;
+            color: white;
+            text-align: center;
+        }
+        .store-badge {
+            position: absolute;
+            top: 10px;
+            left: 12px;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(6px);
+            padding: 4px 10px;
+            border-radius: 30px;
+            font-size: 0.7rem;
+            display: flex;
+            gap: 6px;
+        }
+        .bike-animation {
+            position: absolute;
+            bottom: 10px;
+            right: -50px;
+            font-size: 1.8rem;
+            opacity: 0.2;
+            animation: bikeMove 8s linear infinite;
+        }
+        @keyframes bikeMove {
+            0% {
+                right: -50px;
+                opacity: 0.2;
+            }
+            10% {
+                opacity: 0.5;
+            }
+            90% {
+                opacity: 0.5;
+            }
+            100% {
+                right: 100%;
+                opacity: 0.2;
+            }
+        }
+        .logo-main {
+            font-size: 1.8rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #fff, #ccfbf1);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            display: inline-block;
+        }
+        .logo-sub {
+            font-size: 0.6rem;
+            letter-spacing: 3px;
+            margin-top: 4px;
+            opacity: 0.8;
+        }
+        .work-hours {
+            display: flex;
+            justify-content: center;
+            gap: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 4px 12px;
+            border-radius: 50px;
+            width: fit-content;
+            margin: 8px auto 0;
+            font-size: 0.65rem;
+        }
+        .open-badge {
+            width: 7px;
+            height: 7px;
+            background: #22c55e;
+            border-radius: 50%;
+            display: inline-block;
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0% {
+                opacity: 0.5;
+                transform: scale(0.8);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1.2);
+            }
+        }
+        .search-bar {
+            margin: -14px 14px 14px;
+            position: relative;
+            z-index: 10;
+        }
+        .search-bar input {
+            width: 100%;
+            padding: 12px 16px;
+            border-radius: 40px;
+            border: none;
+            background: var(--white);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            font-size: 0.85rem;
+            padding-right: 42px;
+            color: var(--dark);
+        }
+        .search-bar .search-icon {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+            font-size: 0.95rem;
+        }
+        .container {
+            padding: 0 14px 80px;
+        }
+        .page {
+            display: none;
+            animation: fadeIn 0.2s ease-out;
+        }
+        .active-page {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        .category-card {
+            background: var(--white);
+            border-radius: 14px;
+            padding: 12px 6px;
+            text-align: center;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--gray-light);
+            cursor: pointer;
+            transition: 0.1s;
+        }
+        .category-card:active {
+            transform: scale(0.97);
+        }
+        .category-icon {
+            font-size: 2rem;
+            margin-bottom: 6px;
+        }
+        .category-card h3 {
+            font-size: 0.85rem;
+            font-weight: 800;
+        }
+        .category-card p {
+            font-size: 0.6rem;
+            color: var(--gray);
+            margin-top: 2px;
+        }
+        .offers-scroll {
+            display: flex;
+            gap: 12px;
+            overflow-x: auto;
+            margin-bottom: 20px;
+        }
+        .offers-scroll::-webkit-scrollbar {
+            display: none;
+        }
+        .offer-card {
+            flex: 0 0 220px;
+            background: linear-gradient(135deg, #f59e0b, #ea580c);
+            border-radius: 14px;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+        }
+        .offer-card:active {
+            transform: scale(0.98);
+        }
+        .offer-text h4 {
+            font-size: 0.85rem;
+            color: white;
+            font-weight: 800;
+        }
+        .offer-text p {
+            font-size: 0.55rem;
+            color: rgba(255, 255, 255, 0.9);
+        }
+        .offer-badge {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 3px 8px;
+            border-radius: 30px;
+            font-size: 0.65rem;
+        }
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 10px;
+        }
+        .section-title h2 {
+            font-size: 0.9rem;
+            font-weight: 700;
+        }
+        .carousel-3d {
+            position: relative;
+            width: 100%;
+            height: 280px;
+            margin-bottom: 20px;
+            perspective: 1200px;
+            overflow: hidden;
+            border-radius: 24px;
+        }
+        .carousel-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transform-style: preserve-3d;
+        }
+        .carousel-slide {
+            position: absolute;
+            width: 86%;
+            height: 260px;
+            left: 7%;
+            top: 10px;
+            background-size: cover;
+            background-position: center;
+            border-radius: 24px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+            transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            cursor: pointer;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+        .carousel-slide.active {
+            opacity: 1;
+            transform: scale(1.05) translateZ(25px);
+            box-shadow: 0 25px 40px rgba(0, 0, 0, 0.5);
+            z-index: 10;
+            border-color: var(--primary-light);
+        }
+        .carousel-slide .slide-caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.85));
+            padding: 15px;
+            color: white;
+            border-radius: 0 0 24px 24px;
+        }
+        .carousel-slide .slide-caption h4 {
+            font-size: 1.1rem;
+            font-weight: 800;
+        }
+        .carousel-slide .slide-caption p {
+            font-size: 0.75rem;
+        }
+        .carousel-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0, 0, 0, 0.6);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: white;
+            font-size: 1rem;
+            z-index: 20;
+            backdrop-filter: blur(4px);
+        }
+        .carousel-btn.prev {
+            right: 15px;
+        }
+        .carousel-btn.next {
+            left: 15px;
+        }
+        .carousel-dots {
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            z-index: 20;
+        }
+        .carousel-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.6);
+            cursor: pointer;
+        }
+        .carousel-dot.active {
+            width: 28px;
+            border-radius: 6px;
+            background: var(--primary-light);
+        }
+        .filter-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 14px;
+            flex-wrap: wrap;
+        }
+        .filter-btn {
+            background: var(--white);
+            padding: 5px 14px;
+            border-radius: 30px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: var(--gray);
+            border: 1px solid var(--gray-light);
+            cursor: pointer;
+        }
+        .filter-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+        .restaurants-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .restaurant-item {
+            background: var(--white);
+            border-radius: 14px;
+            padding: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border: 1px solid var(--gray-light);
+            cursor: pointer;
+        }
+        .restaurant-item:active {
+            transform: scale(0.98);
+        }
+        .restaurant-item-img {
+            width: 60px;
+            height: 60px;
+            border-radius: 10px;
+            background-size: cover;
+        }
+        .restaurant-item-info {
+            flex: 1;
+        }
+        .restaurant-item-name {
+            font-weight: 800;
+            font-size: 0.8rem;
+        }
+        .restaurant-item-cat {
+            font-size: 0.6rem;
+            color: var(--gray);
+            margin-top: 2px;
+        }
+        .restaurant-item-stats {
+            display: flex;
+            gap: 8px;
+            margin-top: 4px;
+            font-size: 0.55rem;
+            color: var(--gray);
+        }
+        .restaurant-item-price {
+            text-align: center;
+            min-width: 50px;
+        }
+        .restaurant-item-price .price {
+            font-weight: 800;
+            color: var(--primary);
+            font-size: 0.8rem;
+        }
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 14px;
+            margin-top: 10px;
+        }
+        .menu-item-card {
+            background: var(--white);
+            border-radius: 20px;
+            overflow: hidden;
+            border: 1px solid var(--gray-light);
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.2s;
+            padding-bottom: 10px;
+        }
+        .menu-item-card:active {
+            transform: scale(0.98);
+        }
+        .menu-item-img {
+            height: 125px;
+            background-size: cover;
+            background-position: center;
+            width: 100%;
+        }
+        .menu-item-info {
+            padding: 12px;
+        }
+        .menu-item-name {
+            font-weight: 800;
+            font-size: 0.85rem;
+            color: var(--dark);
+        }
+        .menu-item-price {
+            color: var(--primary);
+            font-weight: 800;
+            font-size: 0.9rem;
+            margin-top: 6px;
+        }
+        .menu-item-desc {
+            font-size: 0.7rem;
+            color: var(--gray);
+            margin-top: 4px;
+        }
+        .item-controls {
+            margin-top: 10px;
+            border-top: 1px solid var(--gray-light);
+            padding-top: 8px;
+        }
+        .item-controls .qty-btn:active {
+            transform: scale(0.9);
+        }
+        .item-note {
+            width: 100%;
+            padding: 6px 10px;
+            border-radius: 20px;
+            border: 1px solid var(--gray-light);
+            background: var(--white);
+            font-size: 0.75rem;
+            resize: vertical;
+            min-height: 30px;
+            transition: 0.2s;
+            font-family: 'Cairo', sans-serif;
+        }
+        .item-note:focus {
+            border-color: var(--primary-light);
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(20, 184, 166, 0.2);
+        }
+        .float-cart {
+            position: fixed;
+            bottom: 70px;
+            left: 14px;
+            right: 14px;
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+            color: white;
+            padding: 12px 20px;
+            border-radius: 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            cursor: pointer;
+            display: none;
+            font-size: 0.85rem;
+            font-weight: 700;
+            box-shadow: 0 6px 16px rgba(15, 118, 110, 0.3);
+        }
+        .cart-sidebar {
+            position: fixed;
+            top: 0;
+            left: -100%;
+            width: 85%;
+            max-width: 320px;
+            height: 100%;
+            background: var(--white);
+            z-index: 10001;
+            transition: left 0.3s;
+            display: flex;
+            flex-direction: column;
+            box-shadow: -2px 0 15px rgba(0, 0, 0, 0.2);
+        }
+        .cart-sidebar.open {
+            left: 0;
+        }
+        .cart-header {
+            padding: 14px;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 700;
+        }
+        .cart-close {
+            cursor: pointer;
+            font-size: 1.2rem;
+        }
+        .cart-items {
+            flex: 1;
+            overflow-y: auto;
+            padding: 12px;
+        }
+        .cart-item {
+            display: flex;
+            gap: 10px;
+            padding: 10px;
+            background: var(--bg-light);
+            border-radius: 14px;
+            margin-bottom: 10px;
+            align-items: center;
+        }
+        .cart-item-img {
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            background-size: cover;
+        }
+        .cart-item-details {
+            flex: 1;
+        }
+        .cart-item-details h4 {
+            font-size: 0.8rem;
+            font-weight: 800;
+            color: var(--dark);
+        }
+        .cart-item-details div {
+            font-size: 0.75rem;
+            color: var(--primary);
+            font-weight: 700;
+            margin-top: 2px;
+        }
+        .cart-qty-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .qty-btn {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background: var(--primary);
+            border: none;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .cart-footer {
+            padding: 14px;
+            border-top: 1px solid var(--gray-light);
+            background: var(--white);
+        }
+        .cart-total {
+            display: flex;
+            justify-content: space-between;
+            font-weight: 800;
+            margin-bottom: 12px;
+            font-size: 0.95rem;
+        }
+        .checkout-btn {
+            width: 100%;
+            padding: 12px;
+            background: var(--warning);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            font-weight: 800;
+            cursor: pointer;
+            font-size: 0.9rem;
+            box-shadow: 0 4px 10px rgba(245, 158, 11, 0.2);
+        }
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--white);
+            display: flex;
+            justify-content: space-around;
+            padding: 8px 8px 12px;
+            box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.06);
+            z-index: 100;
+            border-radius: 24px 24px 0 0;
+            border-top: 1px solid var(--gray-light);
+        }
+        .nav-item {
+            text-align: center;
+            cursor: pointer;
+            color: var(--gray);
+            font-size: 0.65rem;
+            font-weight: 700;
+            padding: 4px 12px;
+            border-radius: 16px;
+            transition: 0.15s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+        .nav-item.active {
+            color: var(--primary);
+            background: rgba(15, 118, 110, 0.08);
+        }
+        .nav-icon {
+            font-size: 1.25rem;
+            display: block;
+            margin-bottom: 2px;
+        }
+        .nav-badge {
+            position: absolute;
+            top: 1px;
+            right: 18px;
+            background: var(--danger);
+            color: white;
+            font-size: 0.55rem;
+            font-weight: 800;
+            padding: 1px 5px;
+            border-radius: 10px;
+            border: 2px solid var(--white);
+        }
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--white);
+            padding: 6px 14px;
+            border-radius: 30px;
+            margin-bottom: 14px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            font-weight: 700;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--gray-light);
+        }
+        .tracking-fullscreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-light);
+            z-index: 15000;
+            overflow-y: auto;
+            padding: 16px;
+            display: none;
+        }
+        .tracking-steps {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 20px 0;
+        }
+        .step {
+            text-align: center;
+            flex: 1;
+        }
+        .step .circle {
+            width: 40px;
+            height: 40px;
+            background: var(--white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 6px;
+            border: 2px solid var(--gray-light);
+            font-size: 1rem;
+            color: var(--gray);
+        }
+        .step.active .circle {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: white;
+        }
+        .step.completed .circle {
+            background: var(--success);
+            border-color: var(--success);
+            color: white;
+        }
+        .step-label {
+            font-size: 0.6rem;
+            font-weight: 600;
+        }
+        .step-connector {
+            flex: 0.5;
+            height: 3px;
+            background: var(--gray-light);
+        }
+        .step-connector.completed {
+            background: var(--success);
+        }
+        .field-input {
+            width: 100%;
+            padding: 11px 16px;
+            border-radius: 30px;
+            border: 1px solid var(--gray-light);
+            background: var(--white);
+            font-size: 0.85rem;
+            margin-bottom: 12px;
+            color: var(--dark);
+        }
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 11px;
+            border-radius: 40px;
+            width: 100%;
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+        .toast {
+            position: fixed;
+            bottom: 85px;
+            left: 20px;
+            right: 20px;
+            background: var(--dark);
+            color: white;
+            padding: 12px;
+            border-radius: 30px;
+            text-align: center;
+            z-index: 3000;
+            display: none;
+            font-size: 0.8rem;
+            font-weight: 600;
+            box-shadow: var(--shadow-md);
+        }
+        .toast.show {
+            display: block;
+            animation: slideUp 0.3s forwards;
+        }
+        @keyframes slideUp {
+            from {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        .payment-list {
+            border: 1px solid var(--gray-light);
+            border-radius: 16px;
+            overflow: hidden;
+            margin: 12px 0;
+            background: var(--white);
+        }
+        .payment-option {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            border-bottom: 1px solid var(--gray-light);
+            cursor: pointer;
+            gap: 12px;
+        }
+        .payment-option.active {
+            background: rgba(15, 118, 110, 0.06);
+            border-right: 4px solid var(--primary);
+        }
+        .payment-icon {
+            width: 30px;
+            font-size: 1.1rem;
+            color: var(--primary);
+            text-align: center;
+        }
+        .payment-name {
+            flex: 1;
+            font-weight: 700;
+            font-size: 0.8rem;
+        }
+        .account-number {
+            background: #f1f5f9;
+            padding: 10px 14px;
+            border-radius: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 8px 0;
+            direction: ltr;
+            font-family: monospace;
+            font-size: 0.85rem;
+            font-weight: 700;
+        }
+        #loginOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--primary-dark);
+            z-index: 100000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .login-card {
+            background: var(--white);
+            border-radius: 32px;
+            padding: 24px;
+            width: 90%;
+            max-width: 320px;
+            text-align: center;
+            box-shadow: var(--shadow-md);
+        }
+        .role-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+        .role-btn {
+            flex: 1;
+            padding: 10px;
+            border-radius: 40px;
+            background: var(--gray-light);
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 0.8rem;
+            color: var(--gray);
+        }
+        .role-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+        .map-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            z-index: 10000;
+            display: none;
+            flex-direction: column;
+        }
+        #map {
+            flex: 1;
+            width: 100%;
+        }
+        .map-controls {
+            display: flex;
+            background: var(--primary-dark);
+        }
+        .map-confirm,
+        .map-back {
+            flex: 1;
+            color: white;
+            padding: 14px;
+            text-align: center;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        .admin-section,
+        .driver-panel {
+            background: var(--white);
+            border-radius: 14px;
+            padding: 12px;
+            margin-bottom: 12px;
+            border: 1px solid var(--gray-light);
+        }
+        .admin-tabs {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 14px;
+            border-bottom: 1px solid var(--gray-light);
+            overflow-x: auto;
+        }
+        .tab-btn {
+            padding: 8px 12px;
+            background: transparent;
+            border: none;
+            font-weight: 700;
+            color: var(--gray);
+            font-size: 0.8rem;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        .tab-btn.active {
+            color: var(--primary);
+            border-bottom: 3px solid var(--primary);
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active-tab {
+            display: block;
+        }
+        .quick-actions {
+            display: flex;
+            gap: 6px;
+            margin-top: 8px;
+        }
+        .quick-btn {
+            flex: 1;
+            padding: 7px;
+            border-radius: 20px;
+            font-size: 0.65rem;
+            border: none;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        .quick-btn-call {
+            background: #25D366;
+            color: white;
+        }
+        .quick-btn-restaurant {
+            background: var(--warning);
+            color: white;
+        }
+        .quick-btn-deliver {
+            background: var(--primary-light);
+            color: var(--primary-dark);
+        }
+        .driver-stats {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+        .stat-card {
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+            color: white;
+            border-radius: 14px;
+            padding: 10px;
+            flex: 1;
+            text-align: center;
+            font-size: 0.7rem;
+        }
+        .stat-card .number {
+            font-size: 1.2rem;
+            font-weight: 900;
+        }
+        .order-items-list {
+            list-style: none;
+            margin: 10px 0;
+        }
+        .order-items-list li {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 0;
+            border-bottom: 1px solid #eee;
+            font-size: 0.8rem;
+        }
+        .tracking-detail-card {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 12px;
+            box-shadow: var(--shadow);
+        }
+        .tracking-label {
+            font-weight: 700;
+            color: var(--primary);
+            font-size: 0.75rem;
+            margin-bottom: 4px;
+        }
+        .tracking-value {
+            font-size: 0.85rem;
+            margin-bottom: 8px;
+        }
+        .location-section {
+            margin-top: 15px;
+        }
+        .current-location-btn {
+            background: #10b981;
+            color: white;
+            width: 100%;
+            padding: 9px;
+            border-radius: 30px;
+            margin: 8px 0;
+            border: none;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        .geo-btn {
+            background: var(--white);
+            border: 1px solid var(--gray-light);
+            border-radius: 30px;
+            padding: 9px;
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            cursor: pointer;
+        }
+        .driver-header-new {
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+            color: white;
+            padding: 20px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .driver-header-new h2 {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 5px;
+        }
+        .driver-header-new p {
+            font-size: 0.7rem;
+            opacity: 0.9;
+        }
+        .driver-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            background: var(--white);
+            padding: 8px;
+            border-radius: 50px;
+            border: 1px solid var(--gray-light);
+        }
+        .driver-tab {
+            flex: 1;
+            padding: 8px;
+            border-radius: 40px;
+            text-align: center;
+            font-weight: 700;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: 0.2s;
+            background: transparent;
+            color: var(--gray);
+        }
+        .driver-tab.active {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 2px 8px rgba(15, 118, 110, 0.2);
+        }
+        .driver-tab i {
+            margin-left: 6px;
+        }
+        .driver-orders-container {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 16px;
+            border: 1px solid var(--gray-light);
+        }
+        .driver-order-card {
+            background: var(--bg-light);
+            border-radius: 16px;
+            padding: 14px;
+            margin-bottom: 12px;
+            border-right: 4px solid var(--primary);
+            cursor: pointer;
+            transition: 0.1s;
+        }
+        .driver-order-card:active {
+            transform: scale(0.98);
+        }
+        .driver-order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .driver-order-id {
+            font-weight: 800;
+            color: var(--primary);
+            font-size: 0.9rem;
+        }
+        .driver-order-status {
+            background: var(--warning);
+            color: white;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.65rem;
+            font-weight: 700;
+        }
+        .driver-order-status.delivered {
+            background: var(--success);
+        }
+        .driver-order-status.on_the_way {
+            background: var(--primary-light);
+        }
+        .driver-order-details {
+            font-size: 0.75rem;
+            color: var(--gray);
+            margin-bottom: 12px;
+        }
+        .driver-order-details i {
+            width: 20px;
+            color: var(--primary);
+        }
+        .driver-order-actions {
+            display: flex;
+            gap: 8px;
+        }
+        .driver-action-btn {
+            flex: 1;
+            padding: 8px;
+            border-radius: 30px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            border: none;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .driver-action-btn.primary {
+            background: var(--primary);
+            color: white;
+        }
+        .driver-action-btn.warning {
+            background: var(--warning);
+            color: white;
+        }
+        .driver-action-btn.success {
+            background: var(--success);
+            color: white;
+        }
+        .driver-action-btn.call {
+            background: #25D366;
+            color: white;
+        }
+        .driver-action-btn.danger {
+            background: var(--danger);
+            color: white;
+        }
+        .empty-orders {
+            text-align: center;
+            padding: 30px;
+            color: var(--gray);
+            font-size: 0.8rem;
+        }
+        .empty-orders i {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            opacity: 0.5;
+        }
+        .stats-row {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        .stat-card-new {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 12px;
+            text-align: center;
+            flex: 1;
+            border: 1px solid var(--gray-light);
+        }
+        .stat-card-new .stat-value {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--primary);
+        }
+        .stat-card-new .stat-label {
+            font-size: 0.65rem;
+            color: var(--gray);
+            margin-top: 4px;
+        }
+        .order-detail-card {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid var(--gray-light);
+        }
+        .order-detail-header {
+            border-bottom: 2px solid var(--primary-light);
+            padding-bottom: 12px;
+            margin-bottom: 16px;
+        }
+        .order-detail-header h3 {
+            font-size: 1.1rem;
+            color: var(--primary);
+        }
+        .order-detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px dashed var(--gray-light);
+        }
+        .order-detail-label {
+            font-weight: 700;
+            color: var(--dark);
+        }
+        .order-detail-value {
+            color: var(--gray);
+        }
+        .items-table {
+            width: 100%;
+            margin: 12px 0;
+            border-collapse: collapse;
+        }
+        .items-table th,
+        .items-table td {
+            padding: 8px;
+            text-align: right;
+            border-bottom: 1px solid var(--gray-light);
+            font-size: 0.8rem;
+        }
+        .items-table th {
+            background: var(--bg-light);
+            font-weight: 800;
+            color: var(--primary);
+        }
+        .order-status-buttons {
+            display: flex;
+            gap: 12px;
+            margin: 20px 0;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .item-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(4px);
+            z-index: 20000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+        .item-modal-card {
+            background: var(--white);
+            border-radius: 32px;
+            width: 90%;
+            max-width: 380px;
+            max-height: 85vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow-md);
+            animation: modalFadeIn 0.2s ease;
+            direction: rtl;
+        }
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        .modal-img {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+            border-radius: 32px 32px 0 0;
+            background-color: var(--gray-light);
+        }
+        .modal-content {
+            padding: 20px;
+        }
+        .modal-content h3 {
+            font-size: 1.2rem;
+            margin-bottom: 6px;
+            color: var(--dark);
+        }
+        .modal-desc {
+            font-size: 0.75rem;
+            color: var(--gray);
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+        .modal-price {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+        .modal-quantity {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 20px;
+            background: var(--bg-light);
+            padding: 12px;
+            border-radius: 60px;
+        }
+        .modal-quantity button {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            border: none;
+            font-size: 1.4rem;
+            font-weight: 800;
+            cursor: pointer;
+            transition: 0.1s;
+        }
+        .modal-quantity button:active {
+            transform: scale(0.95);
+            background: var(--primary-dark);
+        }
+        .modal-quantity span {
+            font-size: 1.6rem;
+            font-weight: 800;
+            min-width: 50px;
+            text-align: center;
+            color: var(--dark);
+        }
+        .modal-note {
+            display: block;
+        }
+        .modal-note textarea {
+            width: 100%;
+            padding: 12px;
+            border-radius: 20px;
+            border: 1px solid var(--gray-light);
+            background: var(--white);
+            font-size: 0.8rem;
+            margin-top: 6px;
+            resize: vertical;
+        }
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+        }
+        .modal-actions button {
+            flex: 1;
+            padding: 12px;
+            border-radius: 40px;
+            font-weight: 800;
+            font-size: 0.9rem;
+            border: none;
+            cursor: pointer;
+            transition: 0.1s;
+        }
+        .modal-actions button:active {
+            transform: scale(0.97);
+        }
+        .btn-add-modal {
+            background: var(--warning);
+            color: white;
+        }
+        .btn-close-modal {
+            background: var(--gray-light);
+            color: var(--dark);
+        }
+        .confirmation-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(8px);
+            z-index: 40000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            visibility: hidden;
+            opacity: 0;
+            transition: 0.2s;
+        }
+        .confirmation-modal.open {
+            visibility: visible;
+            opacity: 1;
+        }
+        .modal-card {
+            background: var(--white);
+            border-radius: 48px;
+            padding: 28px;
+            width: 85%;
+            max-width: 320px;
+            text-align: center;
+        }
+        .btn-small {
+            padding: 8px 20px;
+            border-radius: 30px;
+            border: none;
+            background: var(--primary-light);
+            margin: 10px 5px;
+            cursor: pointer;
+            font-weight: 700;
+        }
+        .restaurant-hero-banner {
+            width: 100%;
+            height: 160px;
+            border-radius: 20px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            margin-bottom: 20px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+        .restaurant-hero-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.85) 30%, rgba(0, 0, 0, 0.2));
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            color: white;
+        }
+        .hero-tag {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: var(--warning);
+            color: #000;
+            font-size: 0.65rem;
+            font-weight: 800;
+            padding: 4px 10px;
+            border-radius: 30px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+        .pull-refresh-loader {
+            text-align: center;
+            padding: 10px;
+            font-size: 0.8rem;
+            display: none;
+            color: var(--gray);
+        }
+        .pull-refresh-loader.active {
+            display: block;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin {
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+        .step.active .circle {
+            animation: glowPulse 1s ease-in-out infinite;
+            box-shadow: 0 0 20px 10px rgba(15, 118, 110, 0.5);
+        }
+        .step.completed .circle {
+            box-shadow: 0 0 10px 5px rgba(16, 185, 129, 0.3);
+        }
+        @keyframes glowPulse {
+            0% {
+                box-shadow: 0 0 10px 5px rgba(15, 118, 110, 0.4);
+            }
+            50% {
+                box-shadow: 0 0 30px 20px rgba(15, 118, 110, 0.8);
+            }
+            100% {
+                box-shadow: 0 0 10px 5px rgba(15, 118, 110, 0.4);
+            }
+        }
+        .step .circle {
+            transition: all 0.3s ease;
+        }
+        .category-tabs-wrapper {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding: 4px 0 12px 0;
+            margin-bottom: 6px;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+        .category-tabs-wrapper::-webkit-scrollbar {
+            display: none;
+        }
+        .category-tab-btn {
+            padding: 6px 18px;
+            border-radius: 30px;
+            background: var(--gray-light);
+            color: var(--gray);
+            font-size: 0.75rem;
+            font-weight: 700;
+            border: none;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: 0.2s;
+        }
+        .category-tab-btn.active {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 2px 8px rgba(15, 118, 110, 0.2);
+        }
+        .category-tab-btn:active {
+            transform: scale(0.95);
+        }
+        .menu-category-title {
+            font-size: 0.85rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin: 10px 0 6px 0;
+            padding-bottom: 4px;
+            border-bottom: 2px solid var(--primary-light);
+        }
     </style>
 </head>
 <body>
 
     <div class="header">
-        <div class="store-badge"><i class="fas fa-store"></i> وصال | WASAL</div>
+        <div class="store-badge"><i class="fas fa-store"></i> وصل | WASAL</div>
         <div class="bike-animation"><i class="fas fa-motorcycle"></i></div>
-        <div class="logo-main">وصال</div>
+        <div class="logo-main">وصل</div>
         <div class="logo-sub">W A S A L</div>
         <div class="work-hours"><span class="open-badge"></span><span>6 صباحاً - 12 منتصف الليل</span></div>
     </div>
@@ -269,17 +1548,6 @@
     <div class="container">
         <div id="homePage" class="page active-page">
             <div class="categories-grid" id="categoriesGrid"></div>
-            
-            <!-- شريط خدمة "وصلي" -->
-            <div class="delivery-bar" onclick="openCategory('delivery')">
-                <i class="fas fa-motorcycle"></i>
-                <div style="display:flex; flex-direction:column; align-items:center; line-height:1.3;">
-                    <span>🛵 و صلي</span>
-                    <small>توصيل من موقع إلى موقع (خرائط مباشرة)</small>
-                </div>
-                <i class="fas fa-chevron-left"></i>
-            </div>
-
             <div class="offers-scroll" id="offersScroll"></div>
             <div class="section-title"><i class="fas fa-th-large" style="color:var(--primary);"></i><h2>جميع الأقسام</h2></div>
             <div class="carousel-3d" style="margin-bottom:20px;">
@@ -316,7 +1584,7 @@
             <div class="location-section">
                 <label style="font-weight:800; font-size:0.8rem;">📍 عنوان التوصيل</label>
                 <button class="current-location-btn" onclick="getCurrentLocationForCheckout()"><i class="fas fa-location-dot"></i> استخدم موقعي الحالي</button>
-                <div class="geo-btn" onclick="initMapForCheckout('customer')"><span id="checkoutLocationTxt">🗺️ حدد موقعك من الخريطة</span><i class="fas fa-map-marker-alt" style="color:var(--primary)"></i></div>
+                <div class="geo-btn" onclick="initMapForCheckout()"><span id="checkoutLocationTxt">🗺️ حدد موقعك من الخريطة</span><i class="fas fa-map-marker-alt" style="color:var(--primary)"></i></div>
                 <input type="text" id="checkoutAddressManual" class="field-input" placeholder="✍️ أو اكتب عنوانك يدوياً التفصيلي">
                 <div id="deliveryCostDisplay" style="display:none; background:var(--primary-dark); border-radius:14px; padding:10px; margin:10px 0; color:white; display:flex; justify-content:space-between; font-weight:700; font-size:0.8rem;"><div>🚚 سعر التوصيل</div><div><strong id="deliveryCostValue">0</strong> ريال</div></div>
             </div>
@@ -339,42 +1607,7 @@
             <button class="checkout-btn" onclick="confirmCheckoutOrder()" style="width:100%; padding:12px; background:#f59e0b; color:white; border:none; border-radius:40px; font-weight:800; margin-top:15px;">✅ تأكيد الطلب وإرسال عبر واتساب</button>
         </div>
 
-        <!-- صفحة خدمة وصلي -->
-        <div id="deliveryPage" class="page">
-            <div class="back-btn" onclick="showPage('homePage')">🔙 رجوع</div>
-            <h3 style="margin-bottom:10px;">🛵 طلب توصيل (وصلي)</h3>
-            <div style="background:var(--white); border-radius:14px; padding:12px; border:1px solid var(--gray-light);">
-                <div class="location-section">
-                    <label style="font-weight:800; font-size:0.8rem;">📍 موقع الانطلاق (من)</label>
-                    <button class="current-location-btn" onclick="getCurrentLocationForDelivery()"><i class="fas fa-location-dot"></i> استخدم موقعي الحالي (الانطلاق)</button>
-                    <div class="geo-btn" onclick="initMapForCheckout('delivery_from')"><span id="deliveryFromTxt">🗺️ حدد موقع الانطلاق</span><i class="fas fa-map-marker-alt" style="color:var(--primary)"></i></div>
-                    <input type="text" id="deliveryFromManual" class="field-input" placeholder="✍️ أو اكتب عنوان الانطلاق يدوياً">
-                    
-                    <label style="font-weight:800; font-size:0.8rem; margin-top:8px;">📍 موقع الوصول (إلى)</label>
-                    <button class="current-location-btn" onclick="getCurrentLocationForDeliveryTo()"><i class="fas fa-location-dot"></i> استخدم موقعي الحالي (الوجهة)</button>
-                    <div class="geo-btn" onclick="initMapForCheckout('delivery_to')"><span id="deliveryToTxt">🗺️ حدد وجهتك من الخريطة</span><i class="fas fa-map-marker-alt" style="color:var(--primary)"></i></div>
-                    <input type="text" id="deliveryToManual" class="field-input" placeholder="✍️ أو اكتب عنوان الوصول يدوياً">
-                    
-                    <div id="deliveryCostDisplayNew" style="display:none; background:var(--primary-dark); border-radius:14px; padding:10px; margin:10px 0; color:white; display:flex; justify-content:space-between; font-weight:700; font-size:0.8rem;"><div>🚚 سعر التوصيل</div><div><strong id="deliveryCostValueNew">0</strong> ريال</div></div>
-                </div>
-                
-                <label style="font-weight:800; font-size:0.8rem;">👤 بيانات المستلم/المرسل</label>
-                <input type="text" id="deliveryCustomerName" class="field-input" placeholder="اسم المستلم">
-                <input type="tel" id="deliveryCustomerPhone" class="field-input" placeholder="رقم الهاتف">
-                
-                <label style="font-weight:800; font-size:0.8rem;">📝 ملاحظات خاصة</label>
-                <textarea id="deliveryOrderNote" rows="2" class="field-input" placeholder="أي ملاحظات إضافية للطلب أو مندوب التوصيل..."></textarea>
-                
-                <label style="font-weight:800; font-size:0.8rem;">💰 وسيلة الدفع</label>
-                <div class="payment-list" id="paymentListNew"></div>
-            </div>
-            <button class="checkout-btn" onclick="confirmDeliveryOrder()" style="width:100%; padding:12px; background:#f59e0b; color:white; border:none; border-radius:40px; font-weight:800; margin-top:15px;">✅ إرسال طلب التوصيل</button>
-        </div>
-
-        <div id="ordersPage" class="page">
-            <div id="myOrdersContainer" style="background:var(--white); border-radius:14px; padding:12px;"></div>
-            <button class="btn-primary" onclick="renderMyOrders()" style="margin-top:10px;">تحديث</button>
-        </div>
+        <div id="ordersPage" class="page"><div id="myOrdersContainer" style="background:var(--white); border-radius:14px; padding:12px; text-align:center;"><span style="font-size:1.5rem;">📦</span><p>لا توجد طلبات</p></div><button class="btn-primary" onclick="renderMyOrders()" style="margin-top:10px;">تحديث</button></div>
 
         <div id="settingsPage" class="page">
             <div style="background:var(--white); border-radius:14px; padding:14px; border:1px solid var(--gray-light);">
@@ -382,12 +1615,11 @@
                 <div id="darkModeToggle" style="display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid var(--gray-light); cursor:pointer;"><span><i class="fas fa-moon"></i> الوضع الليلي</span><span id="darkModeIcon">⚫</span></div>
                 <div id="whatsappSupport" style="display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid var(--gray-light); cursor:pointer;"><span><i class="fab fa-whatsapp" style="color:#25D366"></i> خدمة العملاء</span><span>⬅️</span></div>
                 <div id="shareApp" style="display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid var(--gray-light); cursor:pointer;"><span><i class="fas fa-share-alt"></i> مشاركة التطبيق</span><span>⬅️</span></div>
-                <div id="versionRow" style="display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid var(--gray-light);"><span><i class="fas fa-code-branch"></i> الإصدار</span><span id="versionNumber" style="font-weight:700;">v13.6 (خفيف جداً)</span></div>
+                <div id="versionRow" style="display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid var(--gray-light);"><span><i class="fas fa-code-branch"></i> الإصدار</span><span id="versionNumber" style="font-weight:700;">v13.0 (40 مطعماً + شي إن)</span></div>
                 <button id="settingsLogoutBtn" class="btn-primary" style="background:var(--danger); margin-top:14px;">تسجيل الخروج</button>
             </div>
         </div>
 
-        <!-- واجهة المندوب -->
         <div id="driverPage" class="page">
             <div class="driver-header-new">
                 <h2>التوصيل</h2>
@@ -401,11 +1633,8 @@
                 <div class="driver-tab active" data-driver-tab="available" onclick="switchDriverTab('available')"><i class="fas fa-list"></i> الطلبات المتاحة</div>
                 <div class="driver-tab" data-driver-tab="active" onclick="switchDriverTab('active')"><i class="fas fa-truck"></i> طلباتي النشطة</div>
             </div>
-            
             <div id="driverPullRefreshContainer">
-                <div id="chromeRefreshIndicator" class="pull-to-refresh-circle">
-                    <i class="fas fa-arrow-down" id="chromeRefreshIcon"></i>
-                </div>
+                <div id="pullRefreshLoader" class="pull-refresh-loader"><i class="fas fa-spinner"></i> جارٍ التحديث...</div>
                 <div class="driver-orders-container" id="driverOrdersList"></div>
             </div>
             <button id="driverLogoutBtn" class="btn-primary" style="background:var(--danger); margin-top:12px;">تسجيل الخروج</button>
@@ -454,19 +1683,12 @@
 
     <div id="ratingModal" class="item-modal-overlay">
         <div class="item-modal-card">
-            <div class="modal-content" style="text-align: center;">
-                <div style="display: flex; justify-content: center; margin-bottom: 15px;">
-                    <i class="fas fa-star" style="font-size: 3rem; color: var(--warning);"></i>
-                </div>
-                <h3 style="font-size: 1.3rem; color: var(--primary); margin-bottom: 5px;">⭐ تقييم الطلب</h3>
-                <p style="font-size: 0.85rem; color: var(--gray); margin-bottom: 20px;">شكراً لاستخدامك خدمتنا! نتمنى لك يوماً سعيداً 😊</p>
-                
-                <div style="margin-bottom: 20px; text-align: right;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
-                        <label style="font-weight: 700; font-size: 0.85rem;">تقييم المندوب</label>
-                        <span id="rating_driver_text" style="font-size: 0.8rem; color: var(--gray);">لم يتم التقييم</span>
-                    </div>
-                    <div class="rating-stars-wrapper" data-category="driver" data-rating="0">
+            <div class="modal-content">
+                <h3 style="text-align:center; font-size:1.3rem; color:var(--primary);">⭐ تقييم الطلب</h3>
+                <p style="text-align:center; font-size:0.8rem; color:var(--gray); margin-bottom:15px;">شكراً لاستخدامك خدمتنا! نتمنى لك يوماً سعيداً 😊</p>
+                <div style="margin-bottom:10px;">
+                    <label style="font-weight:700; font-size:0.8rem;">تقييم المندوب</label>
+                    <div class="stars" data-category="driver" style="display:flex; gap:10px; font-size:1.5rem; cursor:pointer;">
                         <i class="far fa-star" data-value="1"></i>
                         <i class="far fa-star" data-value="2"></i>
                         <i class="far fa-star" data-value="3"></i>
@@ -474,13 +1696,9 @@
                         <i class="far fa-star" data-value="5"></i>
                     </div>
                 </div>
-
-                <div style="margin-bottom: 20px; text-align: right;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
-                        <label style="font-weight: 700; font-size: 0.85rem;">تقييم الخدمة</label>
-                        <span id="rating_service_text" style="font-size: 0.8rem; color: var(--gray);">لم يتم التقييم</span>
-                    </div>
-                    <div class="rating-stars-wrapper" data-category="service" data-rating="0">
+                <div style="margin-bottom:10px;">
+                    <label style="font-weight:700; font-size:0.8rem;">تقييم الخدمة</label>
+                    <div class="stars" data-category="service" style="display:flex; gap:10px; font-size:1.5rem; cursor:pointer;">
                         <i class="far fa-star" data-value="1"></i>
                         <i class="far fa-star" data-value="2"></i>
                         <i class="far fa-star" data-value="3"></i>
@@ -488,13 +1706,9 @@
                         <i class="far fa-star" data-value="5"></i>
                     </div>
                 </div>
-
-                <div style="margin-bottom: 20px; text-align: right;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
-                        <label style="font-weight: 700; font-size: 0.85rem;">سرعة التوصيل</label>
-                        <span id="rating_speed_text" style="font-size: 0.8rem; color: var(--gray);">لم يتم التقييم</span>
-                    </div>
-                    <div class="rating-stars-wrapper" data-category="speed" data-rating="0">
+                <div style="margin-bottom:10px;">
+                    <label style="font-weight:700; font-size:0.8rem;">سرعة التوصيل</label>
+                    <div class="stars" data-category="speed" style="display:flex; gap:10px; font-size:1.5rem; cursor:pointer;">
                         <i class="far fa-star" data-value="1"></i>
                         <i class="far fa-star" data-value="2"></i>
                         <i class="far fa-star" data-value="3"></i>
@@ -502,13 +1716,9 @@
                         <i class="far fa-star" data-value="5"></i>
                     </div>
                 </div>
-
-                <div style="margin-bottom: 20px; text-align: right;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
-                        <label style="font-weight: 700; font-size: 0.85rem;">تقييم المطعم</label>
-                        <span id="rating_restaurant_text" style="font-size: 0.8rem; color: var(--gray);">لم يتم التقييم</span>
-                    </div>
-                    <div class="rating-stars-wrapper" data-category="restaurant" data-rating="0">
+                <div style="margin-bottom:15px;">
+                    <label style="font-weight:700; font-size:0.8rem;">تقييم المطعم</label>
+                    <div class="stars" data-category="restaurant" style="display:flex; gap:10px; font-size:1.5rem; cursor:pointer;">
                         <i class="far fa-star" data-value="1"></i>
                         <i class="far fa-star" data-value="2"></i>
                         <i class="far fa-star" data-value="3"></i>
@@ -516,15 +1726,10 @@
                         <i class="far fa-star" data-value="5"></i>
                     </div>
                 </div>
-
-                <div style="margin-bottom: 20px; text-align: right;">
-                    <label style="font-weight: 700; font-size: 0.85rem; display: block; margin-bottom: 4px;">📝 أضف تعليقك (اختياري)</label>
-                    <textarea id="ratingComment" rows="2" placeholder="انطباعك عن التجربة..." style="width:100%; padding:10px; border-radius:12px; border:1px solid var(--gray-light); font-size:0.8rem; background:var(--bg-light);"></textarea>
-                </div>
-                
-                <div class="modal-actions" style="display: flex; gap: 10px; margin-top: 15px;">
-                    <button class="btn-add-modal" onclick="submitRating()" style="flex: 2;">إرسال التقييم</button>
-                    <button class="btn-close-modal" onclick="closeRating()" style="flex: 1;">تخطي</button>
+                <textarea id="ratingComment" rows="2" placeholder="أضف تعليقك (اختياري)" style="width:100%; padding:8px; border-radius:12px; border:1px solid var(--gray-light); font-size:0.8rem; margin-bottom:15px;"></textarea>
+                <div class="modal-actions">
+                    <button class="btn-add-modal" onclick="submitRating()" style="flex:1;">إرسال التقييم</button>
+                    <button class="btn-close-modal" onclick="closeRating()" style="flex:0.5;">تخطي</button>
                 </div>
             </div>
         </div>
@@ -560,7 +1765,7 @@
         <div class="login-card" style="background:rgba(255,255,255,0.12); backdrop-filter:blur(25px); -webkit-backdrop-filter:blur(25px); border-radius:40px; padding:32px 24px 36px; width:90%; max-width:360px; box-shadow:0 25px 60px rgba(0,0,0,0.3),0 0 30px rgba(20,184,166,0.2); border:1px solid rgba(255,255,255,0.25); text-align:center; color:white; animation:loginFadeIn 0.5s ease;">
             <div style="margin-bottom:28px;">
                 <i class="fas fa-motorcycle" style="font-size:3rem; display:block; margin-bottom:8px; text-shadow:0 5px 15px rgba(0,0,0,0.3);"></i>
-                <h2 style="font-size:2rem; font-weight:900; margin:0; letter-spacing:2px;">وصال</h2>
+                <h2 style="font-size:2rem; font-weight:900; margin:0; letter-spacing:2px;">وصل</h2>
                 <p style="font-size:0.7rem; opacity:0.8; margin-top:4px; letter-spacing:4px;">W A S A L</p>
             </div>
             <div class="role-buttons" style="display:flex; gap:12px; margin-bottom:24px; background:rgba(255,255,255,0.1); padding:6px; border-radius:50px; backdrop-filter:blur(10px);">
@@ -578,12 +1783,8 @@
     <div id="trackFullscreen" class="tracking-fullscreen"><div id="trackingFullscreenContainer"></div><button class="btn-primary" onclick="closeTracking()" style="margin-top:12px;">إغلاق</button></div>
     <div id="map-overlay" class="map-overlay"><div id="map"></div><div class="map-controls"><div class="map-back" onclick="closeMap()">↩️ رجوع</div><div class="map-confirm" onclick="confirmMapLocation()">✅ تأكيد</div></div></div>
 
-    <!-- ==================== إضافة مكتبات Firebase ==================== -->
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-messaging-compat.js"></script>
-
     <script>
-        // ==================== 1. البيانات الثابتة (40 مطعم + صيدليات + سوبرماركت + شي إن) ====================
+        // ==================== 1. البيانات الثابتة ====================
         const allRestaurantsData = [
             { id: 1, name: "رويال بروستر", cat: "بروست", img: "https://images.unsplash.com/photo-1626645738196-c2a7c8d08f58?w=400",
                 items: [
@@ -666,7 +1867,7 @@
                 items: [{ n: "ساندوتش زنجر ناري", p: 1400, d: "ساندوتش زنجر حار جداً" }, { n: "برجر لحم مشوي", p: 1600,
                         d: "برجر لحم على الفحم" }, { n: "تورتيلا هوت سبايسي", p: 1300, d: "تورتيلا دجاج حارة" }]
             },
-            { id: 11, name: "ترند كافيه", cat: "عصائر", img: "https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=400",
+            { id: 11, name: "ترند कافيه", cat: "عصائر", img: "https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=400",
                 items: [{ n: "إسبريسو", p: 800, d: "قهوة إسبريسو مركزة" }, { n: "لاتيه", p: 1200,
                         d: "لاتيه بالحليب الرغوي" }, { n: "كابتشينو", p: 1200, d: "كابتشينو إيطالي" }]
             },
@@ -973,7 +2174,6 @@
             currentItem = null;
         let customerLocation = null,
             deliveryCost = 0;
-        let deliveryFrom = null, deliveryTo = null, deliveryCostNew = 0;
         let selectedPaymentMethod = 'cash';
         let map, marker, currentMapMode = null;
         let modalQuantity = 1,
@@ -985,108 +2185,6 @@
         let trackingInterval = null;
         let lastOrderStatus = null;
         let pendingModalAction = null;
-
-        // ==================== إعدادات Firebase للمراسلة (Web Push) ====================
-        // ⚠️ هام جداً: استبدل القيم أدناه بإعدادات مشروعك من Firebase Console
-        const firebaseConfig = {
-            apiKey: "YOUR_API_KEY",                // استبدل هذا
-            authDomain: "YOUR_PROJECT.firebaseapp.com", // استبدل هذا
-            projectId: "YOUR_PROJECT_ID",          // استبدل هذا
-            storageBucket: "YOUR_PROJECT.appspot.com", // استبدل هذا
-            messagingSenderId: "YOUR_SENDER_ID",   // استبدل هذا
-            appId: "YOUR_APP_ID"                   // استبدل هذا
-        };
-        firebase.initializeApp(firebaseConfig);
-        const messaging = firebase.messaging();
-
-        // مفتاح VAPID المستخرج من صورتك (بدون مسافات)
-        const VAPID_KEY = "BE5Xx_uW2FKp76SMJe9Sul5CkBi2-0mwktJgg-yP9wqWe2Avw-kWxdc9xulEOsh5FXLaFffFCgEwEacggCh7VzQ";
-
-        // دالة طلب الإذن وتخزين الرمز (Token) في قاعدة البيانات
-        async function requestNotificationPermission() {
-            try {
-                const token = await messaging.getToken({ vapidKey: VAPID_KEY });
-                console.log("تم الحصول على رمز FCM:", token);
-                if (currentUser && currentUser.phone) {
-                    // تخزين الرمز ليتمكن الخادم من إرسال الإشعارات لهذا المستخدم
-                    await fetch(`${FIREBASE_URL}/users/${currentUser.phone}/fcmToken.json`, {
-                        method: 'PUT',
-                        body: JSON.stringify(token)
-                    });
-                    showToast("✅ تم تفعيل الإشعارات بنجاح");
-                }
-                return token;
-            } catch (err) {
-                console.error("فشل الحصول على إذن الإشعارات:", err);
-                showToast("❌ فشل تفعيل الإشعارات، تأكد من الاتصال بالإنترنت");
-            }
-        }
-
-        // استقبال الإشعارات أثناء فتح التطبيق
-        messaging.onMessage((payload) => {
-            console.log("تم استلام إشعار أثناء فتح التطبيق:", payload);
-            const { title, body } = payload.notification || {};
-            if (title && body) {
-                showToast(`📩 ${title}: ${body}`);
-                // تحديث واجهة الطلبات تلقائياً إذا كان المستخدم في صفحة الطلبات
-                if (document.getElementById('ordersPage').classList.contains('active-page')) {
-                    renderMyOrders();
-                }
-                if (document.getElementById('driverPage').classList.contains('active-page')) {
-                    refreshDriverPanel();
-                }
-            }
-        });
-
-        // تسجيل ملف خدمة الإشعارات (Service Worker)
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('/firebase-messaging-sw.js')
-                .then(() => console.log('Service Worker مسجل بنجاح'))
-                .catch((err) => console.error('فشل تسجيل Service Worker:', err));
-        }
-
-        // دالة عرض زر السماح بالإشعارات (يظهر بشكل عائم أسفل الشاشة)
-        function showNotificationPrompt() {
-            // إزالة الزر القديم إذا وجد
-            const oldBtn = document.getElementById('enableNotifBtn');
-            if (oldBtn) oldBtn.remove();
-
-            const btn = document.createElement('button');
-            btn.id = 'enableNotifBtn';
-            btn.innerText = '🔔 تفعيل الإشعارات';
-            btn.style.cssText = `
-                position: fixed; bottom: 140px; left: 50%; transform: translateX(-50%);
-                background: var(--primary); color: white; padding: 12px 24px;
-                border: none; border-radius: 30px; font-weight: 800; font-size: 0.9rem;
-                z-index: 9999; box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-                cursor: pointer;
-            `;
-            btn.onclick = async () => {
-                const permission = await Notification.requestPermission();
-                if (permission === 'granted') {
-                    await requestNotificationPermission();
-                    btn.remove(); // إخفاء الزر بعد الموافقة
-                    showToast("🎉 تم تفعيل الإشعارات!");
-                } else {
-                    showToast("⚠️ تم رفض الإذن. يمكنك تفعيله لاحقاً من إعدادات المتصفح");
-                }
-            };
-            document.body.appendChild(btn);
-        }
-
-        // دالة التحقق من حالة الإذن عند تسجيل الدخول
-        function enableNotifications() {
-            if (Notification.permission === 'granted') {
-                // إذا كان مسموحاً بالفعل، احصل على التوكن وقم بتحديثه
-                requestNotificationPermission();
-            } else if (Notification.permission === 'default') {
-                // إذا لم يتم اتخاذ قرار بعد، أظهر زر السماح
-                showNotificationPrompt();
-            } else {
-                // إذا كان مرفوضاً، لا تفعل شيئاً
-                console.log("الإشعارات مرفوضة مسبقاً");
-            }
-        }
 
         // ==================== 3. الدوال المساعدة ====================
         function showToast(msg) { let t = document.getElementById('toastMsg');
@@ -1128,22 +2226,22 @@
         function getStatusText(st) { const m = { pending: 'قيد المراجعة', on_the_way: 'في الطريق', arrived: 'وصل الموقع',
                 delivered: 'تم التوصيل' }; return m[st] || st; }
 
-        // ==================== 4. واجهات المستخدم الأساسية ====================
+        // ==================== 4. واجهات المستخدم ====================
         function renderCategories() {
             document.getElementById('categoriesGrid').innerHTML = `
-            <div class="category-card" onclick="openCategory('restaurants')"><div class="category-icon">🍔</div><h3>مطاعم وجبات</h3><p>أشهى الأطباق</p></div>
-            <div class="category-card" onclick="openCategory('supermarket')"><div class="category-icon">🛒</div><h3>سوبرماركت</h3><p>كل احتياجاتك</p></div>
-            <div class="category-card" onclick="openCategory('shein')"><div class="category-icon">👗</div><h3>شي إن</h3><p>أحدث خطوط الأزياء</p></div>
-            <div class="category-card" onclick="openCategory('pharmacy')"><div class="category-icon">💊</div><h3>صيدليات</h3><p>أدوية وعناية</p></div>
-          `;
+        <div class="category-card" onclick="openCategory('restaurants')"><div class="category-icon">🍔</div><h3>مطاعم وجبات</h3><p>أشهى الأطباق</p></div>
+        <div class="category-card" onclick="openCategory('supermarket')"><div class="category-icon">🛒</div><h3>سوبرماركت</h3><p>كل احتياجاتك</p></div>
+        <div class="category-card" onclick="openCategory('shein')"><div class="category-icon">👗</div><h3>شي إن</h3><p>أحدث خطوط الأزياء</p></div>
+        <div class="category-card" onclick="openCategory('pharmacy')"><div class="category-icon">💊</div><h3>صيدليات</h3><p>أدوية وعناية</p></div>
+      `;
         }
 
         function renderOffers() {
             document.getElementById('offersScroll').innerHTML = `
-            <div class="offer-card" onclick="openCategory('restaurants')"><div class="offer-text"><h4>🔥 خصم 30%</h4><p>على أول طلب وجبات</p></div><div class="offer-badge">اطلب الآن</div></div>
-            <div class="offer-card" onclick="openCategory('supermarket')"><div class="offer-text"><h4>🛒 توصيل مجاني</h4><p>لطلبات السوبرماركت</p></div><div class="offer-badge">استفد</div></div>
-            <div class="offer-card" onclick="openCategory('shein')"><div class="offer-text"><h4>👗 تشكيلة جديدة</h4><p>خصومات تصل إلى 40%</p></div><div class="offer-badge">تسوق</div></div>
-          `;
+        <div class="offer-card" onclick="openCategory('restaurants')"><div class="offer-text"><h4>🔥 خصم 30%</h4><p>على أول طلب وجبات</p></div><div class="offer-badge">اطلب الآن</div></div>
+        <div class="offer-card" onclick="openCategory('supermarket')"><div class="offer-text"><h4>🛒 توصيل مجاني</h4><p>لطلبات السوبرماركت</p></div><div class="offer-badge">استفد</div></div>
+        <div class="offer-card" onclick="openCategory('shein')"><div class="offer-text"><h4>👗 تشكيلة جديدة</h4><p>خصومات تصل إلى 40%</p></div><div class="offer-badge">تسوق</div></div>
+      `;
         }
 
         function renderRestaurantsList() {
@@ -1191,21 +2289,20 @@
 
                 itemsHtml += `
             <div class="menu-item-card" data-cat="${catAttr}">
-              <div class="menu-item-img" style="background-image:url('${getItemImage(item.n)}')">
-                ${idx === 0 ? `<span class="item-badge">🔥 مميز</span>` : ''}
-              </div>
+              <div class="menu-item-img" style="background-image:url('${getItemImage(item.n)}')"></div>
               <div class="menu-item-info">
                 <div class="menu-item-name">${item.n}</div>
                 <div class="menu-item-desc">${item.d || "وجبة لذيذة"}</div>
                 <div class="menu-item-price">${item.p} ريال</div>
-              </div>
-              <div class="item-controls">
-                <div class="qty-wrap">
-                  <button class="qty-btn" onclick="updateItemQuantity(${idx}, ${currentRestaurant.id}, -1)">-</button>
-                  <span class="qty-display" id="qty_${currentRestaurant.id}_${idx}">${count}</span>
-                  <button class="qty-btn" onclick="updateItemQuantity(${idx}, ${currentRestaurant.id}, 1)">+</button>
+                
+                <div class="item-controls" style="margin-top:8px; display:flex; flex-direction:column; gap:6px;">
+                  <div style="display:flex; align-items:center; justify-content:center; gap:15px; background:var(--bg-light); padding:5px; border-radius:30px;">
+                    <button class="qty-btn" onclick="updateItemQuantity(${idx}, ${currentRestaurant.id}, -1)" style="width:30px; height:30px; border-radius:50%; border:none; background:var(--primary); color:white; font-weight:bold; cursor:pointer;">-</button>
+                    <span id="qty_${currentRestaurant.id}_${idx}" style="font-weight:bold; min-width:20px; text-align:center;">${count}</span>
+                    <button class="qty-btn" onclick="updateItemQuantity(${idx}, ${currentRestaurant.id}, 1)" style="width:30px; height:30px; border-radius:50%; border:none; background:var(--primary); color:white; font-weight:bold; cursor:pointer;">+</button>
+                  </div>
+                  <textarea id="note_${currentRestaurant.id}_${idx}" rows="1" placeholder="📝 ملاحظة خاصة لهذا الصنف (اختياري)" style="width:100%; padding:6px; border-radius:12px; border:1px solid var(--gray-light); font-size:0.8rem; background:var(--white);" oninput="updateItemNote(${idx}, ${currentRestaurant.id}, this.value)">${note}</textarea>
                 </div>
-                <textarea class="item-note" id="note_${currentRestaurant.id}_${idx}" rows="1" placeholder="📝 ملاحظة خاصة (اختياري)" oninput="updateItemNote(${idx}, ${currentRestaurant.id}, this.value)">${note}</textarea>
               </div>
             </div>
           `;
@@ -1279,14 +2376,15 @@
                   <div class="menu-item-name">${item.n}</div>
                   <div class="menu-item-desc">${item.d || "منتج مميز"}</div>
                   <div class="menu-item-price">${item.p} ريال</div>
-                </div>
-                <div class="item-controls">
-                  <div class="qty-wrap">
-                    <button class="qty-btn" onclick="updateSupermarketItemQuantity(${idx}, '${id}', -1)">-</button>
-                    <span class="qty-display" id="qty_${id}_${idx}">${count}</span>
-                    <button class="qty-btn" onclick="updateSupermarketItemQuantity(${idx}, '${id}', 1)">+</button>
+                  
+                  <div class="item-controls" style="margin-top:8px; display:flex; flex-direction:column; gap:6px;">
+                    <div style="display:flex; align-items:center; justify-content:center; gap:15px; background:var(--bg-light); padding:5px; border-radius:30px;">
+                      <button class="qty-btn" onclick="updateSupermarketItemQuantity(${idx}, '${id}', -1)" style="width:30px; height:30px; border-radius:50%; border:none; background:var(--primary); color:white; font-weight:bold; cursor:pointer;">-</button>
+                      <span id="qty_${id}_${idx}" style="font-weight:bold; min-width:20px; text-align:center;">${count}</span>
+                      <button class="qty-btn" onclick="updateSupermarketItemQuantity(${idx}, '${id}', 1)" style="width:30px; height:30px; border-radius:50%; border:none; background:var(--primary); color:white; font-weight:bold; cursor:pointer;">+</button>
+                    </div>
+                    <textarea id="note_${id}_${idx}" rows="1" placeholder="📝 ملاحظة خاصة لهذا الصنف (اختياري)" style="width:100%; padding:6px; border-radius:12px; border:1px solid var(--gray-light); font-size:0.8rem; background:var(--white);" oninput="updateSupermarketItemNote(${idx}, '${id}', this.value)">${cartItem ? (cartItem.note || '') : ''}</textarea>
                   </div>
-                  <textarea class="item-note" id="note_${id}_${idx}" rows="1" placeholder="📝 ملاحظة خاصة (اختياري)" oninput="updateSupermarketItemNote(${idx}, '${id}', this.value)">${cartItem ? (cartItem.note || '') : ''}</textarea>
                 </div>
               </div>
             `;
@@ -1336,14 +2434,15 @@
                   <div class="menu-item-name">${item.n}</div>
                   <div class="menu-item-desc">${item.d || "منتج صحي"}</div>
                   <div class="menu-item-price">${item.p} ريال</div>
-                </div>
-                <div class="item-controls">
-                  <div class="qty-wrap">
-                    <button class="qty-btn" onclick="updatePharmacyItemQuantity(${idx}, '${id}', -1)">-</button>
-                    <span class="qty-display" id="qty_${id}_${idx}">${count}</span>
-                    <button class="qty-btn" onclick="updatePharmacyItemQuantity(${idx}, '${id}', 1)">+</button>
+                  
+                  <div class="item-controls" style="margin-top:8px; display:flex; flex-direction:column; gap:6px;">
+                    <div style="display:flex; align-items:center; justify-content:center; gap:15px; background:var(--bg-light); padding:5px; border-radius:30px;">
+                      <button class="qty-btn" onclick="updatePharmacyItemQuantity(${idx}, '${id}', -1)" style="width:30px; height:30px; border-radius:50%; border:none; background:var(--primary); color:white; font-weight:bold; cursor:pointer;">-</button>
+                      <span id="qty_${id}_${idx}" style="font-weight:bold; min-width:20px; text-align:center;">${count}</span>
+                      <button class="qty-btn" onclick="updatePharmacyItemQuantity(${idx}, '${id}', 1)" style="width:30px; height:30px; border-radius:50%; border:none; background:var(--primary); color:white; font-weight:bold; cursor:pointer;">+</button>
+                    </div>
+                    <textarea id="note_${id}_${idx}" rows="1" placeholder="📝 ملاحظة خاصة لهذا الصنف (اختياري)" style="width:100%; padding:6px; border-radius:12px; border:1px solid var(--gray-light); font-size:0.8rem; background:var(--white);" oninput="updatePharmacyItemNote(${idx}, '${id}', this.value)">${cartItem ? (cartItem.note || '') : ''}</textarea>
                   </div>
-                  <textarea class="item-note" id="note_${id}_${idx}" rows="1" placeholder="📝 ملاحظة خاصة (اختياري)" oninput="updatePharmacyItemNote(${idx}, '${id}', this.value)">${cartItem ? (cartItem.note || '') : ''}</textarea>
                 </div>
               </div>
             `;
@@ -1425,8 +2524,6 @@
             if (categoryId === 'shein') { showSheinPage(); return; }
             if (categoryId === 'supermarket') { renderSupermarketsList(); return; }
             if (categoryId === 'pharmacy') { renderPharmaciesList(); return; }
-            if (categoryId === 'delivery') { showPage('deliveryPage');
-                initDeliveryPaymentList(); return; }
         };
 
         // ==================== 5. شي إن (Shein) ====================
@@ -1472,14 +2569,15 @@
                   <div class="menu-item-name">${p.name}</div>
                   <div class="menu-item-desc">${p.desc}</div>
                   <div class="menu-item-price">${p.price} ريال</div>
-                </div>
-                <div class="item-controls">
-                  <div class="qty-wrap">
-                    <button class="qty-btn" onclick="updateSheinItemQuantity('${category}', ${p.id}, -1)">-</button>
-                    <span class="qty-display" id="qty_shein_${p.id}">0</span>
-                    <button class="qty-btn" onclick="updateSheinItemQuantity('${category}', ${p.id}, 1)">+</button>
+                  
+                  <div class="item-controls" style="margin-top:8px; display:flex; flex-direction:column; gap:6px;">
+                    <div style="display:flex; align-items:center; justify-content:center; gap:15px; background:var(--bg-light); padding:5px; border-radius:30px;">
+                      <button class="qty-btn" onclick="updateSheinItemQuantity('${category}', ${p.id}, -1)" style="width:30px; height:30px; border-radius:50%; border:none; background:var(--primary); color:white; font-weight:bold; cursor:pointer;">-</button>
+                      <span id="qty_shein_${p.id}" style="font-weight:bold; min-width:20px; text-align:center;">0</span>
+                      <button class="qty-btn" onclick="updateSheinItemQuantity('${category}', ${p.id}, 1)" style="width:30px; height:30px; border-radius:50%; border:none; background:var(--primary); color:white; font-weight:bold; cursor:pointer;">+</button>
+                    </div>
+                    <textarea id="note_shein_${p.id}" rows="1" placeholder="📝 ملاحظة خاصة لهذا الصنف (اختياري)" style="width:100%; padding:6px; border-radius:12px; border:1px solid var(--gray-light); font-size:0.8rem; background:var(--white);" oninput="updateSheinItemNote('${category}', ${p.id}, this.value)"></textarea>
                   </div>
-                  <textarea class="item-note" id="note_shein_${p.id}" rows="1" placeholder="📝 ملاحظة خاصة (اختياري)" oninput="updateSheinItemNote('${category}', ${p.id}, this.value)"></textarea>
                 </div>
               </div>
             `;
@@ -1635,9 +2733,9 @@
                     <div>${item.p * item.qty} ريال</div>
                   </div>
                   <div class="cart-qty-controls">
-                    <button class="qty-btn-small" onclick="changeCartQty(${i}, 1)">+</button>
+                    <button class="qty-btn" onclick="changeCartQty(${i}, 1)">+</button>
                     <span>${item.qty}</span>
-                    <button class="qty-btn-small" onclick="changeCartQty(${i}, -1)">-</button>
+                    <button class="qty-btn" onclick="changeCartQty(${i}, -1)">-</button>
                   </div>
                 </div>
               `).join('');
@@ -1663,52 +2761,15 @@
                         showToast("تم تحديد موقعك"); }, () => showToast("فشل تحديد الموقع")); } else showToast(
                 "المتصفح لا يدعم الموقع"); }
 
-        // إضافة دوال تحديد الموقع لخدمة "وصلي"
-        function getCurrentLocationForDelivery() {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(
-                    pos => {
-                        deliveryFrom = { lat: pos.coords.latitude, lng: pos.coords.longitude };
-                        document.getElementById('deliveryFromTxt').innerHTML = '✅ تم تحديد موقع الانطلاق الحالي';
-                        updateDeliveryCostNew();
-                        showToast("تم تحديد موقع الانطلاق");
-                    },
-                    () => showToast("فشل تحديد موقع الانطلاق، يرجى استخدام الخريطة أو الكتابة اليدوية")
-                );
-            } else showToast("المتصفح لا يدعم تحديد الموقع");
-        }
-
-        function getCurrentLocationForDeliveryTo() {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(
-                    pos => {
-                        deliveryTo = { lat: pos.coords.latitude, lng: pos.coords.longitude };
-                        document.getElementById('deliveryToTxt').innerHTML = '✅ تم تحديد موقع الوصول الحالي';
-                        updateDeliveryCostNew();
-                        showToast("تم تحديد موقع الوصول");
-                    },
-                    () => showToast("فشل تحديد موقع الوصول، يرجى استخدام الخريطة أو الكتابة اليدوية")
-                );
-            } else showToast("المتصفح لا يدعم تحديد الموقع");
-        }
-
-        function initMapForCheckout(mode) {
-            currentMapMode = mode;
+        function initMapForCheckout() { currentMapMode = 'checkout';
             document.getElementById('map-overlay').style.display = 'flex';
-            setTimeout(() => {
-                if (!map) {
-                    map = L.map('map').setView([RESTAURANT_LAT, RESTAURANT_LNG], 14);
+            setTimeout(() => { if (!map) { map = L.map('map').setView([RESTAURANT_LAT, RESTAURANT_LNG], 14);
                     L.tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', { subdomains: ['mt0', 'mt1',
                             'mt2', 'mt3'] }).addTo(map);
                     marker = L.marker([RESTAURANT_LAT, RESTAURANT_LNG], { draggable: true }).addTo(map);
-                    map.on('click', e => marker.setLatLng(e.latlng));
-                }
-                if (mode === 'customer' && customerLocation) marker.setLatLng(customerLocation);
-                else if (mode === 'delivery_from' && deliveryFrom) marker.setLatLng(deliveryFrom);
-                else if (mode === 'delivery_to' && deliveryTo) marker.setLatLng(deliveryTo);
-                map.invalidateSize();
-            }, 100);
-        }
+                    map.on('click', e => marker.setLatLng(e.latlng)); } if (customerLocation) marker.setLatLng(
+                    customerLocation);
+                map.invalidateSize(); }, 100); }
 
         function initMapForAdmin() { currentMapMode = 'admin';
             document.getElementById('map-overlay').style.display = 'flex';
@@ -1721,31 +2782,15 @@
 
         function closeMap() { document.getElementById('map-overlay').style.display = 'none'; }
 
-        function confirmMapLocation() {
-            if (!map || !marker) return;
-            let pos = marker.getLatLng();
-            if (currentMapMode === 'customer') {
-                customerLocation = { lat: pos.lat, lng: pos.lng };
+        function confirmMapLocation() { if (!map || !marker) return; let pos = marker.getLatLng(); if (currentMapMode ===
+                'checkout') { customerLocation = { lat: pos.lat, lng: pos.lng };
                 document.getElementById('checkoutLocationTxt').innerHTML = '✅ تم تحديد الموقع';
                 updateDeliveryCost();
-                closeMap();
-            } else if (currentMapMode === 'delivery_from') {
-                deliveryFrom = { lat: pos.lat, lng: pos.lng };
-                document.getElementById('deliveryFromTxt').innerHTML = '✅ تم تحديد الانطلاق';
-                updateDeliveryCostNew();
-                closeMap();
-            } else if (currentMapMode === 'delivery_to') {
-                deliveryTo = { lat: pos.lat, lng: pos.lng };
-                document.getElementById('deliveryToTxt').innerHTML = '✅ تم تحديد الوجهة';
-                updateDeliveryCostNew();
-                closeMap();
-            } else if (currentMapMode === 'admin') {
-                document.getElementById('adminRestLat').value = pos.lat;
+                closeMap(); } else if (currentMapMode === 'admin') { document.getElementById('adminRestLat').value = pos
+                    .lat;
                 document.getElementById('adminRestLng').value = pos.lng;
                 showToast("تم تحديد موقع المطعم");
-                closeMap();
-            }
-        }
+                closeMap(); } }
 
         function updateDeliveryCost() {
             if (!customerLocation) return;
@@ -1759,55 +2804,17 @@
             updateCheckoutSummary();
         }
 
-        function updateDeliveryCostNew() {
-            if (!deliveryFrom || !deliveryTo) return;
-            let distance = calculateDistance(deliveryFrom.lat, deliveryFrom.lng, deliveryTo.lat, deliveryTo.lng);
-            let rawPrice = Math.round(distance * PRICE_PER_KM);
-            let roundedPrice = roundToNearestHundred(rawPrice);
-            deliveryCostNew = Math.max(roundedPrice, MIN_DELIVERY_PRICE);
-            document.getElementById('deliveryCostDisplayNew').style.display = 'flex';
-            document.getElementById('deliveryCostValueNew').innerText = deliveryCostNew;
-        }
-
         function updateCheckoutSummary() {
             if (!currentRestaurant) return;
             let totalFood = cart.reduce((s, i) => s + (i.p * i.qty), 0);
             let total = totalFood + deliveryCost;
-            
-            let itemsHtml = `
-                <div style="background: var(--bg-light); border-radius: 12px; padding: 16px; margin: 12px 0; border: 1px solid var(--gray-light);">
-                    <div style="display: flex; justify-content: space-between; font-weight: 700; color: var(--gray); border-bottom: 2px solid var(--gray-light); padding-bottom: 10px; margin-bottom: 10px;">
-                        <span style="flex: 2;">الصنف</span>
-                        <span style="flex: 1; text-align: center;">الكمية</span>
-                        <span style="flex: 1; text-align: left;">الإجمالي</span>
-                    </div>
-                    ${cart.map(i => `
-                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--gray-light);">
-                            <div style="flex: 2;">
-                                <div style="font-weight: 700; font-size: 0.9rem;">${i.name}</div>
-                                <div style="font-size: 0.7rem; color: var(--gray);">${i.p} ريال / صنف</div>
-                                ${i.note ? `<div style="font-size: 0.7rem; color: var(--gray);">📝 ${i.note}</div>` : ''}
-                            </div>
-                            <div style="flex: 1; text-align: center; font-weight: 600;">x${i.qty}</div>
-                            <div style="flex: 1; text-align: left; font-weight: 700; color: var(--primary);">${i.p * i.qty} ريال</div>
-                        </div>
-                    `).join('')}
-                    <div style="margin-top: 12px; display: flex; flex-direction: column; gap: 4px; border-top: 2px solid var(--gray-light); padding-top: 12px;">
-                        <div style="display: flex; justify-content: space-between; font-size: 0.9rem;"><span>مجموع الأصناف</span><span>${totalFood} ريال</span></div>
-                        <div style="display: flex; justify-content: space-between; font-size: 0.9rem;"><span>🚚 رسوم التوصيل</span><span>${deliveryCost} ريال</span></div>
-                        <div style="display: flex; justify-content: space-between; font-size: 1.2rem; font-weight: 800; color: var(--primary-dark); border-top: 2px solid var(--primary-light); padding-top: 8px; margin-top: 4px;"><span>الإجمالي النهائي</span><span>${total} ريال</span></div>
-                    </div>
-                </div>
-            `;
-            document.getElementById('checkoutOrderSummary').innerHTML = `
-                <div style="padding: 10px; background: var(--white); border-radius: 14px; border: 1px solid var(--gray-light);">
-                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px; border-bottom: 1px solid var(--gray-light); padding-bottom: 8px;">
-                        <i class="fas fa-store" style="color: var(--primary);"></i>
-                        <h4 style="font-weight: 800; margin: 0;">${currentRestaurant.name}</h4>
-                    </div>
-                    ${itemsHtml}
-                </div>
-            `;
+            let itemsHtml = cart.map(i =>
+                    `<div style="display:flex; justify-content:space-between;"><span>${i.name} x${i.qty}${i.note ? ' ('+i.note+')' : ''}</span><span>${i.p*i.qty} ريال</span></div>`
+                    ).join('');
+            itemsHtml +=
+                `<div><span>المجموع: ${totalFood} ريال</span></div><div><span>🚚 التوصيل: ${deliveryCost} ريال</span></div><div><span>الإجمالي: ${total} ريال</span></div>`;
+            document.getElementById('checkoutOrderSummary').innerHTML =
+                `<h4>🍽️ ${currentRestaurant.name}</h4>${itemsHtml}`;
         }
 
         function initPaymentList() {
@@ -1866,7 +2873,7 @@
             let itemsText = cart.map(i =>
                 `• ${i.name} x${i.qty} = ${i.p*i.qty} ريال ${i.note?' ('+i.note+')':''}`).join('\n');
             let message =
-                `🛍️ طلب جديد من وصال\n🍔 ${currentRestaurant.name}\n👤 ${currentUser.name}\n📞 ${currentUser.phone}\n📍 ${order.address}\n📝 ملاحظات عامة: ${generalNote || 'لا توجد'}\n\nالمنتجات:\n${itemsText}\n\n🚚 التوصيل: ${deliveryCost} ريال\n💰 الإجمالي: ${total} ريال\n\nعزيزي/عزيزتي، تابع تطبيقنا لتتبع حالة طلبك 😊`;
+                `🛍️ طلب جديد من وصل\n🍔 ${currentRestaurant.name}\n👤 ${currentUser.name}\n📞 ${currentUser.phone}\n📍 ${order.address}\n📝 ملاحظات عامة: ${generalNote || 'لا توجد'}\n\nالمنتجات:\n${itemsText}\n\n🚚 التوصيل: ${deliveryCost} ريال\n💰 الإجمالي: ${total} ريال\n\nعزيزي/عزيزتي، تابع تطبيقنا لتتبع حالة طلبك 😊`;
             window.open(`https://wa.me/777215154?text=${encodeURIComponent(message)}`, '_blank');
             showToast('✅ تم إرسال طلبك');
             cart = [];
@@ -1883,49 +2890,7 @@
             }, 1500);
         }
 
-        async function confirmDeliveryOrder() {
-            let fromAddr = document.getElementById('deliveryFromManual').value.trim();
-            let toAddr = document.getElementById('deliveryToManual').value.trim();
-            let name = document.getElementById('deliveryCustomerName').value.trim();
-            let phone = document.getElementById('deliveryCustomerPhone').value.trim();
-            let note = document.getElementById('deliveryOrderNote').value.trim();
-
-            if (!deliveryFrom && !fromAddr) return showToast('حدد موقع الانطلاق');
-            if (!deliveryTo && !toAddr) return showToast('حدد موقع الوصول (الوجهة)');
-            if (!name) return showToast('أدخل اسم المستلم/المرسل');
-            if (!phone) return showToast('أدخل رقم الهاتف');
-            if (!currentUser || currentUser.role !== 'customer') return showToast('سجل دخول كعميل');
-
-            let id = Date.now();
-            let total = deliveryCostNew || 0;
-            let order = {
-                id, type: 'delivery', service: 'طلب توصيل شخصي', customerName: currentUser.name,
-                customerPhone: currentUser.phone, recipientName: name, recipientPhone: phone,
-                fromAddress: fromAddr || 'موقع جغرافي (انطلاق)', toAddress: toAddr || 'موقع جغرافي (وصول)',
-                fromLat: deliveryFrom?.lat || RESTAURANT_LAT, fromLng: deliveryFrom?.lng || RESTAURANT_LNG,
-                toLat: deliveryTo?.lat || RESTAURANT_LAT, toLng: deliveryTo?.lng || RESTAURANT_LNG,
-                totalFood: 0, deliveryCost: total, total: total, status: 'pending',
-                createdAt: new Date().toISOString(), items: [], paymentMethod: selectedPaymentMethod,
-                generalNote: note
-            };
-            await fetch(`${FIREBASE_URL}/orders/${id}.json`, { method: 'PUT', body: JSON.stringify(order) });
-            localStorage.setItem('currentTrackingOrder', id);
-            
-            let message =
-                `🛵 طلب توصيل شخصي جديد من وصال\n📦 من: ${order.fromAddress}\n📍 إلى: ${order.toAddress}\n👤 اسم المرسل: ${order.recipientName}\n📞 رقم المرسل: ${order.recipientPhone}\n📝 ملاحظات: ${note || 'لا توجد'}\n\n🚚 التوصيل: ${total} ريال\n💰 الإجمالي: ${total} ريال\n\nعزيزي/عزيزتي، تابع تطبيقنا لتتبع حالة طلبك 😊`;
-            window.open(`https://wa.me/777215154?text=${encodeURIComponent(message)}`, '_blank');
-            showToast('✅ تم إرسال طلب التوصيل');
-            deliveryFrom = null; deliveryTo = null; deliveryCostNew = 0;
-            document.getElementById('deliveryFromTxt').innerHTML = '🗺️ حدد موقع الانطلاق';
-            document.getElementById('deliveryToTxt').innerHTML = '🗺️ حدد وجهتك من الخريطة';
-            document.getElementById('deliveryCostDisplayNew').style.display = 'none';
-            showPage('homePage');
-            await loadOrders();
-            setTimeout(() => { viewOrderTracking(id);
-                startAutoTracking(id); }, 1500);
-        }
-
-        // ==================== 7. نظام التتبع التلقائي (تم تحسينه لتوفير البيانات) ====================
+        // ==================== 7. نظام التتبع التلقائي ====================
         let autoTrackingId = null;
         let hasNotified = { on_the_way: false, arrived: false, delivered: false };
 
@@ -1934,8 +2899,7 @@
             autoTrackingId = orderId;
             hasNotified = { on_the_way: false, arrived: false, delivered: false };
             checkOrderStatus(orderId);
-            // تم زيادة الوقت من 3 ثوانٍ إلى 6 ثوانٍ لتقليل استهلاك البيانات
-            trackingInterval = setInterval(() => { checkOrderStatus(orderId); }, 6000);
+            trackingInterval = setInterval(() => { checkOrderStatus(orderId); }, 3000);
         }
 
         function stopAutoTracking() {
@@ -1944,9 +2908,6 @@
         }
 
         async function checkOrderStatus(orderId) {
-            // إذا كانت الصفحة غير مرئية، توقف عن جلب البيانات لتوفير الإنترنت
-            if (document.hidden) return;
-            
             await loadOrders();
             let order = allOrders.find(o => o.id == orderId);
             if (!order) return;
@@ -2016,18 +2977,12 @@
         function openRatingModal(orderId) {
             currentRatingOrderId = orderId;
             ratingData = { driver: 0, service: 0, speed: 0, restaurant: 0 };
-            
-            document.querySelectorAll('.rating-stars-wrapper').forEach(wrapper => {
-                const stars = wrapper.querySelectorAll('.fa-star');
-                stars.forEach(star => {
-                    star.classList.remove('active', 'fas');
+            document.querySelectorAll('.stars').forEach(container => {
+                container.querySelectorAll('.fa-star').forEach(star => {
+                    star.classList.remove('fas');
                     star.classList.add('far');
                 });
-                const cat = wrapper.dataset.category;
-                document.getElementById(`rating_${cat}_text`).innerText = 'لم يتم التقييم';
-                wrapper.dataset.rating = '0';
             });
-            
             document.getElementById('ratingComment').value = '';
             document.getElementById('ratingModal').style.display = 'flex';
         }
@@ -2035,31 +2990,22 @@
         function closeRating() { document.getElementById('ratingModal').style.display = 'none';
             stopAutoTracking(); }
 
-        document.addEventListener('DOMContentLoaded', function() {
-            document.querySelectorAll('.rating-stars-wrapper').forEach(wrapper => {
-                wrapper.addEventListener('click', function(e) {
-                    const star = e.target.closest('.fa-star');
-                    if (!star) return;
-                    
-                    const value = parseInt(star.dataset.value);
-                    const category = this.dataset.category;
-                    
-                    ratingData[category] = value;
-                    
-                    const stars = this.querySelectorAll('.fa-star');
-                    stars.forEach(s => {
-                        const val = parseInt(s.dataset.value);
-                        if (val <= value) {
-                            s.classList.remove('far');
-                            s.classList.add('fas', 'active');
-                        } else {
-                            s.classList.remove('fas', 'active');
-                            s.classList.add('far');
-                        }
-                    });
-                    
-                    const label = document.getElementById(`rating_${category}_text`);
-                    if (label) label.innerText = `${value} من 5 نجوم`;
+        document.querySelectorAll('.stars').forEach(container => {
+            container.addEventListener('click', function(e) {
+                const star = e.target.closest('.fa-star');
+                if (!star) return;
+                const value = parseInt(star.dataset.value);
+                const category = this.dataset.category;
+                ratingData[category] = value;
+                this.querySelectorAll('.fa-star').forEach(s => {
+                    const val = parseInt(s.dataset.value);
+                    if (val <= value) {
+                        s.classList.remove('far');
+                        s.classList.add('fas');
+                    } else {
+                        s.classList.remove('fas');
+                        s.classList.add('far');
+                    }
                 });
             });
         });
@@ -2067,7 +3013,7 @@
         async function submitRating() {
             if (ratingData.driver === 0 || ratingData.service === 0 || ratingData.speed === 0 || ratingData
                 .restaurant === 0) {
-                showToast('⚠️ يرجى تقييم جميع الفئات (النجوم الذهبية تعني التقييم)');
+                showToast('⚠️ يرجى تقييم جميع الفئات');
                 return;
             }
             const comment = document.getElementById('ratingComment').value.trim();
@@ -2099,79 +3045,35 @@
             if (!order) return;
             let steps = ['pending', 'on_the_way', 'arrived', 'delivered'];
             let idx = steps.indexOf(order.status);
-            
-            let stepsHtml = `
-                <div class="tracking-header-card">
-                    <h3 style="font-size:1.2rem; color:var(--primary); text-align:center;">📍 تتبع الطلب #${order.id}</h3>
-                    <div style="text-align:center; margin-top:5px; font-size:0.85rem; color:var(--gray);">${new Date(order.createdAt).toLocaleString('ar-SA')}</div>
-                </div>
-                <div style="background:var(--white); padding:16px; border-radius:14px; margin-bottom:16px; border:1px solid var(--gray-light);">
-                    <div class="tracking-steps">
-            `;
+            let stepsHtml = '<div class="tracking-steps">';
             steps.forEach((s, i) => {
                 let cls = (i < idx) ? 'completed' : (i === idx ? 'active' : '');
-                let icon = { pending: 'fa-clock', on_the_way: 'fa-motorcycle', arrived: 'fa-map-location-dot',
-                    delivered: 'fa-check-double' } [s];
+                let icon = { pending: 'fa-clock', on_the_way: 'fa-truck', arrived: 'fa-map-marker-alt',
+                    delivered: 'fa-check-circle' } [s];
                 let label = { pending: 'قيد المراجعة', on_the_way: 'في الطريق', arrived: 'وصل الموقع',
                     delivered: 'تم التوصيل' } [s];
-                stepsHtml += `
-                    <div class="step ${cls}">
-                        <div class="circle"><i class="fas ${icon}"></i></div>
-                        <div class="step-label">${label}</div>
-                    </div>`;
+                stepsHtml +=
+                    `<div class="step ${cls}"><div class="circle"><i class="fas ${icon}"></i></div><div class="step-label">${label}</div></div>`;
                 if (i < steps.length - 1) stepsHtml += `<div class="step-connector ${i<idx?'completed':''}"></div>`;
             });
-            stepsHtml += `</div></div>`;
-
-            let itemsListHtml = `
-                <div style="background: var(--bg-light); border-radius: 12px; padding: 16px; margin: 12px 0;">
-                    <div style="display: flex; justify-content: space-between; font-weight: 700; color: var(--gray); border-bottom: 2px solid var(--gray-light); padding-bottom: 10px; margin-bottom: 10px;">
-                        <span style="flex: 2;">الصنف</span>
-                        <span style="flex: 1; text-align: center;">الكمية</span>
-                        <span style="flex: 1; text-align: left;">الإجمالي</span>
-                    </div>
-                    ${order.items.map(i => `
-                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--gray-light);">
-                            <div style="flex: 2;">
-                                <div style="font-weight: 700; font-size: 0.9rem;">${i.name}</div>
-                                <div style="font-size: 0.7rem; color: var(--gray);">${i.price} ريال / صنف</div>
-                                ${i.note ? `<div style="font-size: 0.7rem; color: var(--gray);">📝 ${i.note}</div>` : ''}
-                            </div>
-                            <div style="flex: 1; text-align: center; font-weight: 600;">x${i.qty}</div>
-                            <div style="flex: 1; text-align: left; font-weight: 700; color: var(--primary);">${i.price * i.qty} ريال</div>
-                        </div>
-                    `).join('')}
-                    <div style="margin-top: 12px; display: flex; flex-direction: column; gap: 4px; border-top: 2px solid var(--gray-light); padding-top: 12px;">
-                        <div style="display: flex; justify-content: space-between; font-size: 0.9rem;"><span>مجموع الأصناف</span><span>${order.totalFood || 0} ريال</span></div>
-                        <div style="display: flex; justify-content: space-between; font-size: 0.9rem;"><span>🚚 رسوم التوصيل</span><span>${order.deliveryCost || 0} ريال</span></div>
-                        <div style="display: flex; justify-content: space-between; font-size: 1.2rem; font-weight: 800; color: var(--primary-dark); border-top: 2px solid var(--primary-light); padding-top: 8px; margin-top: 4px;"><span>الإجمالي النهائي</span><span>${order.total || 0} ريال</span></div>
-                    </div>
-                </div>
-            `;
-
+            stepsHtml += '</div>';
+            let itemsListHtml = '<ul class="order-items-list">' + order.items.map(i =>
+                    `<li><span>${i.name} x${i.qty} ${i.note?'('+i.note+')':''}</span><span>${i.price*i.qty} ريال</span></li>`
+                    ).join('') + '</ul>';
             let details = `
-          <div style="background:var(--white); border-radius:14px; padding:16px; border:1px solid var(--gray-light); margin-bottom:16px;">
-            <div style="display:flex; gap:8px; margin-bottom:10px; flex-wrap:wrap;">
-                <div style="flex:1; background:var(--bg-light); padding:8px; border-radius:8px; text-align:center;">
-                    <div style="font-size:0.7rem; color:var(--gray);">المطعم</div>
-                    <div style="font-weight:800; font-size:0.9rem;">${order.restaurant}</div>
-                </div>
-                <div style="flex:1; background:var(--bg-light); padding:8px; border-radius:8px; text-align:center;">
-                    <div style="font-size:0.7rem; color:var(--gray);">حالة الطلب</div>
-                    <div style="font-weight:800; font-size:0.9rem; color:${order.status === 'delivered' ? 'var(--success)' : (order.status === 'on_the_way' ? 'var(--primary-light)' : 'var(--warning)')}">${getStatusText(order.status)}</div>
-                </div>
-            </div>
-            <div style="display:flex; gap:8px; flex-wrap:wrap; justify-content:space-between; background:var(--bg-light); padding:10px; border-radius:8px;">
-                <div><i class="fas fa-user" style="color:var(--primary);"></i> ${order.customerName}</div>
-                <div><i class="fas fa-phone" style="color:var(--primary);"></i> ${order.customerPhone}</div>
-                <div><i class="fas fa-map-marker-alt" style="color:var(--primary);"></i> ${order.address}</div>
-            </div>
+          <div class="tracking-detail-card" style="border:2px solid var(--primary);">
+            <h3 style="font-size:1.3rem; color:var(--primary);">📍 طلب #${order.id}</h3>
+            <div class="tracking-label">⏰ الوقت</div>
+            <div class="tracking-value" style="font-size:1rem;">${new Date(order.createdAt).toLocaleString('ar-SA')}</div>
+            <div class="tracking-label">🍔 المطعم</div>
+            <div class="tracking-value" style="font-size:1rem;">${order.restaurant}</div>
+            <div class="tracking-label">🧾 الأصناف</div>
+            ${itemsListHtml}
+            <div style="display:flex; justify-content:space-between; font-size:1rem; margin:5px 0;"><span>المجموع</span><span>${order.totalFood} ريال</span></div>
+            <div style="display:flex; justify-content:space-between; font-size:1rem; margin:5px 0;"><span>🚚 التوصيل</span><span>${order.deliveryCost} ريال</span></div>
+            <div style="display:flex; justify-content:space-between; font-size:1.2rem; font-weight:800; border-top:2px solid var(--primary); padding-top:8px; margin-top:8px;"><span>الإجمالي</span><span>${order.total} ريال</span></div>
           </div>
-          ${itemsListHtml}
           ${stepsHtml}
-          <div style="margin-top:10px; background:var(--gray-light); border-radius:10px; padding:10px; font-size:0.8rem; color:var(--gray); text-align:center;">
-              💡 سيتم تحديث حالة طلبك تلقائياً كل 6 ثوانٍ (للتوفير والسرعة)
-          </div>
         `;
             document.getElementById('trackingFullscreenContainer').innerHTML = details;
             document.getElementById('trackFullscreen').style.display = 'block';
@@ -2187,101 +3089,122 @@
         async function renderMyOrders() {
             await loadOrders();
             let myOrders = allOrders.filter(o => o.customerPhone === currentUser?.phone);
-            if (myOrders.length === 0) {
-                document.getElementById('myOrdersContainer').innerHTML = `
-                    <div style="text-align: center; padding: 30px; color: var(--gray);">
-                        <i class="fas fa-clipboard-list" style="font-size: 3rem; opacity: 0.5; margin-bottom: 10px;"></i>
-                        <p style="font-weight: 700;">لا توجد طلبات سابقة</p>
-                        <p style="font-size: 0.8rem;">ابدأ بتقديم طلبك الأول الآن!</p>
-                    </div>
-                `;
-                return;
-            }
-            let html = myOrders.map(o => `
-                <div class="driver-order-card" onclick="viewOrderTracking(${o.id}); startAutoTracking(${o.id})" style="cursor: pointer; border-right: 5px solid ${o.status === 'delivered' ? 'var(--success)' : (o.status === 'pending' ? 'var(--warning)' : 'var(--primary)')};">
-                    <div class="driver-order-header">
-                        <span class="driver-order-id">#${o.id}</span>
-                        <span class="driver-order-status ${o.status === 'delivered' ? 'delivered' : (o.status === 'on_the_way' ? 'on_the_way' : '')}">${getStatusText(o.status)}</span>
-                    </div>
-                    <div class="driver-order-details">
-                        <div><i class="fas fa-store"></i> ${o.restaurant || o.service}</div>
-                        <div><i class="fas fa-money-bill"></i> ${o.total} ريال</div>
-                        <div><i class="far fa-calendar-alt"></i> ${new Date(o.createdAt).toLocaleString('ar-SA', { hour: '2-digit', minute: '2-digit', day: 'numeric', month: 'numeric', year: 'numeric' })}</div>
-                    </div>
-                </div>
-            `).join('');
+            let html = myOrders.length ? myOrders.map(o =>
+                `<div style="padding:10px; border-bottom:1px solid #ddd; cursor:pointer;" onclick="viewOrderTracking(${o.id}); startAutoTracking(${o.id})"><strong>#${o.id}</strong> - ${o.restaurant} - ${o.total} ريال - ${o.status}</div>`
+                ).join('') : '<p>لا توجد طلبات</p>';
             document.getElementById('myOrdersContainer').innerHTML = html;
         }
 
-        // ==================== 10. واجهة المندوب (أسرع وأقوى، مع ميزة السحب للتحديث) ====================
+        // ==================== 10. واجهة المندوب ====================
         let driverTab = 'available';
+        let driverAudioContext = null;
+        let lastOrderCount = 0;
 
-        const pullContainer = document.getElementById('driverPullRefreshContainer');
-        const refreshIndicator = document.getElementById('chromeRefreshIndicator');
-        const refreshIcon = document.getElementById('chromeRefreshIcon');
+        function playNewLoudAlertSound() {
+            try {
+                if (!driverAudioContext) { driverAudioContext = new(window.AudioContext || window.webkitAudioContext)(); }
+                if (driverAudioContext.state === 'suspended') { driverAudioContext.resume().then(() => { generateNewAlertSound
+                        (); }).catch(err => { console.warn("Audio resume failed:", err); }); } else {
+                    generateNewAlertSound(); }
+            } catch (e) { console.warn("Web Audio API not supported or error:", e); }
+        }
 
-        let touchStartY = 0;
-        let pullDistance = 0;
-        const triggerThreshold = 80;
-        const maxPullDistance = 130;
+        function generateNewAlertSound() {
+            if (!driverAudioContext) return;
+            const now = driverAudioContext.currentTime;
+            const osc1 = driverAudioContext.createOscillator();
+            const gain1 = driverAudioContext.createGain();
+            osc1.type = 'square';
+            osc1.frequency.setValueAtTime(950, now);
+            osc1.frequency.setValueAtTime(1050, now + 0.08);
+            osc1.frequency.setValueAtTime(850, now + 0.16);
+            osc1.frequency.setValueAtTime(1100, now + 0.24);
+            osc1.frequency.setValueAtTime(900, now + 0.32);
+            gain1.gain.setValueAtTime(0.35, now);
+            gain1.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
+            osc1.connect(gain1);
+            gain1.connect(driverAudioContext.destination);
+            osc1.start(now);
+            osc1.stop(now + 0.4);
 
-        pullContainer.addEventListener('touchstart', function(e) {
-            if (window.scrollY === 0 || pullContainer.scrollTop === 0) {
-                touchStartY = e.touches[0].clientY;
-            } else {
-                touchStartY = 0;
-            }
-        }, { passive: true });
+            const osc2 = driverAudioContext.createOscillator();
+            const gain2 = driverAudioContext.createGain();
+            osc2.type = 'sawtooth';
+            osc2.frequency.setValueAtTime(1300, now);
+            osc2.frequency.setValueAtTime(1200, now + 0.1);
+            osc2.frequency.setValueAtTime(1400, now + 0.2);
+            osc2.frequency.setValueAtTime(1250, now + 0.3);
+            gain2.gain.setValueAtTime(0.25, now);
+            gain2.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
+            osc2.connect(gain2);
+            gain2.connect(driverAudioContext.destination);
+            osc2.start(now);
+            osc2.stop(now + 0.35);
 
-        pullContainer.addEventListener('touchmove', function(e) {
-            if (touchStartY === 0) return;
-            
-            const currentY = e.touches[0].clientY;
-            const diff = currentY - touchStartY;
-            
-            if (diff > 0) {
-                pullDistance = Math.min(diff * 0.4, maxPullDistance);
-                
-                refreshIndicator.style.top = `${pullDistance - 40}px`;
-                refreshIndicator.style.opacity = Math.min(pullDistance / triggerThreshold, 1);
-                
-                const rotation = Math.min((pullDistance / triggerThreshold) * 180, 180);
-                refreshIndicator.style.transform = `translateX(-50%) rotate(${rotation}deg)`;
-                
-                if (pullDistance >= triggerThreshold) {
-                    refreshIcon.className = "fas fa-arrow-up";
-                } else {
-                    refreshIcon.className = "fas fa-arrow-down";
-                }
-            }
-        }, { passive: true });
-
-        pullContainer.addEventListener('touchend', function() {
-            if (touchStartY === 0) return;
-            
-            if (pullDistance >= triggerThreshold) {
-                refreshIndicator.classList.add('refreshing');
-                refreshIcon.className = "fas fa-spinner";
-                
+            for (let i = 0; i < 3; i++) {
                 setTimeout(() => {
-                    refreshDriverPanel();
-                    resetChromePullRefresh();
-                    if (typeof showToast === 'function') showToast("🔄 تم تحديث الطلبات فوراً");
-                }, 1200);
-            } else {
-                resetChromePullRefresh();
+                    if (driverAudioContext) {
+                        const osc3 = driverAudioContext.createOscillator();
+                        const gain3 = driverAudioContext.createGain();
+                        osc3.type = 'square';
+                        osc3.frequency.setValueAtTime(1000, driverAudioContext.currentTime);
+                        osc3.frequency.setValueAtTime(1100, driverAudioContext.currentTime + 0.08);
+                        osc3.frequency.setValueAtTime(900, driverAudioContext.currentTime + 0.16);
+                        gain3.gain.setValueAtTime(0.3, driverAudioContext.currentTime);
+                        gain3.gain.exponentialRampToValueAtTime(0.01, driverAudioContext.currentTime + 0.3);
+                        osc3.connect(gain3);
+                        gain3.connect(driverAudioContext.destination);
+                        osc3.start(driverAudioContext.currentTime);
+                        osc3.stop(driverAudioContext.currentTime + 0.3);
+                    }
+                }, 450 * (i + 1));
             }
-            
-            touchStartY = 0;
-            pullDistance = 0;
-        });
+        }
 
-        function resetChromePullRefresh() {
-            refreshIndicator.classList.remove('refreshing');
-            refreshIndicator.style.top = '-50px';
-            refreshIndicator.style.opacity = '0';
-            refreshIndicator.style.transform = 'translateX(-50%) rotate(0deg)';
-            refreshIcon.className = "fas fa-arrow-down";
+        function checkForNewOrders() {
+            if (currentUser?.role === 'driver' && driverTab === 'available') {
+                const availableOrders = allOrders.filter(o => o.status === 'pending');
+                const currentCount = availableOrders.length;
+                if (currentCount > lastOrderCount && lastOrderCount > 0) {
+                    playNewLoudAlertSound();
+                    if (navigator.vibrate) { navigator.vibrate([200, 100, 200, 100, 300]); }
+                }
+                lastOrderCount = currentCount;
+            }
+        }
+
+        let pullStartY = 0;
+        let isPulling = false;
+        const driverListContainer = document.getElementById('driverOrdersList');
+        if (driverListContainer) {
+            driverListContainer.addEventListener('touchstart', function(e) {
+                pullStartY = e.touches[0].clientY;
+                isPulling = false;
+            });
+            driverListContainer.addEventListener('touchmove', function(e) {
+                if (this.scrollTop === 0) {
+                    const currentY = e.touches[0].clientY;
+                    const diff = currentY - pullStartY;
+                    if (diff > 0) {
+                        isPulling = true;
+                        e.preventDefault();
+                        document.getElementById('pullRefreshLoader').style.display = 'block';
+                        document.getElementById('pullRefreshLoader').innerHTML = '<i class="fas fa-arrow-down"></i> اسحب لتحديث...';
+                    }
+                }
+            });
+            driverListContainer.addEventListener('touchend', function(e) {
+                if (isPulling) {
+                    document.getElementById('pullRefreshLoader').innerHTML =
+                        '<i class="fas fa-spinner fa-spin"></i> جارٍ التحديث...';
+                    setTimeout(() => {
+                        refreshDriverPanel();
+                        document.getElementById('pullRefreshLoader').style.display = 'none';
+                        isPulling = false;
+                        showToast('✅ تم تحديث القائمة');
+                    }, 800);
+                }
+            });
         }
 
         window.switchDriverTab = function(tab) {
@@ -2289,32 +3212,27 @@
             document.querySelectorAll('.driver-tab').forEach(t => t.classList.remove('active'));
             document.querySelector(`.driver-tab[data-driver-tab="${tab}"]`).classList.add('active');
             refreshDriverPanel();
+            if (tab === 'available') {
+                lastOrderCount = allOrders.filter(o => o.status === 'pending').length;
+            }
         };
 
         async function refreshDriverPanel() {
-            if (document.hidden) return; // توفير البيانات: لا تجلب إذا كانت الصفحة في الخلفية
             await loadOrders();
             let activeOrders = allOrders.filter(o => o.driverId === currentUser?.phone && o.status !== 'delivered');
             let availableOrders = allOrders.filter(o => o.status === 'pending');
             let completedOrders = allOrders.filter(o => o.driverId === currentUser?.phone && o.status === 'delivered');
             document.getElementById('activeOrdersCount').innerText = activeOrders.length;
             document.getElementById('completedOrdersCount').innerText = completedOrders.length;
-
+            checkForNewOrders();
             let html = '';
             if (driverTab === 'available') {
                 if (availableOrders.length === 0) html =
                     `<div class="empty-orders"><i class="fas fa-motorcycle"></i><p>لا يوجد طلبات متاحة في الوقت الحالي!</p></div>`;
                 else html = availableOrders.map(o => `
               <div class="driver-order-card">
-                <div class="driver-order-header">
-                    <span class="driver-order-id">#${o.id}</span>
-                    <span class="driver-order-status">متاح</span>
-                </div>
-                <div class="driver-order-details">
-                    <div><i class="fas fa-store"></i> ${o.restaurant || o.service}</div>
-                    <div><i class="fas fa-money-bill"></i> ${o.total || o.price} ريال</div>
-                    <div><i class="fas fa-map-marker-alt"></i> ${o.address || o.toAddress || o.destinationAddress}</div>
-                </div>
+                <div class="driver-order-header"><span class="driver-order-id">#${o.id}</span><span class="driver-order-status">متاح</span></div>
+                <div class="driver-order-details"><div><i class="fas fa-store"></i> ${o.restaurant || o.service}</div><div><i class="fas fa-money-bill"></i> ${o.total || o.price} ريال</div><div><i class="fas fa-map-marker-alt"></i> ${o.address || o.destinationAddress}</div></div>
                 <div class="driver-order-actions">
                   <button class="driver-action-btn primary" onclick="showConfirmationModal(${o.id}, 'accept')"><i class="fas fa-check-circle"></i> قبول</button>
                   <button class="driver-action-btn danger" onclick="showConfirmationModal(${o.id}, 'reject')"><i class="fas fa-times-circle"></i> رفض</button>
@@ -2327,15 +3245,9 @@
                     `<div class="empty-orders"><i class="fas fa-check-circle"></i><p>لا يوجد طلبات نشطة حالياً</p></div>`;
                 else html = activeOrders.map(o => `
               <div class="driver-order-card" onclick="viewDriverOrderDetail(${o.id})">
-                <div class="driver-order-header">
-                    <span class="driver-order-id">#${o.id}</span>
-                    <span class="driver-order-status ${o.status === 'delivered' ? 'delivered' : (o.status === 'on_the_way' ? 'on_the_way' : '')}">${getStatusText(o.status)}</span>
-                </div>
-                <div class="driver-order-details">
-                    <div><i class="fas fa-store"></i> ${o.restaurant || o.service}</div>
-                    <div><i class="fas fa-money-bill"></i> ${o.total || o.price} ريال</div>
-                    <div><i class="fas fa-map-marker-alt"></i> ${o.address || o.toAddress}</div>
-                </div>
+                <div class="driver-order-header"><span class="driver-order-id">#${o.id}</span><span class="driver-order-status ${o.status === 'delivered' ? 'delivered' : (o.status === 'on_the_way' ? 'on_the_way' : '')}">${getStatusText(o.status)}</span></div>
+                <div class="driver-order-details"><div><i class="fas fa-store"></i> ${o.restaurant || o.service}</div><div><i class="fas fa-money-bill"></i> ${o.total || o.price} ريال</div><div><i class="fas fa-map-marker-alt"></i> ${o.address || o.destinationAddress}</div></div>
+                <div style="font-size:0.7rem;"><i class="far fa-clock"></i> ${new Date(o.createdAt).toLocaleString('ar-SA')}</div>
               </div>
             `).join('');
             }
@@ -2673,14 +3585,12 @@
                 localStorage.setItem('waselny_user', JSON.stringify(currentUser));
                 loginOverlay.style.display = 'none';
 
-                // ✅ تفعيل الإشعارات فور تسجيل الدخول
-                enableNotifications();
-
-                if (role === 'driver') { 
-                    showPage('driverPage');
+                if (role === 'driver') { showPage('driverPage');
                     document.getElementById('driverNameDisplay').innerText = name;
                     refreshDriverPanel();
-                } else { showPage('homePage'); }
+                    setInterval(refreshDriverPanel, 1500);
+                    lastOrderCount = allOrders.filter(o => o.status === 'pending').length; } else { showPage(
+                    'homePage'); }
                 showToast(`أهلاً ${name}`);
             };
         }
@@ -2713,7 +3623,7 @@
             localStorage.setItem('darkMode', document.body.classList.contains('dark-mode')); });
         document.getElementById('whatsappSupport')?.addEventListener('click', () => window.open('https://wa.me/777215154',
             '_blank'));
-        document.getElementById('shareApp')?.addEventListener('click', () => { if (navigator.share) navigator.share({ title: 'وصال',
+        document.getElementById('shareApp')?.addEventListener('click', () => { if (navigator.share) navigator.share({ title: 'وصل',
                 text: 'تطبيق توصيل', url: location.href }); });
         document.getElementById('settingsLogoutBtn')?.addEventListener('click', () => { localStorage.removeItem(
                 'waselny_user');
@@ -2759,16 +3669,13 @@
             try {
                 currentUser = JSON.parse(savedUser);
                 document.getElementById('loginOverlay').style.display = 'none';
-                if (currentUser.role === 'driver') { 
-                    showPage('driverPage');
+                if (currentUser.role === 'driver') { showPage('driverPage');
                     refreshDriverPanel();
-                } else showPage('homePage');
-                // ✅ تفعيل الإشعارات للمستخدم الذي سجل دخول مسبقاً
-                enableNotifications();
+                    setInterval(refreshDriverPanel, 1500); } else showPage('homePage');
             } catch (e) { initLogin(); }
         } else { initLogin(); }
 
-        // بدء تشغيل الكاروسيل والتهيئة
+        // بدء تشغيل الكاروسيل
         renderMainCarousel();
         renderCategories();
         renderOffers();

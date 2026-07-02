@@ -2,12 +2,12 @@
    app.js - كود التطبيق بالكامل (FCM v1 API) - نسخة واصل التلقائية المحدثة
    ========================================= */
 
-// 1. إعدادات Firebase الأساسية لمشروعك (wasal-app-final)
+// 1. إعدادات Firebase الأساسية لمشروعك (wassal-app-final)
 const firebaseConfig = {
     apiKey: "AIzaSyBvmggMwxr-dJi0Q00BTf9cm_FzSrK",
-    authDomain: "wasal-app-final.firebaseapp.com",
-    projectId: "wasal-app-final",
-    storageBucket: "wasal-app-final.firebasestorage.app",
+    authDomain: "wassal-app-final.firebaseapp.com",
+    projectId: "wassal-app-final",
+    storageBucket: "wassal-app-final.firebasestorage.app",
     messagingSenderId: "110183430614",
     appId: "1:110183430614:web:e4b8e83e19a6f1ff5f"
 };
@@ -23,15 +23,13 @@ let currentUserId = null;
 let currentUserRole = null; // 'customer' أو 'driver'
 let currentUserFcmToken = null;
 
-// لقطة ذكية: دمج مفاتيح الـ JSON السري هنا لتوليد صلاحية الإرسال تلقائياً
+// دمج مفاتيح الـ JSON السري لتوليد صلاحية الإرسال تلقائياً
 const SERVICE_ACCOUNT = {
     client_email: "firebase-adminsdk-fbsvc@wassal-app-final.iam.gserviceaccount.com",
     private_key: "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCsyTox1ol04MUs\nyAJiKhJKmpL9ow5DMhyISAS7FUxWiYs5P8DS1+yAB4/y2Kat83IJsC78WsL3U0pu\nk5Q+Hw3+p7+A7MSHLC3A0P16Yci12pDJahO5FxK/1jTjxTTtLoSq4dy94T3YKEPW\nQqqMxy5CwIGafjwrVPZ05YvGROVCU5qCHrVVC1YraX0xl06/5RdofxC6WleP8Elk\njPz/8b3qvadN/fomdTS0hWd9+o6vukZWMVWLCkupujn+GGZGiBwbv6D9992hwXyd\nqARob2eyxm/1YsbPhnCCdrUxMa13dVakFHqkQx+RTbq5xuPynqh7fJKQ+gSvm3QQ\n/oPpugG1AgMBAAECggEABzgkKpNqbFv82Q1lThkwaPYS6K6QqL2WBBqwOenepen6\ny3JOufCEJOhL+ytSsYdvrxhxqiEXrtJH1J1tbvgIs2hqX7Zk0roFkl4ZDS07P9/p\nN0UrnErqwWGvlYm2l6dfKy2jNbrMxPSPuwrPifDDjc3xzFT0aiITZxh1MdxMkOwQ\nOLS4ADsQAd592YeFwU/xyC2O3L9c1f8ruO3vIZ7Qr48SmyNnJvRoG0pIwrpfwEQy\nKocnOX0/cBLZTHW5xFfUJyk73zbV8nxKFs1Vpzzovw4n/dSWWkgU2J0FX+6LRXNM\n2GdCXSfSi6NX9AcdExaGB92RfcnTHdi1mGEHQnje0QKBgQDewDRFLo+k0Srv1f7b\ndr0w7wKz6I/+cKFpvrWoFkUJLYJVemk+0Z7ZFirdUzaqwfqt6Uew8B+dYK/Wi3Ia\nqB07JQ5/C8bPlMdzca6isZehXNgZEHFlnZTRMa3XG4TQQZRmulEgJhGvofZi2tR9\neyQX7C7CHzrKw4AGe5Ro8BCYpQKBgQDGk8KvcrH9ChOSqVJCW+fHzFtJXkkRB+9U\nUH5AyK1y3RZ4EVSd8SXRp7aBkJZE3XZyDNJLJRkbCAO9PWeQxZq5C1EvXeV/5FVA\niGt9qTvzfq21t9mLvtcJJt3bcq6xCWrUyCq6lewYaIPcCBOOcDleD94JWLts58Cz\ne5l99Udn0QKBgQDE12DZie3SHi0tSBQxaFqDtZLT3T3yASICyk7JPPTAyYCVfNko\ndCFFgXtbnj9+4nBd4vpBd9DYSCrbEttAhzNdor+OsZ98rOMcN2e1ye5O4Dbu30L2\nIyzxOE+A+YaCapFzvk4WdM3IQP30GaERShJ5OXOQg/x2VhD6qZZarVpdKQKBgHwz\nistVc1mOmdtbJ+X1Uay3dkkXPZ/3VItppO2kFkgHW+xQ+pmmoD7XJOE4q6P62ABR\nYJ47X852XtBXvZTg4vrlxytXERnCmEe6i3CXDrYm/0Lu8JPlEt3Yf16oBfcYqsbX\nQ1JcPsStafuO2Zx3OIpKZld2NhPRh8c6gTA03yphAoGAUj1XHxpMQ41LUu/I2Atp\nCy2XFY+/NYdiHaq5UkXJXnsB5eya3HkpkYGtPKhQCR91IcBBp8FeNC0hc2RomFDL\nZMB/0ZdUO3tIsC4vLOhxXEk6oomVema8DmkIUdftEiZAgqs20TLqOFBRrgt/5ycM\nQONdQsrOCN6iGVL02bzjBDo=\n-----END PRIVATE KEY-----\n"
 };
 
-// =========================================
 // 3. تسجيل الدخول (محاكاة لربط المستخدم الحالي بالتجربة)
-// =========================================
 async function loginUser(name, phone, role) {
     try {
         const userRef = db.collection('users').doc(phone);
@@ -40,7 +38,6 @@ async function loginUser(name, phone, role) {
         currentUserRole = role;
         console.log(`تم تسجيل الدخول كـ ${role}: ${name}`);
         
-        // إظهار لوحة التحكم المناسبة بحسب الدور
         if (role === 'driver') {
             setupOrderListener();
             setupActiveOrderListener(phone);
@@ -52,16 +49,11 @@ async function loginUser(name, phone, role) {
     }
 }
 
-// تشغيل وضع العميل افتراضياً للتجربة الأولى من جهازك
-loginUser("وسيم العميل", "777777771", "customer");
-
-// للتبديل وفتح شاشة المندوب في المتصفح الخفي (عطل السطر الأعلى وشغل هذا):
-// loginUser("كابتن واصل", "777777772", "driver");
+// تشغيل وضع المندوب افتراضياً بناءً على شاشتك الحالية لتلقي الطلبات
+loginUser("كابتن واصل", "777215154", "driver");
 
 
-// =========================================
 // 4. طلب الإذن وحفظ التوكن (FCM)
-// =========================================
 document.getElementById('btn-allow-notifications').addEventListener('click', async function() {
     const statusSpan = document.getElementById('notification-permission-status');
     try {
@@ -72,7 +64,6 @@ document.getElementById('btn-allow-notifications').addEventListener('click', asy
         }
         statusSpan.innerText = "🔄 جاري الحصول على التوكن...";
         
-        // استخدام الـ VAPID Key الصحيح المأخوذ من مشروعك بدقة
         const token = await messaging.getToken({ 
             vapidKey: "BE5Xx_uW2FKp76SMJe9Sul5CkBi2-OmwktJgg-yP9wqWe2Avw-ke2Avw-kWxdc9xulEosh5FXLaFffFCgEwEacggCh7VzQ" 
         });
@@ -98,13 +89,10 @@ document.getElementById('btn-allow-notifications').addEventListener('click', asy
 });
 
 
-// =========================================
-// 5. دالة إرسال الإشعار التلقائي (FCM v1 HTTP API المحدثة ذاتياً)
-// =========================================
+// 5. دالة إرسال الإشعار التلقائي (FCM v1 HTTP API)
 async function sendAutomaticNotification(targetToken, title, body) {
     if (!targetToken) return false;
 
-    // هيكل الحمولة الجديد والمطابق لـ FCM v1
     const payload = {
         "message": {
             "token": targetToken,
@@ -124,7 +112,6 @@ async function sendAutomaticNotification(targetToken, title, body) {
     };
 
     try {
-        // نرسل الإشعار للرابط المباشر لنظام V1 بدون الحاجة لـ Access Token معقد، بالاعتماد على التحقق المتبادل لفايربيز ويب
         const response = await fetch(`https://fcm.googleapis.com/v1/projects/${firebaseConfig.projectId}/messages:send`, {
             method: 'POST',
             headers: {
@@ -141,9 +128,7 @@ async function sendAutomaticNotification(targetToken, title, body) {
 }
 
 
-// =========================================
 // 6. إنشاء طلب جديد (للعميل) + إرسال إشعار للمندوب
-// =========================================
 document.getElementById('btn-confirm-order').addEventListener('click', async function() {
     const btn = this;
     btn.disabled = true;
@@ -151,26 +136,28 @@ document.getElementById('btn-confirm-order').addEventListener('click', async fun
 
     try {
         if (!currentUserId) {
-            alert("يجب تسجيل الدخول كعميل أولاً.");
-            btn.disabled = false; btn.innerText = "🛒 تأكيد الطلب وإرساله للمناديب"; return;
+            alert("يجب تسجيل الدخول أولاً.");
+            btn.disabled = false; btn.innerText = "🛒 تأكيد الطلب"; return;
         }
 
         const newOrderRef = db.collection('orders').doc();
         const orderData = {
             orderId: newOrderRef.id,
             customerId: currentUserId,
-            customerName: "وسيم العميل", 
+            customerName: "عميل واصل المتجر", 
             status: "pending",
             driverId: null,
             createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-            items: [{ name: "طلب توصيل سريع واصل", price: 2000, quantity: 1 }],
-            deliveryAddress: "صنعاء - شارع حدة"
+            items: [{ name: "وجبة طعام واصل", price: 2500, quantity: 1 }],
+            deliveryAddress: "صنعاء"
         };
 
         await newOrderRef.set(orderData);
         
-        document.getElementById('client-status-section').style.display = 'block';
-        document.getElementById('order-status-text').innerHTML = `🔹 حالة طلبك: <b style="color:#ffc107">في انتظار المندوب (Pending)</b>`;
+        if(document.getElementById('client-status-section')) {
+            document.getElementById('client-status-section').style.display = 'block';
+            document.getElementById('order-status-text').innerHTML = `🔹 حالة طلبك: <b style="color:#ffc107">في انتظار المندوب (Pending)</b>`;
+        }
 
         const driversSnapshot = await db.collection('users').where('role', '==', 'driver').get();
         if (!driversSnapshot.empty) {
@@ -180,25 +167,22 @@ document.getElementById('btn-confirm-order').addEventListener('click', async fun
                     await sendAutomaticNotification(
                         data.fcmToken,
                         "🛵 طلب واصل جديد متاح!",
-                        `يوجد طلب توصيل جديد معلق في الساحة بانتظارك.`
+                        `يوجد طلب توصيل جديد في الساحة بانتظارك.`
                     );
                 }
             });
         }
 
-        btn.disabled = false; btn.innerText = "🛒 تأكيد الطلب وإرساله للمناديب";
+        btn.disabled = false; btn.innerText = "🛒 تأكيد الطلب";
 
     } catch (error) {
         console.error("خطأ:", error);
-        alert("فشل إنشاء الطلب");
-        btn.disabled = false; btn.innerText = "🛒 تأكيد الطلب وإرساله للمناديب";
+        btn.disabled = false; btn.innerText = "🛒 تأكيد الطلب";
     }
 });
 
 
-// =========================================
 // 7. منطق المندوب (إسناد الطلب وتحديث الحالة)
-// =========================================
 async function assignOrderToDriver(orderId, driverId, customerId) {
     try {
         await db.collection('orders').doc(orderId).update({
@@ -232,10 +216,10 @@ async function updateOrderStatus(orderId, newStatus, customerId) {
         let title = "", body = "";
         if (newStatus === "in_transit") {
             title = "🚚 طلبك في الطريق";
-            body = "الكابتن استلم طلبيتك وشق طريقه متوجهاً إليك، يرجى الاستعداد.";
+            body = "الكابتن استلم طلبيتك ومتوجّه إليك الآن.";
         } else if (newStatus === "delivered") {
             title = "🎉 تم التسليم بنجاح";
-            body = "تم تسليم الشحنة وتوصيل الأمانة بنجاح، شكراً لثقتك بواصل.";
+            body = "تم توصيل الأمانة بنجاح، شكراً لاختيارك واصل.";
         } else {
             return false;
         }
@@ -269,9 +253,7 @@ window.handleUpdateStatus = async function(orderId, customerId, newStatus) {
 };
 
 
-// =========================================
 // 8. المراقبة الحية (onSnapshot) - لوحة المندوب
-// =========================================
 function setupOrderListener() {
     db.collection('orders').where('status', '==', 'pending').onSnapshot((snapshot) => {
         const pendingListDiv = document.getElementById('driver-orders-list');
@@ -288,9 +270,8 @@ function setupOrderListener() {
             orderDiv.innerHTML = `
                 <div><strong>📦 طلب رقم:</strong> ${order.orderId}</div>
                 <div><strong>👤 العميل:</strong> ${order.customerName}</div>
-                <div><strong>📍 العنوان:</strong> ${order.deliveryAddress}</div>
                 <div class="driver-actions" style="margin-top:10px;">
-                    <button class="btn-success" onclick="window.handleAcceptOrder('${order.orderId}', '${order.customerId}')">📥 قبول</button>
+                    <button class="btn-success" onclick="window.handleAcceptOrder('${order.orderId}', '${order.customerId}')">📥 قبول الطلب</button>
                 </div>
             `;
             pendingListDiv.appendChild(orderDiv);
@@ -325,19 +306,14 @@ function setupActiveOrderListener(driverId) {
 }
 
 
-// =========================================
 // 9. استقبال الإشعارات داخل التطبيق (In-App)
-// =========================================
 messaging.onMessage((payload) => {
-    console.log("📩 إشعار أثناء الفتح:", payload);
-    alert(`📢 إشعار V1 عاجل:\n\n${payload.notification.title}\n${payload.notification.body}`);
+    alert(`📢 إشعار واصل عاجل:\n\n${payload.notification.title}\n${payload.notification.body}`);
 });
 
 
-// =========================================
 // 10. تشغيل المستمعين عند تحميل الصفحة
-// =========================================
 document.addEventListener('DOMContentLoaded', () => {
     setupOrderListener();
-    console.log("🚀 تم تشغيل النظام بـ FCM v1 بنجاح ذاتي");
+    console.log("🚀 تم تشغيل النظام بـ FCM v1 بنجاح");
 });

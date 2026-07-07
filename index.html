@@ -2538,152 +2538,23 @@
             showToast('تم حفظ الإعدادات'); }
 
         // ==================== 13. تسجيل الدخول ====================
-        function initLogin() {
-            const roleCustomer = document.getElementById('roleCustomer');
-            const roleDriver = document.getElementById('roleDriver');
-            const passwordField = document.getElementById('passwordField');
-            const loginPassword = document.getElementById('loginPassword');
-            const loginName = document.getElementById('loginName');
-            const loginPhone = document.getElementById('loginPhone');
-            const loginBtn = document.getElementById('loginBtn');
-            const loginOverlay = document.getElementById('loginOverlay');
+        // تم إخفاء شاشة تسجيل الدخول بشكل دائم وتعيين مستخدم افتراضي
+        // إخفاء شاشة تسجيل الدخول
+        document.getElementById('loginOverlay').style.display = 'none';
 
-            roleCustomer.classList.add('active');
-            roleDriver.classList.remove('active');
+        // تعيين مستخدم افتراضي (عميل) لتجنب الأخطاء
+        currentUser = { role: 'customer', phone: 'guest', name: 'زائر' };
+        localStorage.setItem('waselny_user', JSON.stringify(currentUser));
 
-            roleCustomer.onclick = function() {
-                roleCustomer.classList.add('active');
-                roleDriver.classList.remove('active');
-                this.style.background = "#fff";
-                this.style.color = "#0f766e";
-                this.style.boxShadow = "0 5px 15px rgba(0,0,0,0.1)";
-                roleDriver.style.background = "transparent";
-                roleDriver.style.color = "rgba(255,255,255,0.8)";
-                roleDriver.style.boxShadow = "none";
-                passwordField.style.display = 'none';
-            };
+        // إخفاء أزرار تسجيل الخروج (لأنها أصبحت بلا فائدة)
+        document.getElementById('settingsLogoutBtn').style.display = 'none';
+        document.getElementById('driverLogoutBtn').style.display = 'none';
 
-            roleDriver.onclick = function() {
-                roleDriver.classList.add('active');
-                roleCustomer.classList.remove('active');
-                this.style.background = "#fff";
-                this.style.color = "#0f766e";
-                this.style.boxShadow = "0 5px 15px rgba(0,0,0,0.1)";
-                roleCustomer.style.background = "transparent";
-                roleCustomer.style.color = "rgba(255,255,255,0.8)";
-                roleCustomer.style.boxShadow = "none";
-                passwordField.style.display = 'block';
-            };
+        // عرض الصفحة الرئيسية مباشرة
+        showPage('homePage');
 
-            loginBtn.onclick = async function() {
-                let isDriver = roleDriver.classList.contains('active');
-                let name = loginName.value.trim();
-                let phone = loginPhone.value.trim();
-                let password = loginPassword.value.trim();
-
-                if (!name || !phone) { showToast('يرجى إدخال الاسم ورقم الهاتف'); return; }
-
-                if (isDriver) {
-                    if (!password) { showToast('⚠️ المندوب يجب أن يدخل كلمة السر!'); return; }
-                    if (password !== DRIVER_PASSWORD) { showToast('❌ كلمة السر للمندوب غير صحيحة!'); return; }
-                }
-
-                let role = isDriver ? 'driver' : 'customer';
-                await fetch(`${FIREBASE_URL}/users/${phone}.json`, { method: 'PUT', body: JSON.stringify({ phone, name,
-                        role, isBusy: false }) });
-                currentUser = { role, phone, name };
-                localStorage.setItem('waselny_user', JSON.stringify(currentUser));
-                loginOverlay.style.display = 'none';
-
-                if (role === 'driver') { 
-                    showPage('driverPage');
-                    document.getElementById('driverNameDisplay').innerText = name;
-                    refreshDriverPanel();
-                } else { showPage('homePage'); }
-                showToast(`أهلاً ${name}`);
-            };
-        }
-
-        function showPage(pageId) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
-            document.getElementById(pageId).classList.add('active-page');
-            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-            let activeNav = document.querySelector(`.nav-item[data-page="${pageId}"]`);
-            if (activeNav) activeNav.classList.add('active');
-            let floatCartElem = document.getElementById('floatCart');
-            if (floatCartElem) floatCartElem.style.display = (cart.length && pageId === 'menuPage') ? 'flex' : 'none';
-            if (pageId === 'homePage') document.getElementById('trackOrderBtnHome').style.display = localStorage
-                .getItem('currentTrackingOrder') ? 'block' : 'none';
-            if (pageId === 'restaurantsPage') { renderFilters();
-                renderRestaurantsList();
-                setTimeout(() => { renderCarousel();
-                    updateCarousel();
-                    startCarouselAuto(); }, 100); }
-            if (pageId === 'driverPage') { document.getElementById('driverNameDisplay').innerText = currentUser?.name ||
-                    'مندوب';
-                refreshDriverPanel(); }
-        }
-
-        document.querySelectorAll('.nav-item[data-page]').forEach(n => { n.onclick = () => showPage(n.dataset
-            .page); });
-        if (localStorage.getItem('darkMode') === 'true') document.body.classList.add('dark-mode');
-        document.getElementById('darkModeToggle')?.addEventListener('click', () => { document.body.classList.toggle(
-                'dark-mode');
-            localStorage.setItem('darkMode', document.body.classList.contains('dark-mode')); });
-        document.getElementById('whatsappSupport')?.addEventListener('click', () => window.open('https://wa.me/777215154',
-            '_blank'));
-        document.getElementById('shareApp')?.addEventListener('click', () => { if (navigator.share) navigator.share({ title: 'وصال',
-                text: 'تطبيق توصيل', url: location.href }); });
-        document.getElementById('settingsLogoutBtn')?.addEventListener('click', () => { localStorage.removeItem(
-                'waselny_user');
-            location.reload(); });
-        document.getElementById('driverLogoutBtn')?.addEventListener('click', () => { localStorage.removeItem(
-                'waselny_user');
-            location.reload(); });
-        window.goBackToMenu = function() { showPage('menuPage'); };
-        window.goToCheckout = function() { if (!currentRestaurant) return showToast('اختر مطعماً أولاً');
-            showPage('checkoutPage');
-            updateCheckoutSummary();
-            document.getElementById('floatCart').style.display = 'none'; };
-        window.proceedToCheckout = function() { toggleCart();
-            goToCheckout(); };
-        window.toggleCart = function() { document.getElementById('cartSidebar').classList.toggle('open'); };
-
-        document.getElementById('modalConfirm').onclick = async () => {
-            if (pendingOrderId && pendingStatus) {
-                await updateOrder(pendingOrderId, { status: pendingStatus });
-                if (pendingStatus === 'delivered') await updateUserBusy(currentUser.phone, false);
-                showToast(`✅ تم تغيير الحالة إلى ${getStatusText(pendingStatus)}`);
-                viewDriverOrderDetail(pendingOrderId);
-                pendingOrderId = null;
-                pendingStatus = null;
-            } else if (pendingOrderId && pendingModalAction) {
-                if (pendingModalAction === 'accept') { await acceptOrder(pendingOrderId); } else if (pendingModalAction ===
-                    'reject') { await rejectOrder(pendingOrderId); }
-                pendingOrderId = null;
-                pendingModalAction = null;
-            }
-            document.getElementById('confirmationModal').classList.remove('open');
-        };
-
-        document.getElementById('modalCancel').onclick = () => {
-            pendingOrderId = null;
-            pendingStatus = null;
-            pendingModalAction = null;
-            document.getElementById('confirmationModal').classList.remove('open');
-        };
-
-        let savedUser = localStorage.getItem('waselny_user');
-        if (savedUser) {
-            try {
-                currentUser = JSON.parse(savedUser);
-                document.getElementById('loginOverlay').style.display = 'none';
-                if (currentUser.role === 'driver') { 
-                    showPage('driverPage');
-                    refreshDriverPanel();
-                } else showPage('homePage');
-            } catch (e) { initLogin(); }
-        } else { initLogin(); }
+        // تم حذف استدعاء initLogin() والتحقق من savedUser نهائياً
+        // ================================================================
 
         // بدء تشغيل الكاروسيل
         renderMainCarousel();

@@ -37,36 +37,30 @@
         .search-bar input { width: 100%; padding: 12px 16px; border-radius: 40px; border: 1px solid var(--gray-light); background: var(--white); box-shadow: 0 4px 12px rgba(0,0,0,0.08); font-size: 0.85rem; padding-right: 42px; color: var(--dark); }
         .search-bar .search-icon { position: absolute; right: 16px; top: 50%; transform: translateY(-50%); color: var(--gray); font-size: 0.95rem; }
 
-        .carousel-3d { position: relative; width: 100%; height: 280px; margin-bottom: 20px; perspective: 1200px; overflow: hidden; border-radius: 24px; }
+        .carousel-3d { position: relative; width: 100%; height: 220px; margin-bottom: 20px; perspective: 1200px; overflow: hidden; border-radius: 24px; }
         .carousel-container { position: relative; width: 100%; height: 100%; transform-style: preserve-3d; }
-        .carousel-slide { position: absolute; width: 86%; height: 260px; left: 7%; top: 10px; background-size: cover; background-position: center; border-radius: 24px; box-shadow: 0 15px 35px rgba(0,0,0,0.3); transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94); cursor: pointer; border: 2px solid rgba(255,255,255,0.3); }
+        .carousel-slide { position: absolute; width: 86%; height: 200px; left: 7%; top: 10px; background-size: cover; background-position: center; border-radius: 24px; box-shadow: 0 15px 35px rgba(0,0,0,0.3); transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94); cursor: pointer; border: 2px solid rgba(255,255,255,0.3); }
         .carousel-slide.active { opacity: 1; transform: scale(1.05) translateZ(25px); box-shadow: 0 25px 40px rgba(0,0,0,0.5); z-index: 10; border-color: var(--gold); }
-        .carousel-slide .slide-caption { position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(transparent, rgba(0,0,0,0.85)); padding: 15px; color: white; border-radius: 0 0 24px 24px; }
-        .carousel-slide .slide-caption h4 { font-size: 1.1rem; font-weight: 800; }
-        .carousel-slide .slide-caption p { font-size: 0.75rem; }
-        .carousel-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.6); width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; color: white; font-size: 1rem; z-index: 20; backdrop-filter: blur(4px); }
+        .carousel-slide .slide-caption { position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(transparent, rgba(0,0,0,0.85)); padding: 10px; color: white; border-radius: 0 0 24px 24px; }
+        .carousel-slide .slide-caption h4 { font-size: 0.9rem; font-weight: 800; }
+        .carousel-slide .slide-caption p { font-size: 0.6rem; }
+        .carousel-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.6); width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; color: white; font-size: 0.8rem; z-index: 20; backdrop-filter: blur(4px); }
         .carousel-btn.prev { right: 15px; }
         .carousel-btn.next { left: 15px; }
-        .carousel-dots { position: absolute; bottom: -5px; left: 0; right: 0; display: flex; justify-content: center; gap: 10px; z-index: 20; }
-        .carousel-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.6); cursor: pointer; }
-        .carousel-dot.active { width: 28px; border-radius: 6px; background: var(--gold); }
+        .carousel-dots { position: absolute; bottom: -5px; left: 0; right: 0; display: flex; justify-content: center; gap: 8px; z-index: 20; }
+        .carousel-dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,0.6); cursor: pointer; }
+        .carousel-dot.active { width: 22px; border-radius: 6px; background: var(--gold); }
 
-        .categories-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 15px; }
+        .categories-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 20px; }
         .category-card { background: var(--white); border-radius: 14px; padding: 15px 6px; text-align: center; box-shadow: var(--shadow); border: 1px solid var(--gray-light); cursor: pointer; transition: 0.1s; border-bottom: 3px solid var(--primary); }
         .category-card:active { transform: scale(0.97); }
-        .category-icon { font-size: 2rem; margin-bottom: 6px; }
+        .category-icon { font-size: 1.8rem; margin-bottom: 4px; }
         .category-card h3 { font-size: 0.85rem; font-weight: 800; color: var(--primary); }
         .category-card p { font-size: 0.6rem; color: var(--gray); margin-top: 2px; }
 
-        .delivery-bar { display: flex; align-items: center; justify-content: center; gap: 10px; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; padding: 10px 15px; border-radius: 16px; margin-bottom: 15px; cursor: pointer; box-shadow: var(--shadow-md); transition: transform 0.1s; }
-        .delivery-bar:active { transform: scale(0.97); }
-        .delivery-bar i { font-size: 1.3rem; color: var(--gold); }
-        .delivery-bar span { font-weight: 800; font-size: 0.9rem; }
-        .delivery-bar small { font-size: 0.75rem; opacity: 0.9; }
-
         .offers-scroll { display: flex; gap: 12px; overflow-x: auto; margin-bottom: 20px; }
         .offers-scroll::-webkit-scrollbar { display: none; }
-        .offer-card { flex: 0 0 220px; background: linear-gradient(135deg, #f59e0b, #ea580c); border-radius: 14px; padding: 10px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+        .offer-card { flex: 0 0 200px; background: linear-gradient(135deg, #f59e0b, #ea580c); border-radius: 14px; padding: 10px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
         .offer-card:active { transform: scale(0.98); }
         .offer-text h4 { font-size: 0.85rem; color: white; font-weight: 800; }
         .offer-text p { font-size: 0.55rem; color: rgba(255,255,255,0.9); }
@@ -82,9 +76,6 @@
         .menu-item-desc { font-size: 0.7rem; color: var(--gray); line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
         .menu-item-price { color: var(--primary); font-weight: 800; font-size: 1.1rem; margin-top: 2px; }
         
-        .btn-add-simple { display: block; width: 90%; margin: 10px auto 0; background: var(--primary); color: white; border: none; border-radius: 30px; padding: 8px; font-weight: 700; font-size: 0.8rem; cursor: pointer; text-align: center; transition: 0.1s; }
-        .btn-add-simple:active { transform: scale(0.95); background: var(--primary-dark); }
-
         .item-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); backdrop-filter: blur(4px); z-index: 20000; display: none; align-items: center; justify-content: center; }
         .item-modal-card { background: var(--white); border-radius: 32px; width: 90%; max-width: 380px; max-height: 85vh; overflow-y: auto; box-shadow: var(--shadow-md); animation: modalFadeIn 0.2s ease; direction: rtl; }
         @keyframes modalFadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
@@ -104,7 +95,7 @@
         .btn-add-modal { background: var(--gold); color: var(--primary-dark); }
         .btn-close-modal { background: var(--gray-light); color: var(--dark); }
 
-        .float-cart { position: fixed; bottom: 70px; left: 14px; right: 14px; background: linear-gradient(135deg, var(--primary-dark), var(--primary)); color: white; padding: 12px 20px; border-radius: 50px; display: flex; justify-content: space-between; align-items: center; z-index: 1000; cursor: pointer; display: none; font-size: 0.85rem; font-weight: 700; box-shadow: 0 6px 16px rgba(89,28,44,0.3); border: 1px solid var(--gold); }
+        .float-cart { position: fixed; bottom: 70px; left: 14px; right: 14px; background: linear-gradient(135deg, var(--primary-dark), var(--primary)); color: white; padding: 12px 20px; border-radius: 50px; display: flex; justify-content: space-between; align-items: center; z-index: 1000; cursor: pointer; display: none; font-size: 0.85rem; font-weight: 700; box-shadow: 0 6px 16px rgba(89,28,44,0.3); border: 1px solid var(--gold); transition: all 0.3s ease; }
         .cart-sidebar { position: fixed; top: 0; left: -100%; width: 85%; max-width: 320px; height: 100%; background: var(--white); z-index: 10001; transition: left 0.3s; display: flex; flex-direction: column; box-shadow: -2px 0 15px rgba(0,0,0,0.2); }
         .cart-sidebar.open { left: 0; }
         .cart-header { padding: 14px; background: var(--primary); color: white; display: flex; justify-content: space-between; align-items: center; font-weight: 700; }
@@ -127,25 +118,32 @@
         .nav-icon { font-size: 1.25rem; display: block; margin-bottom: 2px; }
         .nav-badge { position: absolute; top: 1px; right: 18px; background: var(--danger); color: white; font-size: 0.55rem; font-weight: 800; padding: 1px 5px; border-radius: 10px; border: 2px solid var(--white); }
 
-        /* ✅ شاشة التتبع الكاملة (منظمة ومعزولة) */
-        #trackFullscreen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-light); z-index: 15000; overflow-y: auto; padding: 16px; display: none; flex-direction: column; }
-        #trackFullscreen .tracking-header { background: var(--primary); margin-bottom: 20px; padding: 20px; border-radius: 20px; color: white; border-bottom: 3px solid var(--gold); text-align: center; }
-        #trackFullscreen .tracking-status-card { background: var(--white); border-radius: 16px; padding: 16px; margin-bottom: 20px; border: 1px solid var(--gray-light); border-right: 4px solid var(--primary); }
-        #trackFullscreen .tracking-details-card { background: var(--white); border-radius: 16px; padding: 16px; margin-bottom: 20px; border: 1px solid var(--gray-light); }
+        #trackFullscreen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-light); z-index: 15000; overflow-y: auto; padding: 12px; display: none; flex-direction: column; }
+        #trackFullscreen .tracking-header { background: var(--primary); margin-bottom: 12px; padding: 14px; border-radius: 16px; color: white; border-bottom: 3px solid var(--gold); text-align: center; }
+        #trackFullscreen .tracking-header h3 { font-size: 1.1rem; font-weight: 900; }
+        #trackFullscreen .tracking-status-card { background: var(--white); border-radius: 14px; padding: 12px; margin-bottom: 12px; border: 1px solid var(--gray-light); border-right: 4px solid var(--primary); }
+        #trackFullscreen .tracking-details-card { background: var(--white); border-radius: 14px; padding: 12px; margin-bottom: 12px; border: 1px solid var(--gray-light); }
         
-        .tracking-steps { display: flex; justify-content: space-between; align-items: center; margin: 20px 0; }
+        .tracking-steps { display: flex; justify-content: space-between; align-items: center; margin: 10px 0; }
         .step { text-align: center; flex: 1; }
-        .step .circle { width: 45px; height: 45px; background: var(--white); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 6px; border: 2px solid var(--gray-light); font-size: 1.1rem; color: var(--gray); }
+        .step .circle { width: 36px; height: 36px; background: var(--white); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 4px; border: 2px solid var(--gray-light); font-size: 0.9rem; color: var(--gray); }
         .step.active .circle { background: var(--primary); border-color: var(--primary); color: white; }
         .step.completed .circle { background: var(--success); border-color: var(--success); color: white; }
-        .step-label { font-size: 0.6rem; font-weight: 700; }
-        .step-connector { flex: 0.5; height: 3px; background: var(--gray-light); }
+        .step-label { font-size: 0.55rem; font-weight: 700; }
+        .step-connector { flex: 0.5; height: 2px; background: var(--gray-light); }
         .step-connector.completed { background: var(--success); }
-        .step.active .circle { animation: glowPulse 1s ease-in-out infinite; box-shadow: 0 0 20px 10px rgba(89,28,44,0.5); }
-        @keyframes glowPulse { 0% { box-shadow: 0 0 10px 5px rgba(89,28,44,0.4); } 50% { box-shadow: 0 0 30px 20px rgba(89,28,44,0.8); } 100% { box-shadow: 0 0 10px 5px rgba(89,28,44,0.4); } }
-        #trackFullscreen .close-track-btn { margin-top: auto; background: var(--primary-dark); color: white; border-radius: 40px; padding: 12px; font-weight: 800; cursor: pointer; border: none; font-size: 1rem; width: 100%; }
+        .step.active .circle { animation: glowPulse 1s ease-in-out infinite; box-shadow: 0 0 15px 5px rgba(89,28,44,0.5); }
+        @keyframes glowPulse { 0% { box-shadow: 0 0 5px 5px rgba(89,28,44,0.4); } 50% { box-shadow: 0 0 20px 10px rgba(89,28,44,0.8); } 100% { box-shadow: 0 0 5px 5px rgba(89,28,44,0.4); } }
+        
+        #trackFullscreen .tracking-items-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.85rem; }
+        #trackFullscreen .tracking-items-table th { background: var(--bg-light); padding: 10px 6px; text-align: center; color: var(--primary); border-bottom: 2px solid var(--gray-light); }
+        #trackFullscreen .tracking-items-table td { padding: 10px 6px; border-bottom: 1px solid var(--gray-light); }
+        #trackFullscreen .tracking-items-table td:nth-child(1) { text-align: right; width: 45%; }
+        #trackFullscreen .tracking-items-table td:nth-child(2) { text-align: center; width: 25%; }
+        #trackFullscreen .tracking-items-table td:nth-child(3) { text-align: left; width: 30%; font-weight: 700; color: var(--primary); }
+        
+        #trackFullscreen .close-track-btn { margin-top: auto; background: var(--primary-dark); color: white; border-radius: 40px; padding: 10px; font-weight: 800; cursor: pointer; border: none; font-size: 0.9rem; width: 100%; }
 
-        /* ✅ نافذة الخريطة (منظمة) */
         #map-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 100000; display: none; flex-direction: column; }
         #map { flex: 1; width: 100%; height: 100%; }
         .map-controls { display: flex; background: var(--primary-dark); padding: 15px; gap: 10px; }
@@ -153,26 +151,41 @@
         .map-confirm { background: var(--gold); color: var(--primary-dark); }
         .map-back { background: rgba(255,255,255,0.2); }
 
-        /* بقية التنسيقات */
         .field-input { width: 100%; padding: 11px 16px; border-radius: 30px; border: 1px solid var(--gray-light); background: var(--white); font-size: 0.85rem; margin-bottom: 12px; color: var(--dark); }
         .btn-primary { background: var(--primary); color: white; border: none; padding: 11px; border-radius: 40px; width: 100%; font-weight: 700; cursor: pointer; font-size: 0.9rem; }
         .toast { position: fixed; bottom: 85px; left: 20px; right: 20px; background: var(--dark); color: white; padding: 12px; border-radius: 30px; text-align: center; z-index: 3000; display: none; font-size: 0.8rem; font-weight: 600; box-shadow: var(--shadow-md); }
         .toast.show { display: block; animation: slideUp 0.3s forwards; }
         @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        .payment-option.active { background: rgba(89,28,44,0.06); border-right: 4px solid var(--primary); }
-        .payment-icon { color: var(--primary); }
+        
         .current-location-btn { width: 100%; padding: 8px; border-radius: 30px; background: var(--primary-light); color: white; border: none; font-weight: 700; font-size: 0.8rem; margin-bottom: 8px; cursor: pointer; }
         .geo-btn { background: var(--white); border: 1px solid var(--gray-light); border-radius: 30px; padding: 12px; display: flex; justify-content: space-between; margin-bottom: 8px; cursor: pointer; align-items: center; }
         .back-btn { display: inline-flex; align-items: center; gap: 6px; background: var(--white); padding: 6px 14px; border-radius: 30px; margin-bottom: 14px; cursor: pointer; font-size: 0.75rem; font-weight: 700; box-shadow: var(--shadow); border: 1px solid var(--gray-light); color: var(--primary); }
         
         .driver-header-new { background: linear-gradient(135deg, var(--primary-dark), var(--primary)); color: white; padding: 20px; border-radius: 20px; margin-bottom: 20px; text-align: center; border-bottom: 3px solid var(--gold); }
-        .driver-order-card { background: var(--white); border-radius: 18px; padding: 16px; margin-bottom: 14px; border: 1px solid var(--gray-light); border-right: 5px solid var(--primary); box-shadow: var(--shadow); }
+        .driver-order-card { background: var(--white); border-radius: 18px; padding: 16px; margin-bottom: 14px; border: 1px solid var(--gray-light); border-right: 5px solid var(--primary); box-shadow: var(--shadow); cursor: pointer; transition: 0.1s; }
+        .driver-order-card:active { transform: scale(0.97); }
         .driver-order-status { background: var(--primary); color: white; padding: 2px 10px; border-radius: 20px; font-size: 0.6rem; font-weight: 700; }
         .driver-action-btn { flex: 1; padding: 10px 0; border-radius: 30px; font-size: 0.7rem; font-weight: 700; border: none; cursor: pointer; margin: 3px; }
         .driver-action-btn.primary { background: var(--primary); color: white; }
+        .driver-action-btn.warning { background: var(--warning); color: white; }
+        .driver-action-btn.success { background: var(--success); color: white; }
         .driver-tabs { display: flex; gap: 8px; margin-bottom: 20px; background: var(--white); padding: 8px; border-radius: 50px; border: 1px solid var(--gray-light); }
         .driver-tab { flex: 1; padding: 8px; border-radius: 40px; text-align: center; font-weight: 700; font-size: 0.75rem; cursor: pointer; transition: 0.2s; background: transparent; color: var(--gray); }
         .driver-tab.active { background: var(--primary); color: white; box-shadow: 0 2px 8px rgba(89,28,44,0.2); }
+        
+        .driver-orders-container { background: var(--white); border-radius: 20px; padding: 16px; border: 1px solid var(--gray-light); min-height: 200px; }
+
+        /* ✅ إضافة تنسيقات واجهة تفاصيل الطلب للمندوب (لتطابق الكود الذي أرسلته) */
+        .order-detail-card { background: var(--white); border-radius: 20px; padding: 20px; margin-bottom: 20px; border: 1px solid var(--gray-light); }
+        .order-detail-header { border-bottom: 2px solid var(--gold); padding-bottom: 12px; margin-bottom: 16px; }
+        .order-detail-header h3 { font-size: 1.1rem; color: var(--primary); }
+        .order-detail-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px dashed var(--gray-light); }
+        .order-detail-label { font-weight: 700; color: var(--dark); }
+        .order-detail-value { color: var(--gray); }
+        .items-table { width: 100%; margin: 12px 0; border-collapse: collapse; }
+        .items-table th, .items-table td { padding: 8px; text-align: right; border-bottom: 1px solid var(--gray-light); font-size: 0.8rem; }
+        .items-table th { background: var(--bg-light); font-weight: 800; color: var(--primary); }
+        .order-status-buttons { display: flex; gap: 12px; margin: 20px 0; justify-content: center; flex-wrap: wrap; }
     </style>
 </head>
 <body>
@@ -200,19 +213,10 @@
             
             <div class="categories-grid" id="categoriesGrid"></div>
             
-            <div class="delivery-bar" onclick="openCategory('delivery')">
-                <i class="fas fa-motorcycle"></i>
-                <div style="display:flex; flex-direction:column; align-items:center; line-height:1.3;">
-                    <span>🛵 و صلي</span>
-                    <small>توصيل من موقع إلى موقع (خرائط مباشرة)</small>
-                </div>
-                <i class="fas fa-chevron-left"></i>
-            </div>
-
-            <div class="section-title"><i class="fas fa-th-large" style="color:var(--primary);"></i><h2>جميع الأصناف</h2></div>
+            <div class="section-title"><i class="fas fa-th-large" style="color:var(--primary);"></i><h2>الأقسام</h2></div>
+            <div id="menuContentHome" style="display:none;"></div>
             
-            <div id="menuContentHome"></div>
-            <button id="trackOrderBtnHome" class="btn-primary" style="display:none; margin-top:10px;" onclick="viewMyTracking()">📍 تتبع طلبي الحالي</button>
+            <button id="trackOrderBtnHome" class="btn-primary" style="display:none; margin-top:20px;" onclick="viewMyTracking()">📍 تتبع طلبي الحالي</button>
         </div>
 
         <div id="menuPage" class="page">
@@ -227,46 +231,18 @@
             <div class="location-section">
                 <label style="font-weight:800; font-size:0.8rem;">📍 عنوان التوصيل</label>
                 <button class="current-location-btn" onclick="getCurrentLocationForCheckout()"><i class="fas fa-location-dot"></i> استخدم موقعي الحالي</button>
-                <!-- ✅ زر الخريطة المخصص -->
                 <div class="geo-btn" onclick="openMapForCheckout()"><span id="checkoutLocationTxt">🗺️ حدد موقعك من الخريطة (يدوي)</span><i class="fas fa-map-marker-alt" style="color:var(--primary); font-size:1.2rem;"></i></div>
                 <input type="text" id="checkoutAddressManual" class="field-input" placeholder="✍️ أو اكتب عنوانك يدوياً التفصيلي">
                 <div id="deliveryCostDisplay" style="display:none; background:var(--primary); border-radius:14px; padding:10px; margin:10px 0; color:white; display:flex; justify-content:space-between; font-weight:700; font-size:0.8rem;"><div>🚚 سعر التوصيل</div><div><strong id="deliveryCostValue">0</strong> ريال</div></div>
             </div>
             <div class="payment-method" style="margin-top:15px;">
                 <label style="font-weight:800; font-size:0.8rem;">💰 وسيلة الدفع</label>
-                <div class="payment-list" id="paymentList">
-                    <div class="payment-option" data-method="jeeb"><div class="payment-icon"><i class="fas fa-wallet"></i></div><div class="payment-name">محفظة جيب</div></div>
-                    <div class="payment-option" data-method="onecash"><div class="payment-icon"><i class="fas fa-coins"></i></div><div class="payment-name">ون كاش</div></div>
-                    <div class="payment-option" data-method="cash"><div class="payment-icon"><i class="fas fa-hand-holding-usd"></i></div><div class="payment-name">الدفع عند الاستلام</div></div>
+                <div style="background:var(--bg-light); padding:15px; border-radius:16px; border:1px solid var(--gray-light); display:flex; align-items:center; gap:10px; border-right:4px solid var(--primary);">
+                    <i class="fas fa-hand-holding-usd" style="font-size:1.5rem; color:var(--primary);"></i>
+                    <span style="font-weight:700;">الدفع عند الاستلام</span>
                 </div>
             </div>
             <button class="checkout-btn" onclick="confirmCheckoutOrder()" style="width:100%; padding:12px; background:var(--gold); color:var(--primary-dark); border:none; border-radius:40px; font-weight:800; margin-top:15px;">✅ تأكيد الطلب وإرسال عبر واتساب</button>
-        </div>
-
-        <div id="deliveryPage" class="page">
-            <div class="back-btn" onclick="showPage('homePage')">🔙 رجوع</div>
-            <h3 style="margin-bottom:10px;">🛵 طلب توصيل (وصلي)</h3>
-            <div style="background:var(--white); border-radius:14px; padding:12px; border:1px solid var(--gray-light);">
-                <div class="location-section">
-                    <label style="font-weight:800; font-size:0.8rem;">📍 موقع الانطلاق (من)</label>
-                    <button class="current-location-btn" onclick="getCurrentLocationForDelivery()"><i class="fas fa-location-dot"></i> استخدم موقعي الحالي (الانطلاق)</button>
-                    <div class="geo-btn" onclick="openMapForDelivery('from')"><span id="deliveryFromTxt">🗺️ حدد موقع الانطلاق</span><i class="fas fa-map-marker-alt" style="color:var(--primary)"></i></div>
-                    <input type="text" id="deliveryFromManual" class="field-input" placeholder="✍️ أو اكتب عنوان الانطلاق يدوياً">
-                    <label style="font-weight:800; font-size:0.8rem; margin-top:8px;">📍 موقع الوصول (إلى)</label>
-                    <button class="current-location-btn" onclick="getCurrentLocationForDeliveryTo()"><i class="fas fa-location-dot"></i> استخدم موقعي الحالي (الوجهة)</button>
-                    <div class="geo-btn" onclick="openMapForDelivery('to')"><span id="deliveryToTxt">🗺️ حدد وجهتك من الخريطة</span><i class="fas fa-map-marker-alt" style="color:var(--primary)"></i></div>
-                    <input type="text" id="deliveryToManual" class="field-input" placeholder="✍️ أو اكتب عنوان الوصول يدوياً">
-                    <div id="deliveryCostDisplayNew" style="display:none; background:var(--primary); border-radius:14px; padding:10px; margin:10px 0; color:white; display:flex; justify-content:space-between; font-weight:700; font-size:0.8rem;"><div>🚚 سعر التوصيل</div><div><strong id="deliveryCostValueNew">0</strong> ريال</div></div>
-                </div>
-                <label style="font-weight:800; font-size:0.8rem;">👤 بيانات المستلم/المرسل</label>
-                <input type="text" id="deliveryCustomerName" class="field-input" placeholder="اسم المستلم">
-                <input type="tel" id="deliveryCustomerPhone" class="field-input" placeholder="رقم الهاتف">
-                <label style="font-weight:800; font-size:0.8rem;">📝 ملاحظات خاصة</label>
-                <textarea id="deliveryOrderNote" rows="2" class="field-input" placeholder="أي ملاحظات إضافية..."></textarea>
-                <label style="font-weight:800; font-size:0.8rem;">💰 وسيلة الدفع</label>
-                <div class="payment-list" id="paymentListNew"></div>
-            </div>
-            <button class="checkout-btn" onclick="confirmDeliveryOrder()" style="width:100%; padding:12px; background:var(--gold); color:var(--primary-dark); border:none; border-radius:40px; font-weight:800; margin-top:15px;">✅ إرسال طلب التوصيل</button>
         </div>
 
         <div id="ordersPage" class="page">
@@ -279,7 +255,7 @@
                 <h3 style="margin-bottom:12px;">⚙️ الإعدادات</h3>
                 <div id="darkModeToggle" style="display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid var(--gray-light); cursor:pointer;"><span><i class="fas fa-moon"></i> الوضع الليلي</span><span id="darkModeIcon">⚫</span></div>
                 <div id="whatsappSupport" style="display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid var(--gray-light); cursor:pointer;"><span><i class="fab fa-whatsapp" style="color:#25D366"></i> خدمة العملاء</span><span>⬅️</span></div>
-                <div id="versionRow" style="display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid var(--gray-light);"><span><i class="fas fa-code-branch"></i> الإصدار</span><span id="versionNumber" style="font-weight:700;">v14.0 (أندلس)</span></div>
+                <div id="versionRow" style="display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid var(--gray-light);"><span><i class="fas fa-code-branch"></i> الإصدار</span><span id="versionNumber" style="font-weight:700;">v16.0 (أندلس)</span></div>
                 <button id="settingsLogoutBtn" class="btn-primary" style="background:var(--danger); margin-top:14px;">تسجيل الخروج</button>
             </div>
         </div>
@@ -291,8 +267,14 @@
                 <div class="stat-card-new" style="background:var(--white); border-radius:16px; padding:12px; text-align:center; flex:1; border:1px solid var(--gray-light);"><div class="stat-value" id="completedOrdersCount" style="font-size:1.3rem; font-weight:800; color:var(--primary);">0</div><div class="stat-label" style="font-size:0.65rem; color:var(--gray); margin-top:4px;">مكتملة</div></div>
             </div>
             <div class="driver-tabs"><div class="driver-tab active" data-driver-tab="available" onclick="switchDriverTab('available')"><i class="fas fa-list"></i> الطلبات المتاحة</div><div class="driver-tab" data-driver-tab="active" onclick="switchDriverTab('active')"><i class="fas fa-truck"></i> طلباتي النشطة</div></div>
-            <div class="driver-orders-container" id="driverOrdersList" style="background:var(--white); border-radius:20px; padding:16px; border:1px solid var(--gray-light); min-height:200px;"></div>
+            <div class="driver-orders-container" id="driverOrdersList"></div>
             <button id="driverLogoutBtn" class="btn-primary" style="background:var(--danger); margin-top:12px;">تسجيل الخروج</button>
+        </div>
+
+        <!-- ✅ تم دمج واجهة تفاصيل الطلب للمندوب بالشكل المطلوب -->
+        <div id="orderDetailDriverPage" class="page">
+            <div class="back-btn" onclick="goBackToDriver()">🔙 رجوع</div>
+            <div id="orderDetailDriverContent"></div>
         </div>
     </div>
 
@@ -324,12 +306,12 @@
         </div>
     </div>
 
-    <!-- ✅ نافذة التتبع المستقلة (منظمة) -->
+    <!-- ✅ نافذة التتبع المستقلة -->
     <div id="trackFullscreen">
         <div id="trackingFullscreenContainer"></div>
     </div>
 
-    <!-- ✅ نافذة الخريطة (نظيفة) -->
+    <!-- ✅ نافذة الخريطة -->
     <div id="map-overlay">
         <div id="map"></div>
         <div class="map-controls">
@@ -382,11 +364,11 @@
         let currentUser = null, allOrders = [];
         let cart = [], currentRestaurant = restaurantData;
         let customerLocation = null, deliveryCost = 0;
-        let selectedPaymentMethod = 'cash';
         let map, marker, currentMapMode = null;
-        let pendingOrderId = null, pendingStatus = null;
         let trackingInterval = null;
         let modalQuantity = 1; let currentModalItem = null;
+        
+        let driverTab = 'available';
 
         function showToast(msg) { let t = document.getElementById('toastMsg'); t.innerText = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2500); }
         function calculateDistance(lat1, lng1, lat2, lng2) { const R = 6371; const dLat = (lat2 - lat1) * Math.PI / 180; const dLng = (lng2 - lng1) * Math.PI / 180; const a = Math.sin(dLat / 2) ** 2 + Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLng / 2) ** 2; return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)); }
@@ -396,16 +378,9 @@
         async function updateOrder(id, updates) { await fetch(`${FIREBASE_URL}/orders/${id}.json`, { method: 'PATCH', body: JSON.stringify(updates) }); await loadOrders(); }
         function getStatusText(st) { const m = { pending: 'قيد المراجعة', on_the_way: 'في الطريق', arrived: 'وصل الموقع', delivered: 'تم التوصيل' }; return m[st] || st; }
 
-        // ✅ دالة توليد الرقم التسلسلي (يبدأ من 100)
-        async function generateSequentialOrderId() {
-            await loadOrders();
-            if (allOrders.length === 0) return 100;
-            let maxId = Math.max(...allOrders.map(o => o.id));
-            return Math.max(100, maxId + 1);
-        }
+        async function generateSequentialOrderId() { await loadOrders(); if (allOrders.length === 0) return 100; let maxId = Math.max(...allOrders.map(o => o.id)); return Math.max(100, maxId + 1); }
 
-        // عرض القائمة
-        function renderMenu(itemsArray = null, targetContainerId = 'menuContentHome') {
+        function renderMenu(itemsArray = null, targetContainerId = 'menuContent') {
             const itemsToRender = itemsArray || restaurantData.items;
             let itemsHtml = `<div class="menu-grid">`;
             itemsToRender.forEach((item) => {
@@ -415,7 +390,6 @@
             document.getElementById(targetContainerId).innerHTML = itemsHtml;
         }
 
-        // التصانيف والتنقل
         function renderCategories() {
             const cats = [...new Set(restaurantData.items.map(i => i.cat || 'أخرى'))];
             let html = cats.map(c => `<div class="category-card" onclick="openCategoryList('${c}')"><div class="category-icon">🍽️</div><h3>${c}</h3><p>${restaurantData.items.filter(i => i.cat === c).length} صنف</p></div>`).join('');
@@ -425,7 +399,6 @@
         window.openCategoryList = function(cat) { const filtered = restaurantData.items.filter(i => (i.cat || 'أخرى') === cat); renderMenu(filtered, 'menuContent'); document.getElementById('menuPage').classList.add('active-page'); document.getElementById('homePage').classList.remove('active-page'); };
         window.goBackFromMenu = function() { document.getElementById('menuPage').classList.remove('active-page'); document.getElementById('homePage').classList.add('active-page'); };
 
-        // المودال
         function openItemModal(itemName) {
             currentModalItem = restaurantData.items.find(i => i.n === itemName); if(!currentModalItem) return;
             modalQuantity = 1; document.getElementById('modalImg').src = getItemImage(currentModalItem.n); document.getElementById('modalTitle').innerText = currentModalItem.n; document.getElementById('modalDesc').innerText = currentModalItem.d || "طبق أندلسي شهي"; document.getElementById('modalPrice').innerText = currentModalItem.p + " ريال"; document.getElementById('modalQuantity').innerText = 1; document.getElementById('modalNote').value = ''; document.getElementById('itemModal').style.display = 'flex';
@@ -442,7 +415,6 @@
             document.getElementById('itemModal').style.display = 'none'; updateCartDisplay(); showToast(`✅ تم إضافة ${currentModalItem.n} إلى السلة`);
         };
 
-        // السلة
         function updateCartDisplay() {
             let total = cart.reduce((s, i) => s + (i.p * i.qty), 0); let itemsCount = cart.reduce((s, i) => s + i.qty, 0);
             document.getElementById('cartCount').innerText = itemsCount; document.getElementById('cartTotal').innerText = total;
@@ -457,9 +429,13 @@
         }
         function changeCartQty(idx, delta) { cart[idx].qty += delta; if (cart[idx].qty <= 0) cart.splice(idx, 1); updateCartDisplay(); }
 
-        // الخريطة
+        window.toggleCart = function() {
+            var sidebar = document.getElementById('cartSidebar');
+            sidebar.classList.toggle('open');
+            document.getElementById('floatCart').style.display = 'none';
+        };
+
         window.openMapForCheckout = function() { currentMapMode = 'customer'; initMapForCheckout(); };
-        window.openMapForDelivery = function(type) { currentMapMode = 'delivery_' + type; initMapForCheckout(); };
         function initMapForCheckout() {
             document.getElementById('map-overlay').style.display = 'flex';
             setTimeout(() => {
@@ -469,21 +445,58 @@
         }
         window.closeMap = function() { document.getElementById('map-overlay').style.display = 'none'; };
         window.confirmMapLocation = function() {
-            if (!map || !marker) return;
-            let pos = marker.getLatLng();
+            if (!map || !marker) return; let pos = marker.getLatLng();
             if (currentMapMode === 'customer') {
                 customerLocation = { lat: pos.lat, lng: pos.lng };
                 document.getElementById('checkoutLocationTxt').innerHTML = '✅ تم تحديد الموقع عبر الخريطة';
                 updateDeliveryCost(); closeMap();
             }
         };
-        function getCurrentLocationForCheckout() { if (navigator.geolocation) { navigator.geolocation.getCurrentPosition(pos => { customerLocation = { lat: pos.coords.latitude, lng: pos.coords.longitude }; document.getElementById('checkoutLocationTxt').innerHTML = '✅ تم تحديد موقعك الحالي'; updateDeliveryCost(); showToast("تم تحديد موقعك"); }, () => showToast("فشل تحديد الموقع")); } else showToast("المتصفح لا يدعم الموقع"); }
+
+        function getCurrentLocationForCheckout() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    pos => {
+                        customerLocation = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+                        document.getElementById('checkoutLocationTxt').innerHTML = '✅ تم تحديد موقعك الحالي!';
+                        updateDeliveryCost(); 
+                        showToast("تم تحديد موقعك بنجاح");
+                    }, 
+                    err => {
+                        showToast("❌ فشل تحديد الموقع، يرجى استخدام الخريطة أو الكتابة اليدوية.");
+                    },
+                    { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+                );
+            } else { showToast("المتصفح لا يدعم خدمة الموقع"); }
+        }
+
         function updateDeliveryCost() { if (!customerLocation) return; let distance = calculateDistance(customerLocation.lat, customerLocation.lng, RESTAURANT_LAT, RESTAURANT_LNG); let rawPrice = Math.round(distance * PRICE_PER_KM); let roundedPrice = roundToNearestHundred(rawPrice); deliveryCost = Math.max(roundedPrice, MIN_DELIVERY_PRICE); document.getElementById('deliveryCostDisplay').style.display = 'flex'; document.getElementById('deliveryCostValue').innerText = deliveryCost; updateCheckoutSummary(); }
 
-        // الإتمام و التتبع
         function updateCheckoutSummary() {
-            let totalFood = cart.reduce((s, i) => s + (i.p * i.qty), 0); let total = totalFood + deliveryCost;
-            document.getElementById('checkoutOrderSummary').innerHTML = `<div style="background:var(--white); border-radius:14px; padding:12px; border:1px solid var(--gray-light);"><h4 style="font-weight:800; margin:0 0 10px;">🍔 ${currentRestaurant.name}</h4><div style="background:var(--bg-light); border-radius:12px; padding:16px;">${cart.map(i => `<div style="display:flex; justify-content:space-between; border-bottom:1px solid var(--gray-light); padding:6px 0;"><span>${i.name}</span><span style="font-weight:700; color:var(--primary);">${i.p * i.qty} ريال</span></div>`).join('')}<div style="border-top:2px solid var(--gray-light); margin-top:10px; padding-top:10px;"><div>توصيل: ${deliveryCost} ريال</div><div style="font-size:1.2rem; font-weight:800; color:var(--primary);">الإجمالي: ${total} ريال</div></div></div></div>`;
+            let totalFood = cart.reduce((s, i) => s + (i.p * i.qty), 0);
+            let total = totalFood + deliveryCost;
+            document.getElementById('checkoutOrderSummary').innerHTML = `
+                <div style="background:var(--white); border-radius:14px; padding:12px; border:1px solid var(--gray-light);">
+                    <h4 style="font-weight:800; margin:0 0 10px;">🍔 ${currentRestaurant.name}</h4>
+                    <div style="background:var(--bg-light); border-radius:12px; padding:16px;">
+                        ${cart.map(i => `
+                            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--gray-light); padding:8px 0;">
+                                <div style="flex:1; display:flex; flex-direction:column;">
+                                    <span style="font-weight:700;">${i.name}</span>
+                                    ${i.note ? `<span style="font-size:0.7rem; color:var(--gray);">📝 ${i.note}</span>` : ''}
+                                    <span style="font-size:0.75rem; color:var(--primary);">${i.p} ريال / صنف</span>
+                                </div>
+                                <div style="font-weight:700; margin:0 15px; color:var(--dark);">x${i.qty}</div>
+                                <div style="font-weight:700; color:var(--primary);">${i.p * i.qty} ريال</div>
+                            </div>
+                        `).join('')}
+                        <div style="border-top:2px solid var(--gray-light); margin-top:10px; padding-top:10px;">
+                            <div style="display:flex; justify-content:space-between;"><span>توصيل</span><span>${deliveryCost} ريال</span></div>
+                            <div style="display:flex; justify-content:space-between; font-size:1.2rem; font-weight:800; color:var(--primary); margin-top:5px;"><span>الإجمالي</span><span>${total} ريال</span></div>
+                        </div>
+                    </div>
+                </div>
+            `;
         }
 
         async function confirmCheckoutOrder() {
@@ -493,7 +506,7 @@
             let totalFood = cart.reduce((s, i) => s + (i.p * i.qty), 0); let total = totalFood + deliveryCost;
             let id = await generateSequentialOrderId();
             let generalNote = document.getElementById('cartOrderNote')?.value.trim() || '';
-            let order = { id, type: 'restaurant', restaurant: currentRestaurant.name, customerName: currentUser.name, customerPhone: currentUser.phone, address: addressVal || 'موقع جغرافي', lat: customerLocation?.lat || RESTAURANT_LAT, lng: customerLocation?.lng || RESTAURANT_LNG, items: cart.map(i => ({ name: i.name, qty: i.qty, price: i.p, note: i.note || '' })), totalFood, deliveryCost, total, status: 'pending', createdAt: new Date().toISOString(), restaurantId: currentRestaurant.id, paymentMethod: selectedPaymentMethod, generalNote: generalNote };
+            let order = { id, type: 'restaurant', restaurant: currentRestaurant.name, customerName: currentUser.name, customerPhone: currentUser.phone, address: addressVal || 'موقع جغرافي', lat: customerLocation?.lat || RESTAURANT_LAT, lng: customerLocation?.lng || RESTAURANT_LNG, items: cart.map(i => ({ name: i.name, qty: i.qty, price: i.p, note: i.note || '' })), totalFood, deliveryCost, total, status: 'pending', createdAt: new Date().toISOString(), restaurantId: currentRestaurant.id, paymentMethod: 'الدفع عند الاستلام', generalNote: generalNote };
             await fetch(`${FIREBASE_URL}/orders/${id}.json`, { method: 'PUT', body: JSON.stringify(order) });
             localStorage.setItem('currentTrackingOrder', id);
             
@@ -501,16 +514,14 @@
             let message = `🛍️ طلب جديد من مطعم الأندلس\n🍔 ${currentRestaurant.name}\n👤 ${currentUser.name}\n📞 ${currentUser.phone}\n📍 ${order.address}\n📝 ملاحظات: ${generalNote || 'لا توجد'}\n\nالمنتجات:\n${itemsText}\n\n🚚 التوصيل: ${deliveryCost} ريال\n💰 الإجمالي: ${total} ريال`;
             window.open(`https://wa.me/777215154?text=${encodeURIComponent(message)}`, '_blank');
             
-            showToast('✅ تم إرسال طلبك'); cart = []; customerLocation = null; deliveryCost = 0; updateCartDisplay(); showPage('homePage'); renderMenu(); await loadOrders();
-            
-            // ✅ عرض شاشة التتبع فوراً بشكل منفرد
+            showToast('✅ تم إرسال طلبك'); cart = []; customerLocation = null; deliveryCost = 0; updateCartDisplay(); showPage('homePage'); await loadOrders();
             setTimeout(() => { viewOrderTracking(id); startAutoTracking(id); }, 1500);
         }
 
-        // شاشة التتبع المنفردة
         async function viewOrderTracking(id) {
             await loadOrders(); let order = allOrders.find(o => o.id == id); if (!order) return;
             let steps = ['pending', 'on_the_way', 'arrived', 'delivered']; let idx = steps.indexOf(order.status);
+            
             let stepsHtml = `<div class="tracking-steps">`;
             steps.forEach((s, i) => {
                 let cls = (i < idx) ? 'completed' : (i === idx ? 'active' : '');
@@ -520,8 +531,46 @@
                 if (i < steps.length - 1) stepsHtml += `<div class="step-connector ${i<idx?'completed':''}"></div>`;
             });
             stepsHtml += `</div>`;
-            
-            let detailsHtml = `<div class="tracking-header"><h3 style="font-size:1.4rem; font-weight:900;">تتبع الطلب #${order.id}</h3><div style="font-size:0.8rem; opacity:0.9; margin-top:5px;">${new Date(order.createdAt).toLocaleString('ar-SA')}</div></div><div class="tracking-status-card">${stepsHtml}</div><div class="tracking-details-card"><h4 style="color:var(--primary); border-bottom:2px solid var(--gray-light); padding-bottom:10px; margin-bottom:10px;">🍔 ${order.restaurant}</h4><div style="font-size:0.85rem; line-height:1.6; color:var(--gray);"><p><i class="fas fa-user" style="color:var(--primary); width:18px;"></i> ${order.customerName}</p><p><i class="fas fa-map-marker-alt" style="color:var(--primary); width:18px;"></i> ${order.address}</p><p style="font-weight:800; color:var(--primary); font-size:1.1rem; margin-top:10px;">💰 الإجمالي: ${order.total} ريال</p></div></div><button class="close-track-btn" onclick="closeTracking()">إغلاق التتبع</button>`;
+
+            let itemsTableHtml = `
+                <table class="tracking-items-table">
+                    <thead><tr><th>الصنف</th><th>الكمية</th><th>السعر</th></tr></thead>
+                    <tbody>
+                        ${order.items.map(i => `
+                            <tr>
+                                <td>${i.name} ${i.note ? `<br><span style="font-size:0.7rem; color:var(--gray);">📝 ${i.note}</span>` : ''}</td>
+                                <td>x${i.qty}</td>
+                                <td>${i.price * i.qty} ريال</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+
+            let createdAt = new Date(order.createdAt);
+            let dateTimeStr = createdAt.toLocaleString('ar-SA', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+
+            let detailsHtml = `
+                <div class="tracking-header"><h3>تتبع الطلب #${order.id}</h3></div>
+                <div class="tracking-status-card">${stepsHtml}</div>
+                <div class="tracking-details-card">
+                    <h5 style="color:var(--primary); border-bottom:1px solid var(--gray-light); padding-bottom:8px; margin-bottom:8px;">🍔 ${order.restaurant}</h5>
+                    <div style="font-size:0.8rem; line-height:1.6; color:var(--gray); margin-bottom:10px;">
+                        <p><i class="fas fa-user" style="color:var(--primary); width:16px;"></i> <strong>الاسم:</strong> ${order.customerName}</p>
+                        <p><i class="fas fa-map-marker-alt" style="color:var(--primary); width:16px;"></i> <strong>العنوان:</strong> ${order.address}</p>
+                        <p><i class="far fa-calendar-alt" style="color:var(--primary); width:16px;"></i> <strong>التاريخ:</strong> ${dateTimeStr}</p>
+                    </div>
+                    <div style="background:var(--bg-light); border-radius:8px; padding:8px; border:1px solid var(--gray-light);">
+                        <h6 style="font-weight:700; color:var(--primary); margin-bottom:6px;">🛒 تفاصيل الطلب</h6>
+                        ${itemsTableHtml}
+                        <div style="margin-top:10px; border-top:1px solid var(--gray-light); padding-top:8px;">
+                            <div style="display:flex; justify-content:space-between;"><span>الأصناف</span><span>${order.totalFood} ريال</span></div>
+                            <div style="display:flex; justify-content:space-between;"><span>التوصيل</span><span>${order.deliveryCost} ريال</span></div>
+                            <div style="display:flex; justify-content:space-between; font-size:1.1rem; font-weight:900; color:var(--primary); margin-top:4px;"><span>الإجمالي</span><span>${order.total} ريال</span></div>
+                        </div>
+                    </div>
+                </div>
+                <button class="close-track-btn" onclick="closeTracking()">إغلاق التتبع</button>`;
             
             document.getElementById('trackingFullscreenContainer').innerHTML = detailsHtml;
             document.getElementById('trackFullscreen').style.display = 'flex';
@@ -539,7 +588,123 @@
             document.getElementById('myOrdersContainer').innerHTML = html;
         }
 
-        // تسجيل الدخول
+        // ✅ دالة المندوب المحدثة لتطابق الشكل المطلوب تماماً
+        async function refreshDriverPanel() {
+            if (document.hidden) return; await loadOrders();
+            let activeOrders = allOrders.filter(o => o.driverId === currentUser?.phone && o.status !== 'delivered');
+            let availableOrders = allOrders.filter(o => o.status === 'pending');
+            let completedOrders = allOrders.filter(o => o.driverId === currentUser?.phone && o.status === 'delivered');
+            document.getElementById('activeOrdersCount').innerText = activeOrders.length; document.getElementById('completedOrdersCount').innerText = completedOrders.length;
+            let html = '';
+            if (driverTab === 'available') {
+                if (availableOrders.length === 0) html = `<div class="empty-orders" style="text-align:center; padding:30px; color:var(--gray);"><i class="fas fa-motorcycle" style="font-size:2.5rem; margin-bottom:10px; opacity:0.5;"></i><p>لا يوجد طلبات متاحة!</p></div>`;
+                else html = availableOrders.map(o => `<div class="driver-order-card"><div class="driver-order-header"><span class="driver-order-id">#${o.id}</span><span class="driver-order-status">متاح</span></div><div class="driver-order-details"><div><i class="fas fa-store"></i> ${o.restaurant || o.service}</div><div><i class="fas fa-money-bill"></i> ${o.total || o.price} ريال</div><div><i class="fas fa-map-marker-alt"></i> ${o.address || o.toAddress}</div></div><div class="driver-order-actions" style="display:flex; gap:4px; margin-top:6px;"><button class="driver-action-btn primary" onclick="showConfirmationModal(${o.id}, 'accept')">قبول</button><button class="driver-action-btn danger" onclick="showConfirmationModal(${o.id}, 'reject')">رفض</button><button class="driver-action-btn" onclick="callCustomer('${o.customerPhone || o.phone}')" style="background:#25D366; color:white;">اتصال</button></div></div>`).join('');
+            } else {
+                if (activeOrders.length === 0) html = `<div class="empty-orders" style="text-align:center; padding:30px; color:var(--gray);"><i class="fas fa-check-circle" style="font-size:2.5rem; margin-bottom:10px; opacity:0.5;"></i><p>لا يوجد طلبات نشطة حالياً</p></div>`;
+                else {
+                    html = activeOrders.map(o => `
+                        <div class="driver-order-card" onclick="viewDriverOrderDetail(${o.id})" style="cursor:pointer;">
+                            <div class="driver-order-header">
+                                <span class="driver-order-id">#${o.id}</span>
+                                <span class="driver-order-status" style="background:${o.status === 'delivered' ? 'var(--success)' : (o.status === 'on_the_way' ? 'var(--primary-light)' : 'var(--primary)')}; color:white;">${getStatusText(o.status)}</span>
+                            </div>
+                            <div class="driver-order-details">
+                                <div><i class="fas fa-store"></i> ${o.restaurant || o.service}</div>
+                                <div><i class="fas fa-money-bill"></i> ${o.total || o.price} ريال</div>
+                                <div><i class="fas fa-map-marker-alt"></i> ${o.address || o.toAddress}</div>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+            }
+            document.getElementById('driverOrdersList').innerHTML = html;
+        }
+
+        // ✅ دالة تفاصيل الطلب للمندوب (نسخة مطابقة للكود الذي أرسلته)
+        async function viewDriverOrderDetail(orderId) {
+            await loadOrders();
+            let order = allOrders.find(o => o.id == orderId);
+            if (!order) return showToast('الطلب غير موجود');
+
+            let itemsHtml = '<table class="items-table"><thead><tr><th>المنتج</th><th>الكمية</th><th>السعر</th></tr></thead><tbody>';
+            (order.items || []).forEach(i => {
+                itemsHtml += `<tr><td>${i.name}</td><td>${i.qty}</td><td>${i.price * i.qty} ريال</td></tr>`;
+            });
+            itemsHtml += '</tbody></table>';
+
+            let statusButtons = '';
+            if (order.status !== 'delivered') {
+                statusButtons = `
+                <div class="order-status-buttons">
+                  ${order.status === 'pending' ? `<button class="driver-action-btn primary" onclick="confirmStatusChange(${order.id}, 'on_the_way')"><i class="fas fa-truck"></i> في الطريق</button>` : ''}
+                  ${order.status === 'on_the_way' ? `<button class="driver-action-btn warning" onclick="confirmStatusChange(${order.id}, 'arrived')"><i class="fas fa-map-pin"></i> وصلت الموقع</button>` : ''}
+                  ${order.status === 'arrived' ? `<button class="driver-action-btn success" onclick="confirmStatusChange(${order.id}, 'delivered')"><i class="fas fa-check-double"></i> تم التوصيل</button>` : ''}
+                  <button class="driver-action-btn call" onclick="callCustomer('${order.customerPhone}')"><i class="fas fa-phone"></i> اتصل بالعميل</button>
+                </div>
+              `;
+            }
+
+            let locationDisplay =
+                `<div class="order-detail-row"><span class="order-detail-label">📍 عنوان التوصيل:</span><span class="order-detail-value">${order.address || 'لم يحدد'}</span></div>`;
+            if (order.lat && order.lng) {
+                locationDisplay += `
+              <div class="order-detail-row"><span class="order-detail-label">🗺️ إحداثيات العميل:</span><span class="order-detail-value">${order.lat}, ${order.lng}</span></div>
+              <button class="driver-action-btn primary" onclick="openCustomerLocation(${order.lat}, ${order.lng})" style="margin:10px 0; width:100%;"><i class="fas fa-location-dot"></i> تتبع موقع العميل (عبر خرائط جوجل)</button>
+            `;
+            }
+
+            let detailsHtml = `
+                <div class="order-detail-card">
+                  <div class="order-detail-header"><h3>🧾 تفاصيل الطلب #${order.id}</h3></div>
+                  <div class="order-detail-row"><span class="order-detail-label">🍔 المطعم:</span><span class="order-detail-value">${order.restaurant}</span></div>
+                  <div class="order-detail-row"><span class="order-detail-label">👤 اسم العميل:</span><span class="order-detail-value">${order.customerName}</span></div>
+                  <div class="order-detail-row"><span class="order-detail-label">📞 رقم الهاتف:</span><span class="order-detail-value">${order.customerPhone}</span></div>
+                  ${locationDisplay}
+                  <div class="order-detail-row"><span class="order-detail-label">📅 تاريخ الطلب:</span><span class="order-detail-value">${new Date(order.createdAt).toLocaleString('ar-SA')}</span></div>
+                  <div class="order-detail-row"><span class="order-detail-label">🛒 الأصناف:</span></div>
+                  ${itemsHtml}
+                  ${statusButtons}
+                  <div class="order-detail-row"><span class="order-detail-label">💰 المجموع الفرعي:</span><span class="order-detail-value">${order.totalFood} ريال</span></div>
+                  <div class="order-detail-row"><span class="order-detail-label">🚚 سعر التوصيل:</span><span class="order-detail-value">${order.deliveryCost} ريال</span></div>
+                  <div class="order-detail-row"><span class="order-detail-label">💵 الإجمالي الكلي:</span><span class="order-detail-value">${order.total} ريال</span></div>
+                  <div class="order-detail-row"><span class="order-detail-label">💰 وسيلة الدفع:</span><span class="order-detail-value">${order.paymentMethod || 'الدفع عند الاستلام'}</span></div>
+                  <div class="order-detail-row"><span class="order-detail-label">📌 الحالة الحالية:</span><span class="order-detail-value" style="color:${order.status === 'delivered' ? 'var(--success)' : (order.status === 'on_the_way' ? 'var(--primary-light)' : 'var(--warning)')}">${getStatusText(order.status)}</span></div>
+                </div>
+                <button class="btn-primary" style="background:var(--gray); margin-top:10px;" onclick="goBackToDriver()">رجوع إلى القائمة</button>
+            `;
+
+            document.getElementById('orderDetailDriverContent').innerHTML = detailsHtml;
+            showPage('orderDetailDriverPage');
+        }
+
+        window.goBackToDriver = function() {
+            document.getElementById('orderDetailDriverPage').classList.remove('active-page');
+            document.getElementById('driverPage').classList.add('active-page');
+            refreshDriverPanel();
+        };
+
+        window.confirmStatusChange = function(orderId, newStatus) {
+            if(confirm(`هل أنت متأكد من تغيير حالة الطلب إلى "${getStatusText(newStatus)}"؟`)) {
+                updateOrder(orderId, { status: newStatus });
+                if(newStatus === 'delivered') updateUserBusy(currentUser.phone, false);
+                viewDriverOrderDetail(orderId);
+                refreshDriverPanel();
+                showToast(`✅ تم تحديث الحالة إلى "${getStatusText(newStatus)}"`);
+            }
+        };
+
+        window.switchDriverTab = function(tab) { driverTab = tab; document.querySelectorAll('.driver-tab').forEach(t => t.classList.remove('active')); document.querySelector(`.driver-tab[data-driver-tab="${tab}"]`).classList.add('active'); refreshDriverPanel(); };
+        window.showConfirmationModal = function(orderId, action) {
+            if(confirm(`هل أنت متأكد من ${action === 'accept' ? 'قبول' : 'رفض'} الطلب #${orderId}?`)) {
+                if(action === 'accept') acceptOrder(orderId); else rejectOrder(orderId);
+            }
+        };
+        async function acceptOrder(id) { if (allOrders.find(o => o.driverId === currentUser?.phone && o.status !== 'delivered')) return showToast("⚠️ لديك طلب نشط حالياً"); let o = allOrders.find(o => o.id == id); if (!o || o.status !== 'pending') return showToast("الطلب غير متاح"); await updateOrder(id, { status: 'on_the_way', driverId: currentUser.phone, driverName: currentUser.name }); await updateUserBusy(currentUser.phone, true); showToast("✅ تم قبول الطلب"); driverTab = 'active'; document.querySelectorAll('.driver-tab').forEach(t => t.classList.remove('active')); document.querySelector(`.driver-tab[data-driver-tab="active"]`).classList.add('active'); refreshDriverPanel(); }
+        async function rejectOrder(id) { let o = allOrders.find(o => o.id == id); if (!o || o.status !== 'pending') return showToast("الطلب غير متاح"); showToast("❌ تم رفض الطلب"); refreshDriverPanel(); }
+        function callCustomer(phone) { if (phone) window.location.href = `tel:${phone}`; }
+        function openCustomerLocation(lat, lng) { if (lat && lng) { const googleMapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`; window.open(googleMapsUrl, '_blank'); } else { showToast('⚠️ لا توجد إحداثيات متاحة لهذا العميل'); } }
+        async function updateUserBusy(phone, isBusy) { await fetch(`${FIREBASE_URL}/users/${phone}.json`, { method: 'PATCH', body: JSON.stringify({ isBusy }) }); }
+
         function initLogin() {
             const roleCustomer = document.getElementById('roleCustomer'); const roleDriver = document.getElementById('roleDriver'); const passwordField = document.getElementById('passwordField'); const loginName = document.getElementById('loginName'); const loginPhone = document.getElementById('loginPhone'); const loginBtn = document.getElementById('loginBtn'); const loginOverlay = document.getElementById('loginOverlay');
             roleCustomer.onclick = function() { roleCustomer.classList.add('active'); roleDriver.classList.remove('active'); passwordField.style.display = 'none'; };
@@ -558,22 +723,25 @@
 
         function showPage(pageId) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page')); document.getElementById(pageId).classList.add('active-page');
-            if (pageId === 'homePage') { document.getElementById('trackOrderBtnHome').style.display = localStorage.getItem('currentTrackingOrder') ? 'block' : 'none'; renderMenu(); }
+            if (pageId === 'homePage') { document.getElementById('trackOrderBtnHome').style.display = localStorage.getItem('currentTrackingOrder') ? 'block' : 'none'; }
         }
-        window.goToCheckout = function() { showPage('checkoutPage'); updateCheckoutSummary(); };
-        window.toggleCart = function() { document.getElementById('cartSidebar').classList.toggle('open'); };
-        window.openCategory = function(categoryId) { if (categoryId === 'delivery') { showPage('deliveryPage'); } };
+        window.goToCheckout = function() { document.getElementById('floatCart').style.display = 'none'; showPage('checkoutPage'); updateCheckoutSummary(); };
+        window.proceedToCheckout = function() { document.getElementById('floatCart').style.display = 'none'; toggleCart(); goToCheckout(); };
         window.goBackToMenu = function() { showPage('homePage'); };
-        window.proceedToCheckout = function() { toggleCart(); goToCheckout(); };
 
-        document.querySelectorAll('.nav-item[data-page]').forEach(n => { n.onclick = () => { if(n.dataset.page === 'ordersPage') renderMyOrders(); showPage(n.dataset.page); }; });
+        // ✅ إصلاح أزرار تسجيل الخروج
+        document.getElementById('settingsLogoutBtn').addEventListener('click', function() {
+            if(confirm('هل أنت متأكد من تسجيل الخروج؟')) { localStorage.removeItem('waselny_user'); location.reload(); }
+        });
+        document.getElementById('driverLogoutBtn').addEventListener('click', function() {
+            if(confirm('هل أنت متأكد من تسجيل الخروج؟')) { localStorage.removeItem('waselny_user'); location.reload(); }
+        });
 
         let savedUser = localStorage.getItem('waselny_user');
-        if (savedUser) { try { currentUser = JSON.parse(savedUser); document.getElementById('loginOverlay').style.display = 'none'; if (currentUser.role === 'driver') { showPage('driverPage'); refreshDriverPanel(); } else showPage('homePage'); } catch (e) { initLogin(); } } else { initLogin(); }
+        if (savedUser) { try { currentUser = JSON.parse(savedUser); document.getElementById('loginOverlay').style.display = 'none'; if (currentUser.role === 'driver') { showPage('driverPage'); refreshDriverPanel(); } else { showPage('homePage'); } } catch (e) { initLogin(); } } else { initLogin(); }
         
-        renderMenu(); renderCategories(); renderOffers();
+        renderCategories(); renderOffers();
         
-        // السلايدر
         const mainSliderImages = [
             { image: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=800', title: '🔥 تشكيلة المشاوي الأندلسية', desc: 'لحم ودجاج على الفحم بنكهة خاصة' },
             { image: 'https://images.unsplash.com/photo-1544025162-d76694265947?w=800', title: '🍗 دجاج فحم وبروست', desc: 'مقرمش وطري بأفضل الوصفات' },
@@ -597,34 +765,6 @@
         window.changeMainCarouselSlide = function(d) { mainCarouselIndex = (mainCarouselIndex + d + mainSliderImages.length) % mainSliderImages.length; updateMainCarousel(); startMainCarouselAuto(); };
         window.goToMainCarouselSlide = function(i) { mainCarouselIndex = i; updateMainCarousel(); startMainCarouselAuto(); };
         renderMainCarousel(); startMainCarouselAuto();
-
-        // واجهة المندوب (مستقرة)
-        let driverTab = 'available';
-        window.switchDriverTab = function(tab) { driverTab = tab; document.querySelectorAll('.driver-tab').forEach(t => t.classList.remove('active')); document.querySelector(`.driver-tab[data-driver-tab="${tab}"]`).classList.add('active'); refreshDriverPanel(); };
-        async function refreshDriverPanel() {
-            if (document.hidden) return; await loadOrders();
-            let activeOrders = allOrders.filter(o => o.driverId === currentUser?.phone && o.status !== 'delivered');
-            let availableOrders = allOrders.filter(o => o.status === 'pending');
-            let completedOrders = allOrders.filter(o => o.driverId === currentUser?.phone && o.status === 'delivered');
-            document.getElementById('activeOrdersCount').innerText = activeOrders.length; document.getElementById('completedOrdersCount').innerText = completedOrders.length;
-            let html = '';
-            if (driverTab === 'available') {
-                if (availableOrders.length === 0) html = `<div class="empty-orders" style="text-align:center; padding:30px; color:var(--gray);"><i class="fas fa-motorcycle" style="font-size:2.5rem; margin-bottom:10px; opacity:0.5;"></i><p>لا يوجد طلبات متاحة!</p></div>`;
-                else html = availableOrders.map(o => `<div class="driver-order-card"><div class="driver-order-header"><span class="driver-order-id">#${o.id}</span><span class="driver-order-status">متاح</span></div><div class="driver-order-details"><div><i class="fas fa-store"></i> ${o.restaurant || o.service}</div><div><i class="fas fa-money-bill"></i> ${o.total || o.price} ريال</div><div><i class="fas fa-map-marker-alt"></i> ${o.address || o.toAddress}</div></div><div class="driver-order-actions" style="display:flex; gap:4px; margin-top:6px;"><button class="driver-action-btn primary" onclick="showConfirmationModal(${o.id}, 'accept')">قبول</button><button class="driver-action-btn danger" onclick="showConfirmationModal(${o.id}, 'reject')">رفض</button><button class="driver-action-btn" onclick="callCustomer('${o.customerPhone || o.phone}')" style="background:#25D366; color:white;">اتصال</button></div></div>`).join('');
-            } else {
-                if (activeOrders.length === 0) html = `<div class="empty-orders" style="text-align:center; padding:30px; color:var(--gray);"><i class="fas fa-check-circle" style="font-size:2.5rem; margin-bottom:10px; opacity:0.5;"></i><p>لا يوجد طلبات نشطة حالياً</p></div>`;
-                else html = activeOrders.map(o => `<div class="driver-order-card"><div class="driver-order-header"><span class="driver-order-id">#${o.id}</span><span class="driver-order-status" style="background:${o.status === 'delivered' ? 'var(--success)' : (o.status === 'on_the_way' ? 'var(--primary-light)' : 'var(--primary)')}; color:white;">${getStatusText(o.status)}</span></div><div class="driver-order-details"><div><i class="fas fa-store"></i> ${o.restaurant || o.service}</div><div><i class="fas fa-money-bill"></i> ${o.total || o.price} ريال</div></div></div>`).join('');
-            }
-            document.getElementById('driverOrdersList').innerHTML = html;
-        }
-        window.showConfirmationModal = function(orderId, action) {
-            if(confirm(`هل أنت متأكد من ${action === 'accept' ? 'قبول' : 'رفض'} الطلب #${orderId}?`)) {
-                if(action === 'accept') acceptOrder(orderId); else rejectOrder(orderId);
-            }
-        };
-        async function acceptOrder(id) { if (allOrders.find(o => o.driverId === currentUser?.phone && o.status !== 'delivered')) return showToast("⚠️ لديك طلب نشط حالياً"); let o = allOrders.find(o => o.id == id); if (!o || o.status !== 'pending') return showToast("الطلب غير متاح"); await updateOrder(id, { status: 'on_the_way', driverId: currentUser.phone, driverName: currentUser.name }); await updateUserBusy(currentUser.phone, true); showToast("✅ تم قبول الطلب"); driverTab = 'active'; document.querySelectorAll('.driver-tab').forEach(t => t.classList.remove('active')); document.querySelector(`.driver-tab[data-driver-tab="active"]`).classList.add('active'); refreshDriverPanel(); }
-        async function rejectOrder(id) { let o = allOrders.find(o => o.id == id); if (!o || o.status !== 'pending') return showToast("الطلب غير متاح"); showToast("❌ تم رفض الطلب"); refreshDriverPanel(); }
-        function callCustomer(phone) { if (phone) window.location.href = `tel:${phone}`; }
     </script>
 </body>
 </html>

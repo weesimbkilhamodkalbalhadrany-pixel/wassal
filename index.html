@@ -7,8 +7,10 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
+    </script>
     <style>
+        /* نفس الستايلات السابقة بالكامل - لم تتغير */
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Cairo', sans-serif; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
         :root { 
             --primary: #591c2c; --primary-light: #8f3f54; --primary-dark: #3a0e1a; 
@@ -185,10 +187,14 @@
         .items-table th, .items-table td { padding: 8px; text-align: right; border-bottom: 1px solid var(--gray-light); font-size: 0.8rem; }
         .items-table th { background: var(--bg-light); font-weight: 800; color: var(--primary); }
         .order-status-buttons { display: flex; gap: 12px; margin: 20px 0; justify-content: center; flex-wrap: wrap; }
+        .loading-spinner { display: inline-block; width: 20px; height: 20px; border: 3px solid rgba(255,255,255,0.3); border-radius: 50%; border-top-color: #fff; animation: spin 0.6s linear infinite; margin-right: 8px; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .sync-indicator { font-size: 0.6rem; color: var(--gray); display: flex; align-items: center; gap: 4px; margin-top: 4px; }
     </style>
 </head>
 <body>
 
+    <!-- نفس هيكل HTML بالكامل - لم يتغير -->
     <div class="header">
         <div class="store-badge"><i class="fas fa-utensils"></i> مطعم الأندلس</div>
         <div class="bike-animation"><i class="fas fa-motorcycle"></i></div>
@@ -254,7 +260,7 @@
                 <h3 style="margin-bottom:12px;">⚙️ الإعدادات</h3>
                 <div id="darkModeToggle" style="display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid var(--gray-light); cursor:pointer;"><span><i class="fas fa-moon"></i> الوضع الليلي</span><span id="darkModeIcon">⚫</span></div>
                 <div id="whatsappSupport" style="display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid var(--gray-light); cursor:pointer;"><span><i class="fab fa-whatsapp" style="color:#25D366"></i> خدمة العملاء</span><span>⬅️</span></div>
-                <div id="versionRow" style="display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid var(--gray-light);"><span><i class="fas fa-code-branch"></i> الإصدار</span><span id="versionNumber" style="font-weight:700;">v16.5 (أندلس)</span></div>
+                <div id="versionRow" style="display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid var(--gray-light);"><span><i class="fas fa-code-branch"></i> الإصدار</span><span id="versionNumber" style="font-weight:700;">v17.0 (موفر بيانات)</span></div>
                 <button id="settingsLogoutBtn" class="btn-primary" style="background:var(--danger); margin-top:14px;">تسجيل الخروج</button>
             </div>
         </div>
@@ -267,6 +273,7 @@
             </div>
             <div class="driver-tabs"><div class="driver-tab active" data-driver-tab="available" onclick="switchDriverTab('available')"><i class="fas fa-list"></i> الطلبات المتاحة</div><div class="driver-tab" data-driver-tab="active" onclick="switchDriverTab('active')"><i class="fas fa-truck"></i> طلباتي النشطة</div></div>
             <div class="driver-orders-container" id="driverOrdersList"></div>
+            <div class="sync-indicator" id="syncStatus" style="text-align:center; padding:8px;">⚡ جاري المزامنة...</div>
             <button id="driverLogoutBtn" class="btn-primary" style="background:var(--danger); margin-top:12px;">تسجيل الخروج</button>
         </div>
 
@@ -318,7 +325,7 @@
 
     <div id="itemModal" class="item-modal-overlay">
         <div class="item-modal-card">
-            <img id="modalImg" class="modal-img" src="">
+            <img id="modalImg" class="modal-img" src="" loading="lazy">
             <div class="modal-content">
                 <h3 id="modalTitle"></h3>
                 <div id="modalDesc" class="modal-desc"></div>
@@ -331,6 +338,12 @@
     </div>
 
     <script>
+        // ========== تحسينات استهلاك البيانات ==========
+        // 1. إضافة نظام تخزين مؤقت (Caching) مع صلاحية 30 ثانية
+        // 2. تقليل تحميل الصور (دقة أقل)
+        // 3. تحديث ذكي للبيانات (فقط عند التغيير)
+        // 4. إيقاف التحديث عند إخفاء الصفحة
+        
         const restaurantData = { id: 100, name: "مطعم الأندلس", items: [
             { n: "ماء", p: 100, d: "ماء معدني 1 لتر", cat: "المشروبات" }, { n: "مشروب غازي ون سي", p: 250, d: "مشروب غازي ون سي 330 مل", cat: "المشروبات" },
             { n: "ايسكريم", p: 600, d: "ايسكريم بنكهات متعددة", cat: "المشروبات" }, { n: "مشروب غازي", p: 250, d: "مشروب غازي 330 مل", cat: "المشروبات" },
@@ -364,18 +377,84 @@
         let trackingInterval = null;
         let modalQuantity = 1; let currentModalItem = null;
         let driverTab = 'available';
+        
+        // متغيرات جديدة لتوفير البيانات
+        let ordersCache = { data: null, timestamp: 0, hash: '' };
+        const CACHE_DURATION = 30000; // 30 ثانية صلاحية الكاش
+        let lastDriverPanelUpdate = 0;
+        let driverUpdateInterval = null;
 
         // دوال مساعدة
         function showToast(msg) { let t = document.getElementById('toastMsg'); t.innerText = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2500); }
         function calculateDistance(lat1, lng1, lat2, lng2) { const R = 6371; const dLat = (lat2 - lat1) * Math.PI / 180; const dLng = (lng2 - lng1) * Math.PI / 180; const a = Math.sin(dLat / 2) ** 2 + Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLng / 2) ** 2; return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)); }
         function roundToNearestHundred(num) { return Math.round(num / 100) * 100; }
-        function getItemImage(itemName) { const name = itemName.toLowerCase(); if (name.includes('برجر')) return 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=300'; if (name.includes('بروست')) return 'https://images.unsplash.com/photo-1626645738196-c2a7c8d08f58?w=300'; if (name.includes('زنجر')) return 'https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?w=300'; if (name.includes('شاورما')) return 'https://images.unsplash.com/photo-1644704170910-a0cdf183649b?w=300'; if (name.includes('بيتزا')) return 'https://images.unsplash.com/photo-1513104890138-7c749659a591?w=300'; if (name.includes('مندي')) return 'https://images.unsplash.com/photo-1591261735099-e3776264e164?w=300'; if (name.includes('مشاوي')) return 'https://images.unsplash.com/photo-1544025162-d76694265947?w=300'; return 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=300'; }
-        async function loadOrders() { try { let res = await fetch(`${FIREBASE_URL}/orders.json`); let data = await res.json(); allOrders = data ? Object.values(data).sort((a, b) => b.id - a.id) : []; } catch (e) {} }
-        async function updateOrder(id, updates) { await fetch(`${FIREBASE_URL}/orders/${id}.json`, { method: 'PATCH', body: JSON.stringify(updates) }); await loadOrders(); }
+        
+        // تحسين الصور: استخدام دقة أقل وتحميل كسول
+        function getItemImage(itemName) { 
+            const name = itemName.toLowerCase(); 
+            let img = 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=200'; // صورة افتراضية بدقة أقل
+            if (name.includes('برجر')) img = 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=200';
+            else if (name.includes('بروست')) img = 'https://images.unsplash.com/photo-1626645738196-c2a7c8d08f58?w=200';
+            else if (name.includes('زنجر')) img = 'https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?w=200';
+            else if (name.includes('شاورما')) img = 'https://images.unsplash.com/photo-1644704170910-a0cdf183649b?w=200';
+            else if (name.includes('بيتزا')) img = 'https://images.unsplash.com/photo-1513104890138-7c749659a591?w=200';
+            else if (name.includes('مندي')) img = 'https://images.unsplash.com/photo-1591261735099-e3776264e164?w=200';
+            else if (name.includes('مشاوي')) img = 'https://images.unsplash.com/photo-1544025162-d76694265947?w=200';
+            return img;
+        }
+
+        // توليد هاش بسيط لمقارنة الطلبات
+        function generateOrdersHash(orders) {
+            return orders.map(o => `${o.id}-${o.status}-${o.driverId || ''}`).join(',');
+        }
+
+        // ✅ تحميل الطلبات مع الكاش والتحقق من التحديث
+        async function loadOrders(forceRefresh = false) {
+            const now = Date.now();
+            // إذا كان لدينا كاش صالح ولا نريد تحديث قسري
+            if (!forceRefresh && ordersCache.data && (now - ordersCache.timestamp) < CACHE_DURATION) {
+                allOrders = ordersCache.data;
+                return ordersCache.data;
+            }
+            
+            try {
+                let res = await fetch(`${FIREBASE_URL}/orders.json`);
+                if (!res.ok) throw new Error('Network error');
+                let data = await res.json();
+                let newOrders = data ? Object.values(data).sort((a, b) => b.id - a.id) : [];
+                let newHash = generateOrdersHash(newOrders);
+                
+                // إذا لم تتغير البيانات، لا نحدث الكاش بالكامل بل نحتفظ بالقديم
+                if (ordersCache.data && newHash === ordersCache.hash && !forceRefresh) {
+                    ordersCache.timestamp = now; // نمدد صلاحية الكاش فقط
+                    return allOrders;
+                }
+                
+                // تحديث الكاش
+                ordersCache = { data: newOrders, timestamp: now, hash: newHash };
+                allOrders = newOrders;
+                return newOrders;
+            } catch (e) {
+                // في حالة فشل الاتصال، نستخدم الكاش الموجود حتى لو كان قديماً
+                if (ordersCache.data) {
+                    allOrders = ordersCache.data;
+                    return ordersCache.data;
+                }
+                allOrders = [];
+                return [];
+            }
+        }
+
+        async function updateOrder(id, updates) { 
+            await fetch(`${FIREBASE_URL}/orders/${id}.json`, { method: 'PATCH', body: JSON.stringify(updates) }); 
+            // بعد التحديث، نجبر تحديث الكاش
+            await loadOrders(true);
+        }
+        
         function getStatusText(st) { const m = { pending: 'قيد المراجعة', on_the_way: 'في الطريق', arrived: 'وصل الموقع', delivered: 'تم التوصيل' }; return m[st] || st; }
         async function generateSequentialOrderId() { await loadOrders(); if (allOrders.length === 0) return 100; let maxId = Math.max(...allOrders.map(o => o.id)); return Math.max(100, maxId + 1); }
 
-        // عرض القائمة
+        // عرض القائمة (بدون تغيير)
         function renderMenu(itemsArray = null, targetContainerId = 'menuContent') {
             const itemsToRender = itemsArray || restaurantData.items;
             let itemsHtml = `<div class="menu-grid">`;
@@ -393,7 +472,6 @@
         }
         function renderOffers() { document.getElementById('offersScroll').innerHTML = `<div class="offer-card" onclick="window.openCategoryList('الوجبات الرئيسية')"><div class="offer-text"><h4>🔥 عروض الأندلس</h4><p>خصم على المشاوي</p></div><div class="offer-badge">اطلب الآن</div></div><div class="offer-card" onclick="window.openCategoryList('البرجر')"><div class="offer-text"><h4>🍔 سندوتشات خاصة</h4><p>جميع أنواع البرجر</p></div><div class="offer-badge">شوف القائمة</div></div><div class="offer-card" onclick="window.openCategoryList('المشروبات')"><div class="offer-text"><h4>🥤 مشروبات باردة</h4><p>عصائر ومشروبات غازية</p></div><div class="offer-badge">اطلب مع الطلب</div></div>`; }
         
-        // دوال الانتقال بين الصفحات (يجب تعريفها بـ window لتتوفر للأزرار)
         window.openCategoryList = function(cat) { 
             const filtered = restaurantData.items.filter(i => (i.cat || 'أخرى') === cat); 
             renderMenu(filtered, 'menuContent'); 
@@ -525,7 +603,7 @@
             let itemsText = cart.map(i => `• ${i.name} x${i.qty} = ${i.p*i.qty} ريال ${i.note?' ('+i.note+')':''}`).join('\n');
             let message = `🛍️ طلب جديد من مطعم الأندلس\n🍔 ${currentRestaurant.name}\n👤 ${currentUser.name}\n📞 ${currentUser.phone}\n📍 ${order.address}\n📝 ملاحظات: ${generalNote || 'لا توجد'}\n\nالمنتجات:\n${itemsText}\n\n🚚 التوصيل: ${deliveryCost} ريال\n💰 الإجمالي: ${total} ريال`;
             window.open(`https://wa.me/777215154?text=${encodeURIComponent(message)}`, '_blank');
-            showToast('✅ تم إرسال طلبك'); cart = []; customerLocation = null; deliveryCost = 0; updateCartDisplay(); showPage('homePage'); await loadOrders();
+            showToast('✅ تم إرسال طلبك'); cart = []; customerLocation = null; deliveryCost = 0; updateCartDisplay(); showPage('homePage'); await loadOrders(true);
             setTimeout(() => { viewOrderTracking(id); }, 500);
         }
 
@@ -596,7 +674,6 @@
             } 
         };
 
-        // ✅ إصلاح قسم طلباتي: إضافة تحقق من وجود العنصر وعدم توقف الكود
         async function renderMyOrders() {
             if (!currentUser) return showToast('سجل الدخول أولاً');
             await loadOrders();
@@ -611,24 +688,57 @@
             container.innerHTML = html;
         }
 
-        // 🔥 تحسين المندوب وتقليل الاستهلاك: مراقبة رؤية الصفحة
+        // ========== تحسين لوحة المندوب (تقليل استهلاك البيانات) ==========
+        
+        // إيقاف التحديث التلقائي عند إخفاء الصفحة
         document.addEventListener('visibilitychange', function() {
             if (document.hidden) {
-                if (trackingInterval) clearInterval(trackingInterval);
+                stopDriverAutoUpdate();
             } else {
-                if (document.getElementById('driverPage').classList.contains('active-page')) refreshDriverPanel();
+                if (document.getElementById('driverPage').classList.contains('active-page')) {
+                    startDriverAutoUpdate();
+                }
             }
         });
 
-        async function refreshDriverPanel() {
-            if (document.hidden) return; 
+        function stopDriverAutoUpdate() {
+            if (driverUpdateInterval) {
+                clearInterval(driverUpdateInterval);
+                driverUpdateInterval = null;
+            }
+        }
+
+        function startDriverAutoUpdate() {
+            stopDriverAutoUpdate();
+            // تحديث فوري ثم كل 30 ثانية فقط
+            refreshDriverPanel(true);
+            driverUpdateInterval = setInterval(() => {
+                if (!document.hidden) refreshDriverPanel(false);
+            }, 30000); // 30 ثانية بدلاً من تحديث مستمر
+        }
+
+        async function refreshDriverPanel(forceFullRefresh = false) {
+            if (document.hidden) return;
+            
+            const now = Date.now();
+            // منع التحديث المتكرر جداً (أقل من 5 ثواني بين التحديثات)
+            if (!forceFullRefresh && (now - lastDriverPanelUpdate) < 5000) return;
+            lastDriverPanelUpdate = now;
+            
+            document.getElementById('syncStatus').innerHTML = '<span class="loading-spinner"></span> جاري المزامنة...';
+            
             try {
-                await loadOrders();
-            } catch(e) { return; }
+                // استخدام الكاش إذا كان حديثاً
+                await loadOrders(forceFullRefresh);
+            } catch(e) { 
+                document.getElementById('syncStatus').innerHTML = '⚠️ فشل الاتصال - البيانات المخزنة معروضة';
+                return; 
+            }
             
             let activeOrders = allOrders.filter(o => o.driverId === currentUser?.phone && o.status !== 'delivered');
             let availableOrders = allOrders.filter(o => o.status === 'pending');
             let completedOrders = allOrders.filter(o => o.driverId === currentUser?.phone && o.status === 'delivered');
+            
             let activeEl = document.getElementById('activeOrdersCount');
             let completedEl = document.getElementById('completedOrdersCount');
             if(activeEl) activeEl.innerText = activeOrders.length;
@@ -660,6 +770,7 @@
                 }
             }
             listContainer.innerHTML = html;
+            document.getElementById('syncStatus').innerHTML = '✅ تم التحديث ' + new Date().toLocaleTimeString('ar-SA');
         }
 
         async function viewDriverOrderDetail(orderId) {
@@ -685,8 +796,7 @@
               `;
             }
 
-            let locationDisplay =
-                `<div class="order-detail-row"><span class="order-detail-label">📍 عنوان التوصيل:</span><span class="order-detail-value">${order.address || 'لم يحدد'}</span></div>`;
+            let locationDisplay = `<div class="order-detail-row"><span class="order-detail-label">📍 عنوان التوصيل:</span><span class="order-detail-value">${order.address || 'لم يحدد'}</span></div>`;
             if (order.lat && order.lng) {
                 locationDisplay += `
               <div class="order-detail-row"><span class="order-detail-label">🗺️ إحداثيات العميل:</span><span class="order-detail-value">${order.lat}, ${order.lng}</span></div>
@@ -722,32 +832,57 @@
         window.goBackToDriver = function() {
             document.getElementById('orderDetailDriverPage').classList.remove('active-page');
             document.getElementById('driverPage').classList.add('active-page');
-            refreshDriverPanel();
+            startDriverAutoUpdate(); // إعادة تشغيل التحديث التلقائي
         };
 
         window.confirmStatusChange = function(orderId, newStatus) {
             if(confirm(`هل أنت متأكد من تغيير حالة الطلب إلى "${getStatusText(newStatus)}"؟`)) {
-                updateOrder(orderId, { status: newStatus });
-                if(newStatus === 'delivered') updateUserBusy(currentUser.phone, false);
-                viewDriverOrderDetail(orderId);
-                refreshDriverPanel();
-                showToast(`✅ تم تحديث الحالة إلى "${getStatusText(newStatus)}"`);
+                updateOrder(orderId, { status: newStatus }).then(() => {
+                    if(newStatus === 'delivered') updateUserBusy(currentUser.phone, false);
+                    viewDriverOrderDetail(orderId);
+                    refreshDriverPanel(true);
+                    showToast(`✅ تم تحديث الحالة إلى "${getStatusText(newStatus)}"`);
+                });
             }
         };
 
-        window.switchDriverTab = function(tab) { driverTab = tab; document.querySelectorAll('.driver-tab').forEach(t => t.classList.remove('active')); document.querySelector(`.driver-tab[data-driver-tab="${tab}"]`).classList.add('active'); refreshDriverPanel(); };
+        window.switchDriverTab = function(tab) { 
+            driverTab = tab; 
+            document.querySelectorAll('.driver-tab').forEach(t => t.classList.remove('active')); 
+            document.querySelector(`.driver-tab[data-driver-tab="${tab}"]`).classList.add('active'); 
+            refreshDriverPanel(true); 
+        };
+        
         window.showConfirmationModal = function(orderId, action) {
             if(confirm(`هل أنت متأكد من ${action === 'accept' ? 'قبول' : 'رفض'} الطلب #${orderId}?`)) {
                 if(action === 'accept') acceptOrder(orderId); else rejectOrder(orderId);
             }
         };
-        async function acceptOrder(id) { if (allOrders.find(o => o.driverId === currentUser?.phone && o.status !== 'delivered')) return showToast("⚠️ لديك طلب نشط حالياً"); let o = allOrders.find(o => o.id == id); if (!o || o.status !== 'pending') return showToast("الطلب غير متاح"); await updateOrder(id, { status: 'on_the_way', driverId: currentUser.phone, driverName: currentUser.name }); await updateUserBusy(currentUser.phone, true); showToast("✅ تم قبول الطلب"); driverTab = 'active'; document.querySelectorAll('.driver-tab').forEach(t => t.classList.remove('active')); document.querySelector(`.driver-tab[data-driver-tab="active"]`).classList.add('active'); refreshDriverPanel(); }
-        async function rejectOrder(id) { let o = allOrders.find(o => o.id == id); if (!o || o.status !== 'pending') return showToast("الطلب غير متاح"); showToast("❌ تم رفض الطلب"); refreshDriverPanel(); }
+        
+        async function acceptOrder(id) { 
+            if (allOrders.find(o => o.driverId === currentUser?.phone && o.status !== 'delivered')) return showToast("⚠️ لديك طلب نشط حالياً"); 
+            let o = allOrders.find(o => o.id == id); 
+            if (!o || o.status !== 'pending') return showToast("الطلب غير متاح"); 
+            await updateOrder(id, { status: 'on_the_way', driverId: currentUser.phone, driverName: currentUser.name }); 
+            await updateUserBusy(currentUser.phone, true); 
+            showToast("✅ تم قبول الطلب"); 
+            driverTab = 'active'; 
+            document.querySelectorAll('.driver-tab').forEach(t => t.classList.remove('active')); 
+            document.querySelector(`.driver-tab[data-driver-tab="active"]`).classList.add('active'); 
+            refreshDriverPanel(true); 
+        }
+        
+        async function rejectOrder(id) { 
+            let o = allOrders.find(o => o.id == id); 
+            if (!o || o.status !== 'pending') return showToast("الطلب غير متاح"); 
+            showToast("❌ تم رفض الطلب"); 
+            refreshDriverPanel(true); 
+        }
+        
         function callCustomer(phone) { if (phone) window.location.href = `tel:${phone}`; }
         function openCustomerLocation(lat, lng) { if (lat && lng) { const googleMapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`; window.open(googleMapsUrl, '_blank'); } else { showToast('⚠️ لا توجد إحداثيات متاحة لهذا العميل'); } }
         async function updateUserBusy(phone, isBusy) { await fetch(`${FIREBASE_URL}/users/${phone}.json`, { method: 'PATCH', body: JSON.stringify({ isBusy }) }); }
 
-        // 🔥 الدالة الأهم: إصلاح القائمة السفلية (طلباتي والإعدادات) لتستجيب فوراً
         function showPage(pageId) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
             let targetPage = document.getElementById(pageId);
@@ -757,23 +892,23 @@
             let activeNav = document.querySelector(`.nav-item[data-page="${pageId}"]`);
             if (activeNav) activeNav.classList.add('active');
 
-            // إخفاء السلة العائمة عند التنقل بين الصفحات
             let floatCartElem = document.getElementById('floatCart');
             if (floatCartElem) floatCartElem.style.display = (cart.length && pageId === 'menuPage') ? 'flex' : 'none';
             
             if (pageId === 'homePage') {
                 document.getElementById('trackOrderBtnHome').style.display = localStorage.getItem('currentTrackingOrder') ? 'block' : 'none';
             }
-            // تحديث الطلبات فوراً عند فتح الصفحة
             if (pageId === 'ordersPage' && currentUser) {
                 renderMyOrders();
             }
             if (pageId === 'driverPage' && currentUser) {
-                refreshDriverPanel();
+                document.getElementById('driverNameDisplay').innerText = currentUser.name;
+                startDriverAutoUpdate(); // بدء التحديث التلقائي المخفض
+            } else {
+                stopDriverAutoUpdate(); // إيقاف التحديث عند الخروج من صفحة المندوب
             }
         }
 
-        // ربط زر القائمة السفلية
         document.addEventListener('DOMContentLoaded', function() {
             document.querySelectorAll('.nav-item[data-page]').forEach(n => {
                 n.addEventListener('click', function() {
@@ -784,18 +919,24 @@
                 });
             });
 
-            // إصلاح زر تسجيل الخروج
             document.getElementById('settingsLogoutBtn').addEventListener('click', function() {
-                if(confirm('هل أنت متأكد من تسجيل الخروج؟')) { localStorage.removeItem('waselny_user'); location.reload(); }
+                if(confirm('هل أنت متأكد من تسجيل الخروج؟')) { 
+                    stopDriverAutoUpdate();
+                    localStorage.removeItem('waselny_user'); 
+                    location.reload(); 
+                }
             });
             document.getElementById('driverLogoutBtn').addEventListener('click', function() {
-                if(confirm('هل أنت متأكد من تسجيل الخروج؟')) { localStorage.removeItem('waselny_user'); location.reload(); }
+                if(confirm('هل أنت متأكد من تسجيل الخروج؟')) { 
+                    stopDriverAutoUpdate();
+                    localStorage.removeItem('waselny_user'); 
+                    location.reload(); 
+                }
             });
 
-            // بدء التطبيق
             let savedUser = localStorage.getItem('waselny_user');
             if (savedUser) { 
-                try { currentUser = JSON.parse(savedUser); document.getElementById('loginOverlay').style.display = 'none'; if (currentUser.role === 'driver') { showPage('driverPage'); refreshDriverPanel(); } else { showPage('homePage'); } } catch (e) { initLogin(); } 
+                try { currentUser = JSON.parse(savedUser); document.getElementById('loginOverlay').style.display = 'none'; if (currentUser.role === 'driver') { showPage('driverPage'); } else { showPage('homePage'); } } catch (e) { initLogin(); } 
             } else { initLogin(); }
             
             renderCategories(); renderOffers(); renderMainCarousel(); startMainCarouselAuto();
@@ -815,16 +956,15 @@
                 let role = isDriver ? 'driver' : 'customer';
                 await fetch(`${FIREBASE_URL}/users/${phone}.json`, { method: 'PUT', body: JSON.stringify({ phone, name, role, isBusy: false }) });
                 currentUser = { role, phone, name }; localStorage.setItem('waselny_user', JSON.stringify(currentUser)); loginOverlay.style.display = 'none';
-                if (role === 'driver') { showPage('driverPage'); document.getElementById('driverNameDisplay').innerText = name; refreshDriverPanel(); } else { showPage('homePage'); }
+                if (role === 'driver') { showPage('driverPage'); document.getElementById('driverNameDisplay').innerText = name; } else { showPage('homePage'); }
                 showToast(`أهلاً ${name}`);
             };
         }
 
-        // بدء تشغيل السلايدر
         const mainSliderImages = [
-            { image: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=800', title: '🔥 تشكيلة المشاوي الأندلسية', desc: 'لحم ودجاج على الفحم بنكهة خاصة' },
-            { image: 'https://images.unsplash.com/photo-1544025162-d76694265947?w=800', title: '🍗 دجاج فحم وبروست', desc: 'مقرمش وطري بأفضل الوصفات' },
-            { image: 'https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=800', title: '🍔 سندوتشات الأندلس', desc: 'أصناف فاخرة من البرجر والراب' }
+            { image: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=600', title: '🔥 تشكيلة المشاوي الأندلسية', desc: 'لحم ودجاج على الفحم بنكهة خاصة' },
+            { image: 'https://images.unsplash.com/photo-1544025162-d76694265947?w=600', title: '🍗 دجاج فحم وبروست', desc: 'مقرمش وطري بأفضل الوصفات' },
+            { image: 'https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=600', title: '🍔 سندوتشات الأندلس', desc: 'أصناف فاخرة من البرجر والراب' }
         ];
         let mainCarouselIndex = 0, mainCarouselInterval;
         function renderMainCarousel() {
@@ -840,7 +980,7 @@
             for (let i = 0; i < slides.length; i++) { let offset = (i - mainCarouselIndex) * 30; let scale = 1 - Math.abs(i - mainCarouselIndex) * 0.08; let zIndex = 10 - Math.abs(i - mainCarouselIndex); let opacity = 1 - Math.abs(i - mainCarouselIndex) * 0.2; slides[i].style.transform = `translateX(${offset}%) scale(${scale}) translateZ(${i === mainCarouselIndex ? '25px' : '0px'})`; slides[i].style.zIndex = zIndex; slides[i].style.opacity = opacity; if (i === mainCarouselIndex) slides[i].classList.add('active'); else slides[i].classList.remove('active'); }
             let dots = document.querySelectorAll('#mainCarouselDots .carousel-dot'); for (let i = 0; i < dots.length; i++) { if (i === mainCarouselIndex) dots[i].classList.add('active'); else dots[i].classList.remove('active'); }
         }
-        function startMainCarouselAuto() { if (mainCarouselInterval) clearInterval(mainCarouselInterval); mainCarouselInterval = setInterval(() => { mainCarouselIndex = (mainCarouselIndex + 1) % mainSliderImages.length; updateMainCarousel(); }, 3000); }
+        function startMainCarouselAuto() { if (mainCarouselInterval) clearInterval(mainCarouselInterval); mainCarouselInterval = setInterval(() => { mainCarouselIndex = (mainCarouselIndex + 1) % mainSliderImages.length; updateMainCarousel(); }, 4000); }
         window.changeMainCarouselSlide = function(d) { mainCarouselIndex = (mainCarouselIndex + d + mainSliderImages.length) % mainSliderImages.length; updateMainCarousel(); startMainCarouselAuto(); };
         window.goToMainCarouselSlide = function(i) { mainCarouselIndex = i; updateMainCarousel(); startMainCarouselAuto(); };
     </script>

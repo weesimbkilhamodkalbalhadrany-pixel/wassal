@@ -254,7 +254,7 @@
                 <h3 style="margin-bottom:12px;">⚙️ الإعدادات</h3>
                 <div id="darkModeToggle" style="display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid var(--gray-light); cursor:pointer;"><span><i class="fas fa-moon"></i> الوضع الليلي</span><span id="darkModeIcon">⚫</span></div>
                 <div id="whatsappSupport" style="display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid var(--gray-light); cursor:pointer;"><span><i class="fab fa-whatsapp" style="color:#25D366"></i> خدمة العملاء</span><span>⬅️</span></div>
-                <div id="versionRow" style="display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid var(--gray-light);"><span><i class="fas fa-code-branch"></i> الإصدار</span><span id="versionNumber" style="font-weight:700;">v16.1 (أندلس)</span></div>
+                <div id="versionRow" style="display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid var(--gray-light);"><span><i class="fas fa-code-branch"></i> الإصدار</span><span id="versionNumber" style="font-weight:700;">v16.5 (أندلس)</span></div>
                 <button id="settingsLogoutBtn" class="btn-primary" style="background:var(--danger); margin-top:14px;">تسجيل الخروج</button>
             </div>
         </div>
@@ -363,9 +363,9 @@
         let map, marker, currentMapMode = null;
         let trackingInterval = null;
         let modalQuantity = 1; let currentModalItem = null;
-        
         let driverTab = 'available';
 
+        // دوال مساعدة
         function showToast(msg) { let t = document.getElementById('toastMsg'); t.innerText = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2500); }
         function calculateDistance(lat1, lng1, lat2, lng2) { const R = 6371; const dLat = (lat2 - lat1) * Math.PI / 180; const dLng = (lng2 - lng1) * Math.PI / 180; const a = Math.sin(dLat / 2) ** 2 + Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLng / 2) ** 2; return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)); }
         function roundToNearestHundred(num) { return Math.round(num / 100) * 100; }
@@ -373,9 +373,9 @@
         async function loadOrders() { try { let res = await fetch(`${FIREBASE_URL}/orders.json`); let data = await res.json(); allOrders = data ? Object.values(data).sort((a, b) => b.id - a.id) : []; } catch (e) {} }
         async function updateOrder(id, updates) { await fetch(`${FIREBASE_URL}/orders/${id}.json`, { method: 'PATCH', body: JSON.stringify(updates) }); await loadOrders(); }
         function getStatusText(st) { const m = { pending: 'قيد المراجعة', on_the_way: 'في الطريق', arrived: 'وصل الموقع', delivered: 'تم التوصيل' }; return m[st] || st; }
-
         async function generateSequentialOrderId() { await loadOrders(); if (allOrders.length === 0) return 100; let maxId = Math.max(...allOrders.map(o => o.id)); return Math.max(100, maxId + 1); }
 
+        // عرض القائمة
         function renderMenu(itemsArray = null, targetContainerId = 'menuContent') {
             const itemsToRender = itemsArray || restaurantData.items;
             let itemsHtml = `<div class="menu-grid">`;
@@ -388,12 +388,19 @@
 
         function renderCategories() {
             const cats = [...new Set(restaurantData.items.map(i => i.cat || 'أخرى'))];
-            let html = cats.map(c => `<div class="category-card" onclick="openCategoryList('${c}')"><div class="category-icon">🍽️</div><h3>${c}</h3><p>${restaurantData.items.filter(i => i.cat === c).length} صنف</p></div>`).join('');
+            let html = cats.map(c => `<div class="category-card" onclick="window.openCategoryList('${c}')"><div class="category-icon">🍽️</div><h3>${c}</h3><p>${restaurantData.items.filter(i => i.cat === c).length} صنف</p></div>`).join('');
             document.getElementById('categoriesGrid').innerHTML = html;
         }
-        function renderOffers() { document.getElementById('offersScroll').innerHTML = `<div class="offer-card" onclick="openCategoryList('الوجبات الرئيسية')"><div class="offer-text"><h4>🔥 عروض الأندلس</h4><p>خصم على المشاوي</p></div><div class="offer-badge">اطلب الآن</div></div><div class="offer-card" onclick="openCategoryList('البرجر')"><div class="offer-text"><h4>🍔 سندوتشات خاصة</h4><p>جميع أنواع البرجر</p></div><div class="offer-badge">شوف القائمة</div></div><div class="offer-card" onclick="openCategoryList('المشروبات')"><div class="offer-text"><h4>🥤 مشروبات باردة</h4><p>عصائر ومشروبات غازية</p></div><div class="offer-badge">اطلب مع الطلب</div></div>`; }
-        window.openCategoryList = function(cat) { const filtered = restaurantData.items.filter(i => (i.cat || 'أخرى') === cat); renderMenu(filtered, 'menuContent'); document.getElementById('menuPage').classList.add('active-page'); document.getElementById('homePage').classList.remove('active-page'); };
-        window.goBackFromMenu = function() { document.getElementById('menuPage').classList.remove('active-page'); document.getElementById('homePage').classList.add('active-page'); };
+        function renderOffers() { document.getElementById('offersScroll').innerHTML = `<div class="offer-card" onclick="window.openCategoryList('الوجبات الرئيسية')"><div class="offer-text"><h4>🔥 عروض الأندلس</h4><p>خصم على المشاوي</p></div><div class="offer-badge">اطلب الآن</div></div><div class="offer-card" onclick="window.openCategoryList('البرجر')"><div class="offer-text"><h4>🍔 سندوتشات خاصة</h4><p>جميع أنواع البرجر</p></div><div class="offer-badge">شوف القائمة</div></div><div class="offer-card" onclick="window.openCategoryList('المشروبات')"><div class="offer-text"><h4>🥤 مشروبات باردة</h4><p>عصائر ومشروبات غازية</p></div><div class="offer-badge">اطلب مع الطلب</div></div>`; }
+        
+        // دوال الانتقال بين الصفحات (يجب تعريفها بـ window لتتوفر للأزرار)
+        window.openCategoryList = function(cat) { 
+            const filtered = restaurantData.items.filter(i => (i.cat || 'أخرى') === cat); 
+            renderMenu(filtered, 'menuContent'); 
+            showPage('menuPage'); 
+        };
+        window.goBackFromMenu = function() { showPage('homePage'); };
+        window.goBackToMenu = function() { showPage('homePage'); };
 
         function openItemModal(itemName) {
             currentModalItem = restaurantData.items.find(i => i.n === itemName); if(!currentModalItem) return;
@@ -436,7 +443,6 @@
             document.getElementById('map-overlay').style.display = 'flex';
             setTimeout(() => {
                 if (!map) { map = L.map('map').setView([RESTAURANT_LAT, RESTAURANT_LNG], 14); L.tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', { subdomains: ['mt0','mt1','mt2','mt3'] }).addTo(map); marker = L.marker([RESTAURANT_LAT, RESTAURANT_LNG], { draggable: true }).addTo(map); map.on('click', e => marker.setLatLng(e.latlng)); }
-                // ✅ تحسين الخريطة: الانتقال إلى موقع العميل الحالي ووضع علامة عليه بوضوح
                 if (currentMapMode === 'customer' && customerLocation) {
                     var latLng = L.latLng(customerLocation.lat, customerLocation.lng);
                     marker.setLatLng(latLng);
@@ -445,7 +451,6 @@
                 map.invalidateSize();
             }, 100);
         }
-
         window.closeMap = function() { document.getElementById('map-overlay').style.display = 'none'; };
         window.confirmMapLocation = function() {
             if (!map || !marker) return; let pos = marker.getLatLng();
@@ -462,7 +467,6 @@
                     pos => {
                         customerLocation = { lat: pos.coords.latitude, lng: pos.coords.longitude };
                         document.getElementById('checkoutLocationTxt').innerHTML = '✅ تم تحديد موقعك الحالي!';
-                        // ✅ تحديث الخريطة فوراً إذا كانت مفتوحة
                         if (document.getElementById('map-overlay').style.display === 'flex') {
                             if (map && marker) {
                                 var latLng = L.latLng(pos.coords.latitude, pos.coords.longitude);
@@ -518,20 +522,16 @@
             let order = { id, type: 'restaurant', restaurant: currentRestaurant.name, customerName: currentUser.name, customerPhone: currentUser.phone, address: addressVal || 'موقع جغرافي', lat: customerLocation?.lat || RESTAURANT_LAT, lng: customerLocation?.lng || RESTAURANT_LNG, items: cart.map(i => ({ name: i.name, qty: i.qty, price: i.p, note: i.note || '' })), totalFood, deliveryCost, total, status: 'pending', createdAt: new Date().toISOString(), restaurantId: currentRestaurant.id, paymentMethod: 'الدفع عند الاستلام', generalNote: generalNote };
             await fetch(`${FIREBASE_URL}/orders/${id}.json`, { method: 'PUT', body: JSON.stringify(order) });
             localStorage.setItem('currentTrackingOrder', id);
-            
             let itemsText = cart.map(i => `• ${i.name} x${i.qty} = ${i.p*i.qty} ريال ${i.note?' ('+i.note+')':''}`).join('\n');
             let message = `🛍️ طلب جديد من مطعم الأندلس\n🍔 ${currentRestaurant.name}\n👤 ${currentUser.name}\n📞 ${currentUser.phone}\n📍 ${order.address}\n📝 ملاحظات: ${generalNote || 'لا توجد'}\n\nالمنتجات:\n${itemsText}\n\n🚚 التوصيل: ${deliveryCost} ريال\n💰 الإجمالي: ${total} ريال`;
             window.open(`https://wa.me/777215154?text=${encodeURIComponent(message)}`, '_blank');
-            
             showToast('✅ تم إرسال طلبك'); cart = []; customerLocation = null; deliveryCost = 0; updateCartDisplay(); showPage('homePage'); await loadOrders();
-            // ✅ الانتقال الفوري للتتبع بدون تأخير كبير
             setTimeout(() => { viewOrderTracking(id); }, 500);
         }
 
         async function viewOrderTracking(id) {
             await loadOrders(); let order = allOrders.find(o => o.id == id); if (!order) return;
             let steps = ['pending', 'on_the_way', 'arrived', 'delivered']; let idx = steps.indexOf(order.status);
-            
             let stepsHtml = `<div class="tracking-steps">`;
             steps.forEach((s, i) => {
                 let cls = (i < idx) ? 'completed' : (i === idx ? 'active' : '');
@@ -586,35 +586,46 @@
             document.getElementById('trackFullscreen').style.display = 'flex';
         }
 
-        function closeTracking() { document.getElementById('trackFullscreen').style.display = 'none'; }
-        function viewMyTracking() { let id = localStorage.getItem('currentTrackingOrder'); if (id) { viewOrderTracking(parseInt(id)); } else showToast('لا يوجد طلب نشط'); }
+        window.closeTracking = function() { document.getElementById('trackFullscreen').style.display = 'none'; };
+        window.viewMyTracking = function() { 
+            let id = localStorage.getItem('currentTrackingOrder'); 
+            if (id) { 
+                viewOrderTracking(parseInt(id)); 
+            } else { 
+                showToast('لا يوجد طلب نشط'); 
+            } 
+        };
 
+        // ✅ إصلاح قسم طلباتي: إضافة تحقق من وجود العنصر وعدم توقف الكود
         async function renderMyOrders() {
-            // ✅ إصلاح "طلباتي" لتجنب التوقف
             if (!currentUser) return showToast('سجل الدخول أولاً');
             await loadOrders();
             let myOrders = allOrders.filter(o => o.customerPhone === currentUser?.phone);
             let container = document.getElementById('myOrdersContainer');
             if (!container) return;
-            if (myOrders.length === 0) { container.innerHTML = `<div style="text-align: center; padding: 30px;"><i class="fas fa-clipboard-list" style="font-size: 3rem; opacity: 0.5; margin-bottom: 10px; color:var(--gray);"></i><p style="font-weight: 700; color:var(--gray);">لا توجد طلبات سابقة</p></div>`; return; }
+            if (myOrders.length === 0) { 
+                container.innerHTML = `<div style="text-align: center; padding: 30px;"><i class="fas fa-clipboard-list" style="font-size: 3rem; opacity: 0.5; margin-bottom: 10px; color:var(--gray);"></i><p style="font-weight: 700; color:var(--gray);">لا توجد طلبات سابقة</p></div>`; 
+                return; 
+            }
             let html = myOrders.map(o => `<div class="driver-order-card" onclick="viewOrderTracking(${o.id})" style="cursor: pointer; border-right: 5px solid ${o.status === 'delivered' ? 'var(--success)' : (o.status === 'pending' ? 'var(--warning)' : 'var(--primary)')};"><div class="driver-order-header"><span class="driver-order-id">#${o.id}</span><span class="driver-order-status">${getStatusText(o.status)}</span></div><div class="driver-order-details"><div><i class="fas fa-store"></i> ${o.restaurant || o.service}</div><div><i class="fas fa-money-bill"></i> ${o.total} ريال</div></div></div>`).join('');
             container.innerHTML = html;
         }
 
-        // ✅ تحسين أداء المندوب: إيقاف جلب البيانات في الخلفية وتقليل الاستهلاك
+        // 🔥 تحسين المندوب وتقليل الاستهلاك: مراقبة رؤية الصفحة
         document.addEventListener('visibilitychange', function() {
             if (document.hidden) {
-                // إيقاف المؤقتات إذا كانت الصفحة في الخلفية
                 if (trackingInterval) clearInterval(trackingInterval);
             } else {
-                // تشغيل التحديث عند العودة للصفحة
                 if (document.getElementById('driverPage').classList.contains('active-page')) refreshDriverPanel();
             }
         });
 
         async function refreshDriverPanel() {
             if (document.hidden) return; 
-            await loadOrders();
+            try {
+                await loadOrders();
+            } catch(e) { return; }
+            
             let activeOrders = allOrders.filter(o => o.driverId === currentUser?.phone && o.status !== 'delivered');
             let availableOrders = allOrders.filter(o => o.status === 'pending');
             let completedOrders = allOrders.filter(o => o.driverId === currentUser?.phone && o.status === 'delivered');
@@ -703,7 +714,8 @@
                 <button class="btn-primary" style="background:var(--gray); margin-top:10px;" onclick="goBackToDriver()">رجوع إلى القائمة</button>
             `;
 
-            document.getElementById('orderDetailDriverContent').innerHTML = detailsHtml;
+            let contentEl = document.getElementById('orderDetailDriverContent');
+            if(contentEl) contentEl.innerHTML = detailsHtml;
             showPage('orderDetailDriverPage');
         }
 
@@ -735,6 +747,63 @@
         function openCustomerLocation(lat, lng) { if (lat && lng) { const googleMapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`; window.open(googleMapsUrl, '_blank'); } else { showToast('⚠️ لا توجد إحداثيات متاحة لهذا العميل'); } }
         async function updateUserBusy(phone, isBusy) { await fetch(`${FIREBASE_URL}/users/${phone}.json`, { method: 'PATCH', body: JSON.stringify({ isBusy }) }); }
 
+        // 🔥 الدالة الأهم: إصلاح القائمة السفلية (طلباتي والإعدادات) لتستجيب فوراً
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
+            let targetPage = document.getElementById(pageId);
+            if(targetPage) targetPage.classList.add('active-page');
+            
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            let activeNav = document.querySelector(`.nav-item[data-page="${pageId}"]`);
+            if (activeNav) activeNav.classList.add('active');
+
+            // إخفاء السلة العائمة عند التنقل بين الصفحات
+            let floatCartElem = document.getElementById('floatCart');
+            if (floatCartElem) floatCartElem.style.display = (cart.length && pageId === 'menuPage') ? 'flex' : 'none';
+            
+            if (pageId === 'homePage') {
+                document.getElementById('trackOrderBtnHome').style.display = localStorage.getItem('currentTrackingOrder') ? 'block' : 'none';
+            }
+            // تحديث الطلبات فوراً عند فتح الصفحة
+            if (pageId === 'ordersPage' && currentUser) {
+                renderMyOrders();
+            }
+            if (pageId === 'driverPage' && currentUser) {
+                refreshDriverPanel();
+            }
+        }
+
+        // ربط زر القائمة السفلية
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.nav-item[data-page]').forEach(n => {
+                n.addEventListener('click', function() {
+                    let pageId = this.dataset.page;
+                    if (pageId === 'homePage' || pageId === 'ordersPage' || pageId === 'settingsPage' || pageId === 'driverPage') {
+                        showPage(pageId);
+                    }
+                });
+            });
+
+            // إصلاح زر تسجيل الخروج
+            document.getElementById('settingsLogoutBtn').addEventListener('click', function() {
+                if(confirm('هل أنت متأكد من تسجيل الخروج؟')) { localStorage.removeItem('waselny_user'); location.reload(); }
+            });
+            document.getElementById('driverLogoutBtn').addEventListener('click', function() {
+                if(confirm('هل أنت متأكد من تسجيل الخروج؟')) { localStorage.removeItem('waselny_user'); location.reload(); }
+            });
+
+            // بدء التطبيق
+            let savedUser = localStorage.getItem('waselny_user');
+            if (savedUser) { 
+                try { currentUser = JSON.parse(savedUser); document.getElementById('loginOverlay').style.display = 'none'; if (currentUser.role === 'driver') { showPage('driverPage'); refreshDriverPanel(); } else { showPage('homePage'); } } catch (e) { initLogin(); } 
+            } else { initLogin(); }
+            
+            renderCategories(); renderOffers(); renderMainCarousel(); startMainCarouselAuto();
+        });
+
+        window.goToCheckout = function() { document.getElementById('floatCart').style.display = 'none'; showPage('checkoutPage'); updateCheckoutSummary(); };
+        window.proceedToCheckout = function() { document.getElementById('floatCart').style.display = 'none'; toggleCart(); goToCheckout(); };
+
         function initLogin() {
             const roleCustomer = document.getElementById('roleCustomer'); const roleDriver = document.getElementById('roleDriver'); const passwordField = document.getElementById('passwordField'); const loginName = document.getElementById('loginName'); const loginPhone = document.getElementById('loginPhone'); const loginBtn = document.getElementById('loginBtn'); const loginOverlay = document.getElementById('loginOverlay');
             roleCustomer.onclick = function() { roleCustomer.classList.add('active'); roleDriver.classList.remove('active'); passwordField.style.display = 'none'; };
@@ -751,26 +820,7 @@
             };
         }
 
-        function showPage(pageId) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page')); document.getElementById(pageId).classList.add('active-page');
-            if (pageId === 'homePage') { document.getElementById('trackOrderBtnHome').style.display = localStorage.getItem('currentTrackingOrder') ? 'block' : 'none'; }
-        }
-        window.goToCheckout = function() { document.getElementById('floatCart').style.display = 'none'; showPage('checkoutPage'); updateCheckoutSummary(); };
-        window.proceedToCheckout = function() { document.getElementById('floatCart').style.display = 'none'; toggleCart(); goToCheckout(); };
-        window.goBackToMenu = function() { showPage('homePage'); };
-
-        document.getElementById('settingsLogoutBtn').addEventListener('click', function() {
-            if(confirm('هل أنت متأكد من تسجيل الخروج؟')) { localStorage.removeItem('waselny_user'); location.reload(); }
-        });
-        document.getElementById('driverLogoutBtn').addEventListener('click', function() {
-            if(confirm('هل أنت متأكد من تسجيل الخروج؟')) { localStorage.removeItem('waselny_user'); location.reload(); }
-        });
-
-        let savedUser = localStorage.getItem('waselny_user');
-        if (savedUser) { try { currentUser = JSON.parse(savedUser); document.getElementById('loginOverlay').style.display = 'none'; if (currentUser.role === 'driver') { showPage('driverPage'); refreshDriverPanel(); } else { showPage('homePage'); } } catch (e) { initLogin(); } } else { initLogin(); }
-        
-        renderCategories(); renderOffers();
-        
+        // بدء تشغيل السلايدر
         const mainSliderImages = [
             { image: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=800', title: '🔥 تشكيلة المشاوي الأندلسية', desc: 'لحم ودجاج على الفحم بنكهة خاصة' },
             { image: 'https://images.unsplash.com/photo-1544025162-d76694265947?w=800', title: '🍗 دجاج فحم وبروست', desc: 'مقرمش وطري بأفضل الوصفات' },
@@ -793,7 +843,6 @@
         function startMainCarouselAuto() { if (mainCarouselInterval) clearInterval(mainCarouselInterval); mainCarouselInterval = setInterval(() => { mainCarouselIndex = (mainCarouselIndex + 1) % mainSliderImages.length; updateMainCarousel(); }, 3000); }
         window.changeMainCarouselSlide = function(d) { mainCarouselIndex = (mainCarouselIndex + d + mainSliderImages.length) % mainSliderImages.length; updateMainCarousel(); startMainCarouselAuto(); };
         window.goToMainCarouselSlide = function(i) { mainCarouselIndex = i; updateMainCarousel(); startMainCarouselAuto(); };
-        renderMainCarousel(); startMainCarouselAuto();
     </script>
 </body>
 </html>

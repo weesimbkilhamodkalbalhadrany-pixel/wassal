@@ -175,7 +175,6 @@
         
         .driver-orders-container { background: var(--white); border-radius: 20px; padding: 16px; border: 1px solid var(--gray-light); min-height: 200px; }
 
-        /* ✅ إضافة تنسيقات واجهة تفاصيل الطلب للمندوب (لتطابق الكود الذي أرسلته) */
         .order-detail-card { background: var(--white); border-radius: 20px; padding: 20px; margin-bottom: 20px; border: 1px solid var(--gray-light); }
         .order-detail-header { border-bottom: 2px solid var(--gold); padding-bottom: 12px; margin-bottom: 16px; }
         .order-detail-header h3 { font-size: 1.1rem; color: var(--primary); }
@@ -255,7 +254,7 @@
                 <h3 style="margin-bottom:12px;">⚙️ الإعدادات</h3>
                 <div id="darkModeToggle" style="display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid var(--gray-light); cursor:pointer;"><span><i class="fas fa-moon"></i> الوضع الليلي</span><span id="darkModeIcon">⚫</span></div>
                 <div id="whatsappSupport" style="display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid var(--gray-light); cursor:pointer;"><span><i class="fab fa-whatsapp" style="color:#25D366"></i> خدمة العملاء</span><span>⬅️</span></div>
-                <div id="versionRow" style="display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid var(--gray-light);"><span><i class="fas fa-code-branch"></i> الإصدار</span><span id="versionNumber" style="font-weight:700;">v16.0 (أندلس)</span></div>
+                <div id="versionRow" style="display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid var(--gray-light);"><span><i class="fas fa-code-branch"></i> الإصدار</span><span id="versionNumber" style="font-weight:700;">v16.1 (أندلس)</span></div>
                 <button id="settingsLogoutBtn" class="btn-primary" style="background:var(--danger); margin-top:14px;">تسجيل الخروج</button>
             </div>
         </div>
@@ -271,7 +270,6 @@
             <button id="driverLogoutBtn" class="btn-primary" style="background:var(--danger); margin-top:12px;">تسجيل الخروج</button>
         </div>
 
-        <!-- ✅ تم دمج واجهة تفاصيل الطلب للمندوب بالشكل المطلوب -->
         <div id="orderDetailDriverPage" class="page">
             <div class="back-btn" onclick="goBackToDriver()">🔙 رجوع</div>
             <div id="orderDetailDriverContent"></div>
@@ -306,12 +304,10 @@
         </div>
     </div>
 
-    <!-- ✅ نافذة التتبع المستقلة -->
     <div id="trackFullscreen">
         <div id="trackingFullscreenContainer"></div>
     </div>
 
-    <!-- ✅ نافذة الخريطة -->
     <div id="map-overlay">
         <div id="map"></div>
         <div class="map-controls">
@@ -440,9 +436,16 @@
             document.getElementById('map-overlay').style.display = 'flex';
             setTimeout(() => {
                 if (!map) { map = L.map('map').setView([RESTAURANT_LAT, RESTAURANT_LNG], 14); L.tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', { subdomains: ['mt0','mt1','mt2','mt3'] }).addTo(map); marker = L.marker([RESTAURANT_LAT, RESTAURANT_LNG], { draggable: true }).addTo(map); map.on('click', e => marker.setLatLng(e.latlng)); }
+                // ✅ تحسين الخريطة: الانتقال إلى موقع العميل الحالي ووضع علامة عليه بوضوح
+                if (currentMapMode === 'customer' && customerLocation) {
+                    var latLng = L.latLng(customerLocation.lat, customerLocation.lng);
+                    marker.setLatLng(latLng);
+                    map.flyTo(latLng, 15, { animate: true, duration: 1 });
+                }
                 map.invalidateSize();
             }, 100);
         }
+
         window.closeMap = function() { document.getElementById('map-overlay').style.display = 'none'; };
         window.confirmMapLocation = function() {
             if (!map || !marker) return; let pos = marker.getLatLng();
@@ -459,12 +462,18 @@
                     pos => {
                         customerLocation = { lat: pos.coords.latitude, lng: pos.coords.longitude };
                         document.getElementById('checkoutLocationTxt').innerHTML = '✅ تم تحديد موقعك الحالي!';
+                        // ✅ تحديث الخريطة فوراً إذا كانت مفتوحة
+                        if (document.getElementById('map-overlay').style.display === 'flex') {
+                            if (map && marker) {
+                                var latLng = L.latLng(pos.coords.latitude, pos.coords.longitude);
+                                marker.setLatLng(latLng);
+                                map.flyTo(latLng, 15, { animate: true, duration: 0.5 });
+                            }
+                        }
                         updateDeliveryCost(); 
                         showToast("تم تحديد موقعك بنجاح");
                     }, 
-                    err => {
-                        showToast("❌ فشل تحديد الموقع، يرجى استخدام الخريطة أو الكتابة اليدوية.");
-                    },
+                    err => { showToast("❌ فشل تحديد الموقع، يرجى استخدام الخريطة أو الكتابة اليدوية."); },
                     { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
                 );
             } else { showToast("المتصفح لا يدعم خدمة الموقع"); }
@@ -515,7 +524,8 @@
             window.open(`https://wa.me/777215154?text=${encodeURIComponent(message)}`, '_blank');
             
             showToast('✅ تم إرسال طلبك'); cart = []; customerLocation = null; deliveryCost = 0; updateCartDisplay(); showPage('homePage'); await loadOrders();
-            setTimeout(() => { viewOrderTracking(id); startAutoTracking(id); }, 1500);
+            // ✅ الانتقال الفوري للتتبع بدون تأخير كبير
+            setTimeout(() => { viewOrderTracking(id); }, 500);
         }
 
         async function viewOrderTracking(id) {
@@ -576,26 +586,47 @@
             document.getElementById('trackFullscreen').style.display = 'flex';
         }
 
-        function closeTracking() { document.getElementById('trackFullscreen').style.display = 'none'; if(trackingInterval) clearInterval(trackingInterval); }
+        function closeTracking() { document.getElementById('trackFullscreen').style.display = 'none'; }
         function viewMyTracking() { let id = localStorage.getItem('currentTrackingOrder'); if (id) { viewOrderTracking(parseInt(id)); } else showToast('لا يوجد طلب نشط'); }
-        function startAutoTracking(orderId) { if (trackingInterval) clearInterval(trackingInterval); trackingInterval = setInterval(() => { loadOrders().then(() => { let order = allOrders.find(o => o.id == orderId); if(order && document.getElementById('trackFullscreen').style.display === 'flex') viewOrderTracking(orderId); }); }, 6000); }
 
         async function renderMyOrders() {
+            // ✅ إصلاح "طلباتي" لتجنب التوقف
+            if (!currentUser) return showToast('سجل الدخول أولاً');
             await loadOrders();
             let myOrders = allOrders.filter(o => o.customerPhone === currentUser?.phone);
-            if (myOrders.length === 0) { document.getElementById('myOrdersContainer').innerHTML = `<div style="text-align: center; padding: 30px;"><i class="fas fa-clipboard-list" style="font-size: 3rem; opacity: 0.5; margin-bottom: 10px; color:var(--gray);"></i><p style="font-weight: 700; color:var(--gray);">لا توجد طلبات سابقة</p></div>`; return; }
+            let container = document.getElementById('myOrdersContainer');
+            if (!container) return;
+            if (myOrders.length === 0) { container.innerHTML = `<div style="text-align: center; padding: 30px;"><i class="fas fa-clipboard-list" style="font-size: 3rem; opacity: 0.5; margin-bottom: 10px; color:var(--gray);"></i><p style="font-weight: 700; color:var(--gray);">لا توجد طلبات سابقة</p></div>`; return; }
             let html = myOrders.map(o => `<div class="driver-order-card" onclick="viewOrderTracking(${o.id})" style="cursor: pointer; border-right: 5px solid ${o.status === 'delivered' ? 'var(--success)' : (o.status === 'pending' ? 'var(--warning)' : 'var(--primary)')};"><div class="driver-order-header"><span class="driver-order-id">#${o.id}</span><span class="driver-order-status">${getStatusText(o.status)}</span></div><div class="driver-order-details"><div><i class="fas fa-store"></i> ${o.restaurant || o.service}</div><div><i class="fas fa-money-bill"></i> ${o.total} ريال</div></div></div>`).join('');
-            document.getElementById('myOrdersContainer').innerHTML = html;
+            container.innerHTML = html;
         }
 
-        // ✅ دالة المندوب المحدثة لتطابق الشكل المطلوب تماماً
+        // ✅ تحسين أداء المندوب: إيقاف جلب البيانات في الخلفية وتقليل الاستهلاك
+        document.addEventListener('visibilitychange', function() {
+            if (document.hidden) {
+                // إيقاف المؤقتات إذا كانت الصفحة في الخلفية
+                if (trackingInterval) clearInterval(trackingInterval);
+            } else {
+                // تشغيل التحديث عند العودة للصفحة
+                if (document.getElementById('driverPage').classList.contains('active-page')) refreshDriverPanel();
+            }
+        });
+
         async function refreshDriverPanel() {
-            if (document.hidden) return; await loadOrders();
+            if (document.hidden) return; 
+            await loadOrders();
             let activeOrders = allOrders.filter(o => o.driverId === currentUser?.phone && o.status !== 'delivered');
             let availableOrders = allOrders.filter(o => o.status === 'pending');
             let completedOrders = allOrders.filter(o => o.driverId === currentUser?.phone && o.status === 'delivered');
-            document.getElementById('activeOrdersCount').innerText = activeOrders.length; document.getElementById('completedOrdersCount').innerText = completedOrders.length;
+            let activeEl = document.getElementById('activeOrdersCount');
+            let completedEl = document.getElementById('completedOrdersCount');
+            if(activeEl) activeEl.innerText = activeOrders.length;
+            if(completedEl) completedEl.innerText = completedOrders.length;
+
             let html = '';
+            let listContainer = document.getElementById('driverOrdersList');
+            if (!listContainer) return;
+
             if (driverTab === 'available') {
                 if (availableOrders.length === 0) html = `<div class="empty-orders" style="text-align:center; padding:30px; color:var(--gray);"><i class="fas fa-motorcycle" style="font-size:2.5rem; margin-bottom:10px; opacity:0.5;"></i><p>لا يوجد طلبات متاحة!</p></div>`;
                 else html = availableOrders.map(o => `<div class="driver-order-card"><div class="driver-order-header"><span class="driver-order-id">#${o.id}</span><span class="driver-order-status">متاح</span></div><div class="driver-order-details"><div><i class="fas fa-store"></i> ${o.restaurant || o.service}</div><div><i class="fas fa-money-bill"></i> ${o.total || o.price} ريال</div><div><i class="fas fa-map-marker-alt"></i> ${o.address || o.toAddress}</div></div><div class="driver-order-actions" style="display:flex; gap:4px; margin-top:6px;"><button class="driver-action-btn primary" onclick="showConfirmationModal(${o.id}, 'accept')">قبول</button><button class="driver-action-btn danger" onclick="showConfirmationModal(${o.id}, 'reject')">رفض</button><button class="driver-action-btn" onclick="callCustomer('${o.customerPhone || o.phone}')" style="background:#25D366; color:white;">اتصال</button></div></div>`).join('');
@@ -617,10 +648,9 @@
                     `).join('');
                 }
             }
-            document.getElementById('driverOrdersList').innerHTML = html;
+            listContainer.innerHTML = html;
         }
 
-        // ✅ دالة تفاصيل الطلب للمندوب (نسخة مطابقة للكود الذي أرسلته)
         async function viewDriverOrderDetail(orderId) {
             await loadOrders();
             let order = allOrders.find(o => o.id == orderId);
@@ -729,7 +759,6 @@
         window.proceedToCheckout = function() { document.getElementById('floatCart').style.display = 'none'; toggleCart(); goToCheckout(); };
         window.goBackToMenu = function() { showPage('homePage'); };
 
-        // ✅ إصلاح أزرار تسجيل الخروج
         document.getElementById('settingsLogoutBtn').addEventListener('click', function() {
             if(confirm('هل أنت متأكد من تسجيل الخروج؟')) { localStorage.removeItem('waselny_user'); location.reload(); }
         });

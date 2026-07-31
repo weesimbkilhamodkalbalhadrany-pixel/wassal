@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
-    <title>مطعم الأندلس | التوصيل</title>
+    <title>مطعم العم طه | التوصيل</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -194,18 +194,18 @@
 </head>
 <body>
 
-    <!-- نفس هيكل HTML بالكامل - لم يتغير -->
+    <!-- تم تغيير البيانات هنا: الاسم، الشعار، وقت التشغيل -->
     <div class="header">
-        <div class="store-badge"><i class="fas fa-utensils"></i> مطعم الأندلس</div>
+        <div class="store-badge"><i class="fas fa-utensils"></i> مطعم العم طه</div>
         <div class="bike-animation"><i class="fas fa-motorcycle"></i></div>
-        <div class="logo-main">مطعم الأندلس</div>
-        <div class="logo-sub">A L - A N D A L U S</div>
+        <div class="logo-main">مطعم العم طه</div>
+        <div class="logo-sub">U N C L E &nbsp; T A H A</div>
         <div class="work-hours"><span class="open-badge"></span><span>11 صباحاً - 1 صباحاً</span></div>
     </div>
     
     <div class="container">
         <div id="homePage" class="page active-page">
-            <div class="search-bar"><span class="search-icon">🔍</span><input type="text" id="searchInput" placeholder="ابحث داخل قائمة الأندلس..."></div>
+            <div class="search-bar"><span class="search-icon">🔍</span><input type="text" id="searchInput" placeholder="ابحث داخل قائمة العم طه..."></div>
             
             <div class="carousel-3d" style="margin-bottom:20px;">
                 <div class="carousel-container" id="mainCarouselContainer"></div>
@@ -304,7 +304,7 @@
 
     <div id="loginOverlay" style="position:fixed; top:0; left:0; width:100%; height:100%; background:linear-gradient(135deg, #3a0e1a 0%, #591c2c 50%, #8f3f54 100%); z-index:100000; display:flex; align-items:center; justify-content:center;">
         <div class="login-card" style="background:rgba(255,255,255,0.12); backdrop-filter:blur(25px); border-radius:40px; padding:32px 24px 36px; width:90%; max-width:360px; box-shadow:0 25px 60px rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.25); text-align:center; color:white;">
-            <div style="margin-bottom:28px;"><i class="fas fa-utensils" style="font-size:3rem; display:block; margin-bottom:8px; color:var(--gold);"></i><h2 style="font-size:2rem; font-weight:900; color:var(--gold);">مطعم الأندلس</h2><p style="font-size:0.7rem; opacity:0.8; margin-top:4px; letter-spacing:4px;">AL-ANDALUS</p></div>
+            <div style="margin-bottom:28px;"><i class="fas fa-utensils" style="font-size:3rem; display:block; margin-bottom:8px; color:var(--gold);"></i><h2 style="font-size:2rem; font-weight:900; color:var(--gold);">مطعم العم طه</h2><p style="font-size:0.7rem; opacity:0.8; margin-top:4px; letter-spacing:4px;">UNCLE TAHA</p></div>
             <div class="role-buttons" style="display:flex; gap:12px; margin-bottom:24px; background:rgba(255,255,255,0.1); padding:6px; border-radius:50px; backdrop-filter:blur(10px);"><div id="roleCustomer" class="role-btn active" style="flex:1; padding:12px 8px; border-radius:40px; font-weight:700; cursor:pointer; font-size:0.85rem; transition:all 0.3s; background:#fff; color:#591c2c; box-shadow:0 5px 15px rgba(0,0,0,0.1);">🧑 عميل</div><div id="roleDriver" class="role-btn" style="flex:1; padding:12px 8px; border-radius:40px; font-weight:700; cursor:pointer; font-size:0.85rem; transition:all 0.3s; background:transparent; color:rgba(255,255,255,0.8);">🛵 مندوب</div></div>
             <div style="display:flex; flex-direction:column; gap:14px;"><div style="position:relative;"><i class="fas fa-user" style="position:absolute; right:20px; top:50%; transform:translateY(-50%); color:rgba(255,255,255,0.7); font-size:1rem;"></i><input type="text" id="loginName" placeholder="الاسم الكامل" style="width:100%; padding:14px 44px 14px 20px; border-radius:40px; border:none; background:rgba(255,255,255,0.15); color:white; font-size:0.85rem; outline:none; backdrop-filter:blur(10px); border:1px solid rgba(255,255,255,0.2);"></div><div style="position:relative;"><i class="fas fa-phone" style="position:absolute; right:20px; top:50%; transform:translateY(-50%); color:rgba(255,255,255,0.7); font-size:1rem;"></i><input type="tel" id="loginPhone" placeholder="رقم الهاتف" style="width:100%; padding:14px 44px 14px 20px; border-radius:40px; border:none; background:rgba(255,255,255,0.15); color:white; font-size:0.85rem; outline:none; backdrop-filter:blur(10px); border:1px solid rgba(255,255,255,0.2);"></div><div id="passwordField" style="position:relative; display:none;"><i class="fas fa-lock" style="position:absolute; right:20px; top:50%; transform:translateY(-50%); color:rgba(255,255,255,0.7); font-size:1rem;"></i><input type="password" id="loginPassword" placeholder="كلمة السر" style="width:100%; padding:14px 44px 14px 20px; border-radius:40px; border:none; background:rgba(255,255,255,0.15); color:white; font-size:0.85rem; outline:none; backdrop-filter:blur(10px); border:1px solid rgba(255,255,255,0.2);"></div></div>
             <button id="loginBtn" style="width:100%; margin-top:24px; padding:14px; border-radius:40px; border:none; background:linear-gradient(135deg, var(--gold), #dba95d); color:var(--primary-dark); font-weight:800; font-size:1rem; cursor:pointer; box-shadow:0 8px 20px rgba(199,149,77,0.4); transition:transform 0.1s;">دخول</button>
@@ -338,32 +338,18 @@
     </div>
 
     <script>
-        // ========== تحسينات استهلاك البيانات ==========
-        // 1. إضافة نظام تخزين مؤقت (Caching) مع صلاحية 30 ثانية
-        // 2. تقليل تحميل الصور (دقة أقل)
-        // 3. تحديث ذكي للبيانات (فقط عند التغيير)
-        // 4. إيقاف التحديث عند إخفاء الصفحة
-        
-        const restaurantData = { id: 100, name: "مطعم الأندلس", items: [
-            { n: "ماء", p: 100, d: "ماء معدني 1 لتر", cat: "المشروبات" }, { n: "مشروب غازي ون سي", p: 250, d: "مشروب غازي ون سي 330 مل", cat: "المشروبات" },
-            { n: "ايسكريم", p: 600, d: "ايسكريم بنكهات متعددة", cat: "المشروبات" }, { n: "مشروب غازي", p: 250, d: "مشروب غازي 330 مل", cat: "المشروبات" },
-            { n: "عصير هنية", p: 200, d: "عصير هنية طبيعي", cat: "المشروبات" }, { n: "ويدجز", p: 1200, d: "ويدجز بطاطس مشوية", cat: "السلطات والمقبلات" },
-            { n: "سلطة بار", p: 1400, d: "سلطة بار طازجة", cat: "السلطات والمقبلات" }, { n: "حمص", p: 600, d: "حمص بالطحينة", cat: "السلطات والمقبلات" },
-            { n: "ارز", p: 500, d: "ارز بسمتي مبخر", cat: "السلطات والمقبلات" }, { n: "ورق عنب", p: 500, d: "ورق عنب محشي", cat: "السلطات والمقبلات" },
-            { n: "شيبس", p: 400, d: "شيبس بطاطس", cat: "وجبات خفيفة" }, { n: "لزانيا", p: 2500, d: "لزانيا لحم بالبشاميل", cat: "وجبات خفيفة" },
-            { n: "سيد", p: 2200, d: "سيد دجاج مع صلصة خاصة", cat: "وجبات خفيفة" }, { n: "نوواعم الدجاج", p: 1100, d: "نوواعم دجاج مقرمشة", cat: "وجبات الأطفال" },
-            { n: "بروست اطفال", p: 1000, d: "وجبة بروست للأطفال", cat: "وجبات الأطفال" }, { n: "تشكن برجر", p: 1100, d: "برجر دجاج للأطفال", cat: "وجبات الأطفال" },
-            { n: "فاهيتا", p: 1600, d: "فاهيتا دجاج مع الخضار", cat: "السندوتشات" }, { n: "رويال ديلوكس", p: 2500, d: "سندوتش رويال ديلوكس مميز", cat: "السندوتشات" },
-            { n: "شيبس طاووق", p: 1600, d: "شيبس طاووق دجاج", cat: "السندوتشات" }, { n: "راب عربي", p: 1800, d: "راب عربي دجاج", cat: "السندوتشات" },
-            { n: "خبز بان", p: 100, d: "خبز بان طازج", cat: "الخبز" }, { n: "خبز الثوم", p: 600, d: "خبز الثوم المحمص", cat: "الخبز" },
-            { n: "بيتزا ثمار البحر", p: 3400, d: "بيتزا ثمار البحر", cat: "البيتزا" }, { n: "بيتزا سوبريم", p: 3200, d: "بيتزا سوبريم بالخضار", cat: "البيتزا" },
-            { n: "بيتزا سبايسي لحم", p: 3000, d: "بيتزا سبايسي لحم", cat: "البيتزا" }, { n: "بيتزا بالتونة", p: 3000, d: "بيتزا تونة", cat: "البيتزا" },
-            { n: "جمبري", p: 2700, d: "جمبري مقرمش", cat: "أطباق موسمية" }, { n: "كلاسيك برجر", p: 2200, d: "كلاسيك برجر لحم", cat: "البرجر" },
-            { n: "بيف برجر", p: 1700, d: "بيف برجر لحم", cat: "البرجر" }, { n: "تشيكن برجر", p: 1700, d: "تشيكن برجر دجاج", cat: "البرجر" },
-            { n: "بيج تشيكن فيليه سبايسي", p: 2400, d: "تشيكن فيليه حار", cat: "البرجر" }, { n: "بروست", p: 1500, d: "وجبة بروست دجاج", cat: "الوجبات الرئيسية" },
-            { n: "نوواعم الدجاج", p: 2000, d: "نوواعم دجاج فاخرة", cat: "الوجبات الرئيسية" }, { n: "تشيكن ستريبس", p: 1900, d: "تشيكن ستريبس دجاج", cat: "الوجبات الرئيسية" },
-            { n: "تشيكن جريل", p: 1900, d: "تشيكن جريل مشوي", cat: "الوجبات الرئيسية" }, { n: "نفر مشكل مشاوي", p: 4500, d: "تشكيلة مشاوي أندلسية", cat: "الوجبات الرئيسية" },
-            { n: "كباب لحم", p: 4000, d: "كباب لحم بلدي", cat: "الوجبات الرئيسية" }, { n: "دجاج فحم", p: 3800, d: "دجاج مشوي على الفحم", cat: "الوجبات الرئيسية" }
+        // ========== تحديث بيانات المطعم والأصناف لتتوافق مع الصور ==========
+        const restaurantData = { id: 101, name: "مطعم العم طه", items: [
+            { n: "شيبس العم طه (صغير)", p: 800, d: "شيبس - جبن سائل - جبن كرافت - جبن مالح - صوصات", cat: "شيبس ووجبات خفيفة" },
+            { n: "شيبس العم طه (كبير)", p: 1500, d: "شيبس - جبن سائل - جبن كرافت - جبن مالح - صوصات", cat: "شيبس ووجبات خفيفة" },
+            { n: "شيبس سبشيل", p: 700, d: "شيبس - جبن سائل - جبن كرافت - صوصات", cat: "شيبس ووجبات خفيفة" },
+            { n: "شيبس ماكس", p: 700, d: "شيبس - جبن سائل - جبن مالح - صوصات", cat: "شيبس ووجبات خفيفة" },
+            { n: "شيبس سادة صافي", p: 600, d: "شيبس", cat: "شيبس ووجبات خفيفة" },
+            { n: "شيبس بالصوص", p: 600, d: "شيبس - صوصات", cat: "شيبس ووجبات خفيفة" },
+            { n: "شيبس بالثوم والصوص", p: 600, d: "شيبس - ثوم - صوصات", cat: "شيبس ووجبات خفيفة" },
+            { n: "شيبس بالجبن الأبيض والصوص", p: 600, d: "شيبس - جبن أبيض - صوصات", cat: "شيبس ووجبات خفيفة" },
+            { n: "مكس هوت", p: 1500, d: "نص سندوتش شاورما - نص سندوتش فاهيتا - 2 اصبع دجاج - شيبس - فلافل - سلطة - صوصات - خبز", cat: "سندوتشات ووجبات رئيسية" },
+            { n: "تشكن فرايز", p: 1700, d: "شيبس - دجاج مقطع - صوصات", cat: "سندوتشات ووجبات رئيسية" }
         ]};
 
         const FIREBASE_URL = "https://waselny-2812b-default-rtdb.firebaseio.com";
@@ -389,17 +375,15 @@
         function calculateDistance(lat1, lng1, lat2, lng2) { const R = 6371; const dLat = (lat2 - lat1) * Math.PI / 180; const dLng = (lng2 - lng1) * Math.PI / 180; const a = Math.sin(dLat / 2) ** 2 + Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLng / 2) ** 2; return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)); }
         function roundToNearestHundred(num) { return Math.round(num / 100) * 100; }
         
-        // تحسين الصور: استخدام دقة أقل وتحميل كسول
+        // تحسين الصور: استخدام دقة أقل وتحميل كسول (تم تحديث الصور لتشبه أصناف العم طه)
         function getItemImage(itemName) { 
             const name = itemName.toLowerCase(); 
-            let img = 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=200'; // صورة افتراضية بدقة أقل
-            if (name.includes('برجر')) img = 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=200';
-            else if (name.includes('بروست')) img = 'https://images.unsplash.com/photo-1626645738196-c2a7c8d08f58?w=200';
-            else if (name.includes('زنجر')) img = 'https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?w=200';
-            else if (name.includes('شاورما')) img = 'https://images.unsplash.com/photo-1644704170910-a0cdf183649b?w=200';
-            else if (name.includes('بيتزا')) img = 'https://images.unsplash.com/photo-1513104890138-7c749659a591?w=200';
-            else if (name.includes('مندي')) img = 'https://images.unsplash.com/photo-1591261735099-e3776264e164?w=200';
-            else if (name.includes('مشاوي')) img = 'https://images.unsplash.com/photo-1544025162-d76694265947?w=200';
+            let img = 'https://images.unsplash.com/photo-1631613613956-37b6ba0d0d7e?w=200'; // صورة افتراضية: بطاطس بالجبن
+            if (name.includes('شيبس العم طه') || name.includes('ماكس')) img = 'https://images.unsplash.com/photo-1631613613956-37b6ba0d0d7e?w=200';
+            else if (name.includes('سادة')) img = 'https://images.unsplash.com/photo-1585109641735-65cc8c1e2320?w=200';
+            else if (name.includes('مكس هوت')) img = 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=200';
+            else if (name.includes('تشكن فرايز')) img = 'https://images.unsplash.com/photo-1626814026160-2237a95fc5a0?w=200';
+            else if (name.includes('جبن')) img = 'https://images.unsplash.com/photo-1543353071-10c8ba85a904?w=200';
             return img;
         }
 
@@ -467,10 +451,10 @@
 
         function renderCategories() {
             const cats = [...new Set(restaurantData.items.map(i => i.cat || 'أخرى'))];
-            let html = cats.map(c => `<div class="category-card" onclick="window.openCategoryList('${c}')"><div class="category-icon">🍽️</div><h3>${c}</h3><p>${restaurantData.items.filter(i => i.cat === c).length} صنف</p></div>`).join('');
+            let html = cats.map(c => `<div class="category-card" onclick="window.openCategoryList('${c}')"><div class="category-icon">🍟</div><h3>${c}</h3><p>${restaurantData.items.filter(i => i.cat === c).length} صنف</p></div>`).join('');
             document.getElementById('categoriesGrid').innerHTML = html;
         }
-        function renderOffers() { document.getElementById('offersScroll').innerHTML = `<div class="offer-card" onclick="window.openCategoryList('الوجبات الرئيسية')"><div class="offer-text"><h4>🔥 عروض الأندلس</h4><p>خصم على المشاوي</p></div><div class="offer-badge">اطلب الآن</div></div><div class="offer-card" onclick="window.openCategoryList('البرجر')"><div class="offer-text"><h4>🍔 سندوتشات خاصة</h4><p>جميع أنواع البرجر</p></div><div class="offer-badge">شوف القائمة</div></div><div class="offer-card" onclick="window.openCategoryList('المشروبات')"><div class="offer-text"><h4>🥤 مشروبات باردة</h4><p>عصائر ومشروبات غازية</p></div><div class="offer-badge">اطلب مع الطلب</div></div>`; }
+        function renderOffers() { document.getElementById('offersScroll').innerHTML = `<div class="offer-card" onclick="window.openCategoryList('سندوتشات ووجبات رئيسية')"><div class="offer-text"><h4>🔥 مكس هوت</h4><p>سندوتشات مشكلة وشيبس</p></div><div class="offer-badge">اطلب الآن</div></div><div class="offer-card" onclick="window.openCategoryList('شيبس ووجبات خفيفة')"><div class="offer-text"><h4>🧀 شيبس ماكس</h4><p>شيبس مغطى بالجبن والصوصات</p></div><div class="offer-badge">شوف القائمة</div></div><div class="offer-card" onclick="window.openCategoryList('شيبس ووجبات خفيفة')"><div class="offer-text"><h4>🥤 شيبس بالجبن</h4><p>شيبس العم طه الأصلي</p></div><div class="offer-badge">اطلب مع الطلب</div></div>`; }
         
         window.openCategoryList = function(cat) { 
             const filtered = restaurantData.items.filter(i => (i.cat || 'أخرى') === cat); 
@@ -601,7 +585,7 @@
             await fetch(`${FIREBASE_URL}/orders/${id}.json`, { method: 'PUT', body: JSON.stringify(order) });
             localStorage.setItem('currentTrackingOrder', id);
             let itemsText = cart.map(i => `• ${i.name} x${i.qty} = ${i.p*i.qty} ريال ${i.note?' ('+i.note+')':''}`).join('\n');
-            let message = `🛍️ طلب جديد من مطعم الأندلس\n🍔 ${currentRestaurant.name}\n👤 ${currentUser.name}\n📞 ${currentUser.phone}\n📍 ${order.address}\n📝 ملاحظات: ${generalNote || 'لا توجد'}\n\nالمنتجات:\n${itemsText}\n\n🚚 التوصيل: ${deliveryCost} ريال\n💰 الإجمالي: ${total} ريال`;
+            let message = `🛍️ طلب جديد من مطعم العم طه\n🍔 ${currentRestaurant.name}\n👤 ${currentUser.name}\n📞 ${currentUser.phone}\n📍 ${order.address}\n📝 ملاحظات: ${generalNote || 'لا توجد'}\n\nالمنتجات:\n${itemsText}\n\n🚚 التوصيل: ${deliveryCost} ريال\n💰 الإجمالي: ${total} ريال`;
             window.open(`https://wa.me/777215154?text=${encodeURIComponent(message)}`, '_blank');
             showToast('✅ تم إرسال طلبك'); cart = []; customerLocation = null; deliveryCost = 0; updateCartDisplay(); showPage('homePage'); await loadOrders(true);
             setTimeout(() => { viewOrderTracking(id); }, 500);
@@ -962,9 +946,9 @@
         }
 
         const mainSliderImages = [
-            { image: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=600', title: '🔥 تشكيلة المشاوي الأندلسية', desc: 'لحم ودجاج على الفحم بنكهة خاصة' },
-            { image: 'https://images.unsplash.com/photo-1544025162-d76694265947?w=600', title: '🍗 دجاج فحم وبروست', desc: 'مقرمش وطري بأفضل الوصفات' },
-            { image: 'https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=600', title: '🍔 سندوتشات الأندلس', desc: 'أصناف فاخرة من البرجر والراب' }
+            { image: 'https://images.unsplash.com/photo-1631613613956-37b6ba0d0d7e?w=600', title: '🧀 شيبس العم طه', desc: 'شيبس مع الجبن السائل والصلصات الخاصة' },
+            { image: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=600', title: '🌯 مكس هوت', desc: 'سندوتش شاورما وفاهيتا مع مقبلات' },
+            { image: 'https://images.unsplash.com/photo-1626814026160-2237a95fc5a0?w=600', title: '🍗 تشكن فرايز', desc: 'شيبس مغطى بقطع الدجاج المقلية والصوص' }
         ];
         let mainCarouselIndex = 0, mainCarouselInterval;
         function renderMainCarousel() {

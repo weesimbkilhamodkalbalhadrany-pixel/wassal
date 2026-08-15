@@ -20,7 +20,7 @@
         
         /* ===== الهيدر ===== */
         .header { position: relative; background: #5b1416; box-shadow: 0 4px 12px rgba(0,0,0,0.2); overflow: hidden; padding-bottom: 8px; }
-        .header-logo-img { width: 100%; display: block; object-fit: cover; max-height: 200px; }
+        .header-logo-img { width: 100%; display: block; object-fit: cover; max-height: 180px; }
 
         /* ===== شريط البحث ===== */
         .search-wrapper { padding: 0 16px; margin-top: 14px; position: relative; z-index: 10; }
@@ -35,32 +35,34 @@
         .active-page { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* ===== سلايدر الصور المتحرك تلقائياً (محدث) ===== */
-        .promo-slider-container { margin: 14px 0; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.08); background: #222; position: relative; direction: ltr; }
-        .promo-track { display: flex; width: 100%; transition: transform 0.5s ease-in-out; }
-        .promo-slide { min-width: 100%; height: 165px; position: relative; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-        .promo-slide img { width: 100%; height: 100%; object-fit: cover; }
-        .promo-caption { position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(to top, rgba(0,0,0,0.85), transparent); padding: 14px 16px; color: white; text-align: right; direction: rtl; }
-        .promo-caption h3 { font-size: 0.95rem; font-weight: 900; color: var(--gold); margin-bottom: 2px; }
-        .promo-caption p { font-size: 0.72rem; opacity: 0.9; font-weight: 600; color: #eee; }
-        .slider-dots { position: absolute; bottom: 8px; right: 16px; display: flex; gap: 4px; z-index: 5; direction: rtl; }
+        /* ===== سلايدر الصور (فل إتش دي وعالي الجودة ومتناسق) ===== */
+        .promo-slider-container { margin: 14px 0; border-radius: 18px; overflow: hidden; box-shadow: 0 6px 16px rgba(0,0,0,0.1); background: #1a1514; position: relative; direction: ltr; }
+        .promo-track { display: flex; width: 100%; transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1); }
+        .promo-slide { min-width: 100%; height: 195px; position: relative; display: flex; align-items: center; justify-content: center; flex-shrink: 0; background: #1a1514; }
+        .promo-slide img { width: 100%; height: 100%; object-fit: cover; object-position: center; filter: brightness(1.02); }
+        .promo-caption { position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(to top, rgba(0,0,0,0.9) 10%, rgba(0,0,0,0.6) 60%, transparent); padding: 16px 16px 12px; color: white; text-align: right; direction: rtl; }
+        .promo-caption h3 { font-size: 1rem; font-weight: 900; color: var(--gold); margin-bottom: 2px; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
+        .promo-caption p { font-size: 0.75rem; opacity: 0.95; font-weight: 600; color: #f3f3f3; }
+        .slider-dots { position: absolute; bottom: 8px; right: 16px; display: flex; gap: 5px; z-index: 5; direction: rtl; }
         .slider-dots span { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,0.4); transition: all 0.3s; }
-        .slider-dots span.active { background: var(--gold); width: 18px; border-radius: 4px; }
+        .slider-dots span.active { background: var(--gold); width: 20px; border-radius: 4px; }
 
-        /* ===== شريط الأصناف الأكثر طلباً ===== */
-        .popular-section { margin-bottom: 18px; }
-        .section-header-title { font-size: 0.95rem; font-weight: 800; color: var(--primary); margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
-        .popular-slider { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 6px; scrollbar-width: none; }
+        /* ===== شريط الأصناف الأكثر طلباً (محسن ومضبوط بالكامل) ===== */
+        .popular-section { margin-bottom: 20px; }
+        .section-header-title { font-size: 0.95rem; font-weight: 800; color: var(--primary); margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
+        .popular-slider { display: flex; gap: 12px; overflow-x: auto; padding: 4px 2px 10px 2px; scrollbar-width: none; scroll-snap-type: x mandatory; }
         .popular-slider::-webkit-scrollbar { display: none; }
-        .popular-card { min-width: 130px; background: #fff; border-radius: 14px; padding: 10px; text-align: center; border: 1px solid #eee; box-shadow: 0 2px 8px rgba(0,0,0,0.03); flex-shrink: 0; cursor: pointer; display: flex; flex-direction: column; justify-content: space-between; }
-        .popular-card-img { width: 50px; height: 50px; margin: 0 auto 6px; border-radius: 50%; background: #f8f6f4; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; overflow: hidden; }
-        .popular-card-title { font-size: 0.75rem; font-weight: 800; color: #333; margin-bottom: 4px; display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
-        .popular-card-price { font-size: 0.75rem; color: var(--primary); font-weight: 800; margin-bottom: 6px; }
-        .popular-add-btn { background: var(--primary); color: var(--gold); border: none; border-radius: 20px; padding: 4px 10px; font-size: 0.65rem; font-weight: 700; cursor: pointer; width: 100%; }
+        .popular-card { min-width: 135px; max-width: 135px; background: #fff; border-radius: 16px; padding: 12px 10px; text-align: center; border: 1px solid #eae5e0; box-shadow: 0 3px 10px rgba(0,0,0,0.04); flex-shrink: 0; cursor: pointer; display: flex; flex-direction: column; justify-content: space-between; scroll-snap-align: start; transition: transform 0.1s; }
+        .popular-card:active { transform: scale(0.97); }
+        .popular-card-img { width: 60px; height: 60px; margin: 0 auto 8px; border-radius: 50%; background: #f8f6f4; display: flex; align-items: center; justify-content: center; overflow: hidden; border: 1px solid #eee; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .popular-card-img img { width: 100%; height: 100%; object-fit: cover; }
+        .popular-card-title { font-size: 0.78rem; font-weight: 800; color: #222; margin-bottom: 4px; display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
+        .popular-card-price { font-size: 0.75rem; color: var(--primary); font-weight: 800; margin-bottom: 8px; }
+        .popular-add-btn { background: var(--primary); color: var(--gold); border: none; border-radius: 20px; padding: 5px 10px; font-size: 0.68rem; font-weight: 700; cursor: pointer; width: 100%; box-shadow: 0 2px 5px rgba(111,26,45,0.2); }
 
         /* ===== بطاقات الأقسام الرئيسية ===== */
         .categories-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 6px; }
-        .category-card { background: linear-gradient(155deg, var(--primary), #4a0f1c); border-radius: 14px; padding: 16px 8px; text-align: center; cursor: pointer; transition: transform 0.15s; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 4px 10px rgba(111, 26, 45, 0.2); min-height: 128px; position: relative; }
+        .category-card { background: linear-gradient(155deg, var(--primary), #4a0f1c); border-radius: 16px; padding: 18px 10px; text-align: center; cursor: pointer; transition: transform 0.15s; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 4px 12px rgba(111, 26, 45, 0.2); min-height: 130px; position: relative; }
         .category-card:active { transform: scale(0.96); }
         .category-title { color: var(--gold); font-weight: 700; font-size: 0.95rem; text-shadow: 0 2px 4px rgba(0,0,0,0.2); }
         .category-img { font-size: 2.3rem; line-height: 1; }
@@ -72,12 +74,12 @@
         .menu-list { display: flex; flex-direction: column; gap: 10px; }
         .menu-item-row { background: #fff; border-radius: 16px; border: 1px solid #eee; display: flex; align-items: center; gap: 12px; padding: 10px 12px; cursor: pointer; box-shadow: 0 1px 4px rgba(0,0,0,0.02); }
         .menu-item-row:active { background: #fbf9f7; }
-        .menu-item-icon { width: 50px; height: 50px; min-width: 50px; border-radius: 12px; background: #f8f6f4; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; overflow: hidden; }
+        .menu-item-icon { width: 55px; height: 55px; min-width: 55px; border-radius: 12px; background: #f8f6f4; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; overflow: hidden; border: 1px solid #f0eae6; }
         .menu-item-info { flex: 1; text-align: right; min-width: 0; }
         .menu-item-name { font-weight: 800; font-size: 0.85rem; color: #222; line-height: 1.3; }
         .menu-item-desc { font-size: 0.68rem; color: #888; line-height: 1.4; margin-top: 2px; display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
         .menu-item-price { color: var(--primary); font-weight: 800; font-size: 0.8rem; margin-top: 3px; }
-        .menu-item-add-btn { min-width: 34px; width: 34px; height: 34px; border-radius: 50%; background: var(--primary); color: var(--gold); border: none; font-size: 1.2rem; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .menu-item-add-btn { min-width: 36px; width: 36px; height: 36px; border-radius: 50%; background: var(--primary); color: var(--gold); border: none; font-size: 1.2rem; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 2px 6px rgba(111,26,45,0.25); }
         .menu-item-add-btn:active { transform: scale(0.9); }
         
         /* ===== شريط التنقل السفلي ===== */
@@ -153,7 +155,7 @@
         <!-- الصفحة الرئيسية -->
         <div id="homePage" class="page active-page">
             
-            <!-- ===== سلايدر صور الأصناف التلقائي (يتغير كل ثانيتين) ===== -->
+            <!-- ===== سلايدر الصور المتحرك تلقائياً (فل إتش دي وبجودة عالية) ===== -->
             <div class="promo-slider-container">
                 <div class="promo-track" id="promoTrack">
                     <div class="promo-slide">
@@ -193,7 +195,7 @@
                 </div>
             </div>
 
-            <!-- شريط الأصناف الأكثر طلباً المتحرك أفقيًا -->
+            <!-- شريط الأصناف الأكثر طلباً المحسن -->
             <div class="popular-section">
                 <div class="section-header-title">🔥 الأكثر طلباً</div>
                 <div class="popular-slider" id="popularSlider"></div>
@@ -330,7 +332,7 @@
             items: [
                 { n: "سندوتش زنجر صاروخ خبز موكا", p: 1000, d: "زنجر - جبن - خس - صوصات", cat: "قسم الزنجر", icon: "🍗" },
                 { n: "سندوتش أصابع دجاج صاروخ خبز عربي", p: 1200, d: "أصابع دجاج مقرمشة مع الصوصات", cat: "قسم الزنجر", icon: "🍗" },
-                { n: "سندوتش زنجر العم طه حراق", p: 1200, d: "زنجر - جبن - صوص حراق", cat: "قسم الزنجر", icon: "🌶️" },
+                { n: "سندوتش زنجر العم طه حراق", p: 1200, d: "زنجر - جبن - صوص حراق", cat: "قسم الزنجر", photo: "img3_tishkin" },
                 { n: "طبق أصابع", p: 2000, d: "6 اصابع دجاج - شبس - خبز - صوص", cat: "قسم الزنجر", photo: "img_tabaq_asabe" },
                 { n: "تشكن فرايز", p: 1700, d: "شبس مقطع - دجاج مقطع - صوصات", cat: "قسم الزنجر", photo: "img3_tishkin" },
                 { n: "سندوتش فاهيتا خبز عربي", p: 700, d: "فاهيتا دجاج مشوي", cat: "قسم الفاهيتا", icon: "🌮" },
@@ -422,7 +424,7 @@
             let html = popularItems.map(item => `
                 <div class="popular-card" onclick="openItemModal('${item.n}')">
                     <div class="popular-card-img">
-                        ${item.photo ? `<img src="${PHOTOS[item.photo]}" style="width:100%;height:100%;object-fit:cover;">` : (item.icon || '🔥')}
+                        ${item.photo ? `<img src="${PHOTOS[item.photo]}" alt="${item.n}">` : (item.icon || '🔥')}
                     </div>
                     <div class="popular-card-title">${item.n}</div>
                     <div class="popular-card-price">${item.p} ريال</div>

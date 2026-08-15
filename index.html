@@ -13,16 +13,16 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Cairo', sans-serif; -webkit-tap-highlight-color: transparent; }
         body { background: #f8f6f4; color: #1e1817; direction: rtl; padding-bottom: 90px; }
         :root { 
-            --primary: #6f1a2d; /* لون المطعم العنابي الغامق */
-            --gold: #dab669;   /* اللون الذهبي للشعار والنصوص */
+            --primary: #6f1a2d; 
+            --gold: #dab669;   
             --light-grey: #f2f2f2;
         }
         
-        /* ===== الهيدر (الشعار ظاهر بالكامل وبدون تداخل) ===== */
+        /* ===== الهيدر ===== */
         .header { position: relative; background: #5b1416; box-shadow: 0 4px 12px rgba(0,0,0,0.2); overflow: hidden; padding-bottom: 8px; }
         .header-logo-img { width: 100%; display: block; object-fit: cover; max-height: 200px; }
 
-        /* ===== شريط البحث (منزل إلى الأسفل قليلاً بمسافة آمنة) ===== */
+        /* ===== شريط البحث ===== */
         .search-wrapper { padding: 0 16px; margin-top: 14px; position: relative; z-index: 10; }
         .search-container { background: #ffffff; border: 1.5px solid #e0dcd8; border-radius: 30px; padding: 10px 18px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 4px 12px rgba(0,0,0,0.04); }
         .search-container input { border: none; background: transparent; flex: 1; padding: 4px; font-size: 0.9rem; color: #333; width: 100%; text-align: right; outline: none; }
@@ -35,7 +35,15 @@
         .active-page { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* ===== ميزة مميزة: شريط الأصناف الأكثر طلباً (Horizontal Slider) ===== */
+        /* ===== سلايدر الإعلانات والعروض المميزة (جديد) ===== */
+        .promo-slider-container { margin: 14px 0; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.06); }
+        .promo-slider { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; }
+        .promo-slider::-webkit-scrollbar { display: none; }
+        .promo-slide { min-width: 100%; scroll-snap-align: start; padding: 18px; color: white; display: flex; flex-direction: column; justify-content: center; min-height: 120px; position: relative; }
+        .promo-slide h3 { font-size: 1.05rem; font-weight: 900; margin-bottom: 4px; color: #fff; }
+        .promo-slide p { font-size: 0.78rem; opacity: 0.9; font-weight: 600; }
+
+        /* ===== شريط الأصناف الأكثر طلباً ===== */
         .popular-section { margin-bottom: 18px; }
         .section-header-title { font-size: 0.95rem; font-weight: 800; color: var(--primary); margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
         .popular-slider { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 6px; scrollbar-width: none; }
@@ -55,7 +63,7 @@
         .order-btn { border: 1.5px solid var(--gold); background: transparent; border-radius: 30px; padding: 4px 18px; color: var(--gold); font-weight: 600; font-size: 0.68rem; cursor: pointer; transition: all 0.2s; }
         .order-btn:active { background: var(--gold); color: var(--primary); }
 
-        /* ===== واجهات الصفحات الداخلية (قائمة الأصناف) ===== */
+        /* ===== واجهات الصفحات الداخلية ===== */
         .back-btn { display: inline-flex; align-items: center; gap: 6px; background: #fff; padding: 8px 16px; border-radius: 30px; margin-bottom: 14px; cursor: pointer; font-size: 0.8rem; font-weight: 700; box-shadow: 0 2px 8px rgba(0,0,0,0.04); border: 1px solid #eee; color: var(--primary); }
         .menu-list { display: flex; flex-direction: column; gap: 10px; }
         .menu-item-row { background: #fff; border-radius: 16px; border: 1px solid #eee; display: flex; align-items: center; gap: 12px; padding: 10px 12px; cursor: pointer; box-shadow: 0 1px 4px rgba(0,0,0,0.02); }
@@ -124,12 +132,12 @@
 </head>
 <body>
 
-    <!-- ===== الهيدر والشعار (كامل وواضح بدون تغطية) ===== -->
+    <!-- ===== الهيدر والشعار (كامل وواضح) ===== -->
     <div class="header">
         <img class="header-logo-img" src="logo.png" alt="مطعم العم طه">
     </div>
 
-    <!-- ===== شريط البحث الفعّال (منزل إلى الأسفل قليلاً) ===== -->
+    <!-- ===== شريط البحث الفعّال ===== -->
     <div class="search-wrapper">
         <div class="search-container">
             <input type="text" id="searchInput" placeholder="ابحث في القائمة عن أي وجبة...">
@@ -141,7 +149,21 @@
         <!-- الصفحة الرئيسية -->
         <div id="homePage" class="page active-page">
             
-            <!-- الميزة المميزة: شريط الأصناف الأكثر طلباً المتحرك أفقيًا -->
+            <!-- سلايدر الإعلانات والعروض المتحرك (جديد) -->
+            <div class="promo-slider-container">
+                <div class="promo-slider" id="promoSlider">
+                    <div class="promo-slide" style="background: linear-gradient(135deg, #6f1a2d, #4a0f1c);">
+                        <h3>🔥 عرض وجبات العم طه السريعة</h3>
+                        <p>اطلب الآن واستمتع بألذ الشاورما والزنجر بتوصيل فوري لمنزلك!</p>
+                    </div>
+                    <div class="promo-slide" style="background: linear-gradient(135deg, #dab669, #b89445); color: #222;">
+                        <h3 style="color:#222;">🌟 شبس العم طه الأصلي</h3>
+                        <p style="color:#333;">الخلطة الخاصة والأجبان المميزة بانتظارك طوال اليوم.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- شريط الأصناف الأكثر طلباً المتحرك أفقيًا -->
             <div class="popular-section">
                 <div class="section-header-title">🔥 الأكثر طلباً</div>
                 <div class="popular-slider" id="popularSlider"></div>
@@ -339,7 +361,6 @@
             return '🍽️';
         }
 
-        // عرض الأقسام الرئيسية
         function renderCategories() {
             const cats = ["قسم الزنجر", "قسم الفاهيتا", "قسم الشبس", "قسم الفلافل", "قسم الشاورما", "قسم المشروبات"];
             let html = cats.map(c => `
@@ -351,7 +372,6 @@
             document.getElementById('categoriesGrid').innerHTML = html;
         }
 
-        // عرض قائمة الأصناف الأكثر طلباً (الميزة المميزة)
         function renderPopularItems() {
             const popularNames = ["سندوتش زنجر العم طه حراق", "شبس العم طه (كبير)", "ساندوتش شاورما صاروخ عربي بالجبن", "تشكن فرايز", "مكس هوت"];
             const popularItems = restaurantData.items.filter(i => popularNames.includes(i.n));
@@ -577,4 +597,3 @@
     </script>
 </body>
 </html>
-

@@ -11,33 +11,43 @@
     <style>
         /* ===== إعدادات أساسية ===== */
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Cairo', sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { background: #f8f6f4; color: #1e1817; direction: rtl; padding-bottom: 80px; }
+        body { background: #f8f6f4; color: #1e1817; direction: rtl; padding-bottom: 90px; }
         :root { 
-            --primary: #6f1a2d; /* لون المطعم العنابي الغامق المطابق للصورة */
+            --primary: #6f1a2d; /* لون المطعم العنابي الغامق */
             --gold: #dab669;   /* اللون الذهبي للشعار والنصوص */
             --light-grey: #f2f2f2;
         }
         
-        /* ===== الهيدر (شعار احترافي متطابق تمامًا مع لون الخلفية) ===== */
-        .header { position: relative; background: #5b1416; box-shadow: 0 6px 16px rgba(0,0,0,0.25); overflow: hidden; }
-        .header-logo-img { width: 100%; display: block; object-fit: cover; }
-        .header::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 18px; background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.15) 100%); pointer-events: none; }
+        /* ===== الهيدر (الشعار ظاهر بالكامل وبدون تداخل) ===== */
+        .header { position: relative; background: #5b1416; box-shadow: 0 4px 12px rgba(0,0,0,0.2); overflow: hidden; padding-bottom: 8px; }
+        .header-logo-img { width: 100%; display: block; object-fit: cover; max-height: 200px; }
 
-        /* ===== شريط البحث ===== */
-        .search-wrapper { padding: 0 16px; margin-top: -16px; position: relative; z-index: 10; }
-        .search-container { background: var(--light-grey); border-radius: 30px; padding: 8px 16px; display: flex; align-items: center; justify-content: space-between; }
-        .search-container input { border: none; background: transparent; flex: 1; padding: 6px; font-size: 0.85rem; color: #333; width: 100%; text-align: right; outline: none; }
-        .search-container input::placeholder { color: #999; font-weight: 500; }
-        .search-icon { color: var(--gold); font-size: 1.1rem; margin-right: 8px; }
+        /* ===== شريط البحث (منزل إلى الأسفل قليلاً بمسافة آمنة) ===== */
+        .search-wrapper { padding: 0 16px; margin-top: 14px; position: relative; z-index: 10; }
+        .search-container { background: #ffffff; border: 1.5px solid #e0dcd8; border-radius: 30px; padding: 10px 18px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 4px 12px rgba(0,0,0,0.04); }
+        .search-container input { border: none; background: transparent; flex: 1; padding: 4px; font-size: 0.9rem; color: #333; width: 100%; text-align: right; outline: none; }
+        .search-container input::placeholder { color: #888; font-weight: 500; }
+        .search-icon { color: var(--primary); font-size: 1.1rem; margin-right: 8px; }
 
         /* ===== حاوية التطبيق ===== */
-        .container { padding: 16px 14px 80px; max-width: 600px; margin: 0 auto; }
+        .container { padding: 14px 14px 80px; max-width: 600px; margin: 0 auto; }
         .page { display: none; animation: fadeIn 0.3s ease-out; }
         .active-page { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* ===== بطاقات الأقسام (تصميم مضغوط بدون فراغات) ===== */
-        .categories-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 14px; }
+        /* ===== ميزة مميزة: شريط الأصناف الأكثر طلباً (Horizontal Slider) ===== */
+        .popular-section { margin-bottom: 18px; }
+        .section-header-title { font-size: 0.95rem; font-weight: 800; color: var(--primary); margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
+        .popular-slider { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 6px; scrollbar-width: none; }
+        .popular-slider::-webkit-scrollbar { display: none; }
+        .popular-card { min-width: 130px; background: #fff; border-radius: 14px; padding: 10px; text-align: center; border: 1px solid #eee; box-shadow: 0 2px 8px rgba(0,0,0,0.03); flex-shrink: 0; cursor: pointer; display: flex; flex-direction: column; justify-content: space-between; }
+        .popular-card-img { width: 50px; height: 50px; margin: 0 auto 6px; border-radius: 50%; background: #f8f6f4; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; overflow: hidden; }
+        .popular-card-title { font-size: 0.75rem; font-weight: 800; color: #333; margin-bottom: 4px; display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
+        .popular-card-price { font-size: 0.75rem; color: var(--primary); font-weight: 800; margin-bottom: 6px; }
+        .popular-add-btn { background: var(--primary); color: var(--gold); border: none; border-radius: 20px; padding: 4px 10px; font-size: 0.65rem; font-weight: 700; cursor: pointer; width: 100%; }
+
+        /* ===== بطاقات الأقسام الرئيسية ===== */
+        .categories-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 6px; }
         .category-card { background: linear-gradient(155deg, var(--primary), #4a0f1c); border-radius: 14px; padding: 16px 8px; text-align: center; cursor: pointer; transition: transform 0.15s; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 4px 10px rgba(111, 26, 45, 0.2); min-height: 128px; position: relative; }
         .category-card:active { transform: scale(0.96); }
         .category-title { color: var(--gold); font-weight: 700; font-size: 0.95rem; text-shadow: 0 2px 4px rgba(0,0,0,0.2); }
@@ -45,29 +55,28 @@
         .order-btn { border: 1.5px solid var(--gold); background: transparent; border-radius: 30px; padding: 4px 18px; color: var(--gold); font-weight: 600; font-size: 0.68rem; cursor: pointer; transition: all 0.2s; }
         .order-btn:active { background: var(--gold); color: var(--primary); }
 
-        /* ===== واجهات الصفحات الداخلية (قائمة الأصناف - عرض قائمة نظيف) ===== */
+        /* ===== واجهات الصفحات الداخلية (قائمة الأصناف) ===== */
         .back-btn { display: inline-flex; align-items: center; gap: 6px; background: #fff; padding: 8px 16px; border-radius: 30px; margin-bottom: 14px; cursor: pointer; font-size: 0.8rem; font-weight: 700; box-shadow: 0 2px 8px rgba(0,0,0,0.04); border: 1px solid #eee; color: var(--primary); }
         .menu-list { display: flex; flex-direction: column; gap: 10px; }
         .menu-item-row { background: #fff; border-radius: 16px; border: 1px solid #eee; display: flex; align-items: center; gap: 12px; padding: 10px 12px; cursor: pointer; box-shadow: 0 1px 4px rgba(0,0,0,0.02); }
         .menu-item-row:active { background: #fbf9f7; }
-        .menu-item-icon { width: 50px; height: 50px; min-width: 50px; border-radius: 12px; background: #f8f6f4; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; }
+        .menu-item-icon { width: 50px; height: 50px; min-width: 50px; border-radius: 12px; background: #f8f6f4; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; overflow: hidden; }
         .menu-item-info { flex: 1; text-align: right; min-width: 0; }
         .menu-item-name { font-weight: 800; font-size: 0.85rem; color: #222; line-height: 1.3; }
         .menu-item-desc { font-size: 0.68rem; color: #888; line-height: 1.4; margin-top: 2px; display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
         .menu-item-price { color: var(--primary); font-weight: 800; font-size: 0.8rem; margin-top: 3px; }
         .menu-item-add-btn { min-width: 34px; width: 34px; height: 34px; border-radius: 50%; background: var(--primary); color: var(--gold); border: none; font-size: 1.2rem; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
         .menu-item-add-btn:active { transform: scale(0.9); }
-        .section-title { font-weight: 800; font-size: 0.95rem; color: var(--primary); margin: 4px 2px 10px; }
         
         /* ===== شريط التنقل السفلي ===== */
         .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: #ffffff; display: flex; justify-content: space-around; padding: 6px 0 14px; border-top: 1px solid rgba(0,0,0,0.04); box-shadow: 0 -2px 12px rgba(0,0,0,0.03); z-index: 100; }
-        .nav-item { text-align: center; cursor: pointer; display: flex; flex-direction: column; align-items: center; color: #888; font-size: 0.6rem; font-weight: 500; padding: 4px 8px; min-width: 45px; }
+        .nav-item { text-align: center; cursor: pointer; display: flex; flex-direction: column; align-items: center; color: #888; font-size: 0.6rem; font-weight: 500; padding: 4px 8px; min-width: 45px; position: relative; }
         .nav-item .nav-icon { font-size: 1.4rem; margin-bottom: 2px; color: #888; transition: color 0.2s; }
         .nav-item.active .nav-icon { color: var(--gold); }
         .nav-item.active { color: #333; font-weight: 700; }
         .nav-badge { position: absolute; top: -4px; right: 4px; background: #ef4444; color: white; font-size: 0.5rem; padding: 2px 6px; border-radius: 50%; border: 2px solid white; }
 
-        /* ===== (أنماط CSS المتبقية للعربة والسلة والتسجيل) ===== */
+        /* ===== السلة العائمة و الجانبية ===== */
         .float-cart { position: fixed; bottom: 80px; left: 16px; right: 16px; background: var(--primary); color: white; padding: 12px 20px; border-radius: 50px; display: flex; justify-content: space-between; align-items: center; z-index: 100; display: none; box-shadow: 0 4px 12px rgba(111, 26, 45, 0.3); border: 1px solid var(--gold); font-weight: 700; font-size: 0.85rem; cursor: pointer; }
         .cart-sidebar { position: fixed; top: 0; left: -100%; width: 85%; max-width: 380px; height: 100%; background: #ffffff; z-index: 10001; transition: left 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); display: flex; flex-direction: column; box-shadow: 0 0 20px rgba(0,0,0,0.1); }
         .cart-sidebar.open { left: 0; }
@@ -75,7 +84,7 @@
         .cart-close { cursor: pointer; font-size: 1.2rem; }
         .cart-items { flex: 1; overflow-y: auto; padding: 16px; }
         .cart-item { display: flex; gap: 12px; padding: 12px; background: #f8f6f4; border-radius: 16px; margin-bottom: 12px; align-items: center; border: 1px solid #eaeaea; }
-        .cart-item-img { width: 50px; height: 50px; border-radius: 8px; background-size: cover; }
+        .cart-item-img { width: 50px; height: 50px; border-radius: 8px; background-size: cover; overflow: hidden; display: flex; align-items: center; justify-content: center; }
         .cart-item-details { flex: 1; }
         .cart-item-details h4 { font-size: 0.85rem; font-weight: 800; color: #222; }
         .cart-item-details div { font-size: 0.75rem; color: var(--primary); font-weight: 700; margin-top: 2px; }
@@ -115,15 +124,15 @@
 </head>
 <body>
 
-    <!-- ===== الهيدر والشعار (نظيف بدون أيقونات علوية) ===== -->
+    <!-- ===== الهيدر والشعار (كامل وواضح بدون تغطية) ===== -->
     <div class="header">
         <img class="header-logo-img" src="logo.png" alt="مطعم العم طه">
     </div>
 
-    <!-- ===== شريط البحث ===== -->
+    <!-- ===== شريط البحث الفعّال (منزل إلى الأسفل قليلاً) ===== -->
     <div class="search-wrapper">
         <div class="search-container">
-            <input type="text" id="searchInput" placeholder="ابحث في القائمة">
+            <input type="text" id="searchInput" placeholder="ابحث في القائمة عن أي وجبة...">
             <i class="fas fa-search search-icon"></i>
         </div>
     </div>
@@ -131,10 +140,18 @@
     <div class="container">
         <!-- الصفحة الرئيسية -->
         <div id="homePage" class="page active-page">
+            
+            <!-- الميزة المميزة: شريط الأصناف الأكثر طلباً المتحرك أفقيًا -->
+            <div class="popular-section">
+                <div class="section-header-title">🔥 الأكثر طلباً</div>
+                <div class="popular-slider" id="popularSlider"></div>
+            </div>
+
+            <div class="section-header-title" style="margin-top: 10px;">📋 أقسام المنيو</div>
             <div class="categories-grid" id="categoriesGrid"></div>
         </div>
 
-        <!-- صفحة القائمة -->
+        <!-- صفحة القائمة والبحث -->
         <div id="menuPage" class="page">
             <div class="back-btn" onclick="goBackFromMenu()"><i class="fas fa-arrow-right"></i> رجوع</div>
             <div id="menuContent"></div>
@@ -322,6 +339,7 @@
             return '🍽️';
         }
 
+        // عرض الأقسام الرئيسية
         function renderCategories() {
             const cats = ["قسم الزنجر", "قسم الفاهيتا", "قسم الشبس", "قسم الفلافل", "قسم الشاورما", "قسم المشروبات"];
             let html = cats.map(c => `
@@ -333,27 +351,66 @@
             document.getElementById('categoriesGrid').innerHTML = html;
         }
 
+        // عرض قائمة الأصناف الأكثر طلباً (الميزة المميزة)
+        function renderPopularItems() {
+            const popularNames = ["سندوتش زنجر العم طه حراق", "شبس العم طه (كبير)", "ساندوتش شاورما صاروخ عربي بالجبن", "تشكن فرايز", "مكس هوت"];
+            const popularItems = restaurantData.items.filter(i => popularNames.includes(i.n));
+            let html = popularItems.map(item => `
+                <div class="popular-card" onclick="openItemModal('${item.n}')">
+                    <div class="popular-card-img">
+                        ${item.photo ? `<img src="${PHOTOS[item.photo]}" style="width:100%;height:100%;object-fit:cover;">` : (item.icon || '🔥')}
+                    </div>
+                    <div class="popular-card-title">${item.n}</div>
+                    <div class="popular-card-price">${item.p} ريال</div>
+                    <button class="popular-add-btn" onclick="event.stopPropagation(); quickAddToCart('${item.n}')">إضافة</button>
+                </div>
+            `).join('');
+            document.getElementById('popularSlider').innerHTML = html;
+        }
+
+        // تفعيل ميزة البحث الفوري في القائمة
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            let query = e.target.value.trim().toLowerCase();
+            if (query === '') {
+                if (document.getElementById('menuPage').classList.contains('active-page')) {
+                    showPage('homePage');
+                }
+                return;
+            }
+            let filtered = restaurantData.items.filter(i => 
+                i.n.toLowerCase().includes(query) || 
+                (i.d && i.d.toLowerCase().includes(query)) || 
+                i.cat.toLowerCase().includes(query)
+            );
+            renderMenu(filtered, 'menuContent');
+            showPage('menuPage');
+        });
+
         window.openCategoryList = function(cat) { 
             const filtered = restaurantData.items.filter(i => (i.cat || 'أخرى') === cat); 
             renderMenu(filtered, 'menuContent'); 
             showPage('menuPage'); 
         };
-        window.goBackFromMenu = function() { showPage('homePage'); };
+        window.goBackFromMenu = function() { showPage('homePage'); document.getElementById('searchInput').value = ''; };
         
         function renderMenu(itemsArray = null, targetContainerId = 'menuContent') {
             const itemsToRender = itemsArray || restaurantData.items;
             let itemsHtml = `<div class="menu-list">`;
-            itemsToRender.forEach((item) => {
-                itemsHtml += `<div class="menu-item-row" onclick="openItemModal('${item.n}')">
-                    <button class="menu-item-add-btn" onclick="event.stopPropagation(); quickAddToCart('${item.n}')">+</button>
-                    <div class="menu-item-info">
-                        <div class="menu-item-name">${item.n}</div>
-                        <div class="menu-item-desc">${item.d || "صنف مميز"}</div>
-                        <div class="menu-item-price">${item.p > 0 ? item.p + ' ريال' : 'مجاني'}</div>
-                    </div>
-                    <div class="menu-item-icon">${item.photo ? `<img src="${PHOTOS[item.photo]}" alt="${item.n}" style="width:100%;height:100%;object-fit:cover;border-radius:12px;">` : (item.icon || '🍽️')}</div>
-                </div>`;
-            });
+            if (itemsToRender.length === 0) {
+                itemsHtml += `<div style="text-align:center; padding:40px; color:#888;">عذراً، لم نجد نتائج مطابقة بحثك 🔍</div>`;
+            } else {
+                itemsToRender.forEach((item) => {
+                    itemsHtml += `<div class="menu-item-row" onclick="openItemModal('${item.n}')">
+                        <button class="menu-item-add-btn" onclick="event.stopPropagation(); quickAddToCart('${item.n}')">+</button>
+                        <div class="menu-item-info">
+                            <div class="menu-item-name">${item.n}</div>
+                            <div class="menu-item-desc">${item.d || "صنف مميز"}</div>
+                            <div class="menu-item-price">${item.p > 0 ? item.p + ' ريال' : 'مجاني'}</div>
+                        </div>
+                        <div class="menu-item-icon">${item.photo ? `<img src="${PHOTOS[item.photo]}" alt="${item.n}" style="width:100%;height:100%;object-fit:cover;border-radius:12px;">` : (item.icon || '🍽️')}</div>
+                    </div>`;
+                });
+            }
             itemsHtml += `</div>`;
             document.getElementById(targetContainerId).innerHTML = itemsHtml;
         }
@@ -404,7 +461,7 @@
             let container = document.getElementById('cartItemsList');
             if (container) {
                 if (cart.length === 0) container.innerHTML = `<p style="text-align:center; padding:30px; color:#888;">السلة فارغة 🛒</p>`;
-                else { container.innerHTML = cart.map((item, i) => `<div class="cart-item"><div class="cart-item-img" style="display:flex; align-items:center; justify-content:center; font-size:1.6rem; background:#eee; overflow:hidden;">${item.photo ? `<img src="${PHOTOS[item.photo]}" style="width:100%;height:100%;object-fit:cover;">` : (item.icon || '🍽️')}</div><div class="cart-item-details"><h4>${item.name}</h4>${item.note ? `<div style="font-size:0.65rem; color:#888;">📝 ${item.note}</div>` : ''}<div>${item.p * item.qty} ريال</div></div><div class="cart-qty-controls"><button class="qty-btn-small" onclick="changeCartQty(${i}, 1)">+</button><span style="font-weight:700; min-width:20px; text-align:center;">${item.qty}</span><button class="qty-btn-small" onclick="changeCartQty(${i}, -1)">-</button></div></div>`).join(''); }
+                else { container.innerHTML = cart.map((item, i) => `<div class="cart-item"><div class="cart-item-img" style="font-size:1.6rem; background:#eee;">${item.photo ? `<img src="${PHOTOS[item.photo]}" style="width:100%;height:100%;object-fit:cover;">` : (item.icon || '🍽️')}</div><div class="cart-item-details"><h4>${item.name}</h4>${item.note ? `<div style="font-size:0.65rem; color:#888;">📝 ${item.note}</div>` : ''}<div>${item.p * item.qty} ريال</div></div><div class="cart-qty-controls"><button class="qty-btn-small" onclick="changeCartQty(${i}, 1)">+</button><span style="font-weight:700; min-width:20px; text-align:center;">${item.qty}</span><button class="qty-btn-small" onclick="changeCartQty(${i}, -1)">-</button></div></div>`).join(''); }
             }
             document.getElementById('cartTotalPrice').innerText = total + ' ريال';
         }
@@ -483,7 +540,9 @@
         let savedUser = safeStorage.get('waselny_user');
         if (savedUser) { try { currentUser = JSON.parse(savedUser); document.getElementById('loginOverlay').style.display = 'none'; showPage('homePage'); } catch(e) { initLogin(); } } 
         else { initLogin(); }
+        
         renderCategories();
+        renderPopularItems();
 
         function initLogin() {
             const roleCustomer = document.getElementById('roleCustomer'); const roleDriver = document.getElementById('roleDriver'); const passwordField = document.getElementById('passwordField'); const loginBtn = document.getElementById('loginBtn');
@@ -518,3 +577,4 @@
     </script>
 </body>
 </html>
+

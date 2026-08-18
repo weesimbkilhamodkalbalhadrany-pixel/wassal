@@ -14,10 +14,22 @@
         body { background: #f8f6f4; color: #1e1817; direction: rtl; padding-bottom: 90px; }
         :root { 
             --primary: #6f1a2d; 
+            --primary-light: #8f2a3d;
+            --primary-dark: #4a0f1c;
             --gold: #dab669;   
-            --light-grey: #f2f2f2;
+            --gold-light: #e8c97a;
+            --bg-light: #f8f6f4;
+            --white: #ffffff;
+            --dark: #1e1817;
+            --gray: #6b6564;
+            --gray-light: #e8e2dd;
+            --danger: #ef4444;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+            --shadow-md: 0 10px 15px -3px rgba(0,0,0,0.08);
         }
-        
+
         /* ===== الهيدر ===== */
         .header { position: relative; background: #5b1416; box-shadow: 0 4px 12px rgba(0,0,0,0.2); overflow: hidden; padding-bottom: 8px; }
         .header-logo-img { width: 100%; display: block; object-fit: cover; max-height: 180px; }
@@ -35,7 +47,7 @@
         .active-page { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* ===== سلايدر الصور (فل إتش دي، متناسق وقابل للسحب اليدوي) ===== */
+        /* ===== سلايدر الصور ===== */
         .promo-slider-container { margin: 14px 0; border-radius: 18px; overflow: hidden; box-shadow: 0 6px 16px rgba(0,0,0,0.1); background: #1a1514; position: relative; direction: ltr; cursor: grab; user-select: none; touch-action: pan-y; }
         .promo-slider-container:active { cursor: grabbing; }
         .promo-track { display: flex; width: 100%; transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1); pointer-events: none; }
@@ -82,7 +94,7 @@
         .menu-item-price { color: var(--primary); font-weight: 800; font-size: 0.8rem; margin-top: 3px; }
         .menu-item-add-btn { min-width: 36px; width: 36px; height: 36px; border-radius: 50%; background: var(--primary); color: var(--gold); border: none; font-size: 1.2rem; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 2px 6px rgba(111,26,45,0.25); }
         .menu-item-add-btn:active { transform: scale(0.9); }
-        
+
         /* ===== شريط التنقل السفلي ===== */
         .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: #ffffff; display: flex; justify-content: space-around; padding: 6px 0 14px; border-top: 1px solid rgba(0,0,0,0.04); box-shadow: 0 -2px 12px rgba(0,0,0,0.03); z-index: 100; }
         .nav-item { text-align: center; cursor: pointer; display: flex; flex-direction: column; align-items: center; color: #888; font-size: 0.6rem; font-weight: 500; padding: 4px 8px; min-width: 45px; position: relative; }
@@ -108,7 +120,7 @@
         .cart-footer { padding: 16px; border-top: 1px solid #eee; background: #fff; }
         .cart-total { display: flex; justify-content: space-between; font-weight: 800; margin-bottom: 12px; font-size: 0.95rem; }
         .checkout-btn { width: 100%; padding: 14px; background: var(--gold); color: #222; border: none; border-radius: 40px; font-weight: 800; cursor: pointer; font-size: 0.9rem; box-shadow: 0 4px 10px rgba(218, 182, 105, 0.2); }
-        
+
         /* ===== النافذة المنبثقة للصنف ===== */
         .item-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(5px); z-index: 20000; display: none; align-items: center; justify-content: center; }
         .item-modal-card { background: #fff; border-radius: 24px; width: 90%; max-width: 400px; overflow: hidden; animation: modalPop 0.2s ease; box-shadow: 0 20px 40px rgba(0,0,0,0.2); }
@@ -138,56 +150,422 @@
         #loginBtn { width:100%; margin-top:24px; padding:14px; border-radius:40px; border:none; background:var(--gold); color:#222; font-weight:800; font-size:1rem; cursor:pointer; box-shadow:0 4px 12px rgba(218,182,105,0.4); }
         .field-input { width:100%; padding:14px 20px; border-radius:40px; border:none; background:rgba(255,255,255,0.15); color:white; font-size:0.85rem; outline:none; margin-bottom:12px; }
 
-        /* ===== واجهات خاصة بالطلبات والإدارة ===== */
-        .driver-order-card { background: #fff; border-radius: 18px; padding: 16px; margin-bottom: 14px; border: 1px solid #eee; border-right: 5px solid var(--primary); box-shadow: 0 2px 6px rgba(0,0,0,0.04); }
-        .driver-order-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
-        .driver-order-id { font-weight: 800; color: var(--primary); font-size: 0.85rem; }
-        .driver-order-status { background: var(--gold); color: #222; padding: 2px 12px; border-radius: 20px; font-size: 0.6rem; font-weight: 700; }
-        .driver-order-details { font-size: 0.75rem; color: #555; line-height: 1.6; }
-        .driver-order-actions { display: flex; gap: 8px; margin-top: 8px; }
-        .driver-action-btn { flex: 1; padding: 8px 0; border-radius: 30px; font-size: 0.7rem; font-weight: 700; border: none; cursor: pointer; }
+        /* ===== واجهة المندوب (مستوحاة من الأندلس) ===== */
+        .driver-header-new {
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+            color: white;
+            padding: 20px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+            text-align: center;
+            border-bottom: 3px solid var(--gold);
+        }
+        .driver-header-new h2 { font-size: 1.5rem; font-weight: 800; }
+        .driver-header-new p { font-size: 0.85rem; opacity: 0.9; margin-top: 4px; }
+
+        .stats-row {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        .stat-card-new {
+            background: #fff;
+            border-radius: 16px;
+            padding: 12px;
+            text-align: center;
+            flex: 1;
+            border: 1px solid #eee;
+            box-shadow: var(--shadow);
+        }
+        .stat-value {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--primary);
+        }
+        .stat-label {
+            font-size: 0.65rem;
+            color: #888;
+            margin-top: 4px;
+        }
+
+        .driver-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            background: #fff;
+            padding: 8px;
+            border-radius: 50px;
+            border: 1px solid #eee;
+        }
+        .driver-tab {
+            flex: 1;
+            padding: 8px;
+            border-radius: 40px;
+            text-align: center;
+            font-weight: 700;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: 0.2s;
+            background: transparent;
+            color: #888;
+        }
+        .driver-tab.active {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 2px 8px rgba(111,26,45,0.2);
+        }
+
+        .driver-orders-container {
+            background: #fff;
+            border-radius: 20px;
+            padding: 16px;
+            border: 1px solid #eee;
+            min-height: 200px;
+        }
+
+        .driver-order-card {
+            background: #fff;
+            border-radius: 18px;
+            padding: 16px;
+            margin-bottom: 14px;
+            border: 1px solid #eee;
+            border-right: 5px solid var(--primary);
+            box-shadow: var(--shadow);
+            cursor: pointer;
+            transition: 0.1s;
+        }
+        .driver-order-card:active { transform: scale(0.98); }
+        .driver-order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 4px;
+        }
+        .driver-order-id {
+            font-weight: 800;
+            color: var(--primary);
+            font-size: 0.85rem;
+        }
+        .driver-order-status {
+            background: var(--primary);
+            color: white;
+            padding: 2px 10px;
+            border-radius: 20px;
+            font-size: 0.6rem;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+        .driver-order-details {
+            font-size: 0.75rem;
+            color: #555;
+            line-height: 1.6;
+        }
+        .driver-order-details i { width: 18px; color: var(--primary); }
+        .driver-order-actions {
+            display: flex;
+            gap: 4px;
+            margin-top: 8px;
+            flex-wrap: wrap;
+        }
+        .driver-action-btn {
+            flex: 1;
+            padding: 10px 0;
+            border-radius: 30px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            border: none;
+            cursor: pointer;
+            margin: 3px;
+            min-width: 60px;
+            transition: 0.1s;
+        }
+        .driver-action-btn:active { transform: scale(0.95); }
         .driver-action-btn.primary { background: var(--primary); color: white; }
-        .driver-action-btn.warning { background: var(--gold); color: #222; }
-        .driver-action-btn.success { background: #10b981; color: white; }
-        .driver-action-btn.danger { background: #ef4444; color: white; }
+        .driver-action-btn.warning { background: var(--warning); color: white; }
+        .driver-action-btn.success { background: var(--success); color: white; }
+        .driver-action-btn.danger { background: var(--danger); color: white; }
         .driver-action-btn.call { background: #25D366; color: white; }
 
-        /* التحكم في الخريطة */
-        #map-overlay { position:fixed; top:0; left:0; width:100%; height:100%; background:#000; z-index:100000; display:none; flex-direction:column; }
-        #map { flex:1; width:100%; }
-        .map-controls { display:flex; background:var(--primary); padding:15px; gap:10px; }
-        .map-controls div { flex:1; color:white; padding:14px; text-align:center; font-weight:800; cursor:pointer; border-radius:40px; }
-        .map-back { background:rgba(255,255,255,0.2); }
-        .map-confirm { background:var(--gold); color:#222; }
+        .empty-orders {
+            text-align: center;
+            padding: 30px;
+            color: #888;
+        }
+        .empty-orders i { font-size: 2.5rem; margin-bottom: 10px; opacity: 0.5; }
 
-        /* تتبع الطلب */
-        .tracking-steps { display: flex; justify-content: space-between; align-items: center; margin: 20px 0; }
+        .sync-indicator {
+            font-size: 0.6rem;
+            color: #888;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            margin-top: 8px;
+        }
+        .loading-spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(0,0,0,0.1);
+            border-radius: 50%;
+            border-top-color: var(--primary);
+            animation: spin 0.6s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* ===== تفاصيل الطلب للمندوب ===== */
+        .order-detail-card {
+            background: #fff;
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid #eee;
+            box-shadow: var(--shadow);
+        }
+        .order-detail-header {
+            border-bottom: 2px solid var(--gold);
+            padding-bottom: 12px;
+            margin-bottom: 16px;
+        }
+        .order-detail-header h3 {
+            font-size: 1.1rem;
+            color: var(--primary);
+        }
+        .order-detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px dashed #eee;
+        }
+        .order-detail-label {
+            font-weight: 700;
+            color: var(--dark);
+        }
+        .order-detail-value {
+            color: var(--gray);
+            text-align: left;
+            max-width: 60%;
+        }
+        .items-table {
+            width: 100%;
+            margin: 12px 0;
+            border-collapse: collapse;
+            font-size: 0.8rem;
+        }
+        .items-table th {
+            background: var(--bg-light);
+            font-weight: 800;
+            color: var(--primary);
+            padding: 8px;
+            text-align: center;
+            border-bottom: 2px solid #eee;
+        }
+        .items-table td {
+            padding: 8px;
+            text-align: center;
+            border-bottom: 1px solid #eee;
+        }
+        .items-table td:first-child { text-align: right; }
+        .order-status-buttons {
+            display: flex;
+            gap: 8px;
+            margin: 16px 0;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .order-status-buttons .driver-action-btn {
+            flex: 0 1 auto;
+            padding: 8px 16px;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 11px;
+            border-radius: 40px;
+            width: 100%;
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: 0.1s;
+        }
+        .btn-primary:active { transform: scale(0.97); }
+
+        /* ===== نافذة التأكيد ===== */
+        #confirmationModal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(4px);
+            z-index: 40000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+        .confirmation-card {
+            background: #fff;
+            border-radius: 40px;
+            padding: 28px;
+            width: 85%;
+            max-width: 320px;
+            text-align: center;
+            box-shadow: var(--shadow-md);
+        }
+        .confirmation-card h4 {
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+            color: var(--primary);
+        }
+        .confirmation-card p {
+            font-size: 0.9rem;
+            color: var(--gray);
+            margin-bottom: 20px;
+        }
+        .confirmation-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+        .confirmation-actions button {
+            padding: 8px 24px;
+            border-radius: 30px;
+            border: none;
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+        .confirmation-actions .btn-confirm {
+            background: var(--gold);
+            color: var(--primary-dark);
+        }
+        .confirmation-actions .btn-cancel {
+            background: #eee;
+            color: #333;
+        }
+
+        /* ===== الخريطة ===== */
+        #map-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            z-index: 100000;
+            display: none;
+            flex-direction: column;
+        }
+        #map { flex: 1; width: 100%; height: 100%; }
+        .map-controls {
+            display: flex;
+            background: var(--primary-dark);
+            padding: 15px;
+            gap: 10px;
+        }
+        .map-confirm, .map-back {
+            flex: 1;
+            color: white;
+            padding: 14px;
+            text-align: center;
+            font-weight: 800;
+            cursor: pointer;
+            border-radius: 40px;
+        }
+        .map-confirm { background: var(--gold); color: var(--primary-dark); }
+        .map-back { background: rgba(255,255,255,0.2); }
+
+        /* ===== تتبع الطلب ===== */
+        .tracking-steps {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 20px 0;
+        }
         .step { text-align: center; flex: 1; }
-        .step .circle { width: 40px; height: 40px; background: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 6px; border: 2px solid #ddd; font-size: 1rem; color: #888; }
-        .step.active .circle { background: var(--primary); border-color: var(--primary); color: white; animation: pulse 1s infinite; }
-        .step.completed .circle { background: #10b981; border-color: #10b981; color: white; }
-        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(111,26,45,0.5); } 100% { box-shadow: 0 0 0 15px rgba(111,26,45,0); } }
+        .step .circle {
+            width: 40px;
+            height: 40px;
+            background: #fff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 6px;
+            border: 2px solid #ddd;
+            font-size: 1rem;
+            color: #888;
+        }
+        .step.active .circle {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: white;
+            animation: pulse 1s infinite;
+        }
+        .step.completed .circle {
+            background: var(--success);
+            border-color: var(--success);
+            color: white;
+        }
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(111,26,45,0.5); }
+            100% { box-shadow: 0 0 0 15px rgba(111,26,45,0); }
+        }
         .step-connector { flex: 0.5; height: 3px; background: #ddd; }
-        .step-connector.completed { background: #10b981; }
+        .step-connector.completed { background: var(--success); }
 
-        /* نافذة التقييم */
+        /* ===== نافذة التقييم ===== */
         .rating-stars-wrapper { display: flex; gap: 5px; font-size: 1.8rem; cursor: pointer; }
         .rating-stars-wrapper .fa-star { color: #ddd; transition: color 0.2s; }
         .rating-stars-wrapper .fa-star.active { color: var(--gold); }
 
-        /* زر التتبع */
-        #trackOrderBtnHome { display:none; background:var(--gold); color:#222; border:none; padding:12px; border-radius:40px; font-weight:800; width:100%; cursor:pointer; margin-top:10px; }
-        #trackOrderBtnHome:active { transform:scale(0.97); }
+        #trackOrderBtnHome {
+            display: none;
+            background: var(--gold);
+            color: #222;
+            border: none;
+            padding: 12px;
+            border-radius: 40px;
+            font-weight: 800;
+            width: 100%;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        #trackOrderBtnHome:active { transform: scale(0.97); }
+
+        /* ===== نافذة التتبع ===== */
+        #trackFullscreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #f8f6f4;
+            z-index: 15000;
+            overflow-y: auto;
+            padding: 16px;
+            display: none;
+        }
+        #trackFullscreen .tracking-details-card {
+            background: #fff;
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 16px;
+            border: 1px solid #eee;
+        }
     </style>
 </head>
 <body>
 
-    <!-- ===== الهيدر والشعار ===== -->
+    <!-- ===== الهيدر ===== -->
     <div class="header">
         <img class="header-logo-img" src="logo.png" alt="مطعم العم طه">
     </div>
 
-    <!-- ===== شريط البحث الفعّال ===== -->
+    <!-- ===== شريط البحث ===== -->
     <div class="search-wrapper">
         <div class="search-container">
             <input type="text" id="searchInput" placeholder="ابحث في القائمة عن أي وجبة...">
@@ -198,8 +576,6 @@
     <div class="container">
         <!-- الصفحة الرئيسية -->
         <div id="homePage" class="page active-page">
-            
-            <!-- ===== سلايدر الصور (قابل للسحب اليدوي والتلقائي) ===== -->
             <div class="promo-slider-container" id="promoSliderContainer">
                 <div class="promo-track" id="promoTrack">
                     <div class="promo-slide">
@@ -239,7 +615,6 @@
                 </div>
             </div>
 
-            <!-- شريط الأصناف الأكثر طلباً المحسن -->
             <div class="popular-section">
                 <div class="section-header-title">🔥 الأكثر طلباً</div>
                 <div class="popular-slider" id="popularSlider"></div>
@@ -247,8 +622,7 @@
 
             <div class="section-header-title" style="margin-top: 10px;">📋 أقسام المنيو</div>
             <div class="categories-grid" id="categoriesGrid"></div>
-            
-            <!-- زر تتبع الطلب -->
+
             <button id="trackOrderBtnHome" onclick="viewMyTracking()">📍 تتبع طلبي الحالي</button>
         </div>
 
@@ -272,8 +646,7 @@
                 </div>
                 <input type="text" id="checkoutAddressManual" placeholder="أو اكتب عنوانك يدوياً التفصيلي" style="background: #fff; border: 1px solid #eee; border-radius: 30px; padding: 12px 16px; width: 100%; margin: 6px 0; color: #333; outline: none;">
                 <div id="deliveryCostDisplay" style="display:none; background: var(--primary); border-radius: 16px; padding: 12px; margin: 10px 0; color: white; font-weight: 700; font-size: 0.85rem; display:flex; justify-content:space-between;"><div>🚚 سعر التوصيل</div><div><strong id="deliveryCostValue">0</strong> ريال</div></div>
-                
-                <!-- وسيلة الدفع -->
+
                 <label style="font-weight:700; font-size:0.8rem; display:block; margin:12px 0 6px;">💰 وسيلة الدفع</label>
                 <div class="payment-list" id="paymentList">
                     <div class="payment-option" data-method="jeeb"><div class="payment-icon"><i class="fas fa-wallet"></i></div><div class="payment-name">محفظة جيب</div></div>
@@ -308,22 +681,51 @@
             </div>
         </div>
 
-        <!-- ===== صفحة المندوب ===== -->
+        <!-- ===== صفحة المندوب (المطورة بالكامل) ===== -->
         <div id="driverPage" class="page">
-            <div style="background:linear-gradient(135deg, var(--primary), #4a0f1c); color:white; padding:20px; border-radius:20px; margin-bottom:20px; text-align:center;">
-                <h2 style="font-size:1.5rem; font-weight:800;">🛵 التوصيل</h2>
-                <p style="font-size:0.8rem; opacity:0.9;">مرحباً، <span id="driverNameDisplay"></span></p>
+            <div class="driver-header-new">
+                <h2>🛵 التوصيل</h2>
+                <p>مرحباً، <span id="driverNameDisplay"></span></p>
             </div>
-            <div class="stats-row" style="display:flex; gap:12px; margin-bottom:20px;">
-                <div style="background:#fff; border-radius:16px; padding:12px; text-align:center; flex:1; border:1px solid #eee;"><div style="font-size:1.3rem; font-weight:800; color:var(--primary);" id="activeOrdersCount">0</div><div style="font-size:0.65rem; color:#888;">طلبات نشطة</div></div>
-                <div style="background:#fff; border-radius:16px; padding:12px; text-align:center; flex:1; border:1px solid #eee;"><div style="font-size:1.3rem; font-weight:800; color:var(--primary);" id="completedOrdersCount">0</div><div style="font-size:0.65rem; color:#888;">مكتملة</div></div>
+
+            <div class="stats-row">
+                <div class="stat-card-new">
+                    <div class="stat-value" id="activeOrdersCount">0</div>
+                    <div class="stat-label">طلبات نشطة</div>
+                </div>
+                <div class="stat-card-new">
+                    <div class="stat-value" id="completedOrdersCount">0</div>
+                    <div class="stat-label">مكتملة</div>
+                </div>
             </div>
-            <div class="driver-tabs" style="display:flex; gap:8px; margin-bottom:20px; background:#fff; padding:8px; border-radius:50px; border:1px solid #eee;">
-                <div class="driver-tab active" data-driver-tab="available" onclick="switchDriverTab('available')" style="flex:1; padding:8px; border-radius:40px; text-align:center; font-weight:700; font-size:0.75rem; cursor:pointer; background:var(--primary); color:white;"><i class="fas fa-list"></i> المتاحة</div>
-                <div class="driver-tab" data-driver-tab="active" onclick="switchDriverTab('active')" style="flex:1; padding:8px; border-radius:40px; text-align:center; font-weight:700; font-size:0.75rem; cursor:pointer; background:transparent; color:#888;"><i class="fas fa-truck"></i> نشطة</div>
+
+            <div class="driver-tabs">
+                <div class="driver-tab active" data-driver-tab="available" onclick="switchDriverTab('available')">
+                    <i class="fas fa-list"></i> المتاحة
+                </div>
+                <div class="driver-tab" data-driver-tab="active" onclick="switchDriverTab('active')">
+                    <i class="fas fa-truck"></i> نشطة
+                </div>
             </div>
-            <div id="driverOrdersList"></div>
+
+            <div class="driver-orders-container" id="driverOrdersList">
+                <div class="empty-orders">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <p>جاري تحميل الطلبات...</p>
+                </div>
+            </div>
+
+            <div class="sync-indicator" id="syncStatus">
+                <span class="loading-spinner"></span> جاري المزامنة...
+            </div>
+
             <button id="driverLogoutBtn" style="width:100%; padding:12px; background:#ef4444; color:white; border:none; border-radius:30px; font-weight:800; margin-top:12px; cursor:pointer;">تسجيل الخروج</button>
+        </div>
+
+        <!-- ===== صفحة تفاصيل الطلب للمندوب ===== -->
+        <div id="orderDetailDriverPage" class="page">
+            <div class="back-btn" onclick="goBackToDriver()">🔙 رجوع</div>
+            <div id="orderDetailDriverContent"></div>
         </div>
 
         <!-- ===== صفحة الإدارة ===== -->
@@ -356,6 +758,8 @@
         <div class="nav-item" onclick="toggleCart()"><span class="nav-icon"><i class="fas fa-shopping-cart"></i></span><span>السلة</span><span class="nav-badge" id="navCartBadge" style="display:none;">0</span></div>
         <div class="nav-item" data-page="ordersPage"><span class="nav-icon"><i class="fas fa-clipboard-list"></i></span><span>طلباتي</span></div>
         <div class="nav-item active" data-page="homePage"><span class="nav-icon"><i class="fas fa-home"></i></span><span>الرئيسية</span></div>
+        <!-- أيقونة المندوب تظهر فقط عند تسجيل الدخول كمندوب، لكننا نضيفها دائماً مع إمكانية الإخفاء -->
+        <div class="nav-item" data-page="driverPage" id="navDriverBtn" style="display:none;"><span class="nav-icon"><i class="fas fa-motorcycle"></i></span><span>المندوب</span></div>
     </nav>
 
     <!-- ===== السلة العائمة و الجانبية ===== -->
@@ -386,7 +790,7 @@
         </div>
     </div>
 
-    <!-- النافذة المنبثقة للصنف مع عرض الصورة بملء الإطار تماماً -->
+    <!-- النافذة المنبثقة للصنف -->
     <div id="itemModal" class="item-modal-overlay">
         <div class="item-modal-card">
             <div id="modalImg" class="modal-img"></div>
@@ -543,6 +947,9 @@
         let ratingData = { driver: 0, service: 0, speed: 0, restaurant: 0 };
         let currentRatingOrderId = null;
         let selectedPaymentMethod = 'cash';
+        let driverTab = 'available';
+        let driverUpdateInterval = null;
+        let lastDriverPanelUpdate = 0;
 
         // ================================================================
         //  دوال مساعدة عامة
@@ -569,17 +976,32 @@
             return m[st] || st;
         }
 
-        async function loadOrders() {
+        // ================================================================
+        //  تحميل الطلبات مع كاش بسيط
+        // ================================================================
+        let ordersCache = { data: null, timestamp: 0 };
+
+        async function loadOrders(forceRefresh = false) {
+            const now = Date.now();
+            if (!forceRefresh && ordersCache.data && (now - ordersCache.timestamp) < 30000) {
+                allOrders = ordersCache.data;
+                return allOrders;
+            }
             try {
                 let res = await fetch(`${FIREBASE_URL}/orders.json`);
                 let data = await res.json();
                 allOrders = data ? Object.values(data).sort((a, b) => b.id - a.id) : [];
-            } catch(e) {}
+                ordersCache = { data: allOrders, timestamp: now };
+            } catch(e) {
+                if (ordersCache.data) allOrders = ordersCache.data;
+                else allOrders = [];
+            }
+            return allOrders;
         }
 
         async function updateOrder(id, updates) {
             await fetch(`${FIREBASE_URL}/orders/${id}.json`, { method: 'PATCH', body: JSON.stringify(updates) });
-            await loadOrders();
+            await loadOrders(true);
         }
 
         async function updateUserBusy(phone, isBusy) {
@@ -739,7 +1161,6 @@
             `;
         }
 
-        // وسائل الدفع
         function initPaymentList() {
             const paymentMethods = { jeeb: "777215154", onecash: "777215154", floosak: "777215154", jawaly: "777215154", kremi: "777215154", easy: "777215154", cash: "" };
             document.querySelectorAll('.payment-option').forEach(opt => {
@@ -811,7 +1232,7 @@
             document.getElementById('cartOrderNote').value = '';
             updateCartDisplay();
             showPage('homePage');
-            await loadOrders();
+            await loadOrders(true);
             setTimeout(() => {
                 viewOrderTracking(id);
                 startAutoTracking(id);
@@ -983,118 +1404,348 @@
         }
 
         // ================================================================
-        //  واجهة المندوب
+        //  واجهة المندوب (المطورة بالكامل - مستوحاة من الأندلس)
         // ================================================================
-        let driverTab = 'available';
-
         function switchDriverTab(tab) {
             driverTab = tab;
             document.querySelectorAll('.driver-tab').forEach(t => t.classList.remove('active'));
             document.querySelector(`.driver-tab[data-driver-tab="${tab}"]`).classList.add('active');
-            refreshDriverPanel();
+            refreshDriverPanel(true);
         }
 
-        async function refreshDriverPanel() {
+        function stopDriverAutoUpdate() {
+            if (driverUpdateInterval) {
+                clearInterval(driverUpdateInterval);
+                driverUpdateInterval = null;
+            }
+        }
+
+        function startDriverAutoUpdate() {
+            stopDriverAutoUpdate();
+            refreshDriverPanel(true);
+            driverUpdateInterval = setInterval(() => {
+                if (!document.hidden) refreshDriverPanel(false);
+            }, 30000);
+        }
+
+        async function refreshDriverPanel(forceRefresh = false) {
             if (document.hidden) return;
-            await loadOrders();
+            const now = Date.now();
+            if (!forceRefresh && (now - lastDriverPanelUpdate) < 5000) return;
+            lastDriverPanelUpdate = now;
+
+            document.getElementById('syncStatus').innerHTML = '<span class="loading-spinner"></span> جاري المزامنة...';
+
+            try {
+                await loadOrders(forceRefresh);
+            } catch(e) {
+                document.getElementById('syncStatus').innerHTML = '⚠️ فشل الاتصال - بيانات مخزنة';
+                return;
+            }
+
             let activeOrders = allOrders.filter(o => o.driverId === currentUser?.phone && o.status !== 'delivered');
             let availableOrders = allOrders.filter(o => o.status === 'pending');
             let completedOrders = allOrders.filter(o => o.driverId === currentUser?.phone && o.status === 'delivered');
+
             document.getElementById('activeOrdersCount').innerText = activeOrders.length;
             document.getElementById('completedOrdersCount').innerText = completedOrders.length;
 
+            let listContainer = document.getElementById('driverOrdersList');
             let orders = driverTab === 'available' ? availableOrders : activeOrders;
-            let html = orders.map(o => `
-                <div class="driver-order-card">
-                    <div class="driver-order-header">
-                        <span class="driver-order-id">#${o.id}</span>
-                        <span class="driver-order-status">${driverTab === 'available' ? 'متاح' : getStatusText(o.status)}</span>
+
+            if (orders.length === 0) {
+                listContainer.innerHTML = `
+                    <div class="empty-orders">
+                        <i class="fas ${driverTab === 'available' ? 'fa-motorcycle' : 'fa-check-circle'}"></i>
+                        <p>${driverTab === 'available' ? 'لا يوجد طلبات متاحة!' : 'لا يوجد طلبات نشطة!'}</p>
                     </div>
-                    <div class="driver-order-details">
-                        <div><i class="fas fa-store"></i> ${o.restaurant}</div>
-                        <div><i class="fas fa-money-bill"></i> ${o.total} ريال</div>
-                        <div><i class="fas fa-map-marker-alt"></i> ${o.address}</div>
-                    </div>
-                    ${driverTab === 'available' ? `
-                        <div class="driver-order-actions">
-                            <button class="driver-action-btn primary" onclick="showConfirmationModal(${o.id}, 'accept')"><i class="fas fa-check"></i> قبول</button>
-                            <button class="driver-action-btn danger" onclick="showConfirmationModal(${o.id}, 'reject')"><i class="fas fa-times"></i> رفض</button>
-                            <button class="driver-action-btn call" onclick="callCustomer('${o.customerPhone}')"><i class="fas fa-phone"></i></button>
+                `;
+            } else {
+                listContainer.innerHTML = orders.map(o => {
+                    let statusText = driverTab === 'available' ? 'متاح' : getStatusText(o.status);
+                    let statusColor = driverTab === 'available' ? 'var(--gold)' :
+                        (o.status === 'delivered' ? 'var(--success)' :
+                         (o.status === 'on_the_way' ? 'var(--primary-light)' : 'var(--primary)'));
+
+                    let actionsHtml = '';
+                    if (driverTab === 'available') {
+                        actionsHtml = `
+                            <div class="driver-order-actions">
+                                <button class="driver-action-btn primary" onclick="event.stopPropagation(); showConfirmationModal(${o.id}, 'accept')">
+                                    <i class="fas fa-check"></i> قبول
+                                </button>
+                                <button class="driver-action-btn danger" onclick="event.stopPropagation(); showConfirmationModal(${o.id}, 'reject')">
+                                    <i class="fas fa-times"></i> رفض
+                                </button>
+                                <button class="driver-action-btn call" onclick="event.stopPropagation(); callCustomer('${o.customerPhone || ''}')">
+                                    <i class="fas fa-phone"></i>
+                                </button>
+                            </div>
+                        `;
+                    } else {
+                        let statusBtns = '';
+                        if (o.status === 'on_the_way') {
+                            statusBtns = `<button class="driver-action-btn warning" onclick="event.stopPropagation(); confirmStatusChange(${o.id}, 'arrived')">وصلت</button>`;
+                        } else if (o.status === 'arrived') {
+                            statusBtns = `<button class="driver-action-btn success" onclick="event.stopPropagation(); confirmStatusChange(${o.id}, 'delivered')">تم التوصيل</button>`;
+                        }
+                        actionsHtml = `
+                            <div class="driver-order-actions">
+                                ${statusBtns}
+                                <button class="driver-action-btn call" onclick="event.stopPropagation(); callCustomer('${o.customerPhone || ''}')">
+                                    <i class="fas fa-phone"></i>
+                                </button>
+                            </div>
+                        `;
+                    }
+
+                    return `
+                        <div class="driver-order-card" onclick="viewDriverOrderDetail(${o.id})">
+                            <div class="driver-order-header">
+                                <span class="driver-order-id">#${o.id}</span>
+                                <span class="driver-order-status" style="background:${statusColor};">
+                                    ${statusText}
+                                </span>
+                            </div>
+                            <div class="driver-order-details">
+                                <div><i class="fas fa-store"></i> ${o.restaurant || o.service || 'مطعم العم طه'}</div>
+                                <div><i class="fas fa-money-bill"></i> ${o.total || o.price || 0} ريال</div>
+                                <div><i class="fas fa-map-marker-alt"></i> ${o.address || o.toAddress || 'عنوان غير محدد'}</div>
+                                <div><i class="fas fa-user"></i> ${o.customerName || 'عميل'}</div>
+                            </div>
+                            ${actionsHtml}
                         </div>
-                    ` : `
-                        <div class="driver-order-actions">
-                            ${o.status === 'on_the_way' ? `<button class="driver-action-btn warning" onclick="confirmStatusChange(${o.id}, 'arrived')">وصلت</button>` : ''}
-                            ${o.status === 'arrived' ? `<button class="driver-action-btn success" onclick="confirmStatusChange(${o.id}, 'delivered')">تم التوصيل</button>` : ''}
-                            <button class="driver-action-btn call" onclick="callCustomer('${o.customerPhone}')"><i class="fas fa-phone"></i></button>
-                        </div>
-                    `}
-                </div>
-            `).join('') || `<div style="text-align:center; padding:30px; color:#888;">لا توجد طلبات</div>`;
-            document.getElementById('driverOrdersList').innerHTML = html;
+                    `;
+                }).join('');
+            }
+
+            document.getElementById('syncStatus').innerHTML = '✅ تم التحديث ' + new Date().toLocaleTimeString('ar-SA');
         }
 
+        // ================================================================
+        //  قبول / رفض الطلب
+        // ================================================================
         function showConfirmationModal(orderId, action) {
             pendingOrderId = orderId;
             pendingModalAction = action;
-            document.getElementById('modalTitle').innerText = 'تأكيد العملية';
-            document.getElementById('modalMessage').innerText = `هل أنت متأكد من ${action==='accept'?'قبول':'رفض'} الطلب #${orderId}?`;
+            document.getElementById('modalTitle').innerText = action === 'accept' ? 'قبول الطلب' : 'رفض الطلب';
+            document.getElementById('modalMessage').innerText =
+                `هل أنت متأكد من ${action === 'accept' ? 'قبول' : 'رفض'} الطلب #${orderId}؟`;
             document.getElementById('confirmationModal').style.display = 'flex';
         }
+
+        document.getElementById('modalConfirm').onclick = async function() {
+            if (pendingOrderId && pendingModalAction) {
+                if (pendingModalAction === 'accept') {
+                    await acceptOrder(pendingOrderId);
+                } else if (pendingModalAction === 'reject') {
+                    await rejectOrder(pendingOrderId);
+                }
+                pendingOrderId = null;
+                pendingModalAction = null;
+                document.getElementById('confirmationModal').style.display = 'none';
+                refreshDriverPanel(true);
+            }
+        };
+
+        document.getElementById('modalCancel').onclick = function() {
+            pendingOrderId = null;
+            pendingModalAction = null;
+            document.getElementById('confirmationModal').style.display = 'none';
+        };
 
         async function acceptOrder(id) {
             if (allOrders.find(o => o.driverId === currentUser?.phone && o.status !== 'delivered')) {
-                return showToast("⚠️ لديك طلب نشط");
+                showToast("⚠️ لديك طلب نشط حالياً");
+                return;
             }
             let o = allOrders.find(o => o.id == id);
-            if (!o || o.status !== 'pending') return showToast("الطلب غير متاح");
-            await updateOrder(id, { status: 'on_the_way', driverId: currentUser.phone, driverName: currentUser.name });
+            if (!o || o.status !== 'pending') {
+                showToast("الطلب غير متاح");
+                return;
+            }
+            await updateOrder(id, {
+                status: 'on_the_way',
+                driverId: currentUser.phone,
+                driverName: currentUser.name
+            });
             await updateUserBusy(currentUser.phone, true);
             showToast("✅ تم قبول الطلب");
             switchDriverTab('active');
-            refreshDriverPanel();
         }
 
         async function rejectOrder(id) {
+            let o = allOrders.find(o => o.id == id);
+            if (!o || o.status !== 'pending') {
+                showToast("الطلب غير متاح");
+                return;
+            }
             showToast("❌ تم رفض الطلب");
-            refreshDriverPanel();
+            refreshDriverPanel(true);
         }
 
-        function confirmStatusChange(orderId, status) {
-            pendingOrderId = orderId;
-            pendingStatus = status;
-            document.getElementById('modalTitle').innerText = 'تأكيد تغيير الحالة';
-            document.getElementById('modalMessage').innerText = `هل أنت متأكد من تغيير الحالة إلى "${getStatusText(status)}"?`;
-            document.getElementById('confirmationModal').style.display = 'flex';
+        // ================================================================
+        //  تغيير حالة الطلب (للمندوب)
+        // ================================================================
+        function confirmStatusChange(orderId, newStatus) {
+            if (confirm(`هل أنت متأكد من تغيير الحالة إلى "${getStatusText(newStatus)}"؟`)) {
+                updateOrder(orderId, { status: newStatus }).then(() => {
+                    if (newStatus === 'delivered') {
+                        updateUserBusy(currentUser.phone, false);
+                    }
+                    viewDriverOrderDetail(orderId);
+                    refreshDriverPanel(true);
+                    showToast(`✅ تم تحديث الحالة إلى "${getStatusText(newStatus)}"`);
+                });
+            }
         }
 
+        // ================================================================
+        //  عرض تفاصيل الطلب (للمندوب) - صفحة كاملة
+        // ================================================================
+        async function viewDriverOrderDetail(orderId) {
+            await loadOrders();
+            let order = allOrders.find(o => o.id == orderId);
+            if (!order) {
+                showToast('الطلب غير موجود');
+                return;
+            }
+
+            let itemsHtml = `
+                <table class="items-table">
+                    <thead><tr><th>المنتج</th><th>الكمية</th><th>السعر</th></tr></thead>
+                    <tbody>
+                        ${(order.items || []).map(i => `
+                            <tr>
+                                <td>${i.name}</td>
+                                <td>${i.qty}</td>
+                                <td>${i.price * i.qty} ريال</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+
+            let statusButtons = '';
+            if (order.status !== 'delivered') {
+                statusButtons = `
+                    <div class="order-status-buttons">
+                        ${order.status === 'pending' ?
+                            `<button class="driver-action-btn primary" onclick="confirmStatusChange(${order.id}, 'on_the_way')">
+                                <i class="fas fa-truck"></i> في الطريق
+                            </button>` : ''}
+                        ${order.status === 'on_the_way' ?
+                            `<button class="driver-action-btn warning" onclick="confirmStatusChange(${order.id}, 'arrived')">
+                                <i class="fas fa-map-pin"></i> وصلت الموقع
+                            </button>` : ''}
+                        ${order.status === 'arrived' ?
+                            `<button class="driver-action-btn success" onclick="confirmStatusChange(${order.id}, 'delivered')">
+                                <i class="fas fa-check-double"></i> تم التوصيل
+                            </button>` : ''}
+                        <button class="driver-action-btn call" onclick="callCustomer('${order.customerPhone}')">
+                            <i class="fas fa-phone"></i> اتصل بالعميل
+                        </button>
+                    </div>
+                `;
+            }
+
+            let locationHtml = '';
+            if (order.lat && order.lng) {
+                locationHtml = `
+                    <div class="order-detail-row">
+                        <span class="order-detail-label">🗺️ إحداثيات العميل:</span>
+                        <span class="order-detail-value">${order.lat}, ${order.lng}</span>
+                    </div>
+                    <button class="driver-action-btn primary" onclick="openCustomerLocation(${order.lat}, ${order.lng})" style="width:100%; margin:10px 0;">
+                        <i class="fas fa-location-dot"></i> تتبع موقع العميل (خرائط جوجل)
+                    </button>
+                `;
+            }
+
+            let detailsHtml = `
+                <div class="order-detail-card">
+                    <div class="order-detail-header">
+                        <h3>🧾 تفاصيل الطلب #${order.id}</h3>
+                    </div>
+                    <div class="order-detail-row">
+                        <span class="order-detail-label">🍔 المطعم:</span>
+                        <span class="order-detail-value">${order.restaurant || 'مطعم العم طه'}</span>
+                    </div>
+                    <div class="order-detail-row">
+                        <span class="order-detail-label">👤 اسم العميل:</span>
+                        <span class="order-detail-value">${order.customerName}</span>
+                    </div>
+                    <div class="order-detail-row">
+                        <span class="order-detail-label">📞 رقم الهاتف:</span>
+                        <span class="order-detail-value">${order.customerPhone}</span>
+                    </div>
+                    <div class="order-detail-row">
+                        <span class="order-detail-label">📍 عنوان التوصيل:</span>
+                        <span class="order-detail-value">${order.address || 'لم يحدد'}</span>
+                    </div>
+                    ${locationHtml}
+                    <div class="order-detail-row">
+                        <span class="order-detail-label">📅 تاريخ الطلب:</span>
+                        <span class="order-detail-value">${new Date(order.createdAt).toLocaleString('ar-SA')}</span>
+                    </div>
+                    <div class="order-detail-row">
+                        <span class="order-detail-label">🛒 الأصناف:</span>
+                    </div>
+                    ${itemsHtml}
+                    ${statusButtons}
+                    <div class="order-detail-row">
+                        <span class="order-detail-label">💰 المجموع الفرعي:</span>
+                        <span class="order-detail-value">${order.totalFood || 0} ريال</span>
+                    </div>
+                    <div class="order-detail-row">
+                        <span class="order-detail-label">🚚 سعر التوصيل:</span>
+                        <span class="order-detail-value">${order.deliveryCost || 0} ريال</span>
+                    </div>
+                    <div class="order-detail-row">
+                        <span class="order-detail-label">💵 الإجمالي الكلي:</span>
+                        <span class="order-detail-value" style="font-weight:800; color:var(--primary);">${order.total || 0} ريال</span>
+                    </div>
+                    <div class="order-detail-row">
+                        <span class="order-detail-label">💰 وسيلة الدفع:</span>
+                        <span class="order-detail-value">${order.paymentMethod || 'الدفع عند الاستلام'}</span>
+                    </div>
+                    <div class="order-detail-row">
+                        <span class="order-detail-label">📌 الحالة الحالية:</span>
+                        <span class="order-detail-value" style="color:${order.status === 'delivered' ? 'var(--success)' : (order.status === 'on_the_way' ? 'var(--primary-light)' : 'var(--warning)')}">
+                            ${getStatusText(order.status)}
+                        </span>
+                    </div>
+                </div>
+                <button class="btn-primary" style="background:var(--gray);" onclick="goBackToDriver()">
+                    رجوع إلى القائمة
+                </button>
+            `;
+
+            document.getElementById('orderDetailDriverContent').innerHTML = detailsHtml;
+            showPage('orderDetailDriverPage');
+        }
+
+        // ================================================================
+        //  دوال مساعدة للمندوب
+        // ================================================================
         function callCustomer(phone) {
             if (phone) window.location.href = `tel:${phone}`;
         }
 
-        document.getElementById('modalConfirm').onclick = async () => {
-            if (pendingOrderId && pendingStatus) {
-                await updateOrder(pendingOrderId, { status: pendingStatus });
-                if (pendingStatus === 'delivered') await updateUserBusy(currentUser.phone, false);
-                showToast(`✅ تم تغيير الحالة إلى ${getStatusText(pendingStatus)}`);
-                pendingOrderId = null;
-                pendingStatus = null;
-                refreshDriverPanel();
-            } else if (pendingOrderId && pendingModalAction) {
-                if (pendingModalAction === 'accept') await acceptOrder(pendingOrderId);
-                else if (pendingModalAction === 'reject') await rejectOrder(pendingOrderId);
-                pendingOrderId = null;
-                pendingModalAction = null;
-                refreshDriverPanel();
+        function openCustomerLocation(lat, lng) {
+            if (lat && lng) {
+                const url = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`;
+                window.open(url, '_blank');
+            } else {
+                showToast('⚠️ لا توجد إحداثيات متاحة');
             }
-            document.getElementById('confirmationModal').style.display = 'none';
-        };
+        }
 
-        document.getElementById('modalCancel').onclick = () => {
-            pendingOrderId = null;
-            pendingStatus = null;
-            pendingModalAction = null;
-            document.getElementById('confirmationModal').style.display = 'none';
-        };
+        function goBackToDriver() {
+            document.getElementById('orderDetailDriverPage').classList.remove('active-page');
+            document.getElementById('driverPage').classList.add('active-page');
+            startDriverAutoUpdate();
+        }
 
         // ================================================================
         //  دوال واجهة العم طه (العرض والبحث والتصنيفات)
@@ -1292,20 +1943,46 @@
         // ================================================================
         function showPage(pageId) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
-            document.getElementById(pageId).classList.add('active-page');
+            let target = document.getElementById(pageId);
+            if (target) target.classList.add('active-page');
+
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
             let activeNav = document.querySelector(`.nav-item[data-page="${pageId}"]`);
             if (activeNav) activeNav.classList.add('active');
+
+            // إظهار/إخفاء زر المندوب في الناف بار
+            let driverNav = document.getElementById('navDriverBtn');
+            if (driverNav) {
+                if (currentUser && currentUser.role === 'driver') {
+                    driverNav.style.display = 'flex';
+                    if (pageId === 'driverPage') driverNav.classList.add('active');
+                    else driverNav.classList.remove('active');
+                } else {
+                    driverNav.style.display = 'none';
+                }
+            }
+
             if (pageId === 'homePage') {
                 document.getElementById('trackOrderBtnHome').style.display = localStorage.getItem('currentTrackingOrder') ? 'block' : 'none';
             }
             if (pageId === 'ordersPage' && currentUser) renderMyOrders();
+            if (pageId === 'driverPage' && currentUser) {
+                document.getElementById('driverNameDisplay').innerText = currentUser.name;
+                startDriverAutoUpdate();
+            } else {
+                stopDriverAutoUpdate();
+            }
         }
 
         document.querySelectorAll('.nav-item[data-page]').forEach(n => {
             n.addEventListener('click', function() {
                 showPage(this.dataset.page);
             });
+        });
+
+        // زر المندوب في الناف بار - إضافة حدث
+        document.getElementById('navDriverBtn')?.addEventListener('click', function() {
+            showPage('driverPage');
         });
 
         async function renderMyOrders() {
@@ -1445,7 +2122,7 @@
                 if (role === 'driver') {
                     showPage('driverPage');
                     document.getElementById('driverNameDisplay').innerText = name;
-                    refreshDriverPanel();
+                    refreshDriverPanel(true);
                 } else {
                     showPage('homePage');
                 }
@@ -1461,6 +2138,7 @@
 
         document.getElementById('settingsLogoutBtn').addEventListener('click', function() {
             if (confirm('هل أنت متأكد؟')) {
+                stopDriverAutoUpdate();
                 safeStorage.remove('waselny_user');
                 location.reload();
             }
@@ -1468,6 +2146,7 @@
 
         document.getElementById('driverLogoutBtn').addEventListener('click', function() {
             if (confirm('هل أنت متأكد؟')) {
+                stopDriverAutoUpdate();
                 safeStorage.remove('waselny_user');
                 location.reload();
             }
@@ -1502,7 +2181,7 @@
                 if (currentUser.role === 'driver') {
                     showPage('driverPage');
                     document.getElementById('driverNameDisplay').innerText = currentUser.name;
-                    refreshDriverPanel();
+                    refreshDriverPanel(true);
                 } else {
                     showPage('homePage');
                 }

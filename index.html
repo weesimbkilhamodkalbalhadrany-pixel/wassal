@@ -566,132 +566,147 @@
         .map-confirm { background: var(--gold); color: var(--primary-dark); }
         .map-back { background: rgba(255,255,255,0.2); }
 
-        /* ===== تتبع الطلب (2026 - مطور بالكامل) ===== */
-        .tracking-steps {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin: 20px 0;
-        }
-        .step { text-align: center; flex: 1; position: relative; }
-        .step .circle {
-            width: 44px;
-            height: 44px;
-            background: #fff;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 6px;
-            border: 2.5px solid #ddd;
-            font-size: 1.1rem;
-            color: #888;
-            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
-        }
-        .step.active .circle {
-            background: var(--primary);
-            border-color: var(--primary);
-            color: white;
-            animation: pulseStep 1.5s infinite;
-            box-shadow: 0 0 20px rgba(111, 26, 45, 0.4);
-        }
-        .step.completed .circle {
-            background: var(--success);
-            border-color: var(--success);
-            color: white;
-        }
-        .step.preparing .circle {
-            background: var(--warning);
-            border-color: var(--warning);
-            color: white;
-            animation: pulseWarning 1.5s infinite;
-        }
-        @keyframes pulseStep {
-            0% { box-shadow: 0 0 0 0 rgba(111, 26, 45, 0.5); }
-            100% { box-shadow: 0 0 0 15px rgba(111, 26, 45, 0); }
-        }
-        @keyframes pulseWarning {
-            0% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.5); }
-            100% { box-shadow: 0 0 0 15px rgba(245, 158, 11, 0); }
-        }
-        .step-label {
-            font-size: 0.6rem;
-            color: #888;
-            font-weight: 600;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            max-width: 70px;
-            margin: 0 auto;
-        }
-        .step.active .step-label {
-            color: var(--primary);
-            font-weight: 800;
-        }
-        .step.completed .step-label {
-            color: var(--success);
-        }
-        .step-connector {
-            flex: 0.5;
-            height: 3px;
-            background: #ddd;
-            margin-top: -28px;
-            transition: background 0.4s;
-        }
-        .step-connector.completed {
-            background: var(--success);
-        }
-        .step-connector.active {
-            background: var(--primary);
-            animation: connectorPulse 1.5s infinite;
-        }
-        @keyframes connectorPulse {
-            0% { opacity: 0.6; }
-            50% { opacity: 1; }
-            100% { opacity: 0.6; }
-        }
-
-        /* ===== نافذة التتبع الكاملة (2026) ===== */
+        /* ===== تتبع الطلب (2026 - تصميم عمودي واضح) ===== */
         #trackFullscreen {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(180deg, #1a1514 0%, #2d201e 40%, #f8f6f4 40%);
+            background: #f8f6f4;
             z-index: 15000;
             overflow-y: auto;
             display: none;
         }
-        #trackFullscreen .tracking-top-banner {
+        .tracking-header {
             background: linear-gradient(135deg, var(--primary-dark), var(--primary));
             color: white;
-            padding: 24px 16px 40px;
+            padding: 20px 16px;
             text-align: center;
-            position: relative;
         }
-        #trackFullscreen .tracking-top-banner h2 {
-            font-size: 1.3rem;
+        .tracking-header h2 {
+            font-size: 1.2rem;
             font-weight: 900;
             margin-bottom: 4px;
         }
-        #trackFullscreen .tracking-top-banner p {
-            font-size: 0.8rem;
+        .tracking-header .order-id {
+            font-size: 0.85rem;
             opacity: 0.85;
+            font-weight: 600;
         }
-        #trackFullscreen .tracking-content {
-            padding: 0 16px 40px;
-            margin-top: -20px;
+        .tracking-status-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 6px 16px;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin-top: 8px;
         }
-        #trackFullscreen .tracking-card {
+        .tracking-steps-vertical {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            margin: 16px;
+        }
+        .tracking-step-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            position: relative;
+            padding-bottom: 24px;
+        }
+        .tracking-step-item:last-child {
+            padding-bottom: 0;
+        }
+        .tracking-step-indicator {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex-shrink: 0;
+        }
+        .tracking-step-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            background: #fff;
+            border: 2.5px solid #ddd;
+            color: #aaa;
+            transition: all 0.3s;
+            z-index: 2;
+        }
+        .tracking-step-item.completed .tracking-step-circle {
+            background: var(--success);
+            border-color: var(--success);
+            color: white;
+        }
+        .tracking-step-item.active .tracking-step-circle {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: white;
+            box-shadow: 0 0 20px rgba(111, 26, 45, 0.4);
+            animation: pulseCircle 1.5s infinite;
+        }
+        .tracking-step-item.preparing .tracking-step-circle {
+            background: var(--warning);
+            border-color: var(--warning);
+            color: white;
+            animation: pulseCircle 1.5s infinite;
+        }
+        @keyframes pulseCircle {
+            0% { box-shadow: 0 0 0 0 rgba(111, 26, 45, 0.4); }
+            100% { box-shadow: 0 0 0 15px rgba(111, 26, 45, 0); }
+        }
+        .tracking-step-line {
+            width: 3px;
+            flex: 1;
+            background: #ddd;
+            margin-top: 4px;
+            min-height: 24px;
+            transition: background 0.3s;
+        }
+        .tracking-step-item.completed .tracking-step-line {
+            background: var(--success);
+        }
+        .tracking-step-item.active .tracking-step-line {
+            background: linear-gradient(to bottom, var(--primary), #ddd);
+        }
+        .tracking-step-content {
+            flex: 1;
+            padding-top: 6px;
+        }
+        .tracking-step-title {
+            font-size: 0.85rem;
+            font-weight: 800;
+            color: #888;
+            margin-bottom: 2px;
+        }
+        .tracking-step-item.completed .tracking-step-title {
+            color: var(--success);
+        }
+        .tracking-step-item.active .tracking-step-title {
+            color: var(--primary);
+        }
+        .tracking-step-item.preparing .tracking-step-title {
+            color: var(--warning);
+        }
+        .tracking-step-desc {
+            font-size: 0.7rem;
+            color: #aaa;
+        }
+        .tracking-card {
             background: #fff;
             border-radius: var(--radius-lg);
-            padding: 20px;
-            margin-bottom: 16px;
-            box-shadow: var(--shadow-lg);
+            padding: 16px;
+            margin: 0 16px 16px;
+            box-shadow: var(--shadow-md);
             border: 1px solid rgba(0,0,0,0.05);
         }
-        #trackFullscreen .tracking-card-title {
+        .tracking-card-title {
             font-size: 0.85rem;
             font-weight: 800;
             color: var(--primary);
@@ -700,7 +715,7 @@
             align-items: center;
             gap: 8px;
         }
-        #trackFullscreen .tracking-info-row {
+        .tracking-info-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -708,20 +723,20 @@
             border-bottom: 1px dashed #eee;
             font-size: 0.8rem;
         }
-        #trackFullscreen .tracking-info-row:last-child {
+        .tracking-info-row:last-child {
             border-bottom: none;
         }
-        #trackFullscreen .tracking-info-label {
+        .tracking-info-label {
             color: #888;
             font-weight: 600;
         }
-        #trackFullscreen .tracking-info-value {
+        .tracking-info-value {
             font-weight: 800;
             color: #222;
             text-align: left;
             max-width: 60%;
         }
-        #trackFullscreen .tracking-driver-info {
+        .tracking-driver-info {
             display: flex;
             align-items: center;
             gap: 12px;
@@ -729,7 +744,7 @@
             border-radius: var(--radius-md);
             padding: 12px;
         }
-        #trackFullscreen .tracking-driver-avatar {
+        .tracking-driver-avatar {
             width: 50px;
             height: 50px;
             border-radius: 50%;
@@ -742,19 +757,19 @@
             font-weight: 800;
             flex-shrink: 0;
         }
-        #trackFullscreen .tracking-driver-details {
+        .tracking-driver-details {
             flex: 1;
         }
-        #trackFullscreen .tracking-driver-name {
+        .tracking-driver-name {
             font-weight: 800;
             font-size: 0.9rem;
             color: #222;
         }
-        #trackFullscreen .tracking-driver-status {
+        .tracking-driver-status {
             font-size: 0.7rem;
             color: #888;
         }
-        #trackFullscreen .tracking-call-btn {
+        .tracking-call-btn {
             width: 40px;
             height: 40px;
             border-radius: 50%;
@@ -768,22 +783,22 @@
             justify-content: center;
             flex-shrink: 0;
         }
-        #trackFullscreen .tracking-items-list {
+        .tracking-items-list {
             max-height: 200px;
             overflow-y: auto;
             margin-top: 8px;
         }
-        #trackFullscreen .tracking-item {
+        .tracking-item {
             display: flex;
             justify-content: space-between;
             padding: 8px 0;
             border-bottom: 1px solid #f0f0f0;
             font-size: 0.78rem;
         }
-        #trackFullscreen .tracking-item:last-child {
+        .tracking-item:last-child {
             border-bottom: none;
         }
-        #trackFullscreen .tracking-total-row {
+        .tracking-total-row {
             display: flex;
             justify-content: space-between;
             padding: 12px 0;
@@ -792,8 +807,9 @@
             border-top: 2px solid var(--primary);
             margin-top: 8px;
         }
-        #trackFullscreen .tracking-close-btn {
-            width: 100%;
+        .tracking-close-btn {
+            width: calc(100% - 32px);
+            margin: 0 16px 20px;
             padding: 14px;
             background: var(--primary);
             color: white;
@@ -802,10 +818,9 @@
             font-weight: 800;
             font-size: 0.9rem;
             cursor: pointer;
-            margin-top: 12px;
             box-shadow: 0 4px 12px rgba(111, 26, 45, 0.3);
         }
-        #trackFullscreen .tracking-close-btn:active {
+        .tracking-close-btn:active {
             transform: scale(0.97);
         }
 
@@ -842,7 +857,8 @@
         body.dark-mode .driver-order-card,
         body.dark-mode .order-detail-card,
         body.dark-mode .stat-card-new,
-        body.dark-mode .driver-tabs {
+        body.dark-mode .driver-tabs,
+        body.dark-mode .tracking-card {
             background: #2d201e;
             border-color: #3d2825;
         }
@@ -852,7 +868,8 @@
         }
         body.dark-mode .cart-item,
         body.dark-mode .menu-item-icon,
-        body.dark-mode .popular-card-img {
+        body.dark-mode .popular-card-img,
+        body.dark-mode .tracking-driver-info {
             background: #3d2825;
         }
         body.dark-mode .section-header-title,
@@ -872,12 +889,10 @@
             color: #a08070;
         }
         body.dark-mode #trackFullscreen {
-            background: linear-gradient(180deg, #1a1514 0%, #2d201e 40%, #1a1514 40%);
+            background: #1a1514;
         }
-        body.dark-mode #trackFullscreen .tracking-card,
-        body.dark-mode #trackFullscreen .tracking-driver-info {
-            background: #2d201e;
-            border-color: #3d2825;
+        body.dark-mode .tracking-header {
+            background: linear-gradient(135deg, #3d2825, #2d201e);
         }
     </style>
 </head>
@@ -1175,7 +1190,7 @@
         </div>
     </div>
 
-    <!-- ===== نافذة التتبع (2026 - مطورة بالكامل) ===== -->
+    <!-- ===== نافذة التتبع (2026 - تصميم عمودي واضح) ===== -->
     <div id="trackFullscreen">
         <div id="trackingFullscreenContainer"></div>
     </div>
@@ -1632,7 +1647,7 @@
         }
 
         // ================================================================
-        //  تتبع الطلب (2026 - مطور بالكامل)
+        //  تتبع الطلب (2026 - تصميم عمودي واضح)
         // ================================================================
         function startAutoTracking(orderId) {
             if (trackingInterval) clearInterval(trackingInterval);
@@ -1685,11 +1700,12 @@
             let order = allOrders.find(o => o.id == id);
             if (!order) return;
             
-            // حالات التتبع بالترتيب: pending → preparing → on_the_way → arrived → delivered
+            // حالات التتبع بالترتيب
             let steps = ['pending', 'preparing', 'on_the_way', 'arrived', 'delivered'];
             let idx = steps.indexOf(order.status);
             if (idx === -1) idx = 0;
 
+            // أيقونات FontAwesome لكل حالة
             let stepIcons = {
                 pending: 'fa-clock',
                 preparing: 'fa-utensils',
@@ -1697,6 +1713,35 @@
                 arrived: 'fa-map-pin',
                 delivered: 'fa-check-double'
             };
+
+            // بناء خطوات التتبع العمودية
+            let stepsHtml = steps.map((s, i) => {
+                let stepClass = '';
+                if (i < idx) stepClass = 'completed';
+                else if (i === idx) stepClass = 'active';
+                if (s === 'preparing' && i === idx) stepClass += ' preparing';
+                
+                return `
+                    <div class="tracking-step-item ${stepClass}">
+                        <div class="tracking-step-indicator">
+                            <div class="tracking-step-circle">
+                                <i class="fas ${stepIcons[s]}"></i>
+                            </div>
+                            ${i < steps.length - 1 ? '<div class="tracking-step-line"></div>' : ''}
+                        </div>
+                        <div class="tracking-step-content">
+                            <div class="tracking-step-title">${getStatusText(s)}</div>
+                            <div class="tracking-step-desc">
+                                ${s === 'pending' ? 'طلبك قيد المراجعة من قبل المطعم' : 
+                                  s === 'preparing' ? 'المطعم يقوم بتحضير طلبك الآن' : 
+                                  s === 'on_the_way' ? 'المندوب في طريقه إليك' : 
+                                  s === 'arrived' ? 'المندوب وصل إلى موقعك' : 
+                                  'تم توصيل طلبك بنجاح'}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
 
             let driverInfo = '';
             if (order.driverName) {
@@ -1723,84 +1768,73 @@
             }
 
             let html = `
-                <div class="tracking-top-banner">
+                <div class="tracking-header">
                     <h2>📍 تتبع الطلب #${order.id}</h2>
-                    <p>${getStatusText(order.status)}</p>
+                    <div class="order-id">${new Date(order.createdAt).toLocaleString('ar-SA')}</div>
+                    <div class="tracking-status-badge">
+                        ${getStatusIcon(order.status)} ${getStatusText(order.status)}
+                    </div>
                 </div>
-                <div class="tracking-content">
-                    <div class="tracking-card">
-                        <div class="tracking-card-title">
-                            <i class="fas fa-route"></i> مسار التوصيل
-                        </div>
-                        <div class="tracking-steps">
-                            ${steps.map((s, i) => `
-                                <div class="step ${i < idx ? 'completed' : (i === idx ? (s === 'preparing' ? 'preparing active' : 'active') : '')}">
-                                    <div class="circle"><i class="fas ${stepIcons[s]}"></i></div>
-                                    <div class="step-label">${getStatusText(s)}</div>
-                                </div>
-                                ${i < steps.length - 1 ? `<div class="step-connector ${i < idx ? 'completed' : (i === idx ? 'active' : '')}"></div>` : ''}
-                            `).join('')}
-                        </div>
-                    </div>
-
-                    <div class="tracking-card">
-                        <div class="tracking-card-title">
-                            <i class="fas fa-store"></i> معلومات المطعم
-                        </div>
-                        <div class="tracking-info-row">
-                            <span class="tracking-info-label">المطعم</span>
-                            <span class="tracking-info-value">${order.restaurant || 'مطعم العم طه'}</span>
-                        </div>
-                        <div class="tracking-info-row">
-                            <span class="tracking-info-label">الحالة</span>
-                            <span class="tracking-info-value" style="color:${getStatusColor(order.status)};">${getStatusText(order.status)}</span>
-                        </div>
-                    </div>
-
-                    ${driverInfo ? `
-                    <div class="tracking-card">
-                        <div class="tracking-card-title">
-                            <i class="fas fa-motorcycle"></i> معلومات المندوب
-                        </div>
-                        ${driverInfo}
-                    </div>
-                    ` : ''}
-
-                    <div class="tracking-card">
-                        <div class="tracking-card-title">
-                            <i class="fas fa-box"></i> تفاصيل الطلب
-                        </div>
-                        <div class="tracking-info-row">
-                            <span class="tracking-info-label">العميل</span>
-                            <span class="tracking-info-value">${order.customerName}</span>
-                        </div>
-                        <div class="tracking-info-row">
-                            <span class="tracking-info-label">العنوان</span>
-                            <span class="tracking-info-value">${order.address || 'غير محدد'}</span>
-                        </div>
-                        <div class="tracking-info-row">
-                            <span class="tracking-info-label">وسيلة الدفع</span>
-                            <span class="tracking-info-value">${order.paymentMethod || 'الدفع عند الاستلام'}</span>
-                        </div>
-                    </div>
-
-                    <div class="tracking-card">
-                        <div class="tracking-card-title">
-                            <i class="fas fa-receipt"></i> الأصناف المطلوبة
-                        </div>
-                        <div class="tracking-items-list">
-                            ${itemsList || '<p style="text-align:center;color:#888;">لا توجد أصناف</p>'}
-                        </div>
-                        <div class="tracking-total-row">
-                            <span>الإجمالي الكلي</span>
-                            <span>${order.total || 0} ريال</span>
-                        </div>
-                    </div>
-
-                    <button class="tracking-close-btn" onclick="closeTracking()">
-                        <i class="fas fa-times"></i> إغلاق التتبع
-                    </button>
+                <div class="tracking-steps-vertical">
+                    ${stepsHtml}
                 </div>
+                <div class="tracking-card">
+                    <div class="tracking-card-title">
+                        <i class="fas fa-store"></i> معلومات المطعم
+                    </div>
+                    <div class="tracking-info-row">
+                        <span class="tracking-info-label">المطعم</span>
+                        <span class="tracking-info-value">${order.restaurant || 'مطعم العم طه'}</span>
+                    </div>
+                    <div class="tracking-info-row">
+                        <span class="tracking-info-label">الحالة</span>
+                        <span class="tracking-info-value" style="color:${getStatusColor(order.status)}; font-weight:800;">${getStatusText(order.status)}</span>
+                    </div>
+                </div>
+
+                ${driverInfo ? `
+                <div class="tracking-card">
+                    <div class="tracking-card-title">
+                        <i class="fas fa-motorcycle"></i> معلومات المندوب
+                    </div>
+                    ${driverInfo}
+                </div>
+                ` : ''}
+
+                <div class="tracking-card">
+                    <div class="tracking-card-title">
+                        <i class="fas fa-box"></i> تفاصيل الطلب
+                    </div>
+                    <div class="tracking-info-row">
+                        <span class="tracking-info-label">العميل</span>
+                        <span class="tracking-info-value">${order.customerName}</span>
+                    </div>
+                    <div class="tracking-info-row">
+                        <span class="tracking-info-label">العنوان</span>
+                        <span class="tracking-info-value">${order.address || 'غير محدد'}</span>
+                    </div>
+                    <div class="tracking-info-row">
+                        <span class="tracking-info-label">وسيلة الدفع</span>
+                        <span class="tracking-info-value">${order.paymentMethod || 'الدفع عند الاستلام'}</span>
+                    </div>
+                </div>
+
+                <div class="tracking-card">
+                    <div class="tracking-card-title">
+                        <i class="fas fa-receipt"></i> الأصناف المطلوبة
+                    </div>
+                    <div class="tracking-items-list">
+                        ${itemsList || '<p style="text-align:center;color:#888;">لا توجد أصناف</p>'}
+                    </div>
+                    <div class="tracking-total-row">
+                        <span>الإجمالي الكلي</span>
+                        <span>${order.total || 0} ريال</span>
+                    </div>
+                </div>
+
+                <button class="tracking-close-btn" onclick="closeTracking()">
+                    <i class="fas fa-times"></i> إغلاق التتبع
+                </button>
             `;
             
             document.getElementById('trackingFullscreenContainer').innerHTML = html;

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<meta name="theme-color" content="#0f172a">
+<meta name="theme-color" content="#0a1f12">
 <title>كباتن تساهيل — خريطة مباشرة</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -11,22 +11,23 @@
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Cairo', sans-serif; -webkit-tap-highlight-color: transparent; }
-  html, body { height: 100%; overflow: hidden; background: #0f172a; color: #fff; direction: rtl; }
+  html, body { height: 100%; overflow: hidden; background: #0a1f12; color: #fff; direction: rtl; }
   :root {
-    --bg: #0f172a;
-    --bg2: #1e293b;
-    --bg3: #334155;
-    --primary: #f59e0b;
-    --primary-light: #fbbf24;
-    --primary-deep: #d97706;
-    --accent: #22c55e;
-    --danger: #ef4444;
+    --bg: #0a1f12;
+    --bg2: #122e1c;
+    --bg3: #1c4228;
+    --primary: #22c55e;
+    --primary-light: #4ade80;
+    --primary-deep: #16a34a;
+    --accent: #84cc16;
     --gold: #fbbf24;
-    --text: #f1f5f9;
-    --muted: #94a3b8;
-    --line: rgba(255,255,255,0.08);
-    --glass: rgba(15, 23, 42, 0.85);
-    --glass-light: rgba(30, 41, 59, 0.75);
+    --text: #f0fdf4;
+    --muted: #86efac;
+    --muted-2: #94a3b8;
+    --line: rgba(34,197,94,0.18);
+    --line-soft: rgba(255,255,255,0.08);
+    --glass: rgba(10, 31, 18, 0.88);
+    --glass-light: rgba(18, 46, 28, 0.8);
   }
 
   /* ============== الحاوية الأساسية ============== */
@@ -39,7 +40,7 @@
     position: fixed; inset: 0; z-index: 100000;
     display: none; align-items: center; justify-content: center;
     padding: 22px;
-    background: radial-gradient(circle at 30% 20%, #1e293b 0%, #0f172a 60%);
+    background: radial-gradient(circle at 30% 20%, #122e1c 0%, #0a1f12 60%);
   }
   .overlay.active { display: flex; }
 
@@ -47,10 +48,10 @@
     content: '';
     position: absolute; inset: 0;
     background-image:
-      radial-gradient(2px 2px at 20% 30%, rgba(245,158,11,0.6), transparent),
-      radial-gradient(2px 2px at 60% 70%, rgba(34,197,94,0.4), transparent),
-      radial-gradient(1px 1px at 80% 20%, rgba(251,191,36,0.5), transparent),
-      radial-gradient(1px 1px at 40% 80%, rgba(251,191,36,0.5), transparent);
+      radial-gradient(2px 2px at 20% 30%, rgba(34,197,94,0.6), transparent),
+      radial-gradient(2px 2px at 60% 70%, rgba(132,204,22,0.4), transparent),
+      radial-gradient(1px 1px at 80% 20%, rgba(74,222,128,0.5), transparent),
+      radial-gradient(1px 1px at 40% 80%, rgba(34,197,94,0.5), transparent);
     background-size: 300px 300px;
     animation: starsDrift 60s linear infinite;
     pointer-events: none;
@@ -65,13 +66,15 @@
     background: var(--glass-light);
     backdrop-filter: blur(24px);
     -webkit-backdrop-filter: blur(24px);
-    border: 1px solid rgba(245,158,11,0.18);
+    border: 1px solid rgba(34,197,94,0.25);
     border-radius: 30px;
     padding: 38px 26px 30px;
-    width: 100%; max-width: 420px;
+    width: 100%; max-width: 430px;
     text-align: center;
     box-shadow: 0 30px 60px -20px rgba(0,0,0,0.6);
     animation: cardIn 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+    max-height: 92vh;
+    overflow-y: auto;
   }
   @keyframes cardIn {
     from { opacity: 0; transform: translateY(30px) scale(0.96); }
@@ -84,7 +87,7 @@
     border-radius: 50%;
     display: flex; align-items: center; justify-content: center;
     background: linear-gradient(135deg, var(--primary), var(--primary-deep));
-    box-shadow: 0 18px 40px -10px rgba(245,158,11,0.6);
+    box-shadow: 0 18px 40px -10px rgba(34,197,94,0.6);
     position: relative;
     animation: iconFloat 3s ease-in-out infinite;
   }
@@ -97,7 +100,7 @@
     content: '';
     position: absolute; inset: -10px;
     border-radius: 50%;
-    border: 2px solid rgba(245,158,11,0.4);
+    border: 2px solid rgba(34,197,94,0.4);
     animation: ripple 2.5s ease-out infinite;
   }
   .perm-icon-wrap::after { animation-delay: 1.2s; }
@@ -111,10 +114,7 @@
     font-size: 1.45rem; font-weight: 900; color: white;
     margin-bottom: 10px; letter-spacing: -0.5px;
   }
-  .perm-title span {
-    color: var(--primary-light);
-    display: inline-block;
-  }
+  .perm-title span { color: var(--primary-light); display: inline-block; }
   .perm-sub {
     font-size: 0.9rem; color: var(--muted); font-weight: 500;
     line-height: 1.7; margin-bottom: 24px;
@@ -123,7 +123,7 @@
   .perm-features {
     display: flex; flex-direction: column; gap: 10px;
     margin-bottom: 26px; text-align: right;
-    background: rgba(255,255,255,0.04);
+    background: rgba(34,197,94,0.06);
     padding: 16px 18px;
     border-radius: 18px;
     border: 1px solid var(--line);
@@ -132,7 +132,7 @@
     font-size: 0.82rem; font-weight: 600;
     color: var(--text); display: flex; align-items: center; gap: 12px;
   }
-  .perm-features i { color: var(--accent); font-size: 0.95rem; }
+  .perm-features i { color: var(--primary); font-size: 0.95rem; }
 
   .btn-primary-lg {
     width: 100%; padding: 17px;
@@ -140,7 +140,7 @@
     background: linear-gradient(135deg, var(--primary), var(--primary-deep));
     color: white; font-weight: 800; font-size: 1rem;
     cursor: pointer;
-    box-shadow: 0 12px 30px -8px rgba(245,158,11,0.6);
+    box-shadow: 0 12px 30px -8px rgba(34,197,94,0.6);
     display: flex; align-items: center; justify-content: center; gap: 10px;
     transition: transform 0.15s;
     font-family: inherit;
@@ -148,15 +148,6 @@
   .btn-primary-lg:active { transform: scale(0.97); }
   .btn-primary-lg:disabled { opacity: 0.7; cursor: wait; }
   .btn-primary-lg i { font-size: 1.05rem; }
-
-  .btn-ghost {
-    width: 100%; padding: 13px; margin-top: 10px;
-    background: transparent; border: 1px solid var(--line);
-    color: var(--muted); border-radius: 50px;
-    font-weight: 700; font-size: 0.85rem; cursor: pointer;
-    font-family: inherit;
-  }
-  .btn-ghost:hover { color: white; border-color: rgba(255,255,255,0.25); }
 
   /* ============== نافذة التسجيل ============== */
   #regGate .perm-card { padding: 34px 24px 26px; }
@@ -166,7 +157,7 @@
     background: linear-gradient(135deg, var(--primary), var(--primary-deep));
     display: flex; align-items: center; justify-content: center;
     font-size: 2.4rem; color: white; font-weight: 900;
-    box-shadow: 0 15px 35px -10px rgba(245,158,11,0.6);
+    box-shadow: 0 15px 35px -10px rgba(34,197,94,0.6);
     position: relative;
   }
   .reg-avatar::after {
@@ -178,25 +169,64 @@
   }
   .input-group {
     position: relative; margin-bottom: 12px;
+    text-align: right;
   }
   .input-group i {
     position: absolute; top: 50%; right: 20px;
     transform: translateY(-50%);
     color: var(--muted); font-size: 0.95rem;
     pointer-events: none;
+    transition: color 0.2s;
   }
   .input-group input {
     width: 100%; padding: 15px 46px 15px 20px;
     background: rgba(255,255,255,0.06);
-    border: 1.5px solid var(--line);
+    border: 1.5px solid var(--line-soft);
     border-radius: 50px;
     color: white; font-size: 0.9rem;
     font-family: inherit; outline: none;
-    transition: border-color 0.2s;
+    transition: border-color 0.2s, background 0.2s;
     font-weight: 500;
   }
   .input-group input::placeholder { color: rgba(148,163,184,0.7); }
-  .input-group input:focus { border-color: var(--primary); background: rgba(245,158,11,0.08); }
+  .input-group input:focus {
+    border-color: var(--primary);
+    background: rgba(34,197,94,0.1);
+  }
+  .input-group input:focus ~ i { color: var(--primary-light); }
+  .input-group.error input {
+    border-color: #ef4444;
+    background: rgba(239,68,68,0.08);
+  }
+  .input-group.error i { color: #f87171; }
+  .input-group.valid input {
+    border-color: var(--primary);
+    background: rgba(34,197,94,0.08);
+  }
+  .input-group.valid i { color: var(--primary-light); }
+
+  .input-hint {
+    font-size: 0.68rem;
+    color: var(--muted-2);
+    padding-right: 20px;
+    margin-top: -6px;
+    margin-bottom: 12px;
+    text-align: right;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-weight: 600;
+  }
+  .input-hint.error { color: #fca5a5; }
+  .input-hint.ok { color: var(--primary-light); }
+
+  .required-tag {
+    display: inline-block;
+    color: #f87171;
+    font-weight: 900;
+    font-size: 0.9rem;
+    margin-right: 3px;
+  }
 
   /* ============== شاشة الخطأ ============== */
   #errGate .perm-icon-wrap {
@@ -213,7 +243,7 @@
     padding: max(14px, env(safe-area-inset-top)) 14px 14px;
     display: flex; align-items: center; justify-content: space-between;
     gap: 10px;
-    background: linear-gradient(to bottom, rgba(15,23,42,0.9) 0%, rgba(15,23,42,0) 100%);
+    background: linear-gradient(to bottom, rgba(10,31,18,0.9) 0%, rgba(10,31,18,0) 100%);
     pointer-events: none;
   }
   .top-bar > * { pointer-events: auto; }
@@ -225,14 +255,14 @@
     -webkit-backdrop-filter: blur(16px);
     padding: 8px 14px;
     border-radius: 50px;
-    border: 1px solid rgba(245,158,11,0.25);
+    border: 1px solid rgba(34,197,94,0.3);
   }
   .brand-icon {
     width: 32px; height: 32px; border-radius: 50%;
     background: linear-gradient(135deg, var(--primary), var(--primary-deep));
     display: flex; align-items: center; justify-content: center;
     color: white; font-size: 0.9rem;
-    box-shadow: 0 6px 16px -4px rgba(245,158,11,0.6);
+    box-shadow: 0 6px 16px -4px rgba(34,197,94,0.6);
   }
   .brand-text { display: flex; flex-direction: column; line-height: 1.1; }
   .brand-title { font-size: 0.85rem; font-weight: 800; color: white; }
@@ -244,12 +274,12 @@
     backdrop-filter: blur(16px);
     padding: 8px 14px;
     border-radius: 50px;
-    border: 1px solid var(--line);
+    border: 1px solid var(--line-soft);
     font-size: 0.78rem; font-weight: 800; color: white;
   }
   .live-dot {
     width: 8px; height: 8px; border-radius: 50%;
-    background: var(--accent);
+    background: var(--primary);
     box-shadow: 0 0 0 0 rgba(34,197,94,0.7);
     animation: livePulse 1.6s infinite;
   }
@@ -264,21 +294,20 @@
     position: absolute; bottom: 0; left: 0; right: 0;
     z-index: 1000;
     padding: 14px 14px max(14px, env(safe-area-inset-bottom));
-    background: linear-gradient(to top, rgba(15,23,42,0.95) 0%, rgba(15,23,42,0) 100%);
+    background: linear-gradient(to top, rgba(10,31,18,0.95) 0%, rgba(10,31,18,0) 100%);
     pointer-events: none;
   }
   .bottom-panel > * { pointer-events: auto; }
 
-  /* بطاقة الكابتن */
   .captain-card {
-    background: linear-gradient(135deg, rgba(245,158,11,0.18), rgba(217,119,6,0.12));
+    background: linear-gradient(135deg, rgba(34,197,94,0.22), rgba(22,163,74,0.15));
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(245,158,11,0.35);
+    border: 1px solid rgba(34,197,94,0.45);
     border-radius: 22px;
     padding: 14px 16px;
     display: flex; align-items: center; gap: 12px;
-    box-shadow: 0 20px 40px -15px rgba(245,158,11,0.3);
+    box-shadow: 0 20px 40px -15px rgba(34,197,94,0.35);
     margin-bottom: 10px;
     position: relative;
     overflow: hidden;
@@ -288,7 +317,7 @@
     position: absolute;
     top: -50%; right: -50%;
     width: 200%; height: 200%;
-    background: radial-gradient(circle, rgba(251,191,36,0.15) 0%, transparent 60%);
+    background: radial-gradient(circle, rgba(74,222,128,0.18) 0%, transparent 60%);
     animation: shine 6s linear infinite;
     pointer-events: none;
   }
@@ -302,7 +331,7 @@
     display: flex; align-items: center; justify-content: center;
     font-weight: 900; color: white; font-size: 1.15rem;
     flex-shrink: 0;
-    box-shadow: 0 8px 20px -4px rgba(245,158,11,0.7);
+    box-shadow: 0 8px 20px -4px rgba(34,197,94,0.7);
     position: relative;
     z-index: 1;
   }
@@ -325,14 +354,14 @@
     text-shadow: 0 2px 8px rgba(0,0,0,0.3);
   }
   .captain-status {
-    font-size: 0.68rem; color: rgba(255,255,255,0.75);
+    font-size: 0.68rem; color: rgba(255,255,255,0.8);
     font-weight: 600; display: flex; align-items: center; gap: 5px;
     margin-top: 3px;
   }
   .captain-status .dot {
     width: 6px; height: 6px; border-radius: 50%;
-    background: var(--accent);
-    box-shadow: 0 0 6px var(--accent);
+    background: var(--primary);
+    box-shadow: 0 0 6px var(--primary);
     animation: dotBlink 1.8s infinite;
   }
   @keyframes dotBlink {
@@ -344,17 +373,16 @@
   .icon-btn {
     width: 44px; height: 44px; border-radius: 50%;
     background: rgba(255,255,255,0.1);
-    border: 1px solid rgba(245,158,11,0.3);
+    border: 1px solid rgba(34,197,94,0.3);
     color: var(--primary-light); cursor: pointer;
     display: flex; align-items: center; justify-content: center;
     font-size: 1.05rem;
     transition: all 0.2s;
     font-family: inherit;
-    position: relative;
   }
   .icon-btn:active { transform: scale(0.92); }
   .icon-btn:hover {
-    background: rgba(245,158,11,0.2);
+    background: rgba(34,197,94,0.25);
     border-color: var(--primary);
     color: white;
   }
@@ -362,27 +390,24 @@
     background: linear-gradient(135deg, var(--primary), var(--primary-deep));
     border-color: transparent;
     color: white;
-    box-shadow: 0 6px 16px -4px rgba(245,158,11,0.7);
+    box-shadow: 0 6px 16px -4px rgba(34,197,94,0.7);
     animation: shareGlow 3s infinite;
   }
   @keyframes shareGlow {
-    0%,100% { box-shadow: 0 6px 16px -4px rgba(245,158,11,0.7); }
-    50% { box-shadow: 0 6px 24px -4px rgba(245,158,11,0.9); }
+    0%,100% { box-shadow: 0 6px 16px -4px rgba(34,197,94,0.7); }
+    50% { box-shadow: 0 6px 24px -4px rgba(34,197,94,0.9); }
   }
 
-  .stats-strip {
-    display: flex; gap: 8px;
-    margin-top: 10px;
-  }
+  .stats-strip { display: flex; gap: 8px; margin-top: 10px; }
   .stat-pill {
     flex: 1;
     background: var(--glass);
     backdrop-filter: blur(16px);
-    border: 1px solid var(--line);
+    border: 1px solid var(--line-soft);
     border-radius: 16px;
     padding: 10px 8px;
     text-align: center;
-    font-size: 0.68rem; color: var(--muted);
+    font-size: 0.68rem; color: var(--muted-2);
     font-weight: 700;
   }
   .stat-pill strong {
@@ -391,9 +416,9 @@
     font-weight: 900;
     margin-bottom: 1px;
   }
-  .stat-pill.green strong { color: var(--accent); }
-  .stat-pill.gold strong { color: var(--primary-light); }
-  .stat-pill.blue strong { color: #60a5fa; }
+  .stat-pill.green strong { color: var(--primary-light); }
+  .stat-pill.lime strong { color: var(--accent); }
+  .stat-pill.teal strong { color: #5eead4; }
 
   /* ============== الماركرات ============== */
   .marker-me {
@@ -402,7 +427,7 @@
     background: linear-gradient(135deg, var(--primary), var(--primary-deep));
     border: 3px solid white;
     color: white; font-size: 1.2rem;
-    box-shadow: 0 8px 24px -4px rgba(245,158,11,0.8), 0 0 0 0 rgba(245,158,11,0.6);
+    box-shadow: 0 8px 24px -4px rgba(34,197,94,0.8), 0 0 0 0 rgba(34,197,94,0.6);
     animation: mePulse 2s infinite;
     position: relative;
   }
@@ -414,34 +439,25 @@
     filter: drop-shadow(0 2px 4px rgba(0,0,0,0.4));
   }
   @keyframes mePulse {
-    0% { box-shadow: 0 8px 24px -4px rgba(245,158,11,0.8), 0 0 0 0 rgba(245,158,11,0.6); }
-    70% { box-shadow: 0 8px 24px -4px rgba(245,158,11,0.8), 0 0 0 18px rgba(245,158,11,0); }
-    100% { box-shadow: 0 8px 24px -4px rgba(245,158,11,0.8), 0 0 0 0 rgba(245,158,11,0); }
+    0% { box-shadow: 0 8px 24px -4px rgba(34,197,94,0.8), 0 0 0 0 rgba(34,197,94,0.6); }
+    70% { box-shadow: 0 8px 24px -4px rgba(34,197,94,0.8), 0 0 0 18px rgba(34,197,94,0); }
+    100% { box-shadow: 0 8px 24px -4px rgba(34,197,94,0.8), 0 0 0 0 rgba(34,197,94,0); }
   }
 
   .marker-user {
     display: flex; align-items: center; justify-content: center;
     width: 42px; height: 42px; border-radius: 50%;
-    background: linear-gradient(135deg, #60a5fa, #3b82f6);
+    background: linear-gradient(135deg, #4ade80, #22c55e);
     border: 3px solid white;
     color: white; font-size: 0.95rem; font-weight: 900;
-    box-shadow: 0 6px 18px -4px rgba(96,165,250,0.7);
-  }
-
-  .marker-guest {
-    display: flex; align-items: center; justify-content: center;
-    width: 34px; height: 34px; border-radius: 50%;
-    background: linear-gradient(135deg, #64748b, #475569);
-    border: 3px solid white;
-    color: white; font-size: 0.8rem;
-    box-shadow: 0 6px 18px -4px rgba(100,116,139,0.5);
+    box-shadow: 0 6px 18px -4px rgba(74,222,128,0.7);
   }
 
   .marker-label {
     position: absolute; top: 100%; left: 50%;
     transform: translateX(-50%);
     margin-top: 4px;
-    background: rgba(15,23,42,0.92);
+    background: rgba(10,31,18,0.92);
     backdrop-filter: blur(10px);
     color: white;
     font-size: 0.65rem; font-weight: 800;
@@ -453,14 +469,18 @@
     max-width: 90px;
     overflow: hidden; text-overflow: ellipsis;
   }
-  .marker-label.me { color: var(--primary-light); border-color: rgba(245,158,11,0.5); background: rgba(15,23,42,0.95); }
+  .marker-label.me {
+    color: var(--primary-light);
+    border-color: rgba(34,197,94,0.5);
+    background: rgba(10,31,18,0.95);
+  }
 
   /* ============== Leaflet popup ============== */
   .leaflet-popup-content-wrapper {
     background: var(--bg2) !important;
     color: white !important;
     border-radius: 18px !important;
-    border: 1px solid var(--line);
+    border: 1px solid rgba(34,197,94,0.25);
     box-shadow: 0 20px 40px -10px rgba(0,0,0,0.6) !important;
     font-family: 'Cairo', sans-serif !important;
   }
@@ -477,13 +497,12 @@
   .popup-head { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
   .popup-avatar {
     width: 44px; height: 44px; border-radius: 50%;
-    background: linear-gradient(135deg, #60a5fa, #3b82f6);
+    background: linear-gradient(135deg, #4ade80, #22c55e);
     display: flex; align-items: center; justify-content: center;
     color: white; font-weight: 900; font-size: 1rem;
     flex-shrink: 0;
   }
   .popup-avatar.me { background: linear-gradient(135deg, var(--primary), var(--primary-deep)); }
-  .popup-avatar.guest { background: linear-gradient(135deg, #64748b, #475569); }
   .popup-name { font-weight: 800; font-size: 0.95rem; color: white; line-height: 1.2; }
   .popup-sub { font-size: 0.68rem; color: var(--muted); margin-top: 3px; }
 
@@ -491,7 +510,7 @@
   .popup-row {
     display: flex; align-items: center; gap: 8px;
     font-size: 0.75rem; color: var(--text);
-    background: rgba(255,255,255,0.04);
+    background: rgba(34,197,94,0.06);
     padding: 7px 10px;
     border-radius: 10px;
     border: 1px solid var(--line);
@@ -510,8 +529,7 @@
   }
   .popup-btn:active { transform: scale(0.95); }
   .popup-btn.call { background: linear-gradient(135deg, #22c55e, #16a34a); color: white; }
-  .popup-btn.nav { background: linear-gradient(135deg, var(--primary), var(--primary-deep)); color: white; }
-  .popup-btn.ghost { background: rgba(255,255,255,0.08); color: var(--muted); }
+  .popup-btn.nav { background: linear-gradient(135deg, #4ade80, #22c55e); color: #0a1f12; }
 
   /* ============== زر العودة لموقعي ============== */
   .locate-fab {
@@ -523,7 +541,7 @@
     border-radius: 50%;
     background: var(--glass);
     backdrop-filter: blur(16px);
-    border: 1px solid rgba(245,158,11,0.3);
+    border: 1px solid rgba(34,197,94,0.35);
     color: var(--primary-light);
     font-size: 1.2rem;
     cursor: pointer;
@@ -536,7 +554,7 @@
     color: white;
     border-color: var(--primary);
     background: linear-gradient(135deg, var(--primary), var(--primary-deep));
-    box-shadow: 0 10px 30px -6px rgba(245,158,11,0.7);
+    box-shadow: 0 10px 30px -6px rgba(34,197,94,0.7);
   }
 
   /* ============== التوست ============== */
@@ -548,7 +566,7 @@
     z-index: 200000;
     background: var(--glass);
     backdrop-filter: blur(20px);
-    border: 1px solid rgba(245,158,11,0.3);
+    border: 1px solid rgba(34,197,94,0.35);
     color: white;
     padding: 11px 20px;
     border-radius: 30px;
@@ -561,6 +579,7 @@
     overflow: hidden; text-overflow: ellipsis;
   }
   .toast.show { opacity: 1; transform: translate(-50%, 0); }
+  .toast.error { border-color: rgba(239,68,68,0.5); background: rgba(60,10,10,0.9); }
 
   /* ============== تحميل ============== */
   .spinner-inline {
@@ -576,24 +595,11 @@
 
   .leaflet-control-attribution { display: none !important; }
 
-  /* ============== شارة الرتبة ============== */
-  .rank-badge {
-    display: inline-flex; align-items: center; gap: 4px;
-    background: linear-gradient(135deg, var(--primary), var(--primary-deep));
-    color: white;
-    padding: 2px 8px;
-    border-radius: 10px;
-    font-size: 0.6rem;
-    font-weight: 800;
-    letter-spacing: 0.3px;
-    box-shadow: 0 3px 8px -2px rgba(245,158,11,0.6);
-  }
-
   /* ============== مودال المشاركة ============== */
   .share-modal {
     position: fixed; inset: 0;
     z-index: 150000;
-    background: rgba(0,0,0,0.7);
+    background: rgba(0,0,0,0.75);
     backdrop-filter: blur(8px);
     display: none;
     align-items: center; justify-content: center;
@@ -602,7 +608,7 @@
   .share-modal.active { display: flex; }
   .share-modal-card {
     background: var(--bg2);
-    border: 1px solid rgba(245,158,11,0.25);
+    border: 1px solid rgba(34,197,94,0.3);
     border-radius: 26px;
     padding: 28px 22px 22px;
     max-width: 400px; width: 100%;
@@ -616,7 +622,7 @@
     background: linear-gradient(135deg, var(--primary), var(--primary-deep));
     display: flex; align-items: center; justify-content: center;
     color: white; font-size: 2rem;
-    box-shadow: 0 15px 35px -8px rgba(245,158,11,0.6);
+    box-shadow: 0 15px 35px -8px rgba(34,197,94,0.6);
   }
   .share-modal-title {
     font-size: 1.25rem; font-weight: 900;
@@ -627,8 +633,8 @@
     margin-bottom: 20px; line-height: 1.6;
   }
   .share-url-box {
-    background: rgba(245,158,11,0.08);
-    border: 1.5px dashed rgba(245,158,11,0.4);
+    background: rgba(34,197,94,0.08);
+    border: 1.5px dashed rgba(34,197,94,0.4);
     border-radius: 14px;
     padding: 12px 14px;
     direction: ltr; text-align: center;
@@ -661,14 +667,14 @@
   .share-action-btn.whatsapp { background: linear-gradient(135deg, #25D366, #128C7E); color: white; }
   .share-action-btn.telegram { background: linear-gradient(135deg, #2AABEE, #229ED9); color: white; }
   .share-action-btn.copy { background: linear-gradient(135deg, var(--primary), var(--primary-deep)); color: white; }
-  .share-action-btn.native { background: rgba(255,255,255,0.08); color: white; border: 1px solid var(--line); }
+  .share-action-btn.native { background: rgba(255,255,255,0.08); color: white; border: 1px solid var(--line-soft); }
 
   .share-close-btn {
     width: 100%;
     padding: 12px;
     background: transparent;
-    border: 1px solid var(--line);
-    color: var(--muted);
+    border: 1px solid var(--line-soft);
+    color: var(--muted-2);
     border-radius: 50px;
     font-weight: 700;
     font-size: 0.85rem;
@@ -709,25 +715,27 @@
   </div>
 </div>
 
-<!-- ============== نافذة التسجيل ============== -->
+<!-- ============== نافذة التسجيل الإجبارية ============== -->
 <div id="regGate" class="overlay">
   <div class="perm-card">
     <div class="reg-avatar" id="regAvatar">ك</div>
     <h2 class="perm-title">مرحباً كابتن 👋</h2>
-    <p class="perm-sub">عرّف عن نفسك ليتعرف عليك باقي الكباتن</p>
-    <div class="input-group">
+    <p class="perm-sub">سجّل بياناتك للانضمام إلى شبكة الكباتن<br><span style="color:#f87171; font-size:0.78rem; font-weight:800;">جميع الحقول مطلوبة <span class="required-tag">*</span></span></p>
+
+    <div class="input-group" id="nameGroup">
+      <input type="text" id="regName" maxlength="30" placeholder="اسم الكابتن *" autocomplete="name">
       <i class="fas fa-user-tie"></i>
-      <input type="text" id="regName" maxlength="30" placeholder="اسم الكابتن (اختياري)">
     </div>
-    <div class="input-group">
+    <div class="input-hint" id="nameHint">أدخل اسمك الكامل</div>
+
+    <div class="input-group" id="phoneGroup">
+      <input type="tel" id="regPhone" maxlength="15" placeholder="رقم الهاتف *" autocomplete="tel" inputmode="tel">
       <i class="fas fa-phone"></i>
-      <input type="tel" id="regPhone" maxlength="15" placeholder="رقم الهاتف (اختياري)">
     </div>
-    <button class="btn-primary-lg" onclick="saveRegistration()">
+    <div class="input-hint" id="phoneHint">أدخل رقم هاتف صحيح (7 أرقام على الأقل)</div>
+
+    <button class="btn-primary-lg" onclick="saveRegistration()" style="margin-top:8px;">
       <i class="fas fa-arrow-left"></i> انطلق إلى الخريطة
-    </button>
-    <button class="btn-ghost" onclick="skipRegistration()">
-      دخول ككابتن مجهول
     </button>
   </div>
 </div>
@@ -748,7 +756,6 @@
 <div id="app">
   <div id="map"></div>
 
-  <!-- الشريط العلوي -->
   <div class="top-bar">
     <div class="brand">
       <div class="brand-icon"><i class="fas fa-satellite-dish"></i></div>
@@ -763,34 +770,31 @@
     </div>
   </div>
 
-  <!-- زر العودة لموقعي -->
   <button class="locate-fab" id="locateBtn" onclick="centerOnMe()" title="موقعي">
     <i class="fas fa-location-crosshairs"></i>
   </button>
 
-  <!-- اللوحة السفلية -->
   <div class="bottom-panel">
     <div class="stats-strip">
       <div class="stat-pill green">
         <strong id="statOnline">0</strong>
         كابتن متصل
       </div>
-      <div class="stat-pill gold">
+      <div class="stat-pill lime">
         <strong id="statTotal">0</strong>
         على الخريطة
       </div>
-      <div class="stat-pill blue">
+      <div class="stat-pill teal">
         <strong id="statNear">-</strong>
         أقرب كابتن
       </div>
     </div>
 
-    <!-- بطاقة الكابتن -->
     <div class="captain-card" style="margin-top:10px;">
       <div class="captain-avatar" id="meAvatar">ك</div>
       <div class="captain-info">
         <div class="captain-welcome">مرحباً كابتن 🎖️</div>
-        <div class="captain-name" id="meName">كابتن مجهول</div>
+        <div class="captain-name" id="meName">—</div>
         <div class="captain-status">
           <span class="dot"></span>
           <span id="meStatus">يتم بث موقعك مباشرة</span>
@@ -818,29 +822,24 @@
 
     <div class="share-actions">
       <button class="share-action-btn whatsapp" onclick="shareVia('whatsapp')">
-        <i class="fab fa-whatsapp"></i>
-        واتساب
+        <i class="fab fa-whatsapp"></i> واتساب
       </button>
       <button class="share-action-btn telegram" onclick="shareVia('telegram')">
-        <i class="fab fa-telegram"></i>
-        تيليجرام
+        <i class="fab fa-telegram"></i> تيليجرام
       </button>
       <button class="share-action-btn copy" onclick="shareVia('copy')">
-        <i class="fas fa-copy"></i>
-        نسخ
+        <i class="fas fa-copy"></i> نسخ
       </button>
     </div>
 
     <button class="share-action-btn native" style="width:100%;flex-direction:row;padding:12px;" onclick="shareVia('native')">
-      <i class="fas fa-share-from-square"></i>
-      مشاركة عبر التطبيقات الأخرى
+      <i class="fas fa-share-from-square"></i> مشاركة عبر التطبيقات الأخرى
     </button>
 
     <button class="share-close-btn" style="margin-top:10px;" onclick="closeShareModal()">إغلاق</button>
   </div>
 </div>
 
-<!-- التوست -->
 <div class="toast" id="toast"></div>
 
 <script>
@@ -875,9 +874,10 @@ let isFollowingMe = true;
    ============================================================ */
 function $(id) { return document.getElementById(id); }
 
-function showToast(msg) {
+function showToast(msg, isError = false) {
   const t = $('toast');
   t.textContent = msg;
+  t.classList.toggle('error', isError);
   t.classList.add('show');
   clearTimeout(t._to);
   t._to = setTimeout(() => t.classList.remove('show'), 2800);
@@ -932,6 +932,26 @@ function fmtDistance(km) {
 }
 
 /* ============================================================
+   التحقق من صحة البيانات
+   ============================================================ */
+function validateName(name) {
+  const t = (name || '').trim();
+  if (!t) return { ok: false, msg: 'الاسم مطلوب' };
+  if (t.length < 2) return { ok: false, msg: 'الاسم قصير جداً (حرفان على الأقل)' };
+  return { ok: true };
+}
+function validatePhone(phone) {
+  const t = (phone || '').trim();
+  if (!t) return { ok: false, msg: 'رقم الهاتف مطلوب' };
+  // يقبل الأرقام مع رموز + و - و space
+  const cleaned = t.replace(/[\s\-\(\)\+]/g, '');
+  if (!/^\d{7,15}$/.test(cleaned)) {
+    return { ok: false, msg: 'رقم الهاتف غير صحيح (7 إلى 15 رقماً)' };
+  }
+  return { ok: true, cleaned };
+}
+
+/* ============================================================
    طلب السماح بالموقع
    ============================================================ */
 function requestPermission() {
@@ -951,17 +971,22 @@ function requestPermission() {
       btn.innerHTML = '<i class="fas fa-check"></i> تم تحديد الموقع';
       sessionStorage.setItem('tsaheel_granted', '1');
 
-      if (me && me.name !== undefined && me.name !== '') {
-        // مسجل سابقاً
-        setTimeout(() => startApp(), 500);
-      } else if (me && me.name === '') {
-        // زائر مجهول
+      // ✅ إذا كان مسجلاً سابقاً ببيانات صحيحة → ادخل مباشرة
+      if (me && me.name && me.phone && validateName(me.name).ok && validatePhone(me.phone).ok) {
         setTimeout(() => startApp(), 500);
       } else {
-        // جديد → نافذة التسجيل
+        // إجباري التسجيل
         setTimeout(() => {
-          $('regAvatar').textContent = initials(me?.name || '') || 'ك';
+          $('regAvatar').textContent = 'ك';
           showScreen('regGate');
+          // تحديث الأفاتار إذا فيه اسم قديم
+          if (me?.name) {
+            $('regName').value = me.name;
+            $('regAvatar').textContent = initials(me.name);
+          }
+          if (me?.phone) $('regPhone').value = me.phone;
+          // تركيز تلقائي على الحقل الأول
+          setTimeout(() => $('regName')?.focus(), 400);
         }, 500);
       }
     },
@@ -979,27 +1004,91 @@ function requestPermission() {
 }
 
 /* ============================================================
-   التسجيل
+   التسجيل — كلا الحقلين مطلوبان
    ============================================================ */
 $('regName')?.addEventListener('input', (e) => {
-  $('regAvatar').textContent = initials(e.target.value) || 'ك';
+  const name = e.target.value;
+  $('regAvatar').textContent = initials(name) || 'ك';
+
+  const v = validateName(name);
+  const group = $('nameGroup');
+  const hint = $('nameHint');
+  group.classList.remove('error','valid');
+  hint.classList.remove('error','ok');
+
+  if (!name.trim()) {
+    hint.textContent = 'أدخل اسمك الكامل';
+    hint.classList.remove('error','ok');
+  } else if (!v.ok) {
+    group.classList.add('error');
+    hint.classList.add('error');
+    hint.innerHTML = '<i class="fas fa-exclamation-circle"></i> ' + v.msg;
+  } else {
+    group.classList.add('valid');
+    hint.classList.add('ok');
+    hint.innerHTML = '<i class="fas fa-check-circle"></i> ممتاز، الاسم صحيح';
+  }
+});
+
+$('regPhone')?.addEventListener('input', (e) => {
+  const phone = e.target.value;
+  const v = validatePhone(phone);
+  const group = $('phoneGroup');
+  const hint = $('phoneHint');
+  group.classList.remove('error','valid');
+  hint.classList.remove('error','ok');
+
+  if (!phone.trim()) {
+    hint.textContent = 'أدخل رقم هاتف صحيح (7 أرقام على الأقل)';
+    hint.classList.remove('error','ok');
+  } else if (!v.ok) {
+    group.classList.add('error');
+    hint.classList.add('error');
+    hint.innerHTML = '<i class="fas fa-exclamation-circle"></i> ' + v.msg;
+  } else {
+    group.classList.add('valid');
+    hint.classList.add('ok');
+    hint.innerHTML = '<i class="fas fa-check-circle"></i> رقم صحيح';
+  }
 });
 
 function saveRegistration() {
-  const name = $('regName').value.trim();
-  const phone = $('regPhone').value.trim();
-  me = { name: name || '', phone: phone || '' };
-  localStorage.setItem('tsaheel_user', JSON.stringify(me));
-  startApp();
-  if (name) {
-    setTimeout(() => showToast(`🎖️ أهلاً كابتن ${name}`), 500);
+  const name = $('regName').value;
+  const phone = $('regPhone').value;
+
+  const nameV = validateName(name);
+  const phoneV = validatePhone(phone);
+
+  const nameGroup = $('nameGroup');
+  const phoneGroup = $('phoneGroup');
+  const nameHint = $('nameHint');
+  const phoneHint = $('phoneHint');
+
+  // التحقق من الاسم
+  if (!nameV.ok) {
+    nameGroup.classList.add('error');
+    nameHint.classList.add('error');
+    nameHint.innerHTML = '<i class="fas fa-exclamation-circle"></i> ' + nameV.msg;
+    $('regName').focus();
+    showToast('❌ ' + nameV.msg, true);
+    return;
   }
-}
-function skipRegistration() {
-  me = { name: '', phone: '' };
+
+  // التحقق من الرقم
+  if (!phoneV.ok) {
+    phoneGroup.classList.add('error');
+    phoneHint.classList.add('error');
+    phoneHint.innerHTML = '<i class="fas fa-exclamation-circle"></i> ' + phoneV.msg;
+    $('regPhone').focus();
+    showToast('❌ ' + phoneV.msg, true);
+    return;
+  }
+
+  // حفظ البيانات
+  me = { name: name.trim(), phone: phone.trim() };
   localStorage.setItem('tsaheel_user', JSON.stringify(me));
   startApp();
-  setTimeout(() => showToast('👤 دخول ككابتن مجهول'), 500);
+  setTimeout(() => showToast(`🎖️ أهلاً كابتن ${me.name}`), 500);
 }
 
 /* ============================================================
@@ -1007,9 +1096,8 @@ function skipRegistration() {
    ============================================================ */
 function startApp() {
   showScreen('app');
-  const displayName = me?.name || 'كابتن مجهول';
   $('meAvatar').textContent = initials(me?.name || '') || 'ك';
-  $('meName').textContent = displayName;
+  $('meName').textContent = me?.name || '—';
 
   initMap();
   startWatch();
@@ -1069,7 +1157,7 @@ function addMeMarker() {
 }
 
 function mePopupHtml() {
-  const name = me?.name || 'كابتن مجهول';
+  const name = me?.name || 'كابتن';
   const phone = me?.phone || '';
   return `<div class="popup-card">
     <div class="popup-head">
@@ -1106,7 +1194,7 @@ function recenterOnce() {
       pushMyLocation();
       showToast('✅ تم التحديث كابتن');
     },
-    () => showToast('تعذّر التحديث'),
+    () => showToast('تعذّر التحديث', true),
     { enableHighAccuracy: true, timeout: 15000 }
   );
 }
@@ -1181,17 +1269,16 @@ async function refreshOthers() {
       if (u.id === myId) return;
 
       seenIds.add(u.id);
-      const isGuest = !u.name;
 
       if (otherMarkers[u.id]) {
         otherMarkers[u.id].marker.setLatLng([u.lat, u.lng]);
-        otherMarkers[u.id].marker.setPopupContent(otherPopupHtml(u, isGuest));
-        otherMarkers[u.id].marker.setIcon(makeOtherIcon(u, isGuest));
+        otherMarkers[u.id].marker.setPopupContent(otherPopupHtml(u));
+        otherMarkers[u.id].marker.setIcon(makeOtherIcon(u));
         otherMarkers[u.id].data = u;
       } else {
-        const icon = makeOtherIcon(u, isGuest);
+        const icon = makeOtherIcon(u);
         const marker = L.marker([u.lat, u.lng], { icon }).addTo(map);
-        marker.bindPopup(otherPopupHtml(u, isGuest), { closeButton: true, maxWidth: 280 });
+        marker.bindPopup(otherPopupHtml(u), { closeButton: true, maxWidth: 280 });
         otherMarkers[u.id] = { marker, data: u };
       }
     });
@@ -1209,32 +1296,29 @@ async function refreshOthers() {
   }
 }
 
-function makeOtherIcon(u, isGuest) {
-  const init = isGuest ? '<i class="fas fa-user-secret"></i>' : escapeHtml(initials(u.name));
-  const cls = isGuest ? 'marker-guest' : 'marker-user';
+function makeOtherIcon(u) {
+  const init = escapeHtml(initials(u.name));
   const label = u.name ? escapeHtml(u.name) : '';
   const labelHtml = label ? `<div class="marker-label">${label}</div>` : '';
   return L.divIcon({
     className: '',
-    html: `<div class="${cls}">${init}</div>${labelHtml}`,
-    iconSize: isGuest ? [34, 34] : [42, 42],
-    iconAnchor: isGuest ? [17, 17] : [21, 21],
-    popupAnchor: [0, isGuest ? -20 : -24]
+    html: `<div class="marker-user">${init}</div>${labelHtml}`,
+    iconSize: [42, 42],
+    iconAnchor: [21, 21],
+    popupAnchor: [0, -24]
   });
 }
 
-function otherPopupHtml(u, isGuest) {
+function otherPopupHtml(u) {
   const dist = (myLat && myLng) ? distanceKm(myLat, myLng, u.lat, u.lng) : null;
-  const name = u.name || 'كابتن مجهول';
-  const avatarCls = isGuest ? 'popup-avatar guest' : 'popup-avatar';
-  const avatarTxt = isGuest ? '<i class="fas fa-user-secret"></i>' : escapeHtml(initials(u.name));
+  const name = u.name || 'كابتن';
   const isOnline = (Date.now() - (u.ts || 0)) < ONLINE_THRESHOLD;
   const callBtn = u.phone ? `<button class="popup-btn call" onclick="callPhone('${escapeHtml(u.phone)}')"><i class="fas fa-phone"></i> اتصال</button>` : '';
   const navBtn = `<button class="popup-btn nav" onclick="navTo(${u.lat},${u.lng})"><i class="fas fa-diamond-turn-right"></i> اتجاهات</button>`;
 
   return `<div class="popup-card">
     <div class="popup-head">
-      <div class="${avatarCls}">${avatarTxt}</div>
+      <div class="popup-avatar">${escapeHtml(initials(u.name))}</div>
       <div>
         <div class="popup-name">🎖️ ${escapeHtml(name)}</div>
         <div class="popup-sub">${isOnline ? '🟢 متصل الآن' : '⚫ غير نشط'} · ${timeAgo(u.ts)}</div>
@@ -1295,15 +1379,14 @@ function startRefresh() {
 }
 
 /* ============================================================
-   🆕 مشاركة الرابط
+   مشاركة الرابط
    ============================================================ */
 function getShareUrl() {
   return window.location.href.split('#')[0].split('?')[0];
 }
 
 function openShareModal() {
-  const url = getShareUrl();
-  $('shareUrlBox').textContent = url;
+  $('shareUrlBox').textContent = getShareUrl();
   $('shareModal').classList.add('active');
 }
 function closeShareModal() {
@@ -1329,13 +1412,12 @@ async function shareVia(method) {
       showToast('✅ تم نسخ الرابط');
       closeShareModal();
     } catch(e) {
-      // Fallback
       const ta = document.createElement('textarea');
       ta.value = url;
       document.body.appendChild(ta);
       ta.select();
       try { document.execCommand('copy'); showToast('✅ تم نسخ الرابط'); }
-      catch(err) { showToast('❌ فشل النسخ'); }
+      catch(err) { showToast('❌ فشل النسخ', true); }
       document.body.removeChild(ta);
       closeShareModal();
     }
@@ -1349,17 +1431,14 @@ async function shareVia(method) {
         });
         closeShareModal();
       } catch(e) {
-        if (e.name !== 'AbortError') {
-          showToast('❌ فشلت المشاركة');
-        }
+        if (e.name !== 'AbortError') showToast('❌ فشلت المشاركة', true);
       }
     } else {
-      // Fallback → نسخ
       try {
         await navigator.clipboard.writeText(url);
         showToast('✅ تم نسخ الرابط');
       } catch(e) {
-        showToast('⚠️ المشاركة غير مدعومة');
+        showToast('⚠️ المشاركة غير مدعومة', true);
       }
       closeShareModal();
     }
@@ -1367,23 +1446,18 @@ async function shareVia(method) {
 }
 
 /* ============================================================
-   منع حذف الموقع عند الخروج — نبقيه دائماً
-   ============================================================ */
-// ⚠️ تم إزالة beforeunload الذي كان يحذف الموقع
-// الموقع الآن يبقى محفوظاً في Firebase دائماً
-
-/* ============================================================
    التشغيل التلقائي
    ============================================================ */
 (function boot() {
   if (me !== null) {
-    const displayName = me.name || 'كابتن مجهول';
     $('meAvatar').textContent = initials(me.name) || 'ك';
-    $('meName').textContent = displayName;
+    $('meName').textContent = me.name || '—';
   }
 
   const sessionGranted = sessionStorage.getItem('tsaheel_granted');
-  if (sessionGranted === '1') {
+  const isRegistered = me && me.name && me.phone && validateName(me.name).ok && validatePhone(me.phone).ok;
+
+  if (sessionGranted === '1' && isRegistered) {
     navigator.geolocation.getCurrentPosition(
       (pos) => {
         myLat = pos.coords.latitude;
@@ -1399,7 +1473,7 @@ async function shareVia(method) {
   }
 })();
 
-console.log('%c🎖️ كباتن تساهيل — جاهزة', 'background:linear-gradient(135deg,#f59e0b,#d97706); color:white; padding:8px 16px; border-radius:8px; font-weight:900; font-size:13px;');
+console.log('%c🎖️ كباتن تساهيل — جاهزة', 'background:linear-gradient(135deg,#22c55e,#16a34a); color:white; padding:8px 16px; border-radius:8px; font-weight:900; font-size:13px;');
 </script>
 </body>
 </html>

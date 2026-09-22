@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#0f172a">
-<title>خريطة المجتمع — مباشر</title>
+<title>كباتن تساهيل — خريطة مباشرة</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -16,8 +16,9 @@
     --bg: #0f172a;
     --bg2: #1e293b;
     --bg3: #334155;
-    --primary: #6366f1;
-    --primary-light: #818cf8;
+    --primary: #f59e0b;
+    --primary-light: #fbbf24;
+    --primary-deep: #d97706;
     --accent: #22c55e;
     --danger: #ef4444;
     --gold: #fbbf24;
@@ -46,10 +47,10 @@
     content: '';
     position: absolute; inset: 0;
     background-image:
-      radial-gradient(2px 2px at 20% 30%, rgba(99,102,241,0.6), transparent),
+      radial-gradient(2px 2px at 20% 30%, rgba(245,158,11,0.6), transparent),
       radial-gradient(2px 2px at 60% 70%, rgba(34,197,94,0.4), transparent),
       radial-gradient(1px 1px at 80% 20%, rgba(251,191,36,0.5), transparent),
-      radial-gradient(1px 1px at 40% 80%, rgba(129,140,248,0.5), transparent);
+      radial-gradient(1px 1px at 40% 80%, rgba(251,191,36,0.5), transparent);
     background-size: 300px 300px;
     animation: starsDrift 60s linear infinite;
     pointer-events: none;
@@ -64,7 +65,7 @@
     background: var(--glass-light);
     backdrop-filter: blur(24px);
     -webkit-backdrop-filter: blur(24px);
-    border: 1px solid rgba(255,255,255,0.12);
+    border: 1px solid rgba(245,158,11,0.18);
     border-radius: 30px;
     padding: 38px 26px 30px;
     width: 100%; max-width: 420px;
@@ -82,8 +83,8 @@
     margin: 0 auto 22px;
     border-radius: 50%;
     display: flex; align-items: center; justify-content: center;
-    background: linear-gradient(135deg, var(--primary), #8b5cf6);
-    box-shadow: 0 18px 40px -10px rgba(99,102,241,0.6);
+    background: linear-gradient(135deg, var(--primary), var(--primary-deep));
+    box-shadow: 0 18px 40px -10px rgba(245,158,11,0.6);
     position: relative;
     animation: iconFloat 3s ease-in-out infinite;
   }
@@ -96,7 +97,7 @@
     content: '';
     position: absolute; inset: -10px;
     border-radius: 50%;
-    border: 2px solid rgba(99,102,241,0.4);
+    border: 2px solid rgba(245,158,11,0.4);
     animation: ripple 2.5s ease-out infinite;
   }
   .perm-icon-wrap::after { animation-delay: 1.2s; }
@@ -109,6 +110,10 @@
   .perm-title {
     font-size: 1.45rem; font-weight: 900; color: white;
     margin-bottom: 10px; letter-spacing: -0.5px;
+  }
+  .perm-title span {
+    color: var(--primary-light);
+    display: inline-block;
   }
   .perm-sub {
     font-size: 0.9rem; color: var(--muted); font-weight: 500;
@@ -132,10 +137,10 @@
   .btn-primary-lg {
     width: 100%; padding: 17px;
     border: none; border-radius: 50px;
-    background: linear-gradient(135deg, var(--primary), #8b5cf6);
+    background: linear-gradient(135deg, var(--primary), var(--primary-deep));
     color: white; font-weight: 800; font-size: 1rem;
     cursor: pointer;
-    box-shadow: 0 12px 30px -8px rgba(99,102,241,0.6);
+    box-shadow: 0 12px 30px -8px rgba(245,158,11,0.6);
     display: flex; align-items: center; justify-content: center; gap: 10px;
     transition: transform 0.15s;
     font-family: inherit;
@@ -153,15 +158,23 @@
   }
   .btn-ghost:hover { color: white; border-color: rgba(255,255,255,0.25); }
 
-  /* ============== نافذة التسجيل (اختياري) ============== */
+  /* ============== نافذة التسجيل ============== */
   #regGate .perm-card { padding: 34px 24px 26px; }
   .reg-avatar {
     width: 90px; height: 90px; margin: 0 auto 18px;
     border-radius: 50%;
-    background: linear-gradient(135deg, var(--primary), #8b5cf6);
+    background: linear-gradient(135deg, var(--primary), var(--primary-deep));
     display: flex; align-items: center; justify-content: center;
     font-size: 2.4rem; color: white; font-weight: 900;
-    box-shadow: 0 15px 35px -10px rgba(99,102,241,0.6);
+    box-shadow: 0 15px 35px -10px rgba(245,158,11,0.6);
+    position: relative;
+  }
+  .reg-avatar::after {
+    content: '🎖️';
+    position: absolute;
+    bottom: -6px; left: -6px;
+    font-size: 1.6rem;
+    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.4));
   }
   .input-group {
     position: relative; margin-bottom: 12px;
@@ -183,7 +196,7 @@
     font-weight: 500;
   }
   .input-group input::placeholder { color: rgba(148,163,184,0.7); }
-  .input-group input:focus { border-color: var(--primary); background: rgba(99,102,241,0.08); }
+  .input-group input:focus { border-color: var(--primary); background: rgba(245,158,11,0.08); }
 
   /* ============== شاشة الخطأ ============== */
   #errGate .perm-icon-wrap {
@@ -212,18 +225,18 @@
     -webkit-backdrop-filter: blur(16px);
     padding: 8px 14px;
     border-radius: 50px;
-    border: 1px solid var(--line);
+    border: 1px solid rgba(245,158,11,0.25);
   }
   .brand-icon {
     width: 32px; height: 32px; border-radius: 50%;
-    background: linear-gradient(135deg, var(--primary), #8b5cf6);
+    background: linear-gradient(135deg, var(--primary), var(--primary-deep));
     display: flex; align-items: center; justify-content: center;
-    color: white; font-size: 0.85rem;
-    box-shadow: 0 6px 16px -4px rgba(99,102,241,0.6);
+    color: white; font-size: 0.9rem;
+    box-shadow: 0 6px 16px -4px rgba(245,158,11,0.6);
   }
   .brand-text { display: flex; flex-direction: column; line-height: 1.1; }
   .brand-title { font-size: 0.85rem; font-weight: 800; color: white; }
-  .brand-sub { font-size: 0.62rem; color: var(--muted); font-weight: 600; }
+  .brand-sub { font-size: 0.62rem; color: var(--primary-light); font-weight: 700; }
 
   .live-badge {
     display: flex; align-items: center; gap: 6px;
@@ -256,50 +269,106 @@
   }
   .bottom-panel > * { pointer-events: auto; }
 
-  .me-card {
-    background: var(--glass);
+  /* بطاقة الكابتن */
+  .captain-card {
+    background: linear-gradient(135deg, rgba(245,158,11,0.18), rgba(217,119,6,0.12));
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    border: 1px solid var(--line);
+    border: 1px solid rgba(245,158,11,0.35);
     border-radius: 22px;
-    padding: 12px 14px;
+    padding: 14px 16px;
     display: flex; align-items: center; gap: 12px;
-    box-shadow: 0 20px 40px -15px rgba(0,0,0,0.5);
-  }
-  .me-avatar {
-    width: 44px; height: 44px; border-radius: 50%;
-    background: linear-gradient(135deg, var(--accent), #16a34a);
-    display: flex; align-items: center; justify-content: center;
-    font-weight: 900; color: white; font-size: 1.05rem;
-    flex-shrink: 0;
-    box-shadow: 0 6px 16px -4px rgba(34,197,94,0.6);
+    box-shadow: 0 20px 40px -15px rgba(245,158,11,0.3);
+    margin-bottom: 10px;
     position: relative;
+    overflow: hidden;
   }
-  .me-avatar::after {
-    content: ''; position: absolute; inset: -4px;
-    border-radius: 50%;
-    border: 2px solid rgba(34,197,94,0.5);
-    animation: ripple 2.5s ease-out infinite;
+  .captain-card::before {
+    content: '';
+    position: absolute;
+    top: -50%; right: -50%;
+    width: 200%; height: 200%;
+    background: radial-gradient(circle, rgba(251,191,36,0.15) 0%, transparent 60%);
+    animation: shine 6s linear infinite;
+    pointer-events: none;
   }
-  .me-info { flex: 1; min-width: 0; }
-  .me-name { font-size: 0.92rem; font-weight: 800; color: white; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .me-status { font-size: 0.7rem; color: var(--muted); font-weight: 600; display: flex; align-items: center; gap: 5px; margin-top: 2px; }
-  .me-status .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
-
-  .me-actions { display: flex; gap: 8px; flex-shrink: 0; }
-  .icon-btn {
-    width: 42px; height: 42px; border-radius: 50%;
-    background: rgba(255,255,255,0.08);
-    border: 1px solid var(--line);
-    color: white; cursor: pointer;
+  @keyframes shine {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  .captain-avatar {
+    width: 52px; height: 52px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary), var(--primary-deep));
     display: flex; align-items: center; justify-content: center;
-    font-size: 1rem;
+    font-weight: 900; color: white; font-size: 1.15rem;
+    flex-shrink: 0;
+    box-shadow: 0 8px 20px -4px rgba(245,158,11,0.7);
+    position: relative;
+    z-index: 1;
+  }
+  .captain-avatar::after {
+    content: '🎖️';
+    position: absolute;
+    bottom: -4px; left: -4px;
+    font-size: 0.95rem;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+  }
+  .captain-info { flex: 1; min-width: 0; position: relative; z-index: 1; }
+  .captain-welcome {
+    font-size: 0.68rem; color: var(--primary-light);
+    font-weight: 800; letter-spacing: 0.5px;
+    margin-bottom: 2px;
+  }
+  .captain-name {
+    font-size: 1.02rem; font-weight: 900; color: white;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  }
+  .captain-status {
+    font-size: 0.68rem; color: rgba(255,255,255,0.75);
+    font-weight: 600; display: flex; align-items: center; gap: 5px;
+    margin-top: 3px;
+  }
+  .captain-status .dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 6px var(--accent);
+    animation: dotBlink 1.8s infinite;
+  }
+  @keyframes dotBlink {
+    0%,100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  .captain-actions { display: flex; gap: 8px; flex-shrink: 0; position: relative; z-index: 1; }
+  .icon-btn {
+    width: 44px; height: 44px; border-radius: 50%;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(245,158,11,0.3);
+    color: var(--primary-light); cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.05rem;
     transition: all 0.2s;
     font-family: inherit;
+    position: relative;
   }
   .icon-btn:active { transform: scale(0.92); }
-  .icon-btn:hover { background: rgba(99,102,241,0.2); border-color: var(--primary); }
-  .icon-btn.danger:hover { background: rgba(239,68,68,0.15); border-color: var(--danger); color: #fca5a5; }
+  .icon-btn:hover {
+    background: rgba(245,158,11,0.2);
+    border-color: var(--primary);
+    color: white;
+  }
+  .icon-btn.share-btn {
+    background: linear-gradient(135deg, var(--primary), var(--primary-deep));
+    border-color: transparent;
+    color: white;
+    box-shadow: 0 6px 16px -4px rgba(245,158,11,0.7);
+    animation: shareGlow 3s infinite;
+  }
+  @keyframes shareGlow {
+    0%,100% { box-shadow: 0 6px 16px -4px rgba(245,158,11,0.7); }
+    50% { box-shadow: 0 6px 24px -4px rgba(245,158,11,0.9); }
+  }
 
   .stats-strip {
     display: flex; gap: 8px;
@@ -323,32 +392,40 @@
     margin-bottom: 1px;
   }
   .stat-pill.green strong { color: var(--accent); }
-  .stat-pill.purple strong { color: var(--primary-light); }
-  .stat-pill.gold strong { color: var(--gold); }
+  .stat-pill.gold strong { color: var(--primary-light); }
+  .stat-pill.blue strong { color: #60a5fa; }
 
   /* ============== الماركرات ============== */
   .marker-me {
     display: flex; align-items: center; justify-content: center;
-    width: 50px; height: 50px; border-radius: 50%;
-    background: linear-gradient(135deg, var(--accent), #16a34a);
+    width: 54px; height: 54px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary), var(--primary-deep));
     border: 3px solid white;
-    color: white; font-size: 1.1rem;
-    box-shadow: 0 8px 24px -4px rgba(34,197,94,0.7), 0 0 0 0 rgba(34,197,94,0.6);
+    color: white; font-size: 1.2rem;
+    box-shadow: 0 8px 24px -4px rgba(245,158,11,0.8), 0 0 0 0 rgba(245,158,11,0.6);
     animation: mePulse 2s infinite;
+    position: relative;
+  }
+  .marker-me::after {
+    content: '⭐';
+    position: absolute;
+    top: -8px; right: -4px;
+    font-size: 1rem;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.4));
   }
   @keyframes mePulse {
-    0% { box-shadow: 0 8px 24px -4px rgba(34,197,94,0.7), 0 0 0 0 rgba(34,197,94,0.6); }
-    70% { box-shadow: 0 8px 24px -4px rgba(34,197,94,0.7), 0 0 0 18px rgba(34,197,94,0); }
-    100% { box-shadow: 0 8px 24px -4px rgba(34,197,94,0.7), 0 0 0 0 rgba(34,197,94,0); }
+    0% { box-shadow: 0 8px 24px -4px rgba(245,158,11,0.8), 0 0 0 0 rgba(245,158,11,0.6); }
+    70% { box-shadow: 0 8px 24px -4px rgba(245,158,11,0.8), 0 0 0 18px rgba(245,158,11,0); }
+    100% { box-shadow: 0 8px 24px -4px rgba(245,158,11,0.8), 0 0 0 0 rgba(245,158,11,0); }
   }
 
   .marker-user {
     display: flex; align-items: center; justify-content: center;
-    width: 40px; height: 40px; border-radius: 50%;
-    background: linear-gradient(135deg, var(--primary), #8b5cf6);
+    width: 42px; height: 42px; border-radius: 50%;
+    background: linear-gradient(135deg, #60a5fa, #3b82f6);
     border: 3px solid white;
     color: white; font-size: 0.95rem; font-weight: 900;
-    box-shadow: 0 6px 18px -4px rgba(99,102,241,0.6);
+    box-shadow: 0 6px 18px -4px rgba(96,165,250,0.7);
   }
 
   .marker-guest {
@@ -376,9 +453,9 @@
     max-width: 90px;
     overflow: hidden; text-overflow: ellipsis;
   }
-  .marker-label.me { color: var(--accent); border-color: rgba(34,197,94,0.4); }
+  .marker-label.me { color: var(--primary-light); border-color: rgba(245,158,11,0.5); background: rgba(15,23,42,0.95); }
 
-  /* ============== Leaflet popup تخصيص ============== */
+  /* ============== Leaflet popup ============== */
   .leaflet-popup-content-wrapper {
     background: var(--bg2) !important;
     color: white !important;
@@ -400,12 +477,12 @@
   .popup-head { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
   .popup-avatar {
     width: 44px; height: 44px; border-radius: 50%;
-    background: linear-gradient(135deg, var(--primary), #8b5cf6);
+    background: linear-gradient(135deg, #60a5fa, #3b82f6);
     display: flex; align-items: center; justify-content: center;
     color: white; font-weight: 900; font-size: 1rem;
     flex-shrink: 0;
   }
-  .popup-avatar.me { background: linear-gradient(135deg, var(--accent), #16a34a); }
+  .popup-avatar.me { background: linear-gradient(135deg, var(--primary), var(--primary-deep)); }
   .popup-avatar.guest { background: linear-gradient(135deg, #64748b, #475569); }
   .popup-name { font-weight: 800; font-size: 0.95rem; color: white; line-height: 1.2; }
   .popup-sub { font-size: 0.68rem; color: var(--muted); margin-top: 3px; }
@@ -433,29 +510,34 @@
   }
   .popup-btn:active { transform: scale(0.95); }
   .popup-btn.call { background: linear-gradient(135deg, #22c55e, #16a34a); color: white; }
-  .popup-btn.nav { background: linear-gradient(135deg, var(--primary), #8b5cf6); color: white; }
+  .popup-btn.nav { background: linear-gradient(135deg, var(--primary), var(--primary-deep)); color: white; }
   .popup-btn.ghost { background: rgba(255,255,255,0.08); color: var(--muted); }
 
   /* ============== زر العودة لموقعي ============== */
   .locate-fab {
     position: absolute;
     left: 14px;
-    bottom: calc(190px + env(safe-area-inset-bottom));
+    bottom: calc(240px + env(safe-area-inset-bottom));
     z-index: 1000;
-    width: 48px; height: 48px;
+    width: 50px; height: 50px;
     border-radius: 50%;
     background: var(--glass);
     backdrop-filter: blur(16px);
-    border: 1px solid var(--line);
+    border: 1px solid rgba(245,158,11,0.3);
     color: var(--primary-light);
-    font-size: 1.15rem;
+    font-size: 1.2rem;
     cursor: pointer;
     display: flex; align-items: center; justify-content: center;
     box-shadow: 0 10px 24px -6px rgba(0,0,0,0.5);
     transition: all 0.2s;
   }
   .locate-fab:active { transform: scale(0.92); }
-  .locate-fab.active { color: var(--primary); border-color: var(--primary); background: rgba(99,102,241,0.15); }
+  .locate-fab.active {
+    color: white;
+    border-color: var(--primary);
+    background: linear-gradient(135deg, var(--primary), var(--primary-deep));
+    box-shadow: 0 10px 30px -6px rgba(245,158,11,0.7);
+  }
 
   /* ============== التوست ============== */
   .toast {
@@ -466,7 +548,7 @@
     z-index: 200000;
     background: var(--glass);
     backdrop-filter: blur(20px);
-    border: 1px solid var(--line);
+    border: 1px solid rgba(245,158,11,0.3);
     color: white;
     padding: 11px 20px;
     border-radius: 30px;
@@ -492,30 +574,117 @@
   }
   @keyframes spin { to { transform: rotate(360deg); } }
 
-  /* ============== إخفاء الشعار ============== */
   .leaflet-control-attribution { display: none !important; }
 
-  /* ============== تعديلات الموبايل ============== */
+  /* ============== شارة الرتبة ============== */
+  .rank-badge {
+    display: inline-flex; align-items: center; gap: 4px;
+    background: linear-gradient(135deg, var(--primary), var(--primary-deep));
+    color: white;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 0.6rem;
+    font-weight: 800;
+    letter-spacing: 0.3px;
+    box-shadow: 0 3px 8px -2px rgba(245,158,11,0.6);
+  }
+
+  /* ============== مودال المشاركة ============== */
+  .share-modal {
+    position: fixed; inset: 0;
+    z-index: 150000;
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(8px);
+    display: none;
+    align-items: center; justify-content: center;
+    padding: 20px;
+  }
+  .share-modal.active { display: flex; }
+  .share-modal-card {
+    background: var(--bg2);
+    border: 1px solid rgba(245,158,11,0.25);
+    border-radius: 26px;
+    padding: 28px 22px 22px;
+    max-width: 400px; width: 100%;
+    text-align: center;
+    animation: cardIn 0.4s;
+  }
+  .share-modal-icon {
+    width: 78px; height: 78px;
+    margin: 0 auto 16px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary), var(--primary-deep));
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-size: 2rem;
+    box-shadow: 0 15px 35px -8px rgba(245,158,11,0.6);
+  }
+  .share-modal-title {
+    font-size: 1.25rem; font-weight: 900;
+    color: white; margin-bottom: 6px;
+  }
+  .share-modal-sub {
+    font-size: 0.82rem; color: var(--muted);
+    margin-bottom: 20px; line-height: 1.6;
+  }
+  .share-url-box {
+    background: rgba(245,158,11,0.08);
+    border: 1.5px dashed rgba(245,158,11,0.4);
+    border-radius: 14px;
+    padding: 12px 14px;
+    direction: ltr; text-align: center;
+    font-family: monospace;
+    font-size: 0.78rem;
+    color: var(--primary-light);
+    margin-bottom: 16px;
+    word-break: break-all;
+    font-weight: 700;
+  }
+  .share-actions {
+    display: flex; gap: 8px; margin-bottom: 12px;
+  }
+  .share-action-btn {
+    flex: 1;
+    padding: 13px 8px;
+    border-radius: 16px;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    font-weight: 800;
+    font-size: 0.78rem;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 6px;
+    transition: all 0.2s;
+  }
+  .share-action-btn:active { transform: scale(0.95); }
+  .share-action-btn i { font-size: 1.3rem; }
+  .share-action-btn.whatsapp { background: linear-gradient(135deg, #25D366, #128C7E); color: white; }
+  .share-action-btn.telegram { background: linear-gradient(135deg, #2AABEE, #229ED9); color: white; }
+  .share-action-btn.copy { background: linear-gradient(135deg, var(--primary), var(--primary-deep)); color: white; }
+  .share-action-btn.native { background: rgba(255,255,255,0.08); color: white; border: 1px solid var(--line); }
+
+  .share-close-btn {
+    width: 100%;
+    padding: 12px;
+    background: transparent;
+    border: 1px solid var(--line);
+    color: var(--muted);
+    border-radius: 50px;
+    font-weight: 700;
+    font-size: 0.85rem;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .share-close-btn:hover { color: white; }
+
   @media (max-width: 380px) {
     .brand-sub { display: none; }
     .stat-pill { padding: 8px 4px; }
     .stat-pill strong { font-size: 0.95rem; }
+    .captain-avatar { width: 46px; height: 46px; font-size: 1rem; }
+    .captain-name { font-size: 0.92rem; }
+    .icon-btn { width: 40px; height: 40px; font-size: 0.95rem; }
   }
-
-  /* ============== أزرار دائرية للطوارئ ============== */
-  .pill-btn {
-    background: var(--glass);
-    backdrop-filter: blur(16px);
-    border: 1px solid var(--line);
-    padding: 6px 12px;
-    border-radius: 30px;
-    color: white; font-size: 0.7rem; font-weight: 700;
-    cursor: pointer; font-family: inherit;
-    display: flex; align-items: center; gap: 5px;
-    transition: all 0.2s;
-  }
-  .pill-btn:hover { border-color: var(--primary); }
-  .pill-btn:active { transform: scale(0.95); }
 </style>
 </head>
 <body>
@@ -523,45 +692,42 @@
 <!-- ============== نافذة السماح بالموقع ============== -->
 <div id="permGate" class="overlay active">
   <div class="perm-card">
-    <div class="perm-icon-wrap"><i class="fas fa-location-crosshairs"></i></div>
-    <h2 class="perm-title">خريطة المجتمع</h2>
+    <div class="perm-icon-wrap"><i class="fas fa-satellite-dish"></i></div>
+    <h2 class="perm-title">كباتن <span>تساهيل</span></h2>
     <p class="perm-sub">
-      شاهد كل من حولك على الخريطة مباشرة<br>
-      نحتاج موقعك لعرضك ضمن المجتمع
+      انضم إلى شبكة الكباتن مباشرة<br>
+      نحتاج موقعك لعرضك على الخريطة
     </p>
     <div class="perm-features">
-      <div><i class="fas fa-check-circle"></i> ظهورك على خريطة المجتمع</div>
-      <div><i class="fas fa-check-circle"></i> رؤية موقع الآخرين لحظياً</div>
+      <div><i class="fas fa-check-circle"></i> ظهورك ككابتن على الخريطة</div>
+      <div><i class="fas fa-check-circle"></i> رؤية باقي الكباتن لحظياً</div>
       <div><i class="fas fa-check-circle"></i> حساب المسافة بينك وبينهم</div>
     </div>
     <button class="btn-primary-lg" id="permBtn" onclick="requestPermission()">
       <i class="fas fa-location-dot"></i> السماح بالوصول للموقع
     </button>
-    <button class="btn-ghost" onclick="showError('لا يمكن استخدام التطبيق بدون تحديد الموقع')">
-      لاحقاً
-    </button>
   </div>
 </div>
 
-<!-- ============== نافذة التسجيل (اختياري) ============== -->
+<!-- ============== نافذة التسجيل ============== -->
 <div id="regGate" class="overlay">
   <div class="perm-card">
-    <div class="reg-avatar" id="regAvatar">؟</div>
-    <h2 class="perm-title">عرّف عن نفسك</h2>
-    <p class="perm-sub">الاسم اختياري — لكنه يساعد الآخرين على التعرف عليك</p>
+    <div class="reg-avatar" id="regAvatar">ك</div>
+    <h2 class="perm-title">مرحباً كابتن 👋</h2>
+    <p class="perm-sub">عرّف عن نفسك ليتعرف عليك باقي الكباتن</p>
     <div class="input-group">
-      <i class="fas fa-user"></i>
-      <input type="text" id="regName" maxlength="30" placeholder="اسمك (اختياري)">
+      <i class="fas fa-user-tie"></i>
+      <input type="text" id="regName" maxlength="30" placeholder="اسم الكابتن (اختياري)">
     </div>
     <div class="input-group">
       <i class="fas fa-phone"></i>
       <input type="tel" id="regPhone" maxlength="15" placeholder="رقم الهاتف (اختياري)">
     </div>
     <button class="btn-primary-lg" onclick="saveRegistration()">
-      <i class="fas fa-arrow-left"></i> انطلق للخريطة
+      <i class="fas fa-arrow-left"></i> انطلق إلى الخريطة
     </button>
     <button class="btn-ghost" onclick="skipRegistration()">
-      دخول كزائر بدون اسم
+      دخول ككابتن مجهول
     </button>
   </div>
 </div>
@@ -587,13 +753,13 @@
     <div class="brand">
       <div class="brand-icon"><i class="fas fa-satellite-dish"></i></div>
       <div class="brand-text">
-        <span class="brand-title">خريطة المجتمع</span>
-        <span class="brand-sub">مباشر على الخريطة</span>
+        <span class="brand-title">كباتن تساهيل</span>
+        <span class="brand-sub">🎖️ شبكة الكباتن المباشرة</span>
       </div>
     </div>
     <div class="live-badge">
       <span class="live-dot"></span>
-      <span id="liveCount">0</span> شخص
+      <span id="liveCount">0</span> كابتن
     </div>
   </div>
 
@@ -607,35 +773,70 @@
     <div class="stats-strip">
       <div class="stat-pill green">
         <strong id="statOnline">0</strong>
-        متصل الآن
+        كابتن متصل
       </div>
-      <div class="stat-pill purple">
+      <div class="stat-pill gold">
         <strong id="statTotal">0</strong>
         على الخريطة
       </div>
-      <div class="stat-pill gold">
+      <div class="stat-pill blue">
         <strong id="statNear">-</strong>
-        أقرب شخص
+        أقرب كابتن
       </div>
     </div>
-    <div class="me-card" style="margin-top:10px;">
-      <div class="me-avatar" id="meAvatar">؟</div>
-      <div class="me-info">
-        <div class="me-name" id="meName">زائر</div>
-        <div class="me-status">
+
+    <!-- بطاقة الكابتن -->
+    <div class="captain-card" style="margin-top:10px;">
+      <div class="captain-avatar" id="meAvatar">ك</div>
+      <div class="captain-info">
+        <div class="captain-welcome">مرحباً كابتن 🎖️</div>
+        <div class="captain-name" id="meName">كابتن مجهول</div>
+        <div class="captain-status">
           <span class="dot"></span>
-          <span id="meStatus">يتم إرسال موقعك مباشرة</span>
+          <span id="meStatus">يتم بث موقعك مباشرة</span>
         </div>
       </div>
-      <div class="me-actions">
-        <button class="icon-btn" onclick="recenterOnce()" title="تحديث">
+      <div class="captain-actions">
+        <button class="icon-btn" onclick="recenterOnce()" title="تحديث موقعي">
           <i class="fas fa-sync"></i>
         </button>
-        <button class="icon-btn danger" onclick="logout()" title="خروج">
-          <i class="fas fa-right-from-bracket"></i>
+        <button class="icon-btn share-btn" onclick="openShareModal()" title="مشاركة الرابط">
+          <i class="fas fa-share-nodes"></i>
         </button>
       </div>
     </div>
+  </div>
+</div>
+
+<!-- ============== مودال المشاركة ============== -->
+<div class="share-modal" id="shareModal">
+  <div class="share-modal-card">
+    <div class="share-modal-icon"><i class="fas fa-share-nodes"></i></div>
+    <div class="share-modal-title">شارك رابط كباتن تساهيل</div>
+    <div class="share-modal-sub">أرسل الرابط لأصدقائك لينضموا إلى شبكة الكباتن</div>
+    <div class="share-url-box" id="shareUrlBox">—</div>
+
+    <div class="share-actions">
+      <button class="share-action-btn whatsapp" onclick="shareVia('whatsapp')">
+        <i class="fab fa-whatsapp"></i>
+        واتساب
+      </button>
+      <button class="share-action-btn telegram" onclick="shareVia('telegram')">
+        <i class="fab fa-telegram"></i>
+        تيليجرام
+      </button>
+      <button class="share-action-btn copy" onclick="shareVia('copy')">
+        <i class="fas fa-copy"></i>
+        نسخ
+      </button>
+    </div>
+
+    <button class="share-action-btn native" style="width:100%;flex-direction:row;padding:12px;" onclick="shareVia('native')">
+      <i class="fas fa-share-from-square"></i>
+      مشاركة عبر التطبيقات الأخرى
+    </button>
+
+    <button class="share-close-btn" style="margin-top:10px;" onclick="closeShareModal()">إغلاق</button>
   </div>
 </div>
 
@@ -647,29 +848,30 @@
    الإعدادات
    ============================================================ */
 const FIREBASE_URL = "https://waselny-2812b-default-rtdb.firebaseio.com";
-const PUSH_INTERVAL = 20000;   // إرسال موقعي كل 20 ثانية
-const REFRESH_INTERVAL = 10000; // تحديث الآخرين كل 10 ثوانٍ
-const ONLINE_THRESHOLD = 3 * 60 * 1000; // من كان آخر تحديث له أقل من 3 دقائق = متصل
+const APP_NAME = "كباتن تساهيل";
+const PUSH_INTERVAL = 20000;
+const REFRESH_INTERVAL = 10000;
+const ONLINE_THRESHOLD = 3 * 60 * 1000;
 
 /* ============================================================
-   الحالة العامة
+   الحالة
    ============================================================ */
-let myId = localStorage.getItem('cmap_id');
+let myId = localStorage.getItem('tsaheel_id');
 if (!myId) {
-  myId = 'u_' + Date.now().toString(36) + '_' + Math.random().toString(36).substr(2, 6);
-  localStorage.setItem('cmap_id', myId);
+  myId = 'c_' + Date.now().toString(36) + '_' + Math.random().toString(36).substr(2, 6);
+  localStorage.setItem('tsaheel_id', myId);
 }
-let me = JSON.parse(localStorage.getItem('cmap_user') || 'null');
+let me = JSON.parse(localStorage.getItem('tsaheel_user') || 'null');
 let myLat = null, myLng = null, myAccuracy = 0;
 let watchId = null;
 let pushTimer = null;
 let refreshTimer = null;
 let map, meMarker;
-let otherMarkers = {}; // id -> { marker, data }
+let otherMarkers = {};
 let isFollowingMe = true;
 
 /* ============================================================
-   أدوات مساعدة
+   أدوات
    ============================================================ */
 function $(id) { return document.getElementById(id); }
 
@@ -693,9 +895,9 @@ function showError(msg) {
 }
 
 function initials(name) {
-  if (!name) return '؟';
+  if (!name) return 'ك';
   const t = name.trim();
-  if (!t) return '؟';
+  if (!t) return 'ك';
   const parts = t.split(/\s+/);
   if (parts.length >= 2) return (parts[0][0] + parts[1][0]).toUpperCase();
   return t.substring(0, 2).toUpperCase();
@@ -747,12 +949,18 @@ function requestPermission() {
       myLng = pos.coords.longitude;
       myAccuracy = pos.coords.accuracy || 0;
       btn.innerHTML = '<i class="fas fa-check"></i> تم تحديد الموقع';
-      // إذا كان المستخدم مسجلاً من قبل → ادخل مباشرة
-      if (me && me.name !== undefined) {
+      sessionStorage.setItem('tsaheel_granted', '1');
+
+      if (me && me.name !== undefined && me.name !== '') {
+        // مسجل سابقاً
+        setTimeout(() => startApp(), 500);
+      } else if (me && me.name === '') {
+        // زائر مجهول
         setTimeout(() => startApp(), 500);
       } else {
+        // جديد → نافذة التسجيل
         setTimeout(() => {
-          $('regAvatar').textContent = initials(me?.name || '');
+          $('regAvatar').textContent = initials(me?.name || '') || 'ك';
           showScreen('regGate');
         }, 500);
       }
@@ -771,23 +979,27 @@ function requestPermission() {
 }
 
 /* ============================================================
-   التسجيل (اسم + رقم اختياري)
+   التسجيل
    ============================================================ */
 $('regName')?.addEventListener('input', (e) => {
-  $('regAvatar').textContent = initials(e.target.value) || '؟';
+  $('regAvatar').textContent = initials(e.target.value) || 'ك';
 });
 
 function saveRegistration() {
   const name = $('regName').value.trim();
   const phone = $('regPhone').value.trim();
-  me = { name, phone };
-  localStorage.setItem('cmap_user', JSON.stringify(me));
+  me = { name: name || '', phone: phone || '' };
+  localStorage.setItem('tsaheel_user', JSON.stringify(me));
   startApp();
+  if (name) {
+    setTimeout(() => showToast(`🎖️ أهلاً كابتن ${name}`), 500);
+  }
 }
 function skipRegistration() {
   me = { name: '', phone: '' };
-  localStorage.setItem('cmap_user', JSON.stringify(me));
+  localStorage.setItem('tsaheel_user', JSON.stringify(me));
   startApp();
+  setTimeout(() => showToast('👤 دخول ككابتن مجهول'), 500);
 }
 
 /* ============================================================
@@ -795,13 +1007,15 @@ function skipRegistration() {
    ============================================================ */
 function startApp() {
   showScreen('app');
-  $('meAvatar').textContent = initials(me?.name || '') || '؟';
-  $('meName').textContent = me?.name || 'زائر بدون اسم';
+  const displayName = me?.name || 'كابتن مجهول';
+  $('meAvatar').textContent = initials(me?.name || '') || 'ك';
+  $('meName').textContent = displayName;
+
   initMap();
   startWatch();
   startPush();
   startRefresh();
-  pushMyLocation(); // إرسال فوري
+  pushMyLocation();
   refreshOthers();
 }
 
@@ -825,13 +1039,11 @@ function initMap() {
     updateWhenIdle: true
   }).addTo(map);
 
-  // عند تحريك الخريطة يدوياً، نوقف التتبع
   map.on('dragstart', () => {
     isFollowingMe = false;
     $('locateBtn')?.classList.remove('active');
   });
 
-  // إضافة ماركر لي
   addMeMarker();
 }
 
@@ -839,10 +1051,10 @@ function addMeMarker() {
   if (!myLat || !myLng) return;
   const icon = L.divIcon({
     className: '',
-    html: `<div class="marker-me"><i class="fas fa-person"></i></div><div class="marker-label me">أنا</div>`,
-    iconSize: [50, 50],
-    iconAnchor: [25, 25],
-    popupAnchor: [0, -28]
+    html: `<div class="marker-me"><i class="fas fa-user-tie"></i></div><div class="marker-label me">🎖️ أنا الكابتن</div>`,
+    iconSize: [54, 54],
+    iconAnchor: [27, 27],
+    popupAnchor: [0, -30]
   });
 
   if (meMarker) {
@@ -857,14 +1069,14 @@ function addMeMarker() {
 }
 
 function mePopupHtml() {
-  const name = me?.name || 'أنا (زائر)';
+  const name = me?.name || 'كابتن مجهول';
   const phone = me?.phone || '';
   return `<div class="popup-card">
     <div class="popup-head">
       <div class="popup-avatar me">${escapeHtml(initials(name))}</div>
       <div>
-        <div class="popup-name">${escapeHtml(name)}</div>
-        <div class="popup-sub">📍 موقعك الحالي</div>
+        <div class="popup-name">🎖️ ${escapeHtml(name)}</div>
+        <div class="popup-sub">📍 موقعك ككابتن</div>
       </div>
     </div>
     <div class="popup-rows">
@@ -883,7 +1095,7 @@ function centerOnMe() {
 }
 
 function recenterOnce() {
-  showToast('جاري تحديث موقعك...');
+  showToast('جاري تحديث موقعك كابتن...');
   navigator.geolocation.getCurrentPosition(
     (pos) => {
       myLat = pos.coords.latitude;
@@ -892,7 +1104,7 @@ function recenterOnce() {
       addMeMarker();
       meMarker?.setPopupContent(mePopupHtml());
       pushMyLocation();
-      showToast('✅ تم التحديث');
+      showToast('✅ تم التحديث كابتن');
     },
     () => showToast('تعذّر التحديث'),
     { enableHighAccuracy: true, timeout: 15000 }
@@ -920,7 +1132,7 @@ function startWatch() {
 }
 
 /* ============================================================
-   إرسال موقعي إلى Firebase
+   إرسال موقعي
    ============================================================ */
 async function pushMyLocation() {
   if (!myLat || !myLng) return;
@@ -940,7 +1152,7 @@ async function pushMyLocation() {
       method: 'PUT',
       body: JSON.stringify(body)
     });
-    $('meStatus').textContent = 'آخر تحديث: ' + new Date().toLocaleTimeString('ar-SA');
+    $('meStatus').textContent = 'آخر بث: ' + new Date().toLocaleTimeString('ar-SA');
   } catch(e) {
     console.error('Push error:', e);
     $('meStatus').textContent = '⚠️ فشل الاتصال';
@@ -953,7 +1165,7 @@ function startPush() {
 }
 
 /* ============================================================
-   جلب الآخرين وتحديث الماركرات
+   جلب الكباتن الآخرين
    ============================================================ */
 async function refreshOthers() {
   try {
@@ -966,21 +1178,17 @@ async function refreshOthers() {
 
     users.forEach(u => {
       if (!u || !u.id || !u.lat || !u.lng) return;
-      if (u.id === myId) return; // أنا معروض بشكل مختلف
+      if (u.id === myId) return;
 
       seenIds.add(u.id);
-
       const isGuest = !u.name;
-      const isOnline = (now - (u.ts || 0)) < ONLINE_THRESHOLD;
 
       if (otherMarkers[u.id]) {
-        // تحديث الماركر الموجود
         otherMarkers[u.id].marker.setLatLng([u.lat, u.lng]);
         otherMarkers[u.id].marker.setPopupContent(otherPopupHtml(u, isGuest));
         otherMarkers[u.id].marker.setIcon(makeOtherIcon(u, isGuest));
         otherMarkers[u.id].data = u;
       } else {
-        // إضافة ماركر جديد
         const icon = makeOtherIcon(u, isGuest);
         const marker = L.marker([u.lat, u.lng], { icon }).addTo(map);
         marker.bindPopup(otherPopupHtml(u, isGuest), { closeButton: true, maxWidth: 280 });
@@ -988,7 +1196,6 @@ async function refreshOthers() {
       }
     });
 
-    // حذف الماركرات التي اختفت
     Object.keys(otherMarkers).forEach(id => {
       if (!seenIds.has(id)) {
         try { map.removeLayer(otherMarkers[id].marker); } catch(e) {}
@@ -1010,15 +1217,15 @@ function makeOtherIcon(u, isGuest) {
   return L.divIcon({
     className: '',
     html: `<div class="${cls}">${init}</div>${labelHtml}`,
-    iconSize: isGuest ? [34, 34] : [40, 40],
-    iconAnchor: isGuest ? [17, 17] : [20, 20],
+    iconSize: isGuest ? [34, 34] : [42, 42],
+    iconAnchor: isGuest ? [17, 17] : [21, 21],
     popupAnchor: [0, isGuest ? -20 : -24]
   });
 }
 
 function otherPopupHtml(u, isGuest) {
   const dist = (myLat && myLng) ? distanceKm(myLat, myLng, u.lat, u.lng) : null;
-  const name = u.name || 'زائر بدون اسم';
+  const name = u.name || 'كابتن مجهول';
   const avatarCls = isGuest ? 'popup-avatar guest' : 'popup-avatar';
   const avatarTxt = isGuest ? '<i class="fas fa-user-secret"></i>' : escapeHtml(initials(u.name));
   const isOnline = (Date.now() - (u.ts || 0)) < ONLINE_THRESHOLD;
@@ -1029,7 +1236,7 @@ function otherPopupHtml(u, isGuest) {
     <div class="popup-head">
       <div class="${avatarCls}">${avatarTxt}</div>
       <div>
-        <div class="popup-name">${escapeHtml(name)}</div>
+        <div class="popup-name">🎖️ ${escapeHtml(name)}</div>
         <div class="popup-sub">${isOnline ? '🟢 متصل الآن' : '⚫ غير نشط'} · ${timeAgo(u.ts)}</div>
       </div>
     </div>
@@ -1088,47 +1295,95 @@ function startRefresh() {
 }
 
 /* ============================================================
-   إخفاء تلقائي عند مغادرة الصفحة — حذف موقعي
+   🆕 مشاركة الرابط
    ============================================================ */
-window.addEventListener('beforeunload', () => {
-  // نستخدم sendBeacon لأفضل فرصة للحذف
-  try {
-    const url = `${FIREBASE_URL}/liveusers/${myId}.json`;
-    if (navigator.sendBeacon) {
-      navigator.sendBeacon(url + '?_method=DELETE');
-    }
-  } catch(e) {}
+function getShareUrl() {
+  return window.location.href.split('#')[0].split('?')[0];
+}
+
+function openShareModal() {
+  const url = getShareUrl();
+  $('shareUrlBox').textContent = url;
+  $('shareModal').classList.add('active');
+}
+function closeShareModal() {
+  $('shareModal').classList.remove('active');
+}
+document.getElementById('shareModal').addEventListener('click', function(e) {
+  if (e.target === this) closeShareModal();
 });
 
-function logout() {
-  if (!confirm('سيتم حذف موقعك من الخريطة والخروج. متابعة؟')) return;
-  // إيقاف كل المؤقتات
-  if (watchId !== null) navigator.geolocation.clearWatch(watchId);
-  if (pushTimer) clearInterval(pushTimer);
-  if (refreshTimer) clearInterval(refreshTimer);
-  // حذف موقعي من السيرفر
-  fetch(`${FIREBASE_URL}/liveusers/${myId}.json`, { method: 'DELETE' })
-    .finally(() => {
-      localStorage.removeItem('cmap_user');
-      // الاحتفاظ بـ myId لاستخدامه لاحقاً
-      location.reload();
-    });
+async function shareVia(method) {
+  const url = getShareUrl();
+  const text = `🎖️ انضم إلى شبكة كباتن تساهيل\n\nشاهد جميع الكباتن على الخريطة المباشرة:\n${url}`;
+
+  if (method === 'whatsapp') {
+    window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+    closeShareModal();
+  } else if (method === 'telegram') {
+    window.open(`https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent('🎖️ انضم إلى كباتن تساهيل')}`, '_blank');
+    closeShareModal();
+  } else if (method === 'copy') {
+    try {
+      await navigator.clipboard.writeText(url);
+      showToast('✅ تم نسخ الرابط');
+      closeShareModal();
+    } catch(e) {
+      // Fallback
+      const ta = document.createElement('textarea');
+      ta.value = url;
+      document.body.appendChild(ta);
+      ta.select();
+      try { document.execCommand('copy'); showToast('✅ تم نسخ الرابط'); }
+      catch(err) { showToast('❌ فشل النسخ'); }
+      document.body.removeChild(ta);
+      closeShareModal();
+    }
+  } else if (method === 'native') {
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: APP_NAME,
+          text: '🎖️ انضم إلى شبكة كباتن تساهيل',
+          url: url
+        });
+        closeShareModal();
+      } catch(e) {
+        if (e.name !== 'AbortError') {
+          showToast('❌ فشلت المشاركة');
+        }
+      }
+    } else {
+      // Fallback → نسخ
+      try {
+        await navigator.clipboard.writeText(url);
+        showToast('✅ تم نسخ الرابط');
+      } catch(e) {
+        showToast('⚠️ المشاركة غير مدعومة');
+      }
+      closeShareModal();
+    }
+  }
 }
+
+/* ============================================================
+   منع حذف الموقع عند الخروج — نبقيه دائماً
+   ============================================================ */
+// ⚠️ تم إزالة beforeunload الذي كان يحذف الموقع
+// الموقع الآن يبقى محفوظاً في Firebase دائماً
 
 /* ============================================================
    التشغيل التلقائي
    ============================================================ */
 (function boot() {
-  // إذا كان سبق وسجّل → اطلب الموقع مباشرة وادخل
   if (me !== null) {
-    // معاينة سريعة
-    $('meAvatar').textContent = initials(me.name) || '؟';
-    $('meName').textContent = me.name || 'زائر بدون اسم';
+    const displayName = me.name || 'كابتن مجهول';
+    $('meAvatar').textContent = initials(me.name) || 'ك';
+    $('meName').textContent = displayName;
   }
-  // نُظهر شاشة السماح دائماً في البداية (إلا إذا كان قد سمح في هذه الجلسة)
-  const sessionGranted = sessionStorage.getItem('cmap_granted');
+
+  const sessionGranted = sessionStorage.getItem('tsaheel_granted');
   if (sessionGranted === '1') {
-    // محاولة تحديد الموقع مباشرة بدون سؤال
     navigator.geolocation.getCurrentPosition(
       (pos) => {
         myLat = pos.coords.latitude;
@@ -1144,14 +1399,7 @@ function logout() {
   }
 })();
 
-// عند النجاح نحفظ بالجلسة
-const _origRequest = requestPermission;
-requestPermission = function() {
-  sessionStorage.setItem('cmap_granted', '1');
-  _origRequest();
-};
-
-console.log('%c🗺️ خريطة المجتمع — جاهزة', 'background:#6366f1; color:white; padding:6px 12px; border-radius:6px; font-weight:800; font-size:12px;');
+console.log('%c🎖️ كباتن تساهيل — جاهزة', 'background:linear-gradient(135deg,#f59e0b,#d97706); color:white; padding:8px 16px; border-radius:8px; font-weight:900; font-size:13px;');
 </script>
 </body>
 </html>

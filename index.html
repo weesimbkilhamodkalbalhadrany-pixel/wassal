@@ -30,7 +30,6 @@
     --glass-light: rgba(18, 46, 28, 0.8);
   }
 
-  /* ============== الحاوية الأساسية ============== */
   #app { position: fixed; inset: 0; display: none; }
   #app.active { display: block; }
   #map { position: absolute; inset: 0; z-index: 1; }
@@ -149,7 +148,6 @@
   .btn-primary-lg:disabled { opacity: 0.7; cursor: wait; }
   .btn-primary-lg i { font-size: 1.05rem; }
 
-  /* ============== نافذة التسجيل ============== */
   #regGate .perm-card { padding: 34px 24px 26px; }
   .reg-avatar {
     width: 90px; height: 90px; margin: 0 auto 18px;
@@ -228,7 +226,6 @@
     margin-right: 3px;
   }
 
-  /* ============== شاشة الخطأ ============== */
   #errGate .perm-icon-wrap {
     background: linear-gradient(135deg, #ef4444, #dc2626);
     box-shadow: 0 18px 40px -10px rgba(239,68,68,0.6);
@@ -236,7 +233,6 @@
   #errGate .perm-icon-wrap::before,
   #errGate .perm-icon-wrap::after { border-color: rgba(239,68,68,0.4); animation: none; }
 
-  /* ============== الشريط العلوي ============== */
   .top-bar {
     position: absolute; top: 0; left: 0; right: 0;
     z-index: 1000;
@@ -289,7 +285,6 @@
     100% { box-shadow: 0 0 0 0 rgba(34,197,94,0); }
   }
 
-  /* ============== اللوحة السفلية ============== */
   .bottom-panel {
     position: absolute; bottom: 0; left: 0; right: 0;
     z-index: 1000;
@@ -444,13 +439,46 @@
     100% { box-shadow: 0 8px 24px -4px rgba(34,197,94,0.8), 0 0 0 0 rgba(34,197,94,0); }
   }
 
+  /* ✅ ماركر الكباتن الآخرين - مع علامة خضراء/حمراء */
   .marker-user {
     display: flex; align-items: center; justify-content: center;
     width: 42px; height: 42px; border-radius: 50%;
-    background: linear-gradient(135deg, #4ade80, #22c55e);
     border: 3px solid white;
     color: white; font-size: 0.95rem; font-weight: 900;
-    box-shadow: 0 6px 18px -4px rgba(74,222,128,0.7);
+    position: relative;
+    transition: all 0.3s;
+  }
+  .marker-user.online {
+    background: linear-gradient(135deg, #4ade80, #22c55e);
+    box-shadow: 0 6px 18px -4px rgba(74,222,128,0.9);
+  }
+  .marker-user.offline {
+    background: linear-gradient(135deg, #9ca3af, #6b7280);
+    box-shadow: 0 4px 12px -4px rgba(107,114,128,0.7);
+    opacity: 0.75;
+    filter: grayscale(0.4);
+  }
+  /* ✅ نقطة الحالة الخضراء/الحمراء */
+  .marker-user .status-dot {
+    position: absolute;
+    bottom: -2px; right: -2px;
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    border: 2.5px solid white;
+    z-index: 2;
+  }
+  .marker-user .status-dot.green {
+    background: #22c55e;
+    box-shadow: 0 0 8px rgba(34,197,94,0.9);
+    animation: statusPulse 2s infinite;
+  }
+  .marker-user .status-dot.red {
+    background: #ef4444;
+    box-shadow: 0 0 6px rgba(239,68,68,0.7);
+  }
+  @keyframes statusPulse {
+    0%,100% { box-shadow: 0 0 8px rgba(34,197,94,0.9); }
+    50% { box-shadow: 0 0 14px rgba(34,197,94,1); }
   }
 
   .marker-label {
@@ -475,7 +503,6 @@
     background: rgba(10,31,18,0.95);
   }
 
-  /* ============== Leaflet popup ============== */
   .leaflet-popup-content-wrapper {
     background: var(--bg2) !important;
     color: white !important;
@@ -501,10 +528,25 @@
     display: flex; align-items: center; justify-content: center;
     color: white; font-weight: 900; font-size: 1rem;
     flex-shrink: 0;
+    position: relative;
   }
+  .popup-avatar.online { background: linear-gradient(135deg, #4ade80, #22c55e); }
+  .popup-avatar.offline { background: linear-gradient(135deg, #9ca3af, #6b7280); }
   .popup-avatar.me { background: linear-gradient(135deg, var(--primary), var(--primary-deep)); }
+  .popup-avatar .popup-status-dot {
+    position: absolute;
+    bottom: -2px; right: -2px;
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    border: 2px solid var(--bg2);
+  }
+  .popup-avatar .popup-status-dot.green { background: #22c55e; }
+  .popup-avatar .popup-status-dot.red { background: #ef4444; }
+
   .popup-name { font-weight: 800; font-size: 0.95rem; color: white; line-height: 1.2; }
   .popup-sub { font-size: 0.68rem; color: var(--muted); margin-top: 3px; }
+  .popup-sub .online-text { color: #4ade80; font-weight: 800; }
+  .popup-sub .offline-text { color: #f87171; font-weight: 800; }
 
   .popup-rows { display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; }
   .popup-row {
@@ -531,7 +573,6 @@
   .popup-btn.call { background: linear-gradient(135deg, #22c55e, #16a34a); color: white; }
   .popup-btn.nav { background: linear-gradient(135deg, #4ade80, #22c55e); color: #0a1f12; }
 
-  /* ============== زر العودة لموقعي ============== */
   .locate-fab {
     position: absolute;
     left: 14px;
@@ -557,7 +598,6 @@
     box-shadow: 0 10px 30px -6px rgba(34,197,94,0.7);
   }
 
-  /* ============== التوست ============== */
   .toast {
     position: fixed;
     top: calc(80px + env(safe-area-inset-top));
@@ -581,7 +621,6 @@
   .toast.show { opacity: 1; transform: translate(-50%, 0); }
   .toast.error { border-color: rgba(239,68,68,0.5); background: rgba(60,10,10,0.9); }
 
-  /* ============== تحميل ============== */
   .spinner-inline {
     display: inline-block;
     width: 14px; height: 14px;
@@ -595,7 +634,6 @@
 
   .leaflet-control-attribution { display: none !important; }
 
-  /* ============== مودال المشاركة ============== */
   .share-modal {
     position: fixed; inset: 0;
     z-index: 150000;
@@ -682,6 +720,27 @@
     font-family: inherit;
   }
   .share-close-btn:hover { color: white; }
+
+  /* ✅ بانر التنبيه للخلفية */
+  .bg-warning-banner {
+    position: fixed;
+    bottom: calc(260px + env(safe-area-inset-bottom));
+    left: 14px; right: 14px;
+    z-index: 900;
+    background: rgba(251,191,36,0.15);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(251,191,36,0.4);
+    border-radius: 14px;
+    padding: 10px 14px;
+    display: none;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.72rem;
+    color: #fef3c7;
+    font-weight: 700;
+  }
+  .bg-warning-banner.show { display: flex; }
+  .bg-warning-banner i { color: var(--gold); font-size: 1rem; }
 
   @media (max-width: 380px) {
     .brand-sub { display: none; }
@@ -774,6 +833,12 @@
     <i class="fas fa-location-crosshairs"></i>
   </button>
 
+  <!-- ✅ بانر تنبيه للخلفية -->
+  <div class="bg-warning-banner" id="bgWarning">
+    <i class="fas fa-triangle-exclamation"></i>
+    <span>التتبع يعمل — لا تغلق الإشعار للبقاء متصلاً</span>
+  </div>
+
   <div class="bottom-panel">
     <div class="stats-strip">
       <div class="stat-pill green">
@@ -848,9 +913,9 @@
    ============================================================ */
 const FIREBASE_URL = "https://waselny-2812b-default-rtdb.firebaseio.com";
 const APP_NAME = "كباتن تساهيل";
-const PUSH_INTERVAL = 20000;
-const REFRESH_INTERVAL = 10000;
-const ONLINE_THRESHOLD = 3 * 60 * 1000;
+const PUSH_INTERVAL = 20000;          // إرسال الموقع كل 20 ثانية
+const REFRESH_INTERVAL = 10000;       // جلب الكباتن كل 10 ثواني
+const ONLINE_THRESHOLD = 3 * 60 * 1000; // 3 دقائق لاعتبار الكابتن متصلاً
 
 /* ============================================================
    الحالة
@@ -868,6 +933,8 @@ let refreshTimer = null;
 let map, meMarker;
 let otherMarkers = {};
 let isFollowingMe = true;
+let persistentNotificationInterval = null;
+let lastLocationSaved = false;
 
 /* ============================================================
    أدوات
@@ -943,7 +1010,6 @@ function validateName(name) {
 function validatePhone(phone) {
   const t = (phone || '').trim();
   if (!t) return { ok: false, msg: 'رقم الهاتف مطلوب' };
-  // يقبل الأرقام مع رموز + و - و space
   const cleaned = t.replace(/[\s\-\(\)\+]/g, '');
   if (!/^\d{7,15}$/.test(cleaned)) {
     return { ok: false, msg: 'رقم الهاتف غير صحيح (7 إلى 15 رقماً)' };
@@ -952,7 +1018,7 @@ function validatePhone(phone) {
 }
 
 /* ============================================================
-   طلب السماح بالموقع
+   ✅ طلب السماح بالموقع - مع حفظ دائم
    ============================================================ */
 function requestPermission() {
   if (!navigator.geolocation) {
@@ -969,6 +1035,9 @@ function requestPermission() {
       myLng = pos.coords.longitude;
       myAccuracy = pos.coords.accuracy || 0;
       btn.innerHTML = '<i class="fas fa-check"></i> تم تحديد الموقع';
+
+      // ✅ حفظ دائم في localStorage (بدل sessionStorage)
+      localStorage.setItem('tsaheel_granted', '1');
       sessionStorage.setItem('tsaheel_granted', '1');
 
       // ✅ إذا كان مسجلاً سابقاً ببيانات صحيحة → ادخل مباشرة
@@ -979,13 +1048,11 @@ function requestPermission() {
         setTimeout(() => {
           $('regAvatar').textContent = 'ك';
           showScreen('regGate');
-          // تحديث الأفاتار إذا فيه اسم قديم
           if (me?.name) {
             $('regName').value = me.name;
             $('regAvatar').textContent = initials(me.name);
           }
           if (me?.phone) $('regPhone').value = me.phone;
-          // تركيز تلقائي على الحقل الأول
           setTimeout(() => $('regName')?.focus(), 400);
         }, 500);
       }
@@ -1004,7 +1071,7 @@ function requestPermission() {
 }
 
 /* ============================================================
-   التسجيل — كلا الحقلين مطلوبان
+   التسجيل
    ============================================================ */
 $('regName')?.addEventListener('input', (e) => {
   const name = e.target.value;
@@ -1064,7 +1131,6 @@ function saveRegistration() {
   const nameHint = $('nameHint');
   const phoneHint = $('phoneHint');
 
-  // التحقق من الاسم
   if (!nameV.ok) {
     nameGroup.classList.add('error');
     nameHint.classList.add('error');
@@ -1074,7 +1140,6 @@ function saveRegistration() {
     return;
   }
 
-  // التحقق من الرقم
   if (!phoneV.ok) {
     phoneGroup.classList.add('error');
     phoneHint.classList.add('error');
@@ -1084,9 +1149,10 @@ function saveRegistration() {
     return;
   }
 
-  // حفظ البيانات
   me = { name: name.trim(), phone: phone.trim() };
   localStorage.setItem('tsaheel_user', JSON.stringify(me));
+  // ✅ حفظ علامة التسجيل الدائم
+  localStorage.setItem('tsaheel_registered', '1');
   startApp();
   setTimeout(() => showToast(`🎖️ أهلاً كابتن ${me.name}`), 500);
 }
@@ -1105,6 +1171,10 @@ function startApp() {
   startRefresh();
   pushMyLocation();
   refreshOthers();
+  
+  // ✅ تفعيل الإشعار الدائم والتتبع في الخلفية
+  enablePersistentNotification();
+  showBgWarning();
 }
 
 /* ============================================================
@@ -1161,10 +1231,12 @@ function mePopupHtml() {
   const phone = me?.phone || '';
   return `<div class="popup-card">
     <div class="popup-head">
-      <div class="popup-avatar me">${escapeHtml(initials(name))}</div>
+      <div class="popup-avatar me">${escapeHtml(initials(name))}
+        <span class="popup-status-dot green"></span>
+      </div>
       <div>
         <div class="popup-name">🎖️ ${escapeHtml(name)}</div>
-        <div class="popup-sub">📍 موقعك ككابتن</div>
+        <div class="popup-sub"><span class="online-text">🟢 متصل الآن</span> · موقعك الحالي</div>
       </div>
     </div>
     <div class="popup-rows">
@@ -1213,6 +1285,8 @@ function startWatch() {
       if (isFollowingMe) {
         map.setView([myLat, myLng], map.getZoom());
       }
+      // ✅ إرسال فوري عند تغير الموقع (لا ننتظر المؤقت)
+      pushMyLocation();
     },
     (err) => console.warn('Watch error:', err),
     { enableHighAccuracy: true, maximumAge: 8000, timeout: 30000 }
@@ -1253,7 +1327,7 @@ function startPush() {
 }
 
 /* ============================================================
-   جلب الكباتن الآخرين
+   ✅ جلب الكباتن الآخرين - مع تمييز الحالة
    ============================================================ */
 async function refreshOthers() {
   try {
@@ -1261,7 +1335,6 @@ async function refreshOthers() {
     const data = await res.json();
     const users = data ? Object.values(data) : [];
 
-    const now = Date.now();
     const seenIds = new Set();
 
     users.forEach(u => {
@@ -1296,13 +1369,21 @@ async function refreshOthers() {
   }
 }
 
+/* ✅ تمييز الحالة بالألوان: أخضر للمتصل، أحمر لغير المتصل */
 function makeOtherIcon(u) {
+  const isOnline = (Date.now() - (u.ts || 0)) < ONLINE_THRESHOLD;
   const init = escapeHtml(initials(u.name));
   const label = u.name ? escapeHtml(u.name) : '';
   const labelHtml = label ? `<div class="marker-label">${label}</div>` : '';
+  const statusClass = isOnline ? 'online' : 'offline';
+  const dotClass = isOnline ? 'green' : 'red';
+  
   return L.divIcon({
     className: '',
-    html: `<div class="marker-user">${init}</div>${labelHtml}`,
+    html: `<div class="marker-user ${statusClass}">
+             ${init}
+             <span class="status-dot ${dotClass}"></span>
+           </div>${labelHtml}`,
     iconSize: [42, 42],
     iconAnchor: [21, 21],
     popupAnchor: [0, -24]
@@ -1313,15 +1394,23 @@ function otherPopupHtml(u) {
   const dist = (myLat && myLng) ? distanceKm(myLat, myLng, u.lat, u.lng) : null;
   const name = u.name || 'كابتن';
   const isOnline = (Date.now() - (u.ts || 0)) < ONLINE_THRESHOLD;
+  const statusClass = isOnline ? 'online' : 'offline';
+  const dotClass = isOnline ? 'green' : 'red';
+  const statusText = isOnline 
+    ? `<span class="online-text">🟢 متصل الآن</span>` 
+    : `<span class="offline-text">🔴 غير نشط</span>`;
+  
   const callBtn = u.phone ? `<button class="popup-btn call" onclick="callPhone('${escapeHtml(u.phone)}')"><i class="fas fa-phone"></i> اتصال</button>` : '';
   const navBtn = `<button class="popup-btn nav" onclick="navTo(${u.lat},${u.lng})"><i class="fas fa-diamond-turn-right"></i> اتجاهات</button>`;
 
   return `<div class="popup-card">
     <div class="popup-head">
-      <div class="popup-avatar">${escapeHtml(initials(u.name))}</div>
+      <div class="popup-avatar ${statusClass}">${escapeHtml(initials(u.name))}
+        <span class="popup-status-dot ${dotClass}"></span>
+      </div>
       <div>
         <div class="popup-name">🎖️ ${escapeHtml(name)}</div>
-        <div class="popup-sub">${isOnline ? '🟢 متصل الآن' : '⚫ غير نشط'} · ${timeAgo(u.ts)}</div>
+        <div class="popup-sub">${statusText} · ${timeAgo(u.ts)}</div>
       </div>
     </div>
     <div class="popup-rows">
@@ -1373,10 +1462,115 @@ function updateStats(users) {
 function startRefresh() {
   if (refreshTimer) clearInterval(refreshTimer);
   refreshTimer = setInterval(() => {
-    if (document.hidden) return;
     refreshOthers();
   }, REFRESH_INTERVAL);
 }
+
+/* ============================================================
+   ✅ التتبع في الخلفية + إشعار دائم
+   ============================================================ */
+async function enablePersistentNotification() {
+  if (!('Notification' in window)) {
+    console.log('الإشعارات غير مدعومة');
+    return;
+  }
+  
+  try {
+    let permission = Notification.permission;
+    if (permission === 'default') {
+      permission = await Notification.requestPermission();
+    }
+    
+    if (permission === 'granted') {
+      // ✅ إشعار أولي يبقى ظاهراً
+      try {
+        new Notification('🎖️ كباتن تساهيل - تتبع نشط', {
+          body: 'يتم بث موقعك الآن. لا تغلق هذا الإشعار للبقاء متصلاً.',
+          icon: 'https://cdn-icons-png.flaticon.com/512/535/535234.png',
+          tag: 'tsaheel-tracking',
+          requireInteraction: true,
+          silent: true
+        });
+      } catch(e) { console.warn('Notification error:', e); }
+      
+      // ✅ تحديث الإشعار كل 45 ثانية لإبقاء الجلسة نشطة
+      if (persistentNotificationInterval) clearInterval(persistentNotificationInterval);
+      persistentNotificationInterval = setInterval(() => {
+        if (document.hidden && Notification.permission === 'granted') {
+          try {
+            new Notification('🎖️ كباتن تساهيل - تتبع نشط', {
+              body: `آخر تحديث: ${new Date().toLocaleTimeString('ar-SA')}`,
+              icon: 'https://cdn-icons-png.flaticon.com/512/535/535234.png',
+              tag: 'tsaheel-tracking',
+              requireInteraction: true,
+              silent: true
+            });
+          } catch(e) {}
+        }
+      }, 45000);
+      
+      console.log('✅ تم تفعيل الإشعار الدائم');
+    }
+  } catch(e) {
+    console.warn('Notification setup error:', e);
+  }
+}
+
+function showBgWarning() {
+  const banner = $('bgWarning');
+  if (!banner) return;
+  // إظهار البانر عند إخفاء التطبيق
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+      banner.classList.add('show');
+      // ✅ عند الإخفاء: زيادة وتيرة الإرسال قليلاً لتغطية الخلفية
+      if (pushTimer) clearInterval(pushTimer);
+      pushTimer = setInterval(pushMyLocation, 25000);
+      // ✅ محاولة إرسال الموقع فوراً
+      pushMyLocation();
+    } else {
+      banner.classList.remove('show');
+      // ✅ عند العودة: إعادة الوتيرة الطبيعية
+      if (pushTimer) clearInterval(pushTimer);
+      pushTimer = setInterval(pushMyLocation, PUSH_INTERVAL);
+      // ✅ تحديث فوري عند العودة
+      pushMyLocation();
+      refreshOthers();
+    }
+  });
+}
+
+/* ============================================================
+   ✅ حفظ آخر موقع عند محاولة الإغلاق
+   ============================================================ */
+function saveLastLocation() {
+  if (!myLat || !myLng) return;
+  const body = {
+    id: myId,
+    name: me?.name || '',
+    phone: me?.phone || '',
+    lat: myLat,
+    lng: myLng,
+    accuracy: Math.round(myAccuracy),
+    ts: Date.now(),
+    lang: navigator.language || 'ar',
+    ua: navigator.userAgent
+  };
+  try {
+    // sendBeacon يعمل حتى لو تم إغلاق المتصفح
+    navigator.sendBeacon(
+      `${FIREBASE_URL}/liveusers/${myId}.json`,
+      JSON.stringify(body)
+    );
+    lastLocationSaved = true;
+  } catch(e) {
+    console.warn('Save error:', e);
+  }
+}
+
+window.addEventListener('pagehide', saveLastLocation);
+window.addEventListener('beforeunload', saveLastLocation);
+window.addEventListener('blur', saveLastLocation);
 
 /* ============================================================
    مشاركة الرابط
@@ -1446,18 +1640,41 @@ async function shareVia(method) {
 }
 
 /* ============================================================
-   التشغيل التلقائي
+   ✅ التشغيل التلقائي - دخول مباشر
    ============================================================ */
-(function boot() {
+async function boot() {
   if (me !== null) {
     $('meAvatar').textContent = initials(me.name) || 'ك';
     $('meName').textContent = me.name || '—';
   }
 
-  const sessionGranted = sessionStorage.getItem('tsaheel_granted');
-  const isRegistered = me && me.name && me.phone && validateName(me.name).ok && validatePhone(me.phone).ok;
+  const savedGranted = localStorage.getItem('tsaheel_granted') === '1';
+  const sessionGranted = sessionStorage.getItem('tsaheel_granted') === '1';
+  const isRegistered = me && me.name && me.phone && 
+                       validateName(me.name).ok && 
+                       validatePhone(me.phone).ok;
 
-  if (sessionGranted === '1' && isRegistered) {
+  // ✅ 1) فحص حالة إذن الموقع من المتصفح (الأدق)
+  let browserGranted = false;
+  if (navigator.permissions) {
+    try {
+      const result = await navigator.permissions.query({ name: 'geolocation' });
+      browserGranted = (result.state === 'granted');
+      // مراقبة التغييرات
+      result.onchange = () => {
+        if (result.state === 'denied') {
+          showToast('⚠️ تم إلغاء إذن الموقع', true);
+        }
+      };
+    } catch(e) {
+      console.warn('Permission query error:', e);
+    }
+  }
+
+  // ✅ 2) إذا سبق منح الإذن (في المتصفح أو محفوظ عندنا) → دخول مباشر
+  if ((savedGranted || sessionGranted || browserGranted) && isRegistered) {
+    showScreen('app');
+    // تحديد الموقع مباشرة بدون شاشة
     navigator.geolocation.getCurrentPosition(
       (pos) => {
         myLat = pos.coords.latitude;
@@ -1465,15 +1682,35 @@ async function shareVia(method) {
         myAccuracy = pos.coords.accuracy || 0;
         startApp();
       },
-      () => showScreen('permGate'),
-      { enableHighAccuracy: true, timeout: 15000 }
+      (err) => {
+        console.warn('Auto location error:', err);
+        // إذا رفض الإذن → اذهب لشاشة الطلب
+        if (err.code === 1) {
+          localStorage.removeItem('tsaheel_granted');
+          showScreen('permGate');
+        } else {
+          // خطأ آخر (مهلة/شبكة) → حاول مرة أخرى من الشاشة
+          showScreen('permGate');
+        }
+      },
+      { enableHighAccuracy: true, timeout: 15000, maximumAge: 60000 }
     );
-  } else {
-    showScreen('permGate');
+    return;
   }
-})();
 
-console.log('%c🎖️ كباتن تساهيل — جاهزة', 'background:linear-gradient(135deg,#22c55e,#16a34a); color:white; padding:8px 16px; border-radius:8px; font-weight:900; font-size:13px;');
+  // ✅ 3) حالة أولى → شاشة الإذن
+  showScreen('permGate');
+}
+
+/* ============================================================
+   الإقلاع
+   ============================================================ */
+boot().catch(e => {
+  console.error('Boot error:', e);
+  showScreen('permGate');
+});
+
+console.log('%c🎖️ كباتن تساهيل — جاهزة (تتبع دائم + حالات ملونة)', 'background:linear-gradient(135deg,#22c55e,#16a34a); color:white; padding:8px 16px; border-radius:8px; font-weight:900; font-size:13px;');
 </script>
 </body>
 </html>

@@ -1,0 +1,17 @@
+{
+  "name": "كباتن تساهيل",
+  "short_name": "تساهيل",
+  "description": "شبكة كباتن تساهيل — خريطة مباشرة لجميع الكباتن",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0a1f12",
+  "theme_color": "#22c55e",
+  "lang": "ar",
+  "dir": "rtl",
+  "scope": "./",
+  "icons": [
+    { "src": "logo.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "logo.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}

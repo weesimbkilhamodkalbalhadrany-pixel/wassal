@@ -915,7 +915,7 @@ const FIREBASE_URL = "https://waselny-2812b-default-rtdb.firebaseio.com";
 const APP_NAME = "كباتن تساهيل";
 const PUSH_INTERVAL = 20000;          // إرسال الموقع كل 20 ثانية
 const REFRESH_INTERVAL = 10000;       // جلب الكباتن كل 10 ثواني
-const ONLINE_THRESHOLD = 3 * 60 * 1000; // 3 دقائق لاعتبار الكابتن متصلاً
+const ONLINE_THRESHOLD = 5 * 60 * 1000; // ✅ 5 دقائق لاعتبار الكابتن متصلاً
 
 /* ============================================================
    الحالة
@@ -930,6 +930,7 @@ let myLat = null, myLng = null, myAccuracy = 0;
 let watchId = null;
 let pushTimer = null;
 let refreshTimer = null;
+let forceUpdateTimer = null;
 let map, meMarker;
 let otherMarkers = {};
 let isFollowingMe = true;
@@ -1018,7 +1019,7 @@ function validatePhone(phone) {
 }
 
 /* ============================================================
-   ✅ طلب السماح بالموقع - مع حفظ دائم
+   طلب السماح بالموقع - مع حفظ دائم
    ============================================================ */
 function requestPermission() {
   if (!navigator.geolocation) {
@@ -1036,15 +1037,12 @@ function requestPermission() {
       myAccuracy = pos.coords.accuracy || 0;
       btn.innerHTML = '<i class="fas fa-check"></i> تم تحديد الموقع';
 
-      // ✅ حفظ دائم في localStorage (بدل sessionStorage)
       localStorage.setItem('tsaheel_granted', '1');
       sessionStorage.setItem('tsaheel_granted', '1');
 
-      // ✅ إذا كان مسجلاً سابقاً ببيانات صحيحة → ادخل مباشرة
       if (me && me.name && me.phone && validateName(me.name).ok && validatePhone(me.phone).ok) {
         setTimeout(() => startApp(), 500);
       } else {
-        // إجباري التسجيل
         setTimeout(() => {
           $('regAvatar').textContent = 'ك';
           showScreen('regGate');
@@ -1151,7 +1149,6 @@ function saveRegistration() {
 
   me = { name: name.trim(), phone: phone.trim() };
   localStorage.setItem('tsaheel_user', JSON.stringify(me));
-  // ✅ حفظ علامة التسجيل الدائم
   localStorage.setItem('tsaheel_registered', '1');
   startApp();
   setTimeout(() => showToast(`🎖️ أهلاً كابتن ${me.name}`), 500);
@@ -1169,10 +1166,10 @@ function startApp() {
   startWatch();
   startPush();
   startRefresh();
+  startForceUpdate();   // ✅ تحديث قسري دوري
   pushMyLocation();
   refreshOthers();
   
-  // ✅ تفعيل الإشعار الدائم والتتبع في الخلفية
   enablePersistentNotification();
   showBgWarning();
 }
@@ -1208,7 +1205,7 @@ function initMap() {
 function addMeMarker() {
   if (!myLat || !myLng) return;
   const icon = L.divIcon({
-    className: '',
+    className: 'tsaheel-marker-me',
     html: `<div class="marker-me"><i class="fas fa-user-tie"></i></div><div class="marker-label me">🎖️ أنا الكابتن</div>`,
     iconSize: [54, 54],
     iconAnchor: [27, 27],
@@ -1285,7 +1282,6 @@ function startWatch() {
       if (isFollowingMe) {
         map.setView([myLat, myLng], map.getZoom());
       }
-      // ✅ إرسال فوري عند تغير الموقع (لا ننتظر المؤقت)
       pushMyLocation();
     },
     (err) => console.warn('Watch error:', err),
@@ -1327,15 +1323,18 @@ function startPush() {
 }
 
 /* ============================================================
-   ✅ جلب الكباتن الآخرين - مع تمييز الحالة
+   ✅ جلب الكباتن الآخرين - مع تمييز الحالة (مُصحّحة)
    ============================================================ */
 async function refreshOthers() {
   try {
-    const res = await fetch(`${FIREBASE_URL}/liveusers.json`);
+    const res = await fetch(`${FIREBASE_URL}/liveusers.json?_=${Date.now()}`, {
+      cache: 'no-store'
+    });
     const data = await res.json();
     const users = data ? Object.values(data) : [];
 
     const seenIds = new Set();
+    const now = Date.now();
 
     users.forEach(u => {
       if (!u || !u.id || !u.lat || !u.lng) return;
@@ -1343,19 +1342,45 @@ async function refreshOthers() {
 
       seenIds.add(u.id);
 
+      const isOnline = (now - (u.ts || 0)) < ONLINE_THRESHOLD;
+
       if (otherMarkers[u.id]) {
+        const prevOnline = otherMarkers[u.id].isOnline;
+        
+        // تحديث الموقع
         otherMarkers[u.id].marker.setLatLng([u.lat, u.lng]);
         otherMarkers[u.id].marker.setPopupContent(otherPopupHtml(u));
-        otherMarkers[u.id].marker.setIcon(makeOtherIcon(u));
-        otherMarkers[u.id].data = u;
+        
+        if (prevOnline !== isOnline) {
+          // ✅ تغيّرت الحالة → إعادة بناء الماركر بالكامل (الحل الأضمن)
+          try { map.removeLayer(otherMarkers[u.id].marker); } catch(e) {}
+          
+          const icon = makeOtherIcon(u);
+          const marker = L.marker([u.lat, u.lng], { 
+            icon,
+            zIndexOffset: isOnline ? 500 : 0
+          }).addTo(map);
+          marker.bindPopup(otherPopupHtml(u), { closeButton: true, maxWidth: 280 });
+          
+          otherMarkers[u.id] = { marker, data: u, isOnline };
+        } else {
+          // ✅ حتى لو لم تتغير الحالة، نحدّث الأيقونة
+          otherMarkers[u.id].marker.setIcon(makeOtherIcon(u));
+          otherMarkers[u.id].data = u;
+        }
       } else {
+        // إنشاء ماركر جديد
         const icon = makeOtherIcon(u);
-        const marker = L.marker([u.lat, u.lng], { icon }).addTo(map);
+        const marker = L.marker([u.lat, u.lng], { 
+          icon,
+          zIndexOffset: isOnline ? 500 : 0
+        }).addTo(map);
         marker.bindPopup(otherPopupHtml(u), { closeButton: true, maxWidth: 280 });
-        otherMarkers[u.id] = { marker, data: u };
+        otherMarkers[u.id] = { marker, data: u, isOnline };
       }
     });
 
+    // إزالة الماركرات المحذوفة
     Object.keys(otherMarkers).forEach(id => {
       if (!seenIds.has(id)) {
         try { map.removeLayer(otherMarkers[id].marker); } catch(e) {}
@@ -1378,8 +1403,11 @@ function makeOtherIcon(u) {
   const statusClass = isOnline ? 'online' : 'offline';
   const dotClass = isOnline ? 'green' : 'red';
   
+  // ✅ الحل الجذري: className فريد يجبر Leaflet على إعادة البناء عند تغيّر الحالة
+  const uniqueClass = `tsaheel-marker-${String(u.id).replace(/[^a-zA-Z0-9]/g, '').slice(-8)}-${isOnline ? 'on' : 'off'}`;
+  
   return L.divIcon({
-    className: '',
+    className: uniqueClass,
     html: `<div class="marker-user ${statusClass}">
              ${init}
              <span class="status-dot ${dotClass}"></span>
@@ -1466,6 +1494,23 @@ function startRefresh() {
   }, REFRESH_INTERVAL);
 }
 
+/* ✅ تحديث قسري دوري للأيقونات (كل 15 ثانية) لضمان ظهور الحالة الصحيحة */
+function startForceUpdate() {
+  if (forceUpdateTimer) clearInterval(forceUpdateTimer);
+  forceUpdateTimer = setInterval(() => {
+    if (document.hidden) return;
+    Object.keys(otherMarkers).forEach(id => {
+      const data = otherMarkers[id].data;
+      if (data) {
+        try {
+          otherMarkers[id].marker.setIcon(makeOtherIcon(data));
+          otherMarkers[id].marker.setPopupContent(otherPopupHtml(data));
+        } catch(e) {}
+      }
+    });
+  }, 15000);
+}
+
 /* ============================================================
    ✅ التتبع في الخلفية + إشعار دائم
    ============================================================ */
@@ -1482,7 +1527,6 @@ async function enablePersistentNotification() {
     }
     
     if (permission === 'granted') {
-      // ✅ إشعار أولي يبقى ظاهراً
       try {
         new Notification('🎖️ كباتن تساهيل - تتبع نشط', {
           body: 'يتم بث موقعك الآن. لا تغلق هذا الإشعار للبقاء متصلاً.',
@@ -1493,7 +1537,6 @@ async function enablePersistentNotification() {
         });
       } catch(e) { console.warn('Notification error:', e); }
       
-      // ✅ تحديث الإشعار كل 45 ثانية لإبقاء الجلسة نشطة
       if (persistentNotificationInterval) clearInterval(persistentNotificationInterval);
       persistentNotificationInterval = setInterval(() => {
         if (document.hidden && Notification.permission === 'granted') {
@@ -1519,21 +1562,16 @@ async function enablePersistentNotification() {
 function showBgWarning() {
   const banner = $('bgWarning');
   if (!banner) return;
-  // إظهار البانر عند إخفاء التطبيق
   document.addEventListener('visibilitychange', () => {
     if (document.hidden) {
       banner.classList.add('show');
-      // ✅ عند الإخفاء: زيادة وتيرة الإرسال قليلاً لتغطية الخلفية
       if (pushTimer) clearInterval(pushTimer);
       pushTimer = setInterval(pushMyLocation, 25000);
-      // ✅ محاولة إرسال الموقع فوراً
       pushMyLocation();
     } else {
       banner.classList.remove('show');
-      // ✅ عند العودة: إعادة الوتيرة الطبيعية
       if (pushTimer) clearInterval(pushTimer);
       pushTimer = setInterval(pushMyLocation, PUSH_INTERVAL);
-      // ✅ تحديث فوري عند العودة
       pushMyLocation();
       refreshOthers();
     }
@@ -1557,7 +1595,6 @@ function saveLastLocation() {
     ua: navigator.userAgent
   };
   try {
-    // sendBeacon يعمل حتى لو تم إغلاق المتصفح
     navigator.sendBeacon(
       `${FIREBASE_URL}/liveusers/${myId}.json`,
       JSON.stringify(body)
@@ -1654,13 +1691,11 @@ async function boot() {
                        validateName(me.name).ok && 
                        validatePhone(me.phone).ok;
 
-  // ✅ 1) فحص حالة إذن الموقع من المتصفح (الأدق)
   let browserGranted = false;
   if (navigator.permissions) {
     try {
       const result = await navigator.permissions.query({ name: 'geolocation' });
       browserGranted = (result.state === 'granted');
-      // مراقبة التغييرات
       result.onchange = () => {
         if (result.state === 'denied') {
           showToast('⚠️ تم إلغاء إذن الموقع', true);
@@ -1671,10 +1706,8 @@ async function boot() {
     }
   }
 
-  // ✅ 2) إذا سبق منح الإذن (في المتصفح أو محفوظ عندنا) → دخول مباشر
   if ((savedGranted || sessionGranted || browserGranted) && isRegistered) {
     showScreen('app');
-    // تحديد الموقع مباشرة بدون شاشة
     navigator.geolocation.getCurrentPosition(
       (pos) => {
         myLat = pos.coords.latitude;
@@ -1684,12 +1717,10 @@ async function boot() {
       },
       (err) => {
         console.warn('Auto location error:', err);
-        // إذا رفض الإذن → اذهب لشاشة الطلب
         if (err.code === 1) {
           localStorage.removeItem('tsaheel_granted');
           showScreen('permGate');
         } else {
-          // خطأ آخر (مهلة/شبكة) → حاول مرة أخرى من الشاشة
           showScreen('permGate');
         }
       },
@@ -1698,7 +1729,6 @@ async function boot() {
     return;
   }
 
-  // ✅ 3) حالة أولى → شاشة الإذن
   showScreen('permGate');
 }
 

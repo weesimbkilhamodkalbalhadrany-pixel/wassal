@@ -1,27 +1,21 @@
 /* ===== push.js (Service Worker) ===== */
-self.addEventListener('install', (event) => {
-    self.skipWaiting(); // إجبار المتصفح على تفعيل النسخة الجديدة فوراً
-});
+self.addEventListener('install', () => self.skipWaiting());
+self.addEventListener('activate', (event) => event.waitUntil(clients.claim()));
 
-self.addEventListener('activate', (event) => {
-    event.waitUntil(clients.claim()); // السيطرة على جميع الصفحات المفتوحة
-});
-
-self.addEventListener('push', function(event) {
+self.addEventListener('push', function (event) {
     let data = {};
     if (event.data) {
-        try { 
-            data = event.data.json(); 
-        } catch (e) { 
-            data = { title: 'إشعار جديد', body: event.data.text() }; 
-        }
+        try { data = event.data.json(); }
+        catch (e) { data = { title: 'إشعار جديد', body: event.data.text() }; }
     }
-    
+
     const options = {
         body: data.body || 'لديك إشعار جديد من مطعم العم طه',
-        icon: 'icon-192.png',
-        badge: 'icon-192.png',
-        vibrate: [100, 50, 100],
+        icon: 'icon-192-2.png',
+        badge: 'icon-192-2.png',
+        vibrate: [200, 100, 200],
+        tag: data.tag || undefined,
+        renotify: !!data.tag,
         data: { url: data.url || '/' }
     };
 
@@ -30,9 +24,15 @@ self.addEventListener('push', function(event) {
     );
 });
 
-self.addEventListener('notificationclick', function(event) {
+self.addEventListener('notificationclick', function (event) {
     event.notification.close();
+    const url = (event.notification.data && event.notification.data.url) || '/';
     event.waitUntil(
-        clients.openWindow(event.notification.data.url)
+        clients.matchAll({ type: 'window', includeUncontrolled: true }).then((list) => {
+            for (const c of list) {
+                if ('focus' in c) return c.focus();
+            }
+            return clients.openWindow(url);
+        })
     );
 });

@@ -2806,7 +2806,6 @@
                 } catch (error) {
                     hideLoading();
                     console.error('Error requesting notification permission:', error);
-                    // ✅ هذا السطر الجديد سيعرض لك رسالة الخطأ الحقيقية من المتصفح
                     alert('تفاصيل الخطأ: ' + error.message);
                 }
             });
@@ -2814,10 +2813,15 @@
 
         async function subscribeUserToPush() {
             try {
+                // 1. تسجيل الملف
                 const registration = await navigator.serviceWorker.register('push.js');
                 
+                // 2. السطر السحري: الانتظار حتى يجهز الـ Service Worker (هنا كان الخطأ)
+                await navigator.serviceWorker.ready;
+
                 const VAPID_PUBLIC_KEY = 'BINUCsmyK6OtiI-Df3kYPOyJ9DfLY2KYy8PMlOhgQ34DC_9VeVgtFE3c9wurK2Ky2UFq_oIlQSEfJxshp2ewykI'; 
                 
+                // 3. الآن يمكننا الاشتراك بأمان
                 const subscription = await registration.pushManager.subscribe({
                     userVisibleOnly: true,
                     applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY)
@@ -2832,8 +2836,7 @@
                 console.log('✅ User is subscribed to push notifications.');
             } catch (error) {
                 console.error('❌ Failed to subscribe: ', error);
-                // ✅ سطر التشخيص
-                alert('تفاصيل الخطأ الفني:\n' + error.message + '\n\nتأكد من أن ملف push.js موجود في المسار الصحيح.');
+                alert('تفاصيل الخطأ الفني:\n' + error.message);
             }
         }
 

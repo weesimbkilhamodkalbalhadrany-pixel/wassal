@@ -1030,7 +1030,14 @@
                 <div id="darkModeToggle" style="display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid #eee; cursor:pointer;"><span><i class="fas fa-moon"></i> الوضع الليلي</span><span id="darkModeIcon">⚫</span></div>
                 <div id="whatsappSupport" style="display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid #eee; cursor:pointer;"><span><i class="fab fa-whatsapp" style="color:#25D366"></i> خدمة العملاء</span><span>⬅️</span></div>
                 <div id="shareApp" style="display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid #eee; cursor:pointer;"><span><i class="fas fa-share-alt"></i> مشاركة التطبيق</span><span>⬅️</span></div>
-                <button id="settingsLogoutBtn" style="width:100%; padding:12px; background:#ef4444; color:white; border:none; border-radius:30px; font-weight:800; cursor:pointer;">تسجيل الخروج</button>
+                
+                <!-- ✅ زر تفعيل الإشعارات الجديد -->
+                <div id="notificationToggle" style="display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid #eee; cursor:pointer;">
+                    <span><i class="fas fa-bell"></i> تفعيل الإشعارات</span>
+                    <span id="notificationStatus">🔕</span>
+                </div>
+
+                <button id="settingsLogoutBtn" style="width:100%; padding:12px; background:#ef4444; color:white; border:none; border-radius:30px; font-weight:800; cursor:pointer; margin-top: 15px;">تسجيل الخروج</button>
             </div>
         </div>
 
@@ -1705,12 +1712,10 @@
             let order = allOrders.find(o => o.id == id);
             if (!order) return;
             
-            // حالات التتبع بالترتيب
             let steps = ['pending', 'preparing', 'on_the_way', 'arrived', 'delivered'];
             let idx = steps.indexOf(order.status);
             if (idx === -1) idx = 0;
 
-            // أيقونات FontAwesome لكل حالة
             let stepIcons = {
                 pending: 'fa-clock',
                 preparing: 'fa-utensils',
@@ -1719,7 +1724,6 @@
                 delivered: 'fa-check-double'
             };
 
-            // بناء خطوات التتبع العمودية
             let stepsHtml = steps.map((s, i) => {
                 let stepClass = '';
                 if (i < idx) stepClass = 'completed';
@@ -2727,11 +2731,112 @@
         });
 
         // ================================================================
+        //  نظام الإشعارات (Push Notifications)
+        // ================================================================
+        async function setupNotifications() {
+            const toggle = document.getElementById('notificationToggle');
+            const statusIcon = document.getElementById('notificationStatus');
+
+            if (!('Notification' in window) || !('serviceWorker' in navigator)) {
+                statusIcon.innerText = 'غير مدعوم';
+                statusIcon.style.color = '#ef4444';
+                return;
+            }
+
+            const updateUI = (permission) => {
+                if (permission === 'granted') {
+                    statusIcon.innerText = '🔔';
+                    statusIcon.style.color = '#10b981';
+                } else if (permission === 'denied') {
+                    statusIcon.innerText = '🚫';
+                    statusIcon.style.color = '#ef4444';
+                } else {
+                    statusIcon.innerText = '🔕';
+                    statusIcon.style.color = '#888';
+                }
+            };
+
+            updateUI(Notification.permission);
+
+            toggle.addEventListener('click', async () => {
+                if (Notification.permission === 'granted') {
+                    showToast('الإشعارات مفعلة بالفعل ✅');
+                    return;
+                }
+
+                if (Notification.permission === 'denied') {
+                    showToast('❌ لقد قمت برفض الإشعارات مسبقاً. يرجى تفعيلها من إعدادات المتصفح.');
+                    return;
+                }
+
+                showLoading('جار تفعيل الإشعارات...', '🔔', 'يرجى الضغط على "السماح"');
+                
+                try {
+                    const permission = await Notification.requestPermission();
+                    updateUI(permission);
+                    hideLoading();
+
+                    if (permission === 'granted') {
+                        showToast('✅ تم تفعيل الإشعارات بنجاح');
+                        await subscribeUserToPush();
+                        
+                        new Notification('مطعم العم طه 🍔', { 
+                            body: 'تم تفعيل الإشعارات بنجاح! ستصلك آخر العروض والطلبات هنا.',
+                            icon: 'icon-192.png'
+                        });
+                    } else {
+                        showToast('⚠️ لم يتم تفعيل الإشعارات');
+                    }
+                } catch (error) {
+                    hideLoading();
+                    console.error('Error requesting notification permission:', error);
+                    showToast('حدث خطأ أثناء تفعيل الإشعارات');
+                }
+            });
+        }
+
+        async function subscribeUserToPush() {
+            try {
+                const registration = await navigator.serviceWorker.register('push.js');
+                
+                // ⚠️ هام: استبدل هذا المفتاح بمفتاح VAPID العام الخاص بمشروعك من Firebase
+                const VAPID_PUBLIC_KEY = 'BEl62iUYgUivxIkv69yViEuiBIa-Ib9-SkvMeAtA3LFgDzkrxZJjSgSnfckjBJuBkr3qBUYIHBQFLXYp5Nksh8'; 
+                
+                const subscription = await registration.pushManager.subscribe({
+                    userVisibleOnly: true,
+                    applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY)
+                });
+
+                const userId = currentUser ? currentUser.phone : 'guest_' + Date.now();
+                await fetch(`${FIREBASE_URL}/subscriptions/${userId}.json`, {
+                    method: 'PUT',
+                    body: JSON.stringify(subscription)
+                });
+                
+                console.log('✅ User is subscribed to push notifications.');
+            } catch (error) {
+                console.error('❌ Failed to subscribe the user: ', error);
+            }
+        }
+
+        function urlBase64ToUint8Array(base64String) {
+            const padding = '='.repeat((4 - base64String.length % 4) % 4);
+            const base64 = (base64String + padding).replace(/\-/g, '+').replace(/_/g, '/');
+            const rawData = window.atob(base64);
+            const outputArray = new Uint8Array(rawData.length);
+            for (let i = 0; i < rawData.length; ++i) {
+                outputArray[i] = rawData.charCodeAt(i);
+            }
+            return outputArray;
+        }
+
+        // ================================================================
         //  التهيئة النهائية
         // ================================================================
         renderCategories();
         renderPopularItems();
         initPaymentList();
+        setupNotifications(); // تفعيل نظام الإشعارات عند التحميل
 
         // تسجيل الدخول
         let savedUser = safeStorage.get('taha_user');

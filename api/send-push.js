@@ -40,7 +40,7 @@ export default async function handler(req, res) {
 
         await Promise.all(recipients.map(async ([key, v]) => {
             try {
-                await webpush.sendNotification(v.subscription, payload);
+                await webpush.sendNotification(v.subscription, payload, { urgency: 'high', TTL: 3600 });
                 sent++;
             } catch (err) {
                 // الاشتراك منتهي → نحذفه

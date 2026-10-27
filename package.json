@@ -1,0 +1,12 @@
+{
+  "name": "uncle-taha-restaurant",
+  "version": "1.0.0",
+  "private": true,
+  "description": "مطعم العم طه - إشعارات التوصيل",
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "web-push": "^3.6.7"
+  }
+}

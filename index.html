@@ -1636,7 +1636,23 @@
                 generalNote: generalNote
             };
 
+            // 1. حفظ الطلب في Firebase
             await fetch(`${FIREBASE_URL}/orders/${id}.json`, { method: 'PUT', body: JSON.stringify(order) });
+            
+            // 2. إرسال الإشعارات عبر الـ API الخاص بـ Vercel (جديد)
+            try {
+                await fetch('/api/send-push', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        title: 'طلب جديد 🛍️',
+                        body: `وصلك طلب جديد من ${currentUser.name} بقيمة ${total} ريال`
+                    })
+                });
+            } catch (e) {
+                console.error('فشل إرسال الإشعار للمندوبين', e);
+            }
+
             localStorage.setItem('currentTrackingOrder', id);
 
             let itemsText = cart.map(i => `• ${i.name} x${i.qty} = ${i.p*i.qty} ريال ${i.note?' ('+i.note+')':''}`).join('\n');
@@ -2790,7 +2806,8 @@
                 } catch (error) {
                     hideLoading();
                     console.error('Error requesting notification permission:', error);
-                    showToast('حدث خطأ أثناء تفعيل الإشعارات');
+                    // ✅ هذا السطر الجديد سيعرض لك رسالة الخطأ الحقيقية من المتصفح
+                    alert('تفاصيل الخطأ: ' + error.message);
                 }
             });
         }
@@ -2799,7 +2816,6 @@
             try {
                 const registration = await navigator.serviceWorker.register('push.js');
                 
-                // ✅ تم تحديث المفتاح هنا بالمفتاح الخاص بك
                 const VAPID_PUBLIC_KEY = 'BINUCsmyK6OtiI-Df3kYPOyJ9DfLY2KYy8PMlOhgQ34DC_9VeVgtFE3c9wurK2Ky2UFq_oIlQSEfJxshp2ewykI'; 
                 
                 const subscription = await registration.pushManager.subscribe({
@@ -2815,7 +2831,9 @@
                 
                 console.log('✅ User is subscribed to push notifications.');
             } catch (error) {
-                console.error('❌ Failed to subscribe the user: ', error);
+                console.error('❌ Failed to subscribe: ', error);
+                // ✅ سطر التشخيص
+                alert('تفاصيل الخطأ الفني:\n' + error.message + '\n\nتأكد من أن ملف push.js موجود في المسار الصحيح.');
             }
         }
 

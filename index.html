@@ -2799,8 +2799,8 @@
             try {
                 const registration = await navigator.serviceWorker.register('push.js');
                 
-                // ⚠️ هام: استبدل هذا المفتاح بمفتاح VAPID العام الخاص بمشروعك من Firebase
-                const VAPID_PUBLIC_KEY = 'BEl62iUYgUivxIkv69yViEuiBIa-Ib9-SkvMeAtA3LFgDzkrxZJjSgSnfckjBJuBkr3qBUYIHBQFLXYp5Nksh8'; 
+                // ✅ تم تحديث المفتاح هنا بالمفتاح الخاص بك
+                const VAPID_PUBLIC_KEY = 'BINUCsmyK6OtiI-Df3kYPOyJ9DfLY2KYy8PMlOhgQ34DC_9VeVgtFE3c9wurK2Ky2UFq_oIlQSEfJxshp2ewykI'; 
                 
                 const subscription = await registration.pushManager.subscribe({
                     userVisibleOnly: true,

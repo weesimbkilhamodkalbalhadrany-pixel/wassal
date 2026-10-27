@@ -6,7 +6,7 @@ export default async function handler(req, res) {
 
     if (req.method === 'OPTIONS') return res.status(200).end();
 
-    const FB = process.env.FIREBASE_URL;
+    const FB = process.env.FIREBASE_URL || 'https://alam-taha-default-rtdb.firebaseio.com';
     if (req.method !== 'GET' && !FB) {
         return res.status(500).json({ error: 'FIREBASE_URL is not set' });
     }

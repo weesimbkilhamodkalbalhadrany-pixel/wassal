@@ -2971,7 +2971,7 @@
                 'auth/captcha-check-failed': 'فشل التحقق الأمني، أعد المحاولة',
                 'auth/popup-closed-by-user': '', 'auth/cancelled-popup-request': ''
             };
-            return e && e.code in m ? m[e.code] : 'تعذر إكمال العملية' + (e && e.code ? ' (' + e.code + ')' : '');
+            console.error('AUTH ERROR', e); return e && e.code in m ? m[e.code] : 'تعذر إكمال العملية' + (e ? ' (' + (e.code || e.message || e) + ')' : '').slice(0, 120);
         }
 
         function setStep(s) {
@@ -3009,7 +3009,11 @@
             if (!fbAuth) return showErr('خدمة التحقق غير مفعّلة بعد — أضف إعدادات Firebase في الكود');
             showErr(''); busy(true, 'btnSend', 'جاري الإرسال...');
             try {
-                if (!rcv) rcv = new firebase.auth.RecaptchaVerifier('recaptcha-box', { size: 'invisible' });
+                if (!rcv) {
+                    const old = document.getElementById('recaptcha-box'), fresh = document.createElement('div');
+                    fresh.id = 'recaptcha-box'; old.replaceWith(fresh);
+                    rcv = new firebase.auth.RecaptchaVerifier(fresh, { size: 'invisible' });
+                }
                 fbConfirm = await fbAuth.signInWithPhoneNumber('+967' + ph, rcv);
                 curPhone = ph;
                 document.getElementById('otpTo').innerText = '+967 ' + ph;
@@ -3018,7 +3022,7 @@
             } catch (e) {
                 showErr(fbErr(e));
                 try { rcv && rcv.clear(); } catch (_) {}
-                rcv = null; document.getElementById('recaptcha-box').innerHTML = '';
+                rcv = null;
             }
             busy(false, 'btnSend', 'إرسال رمز التحقق');
         }

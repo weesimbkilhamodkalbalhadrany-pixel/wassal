@@ -1274,6 +1274,18 @@
         body.dark-mode .otp-i{background:#1f1716;border-color:#3a2d2b;color:var(--gold)}
         body.dark-mode .otp-i:focus{background:#2a2120}
         @media(max-width:360px){.otp-i{width:40px;height:50px}}
+    
+        /* ===== v9: أقسام المنيو - بطاقات متساوية ومفصولة بوضوح ===== */
+        .cats{display:grid;grid-template-columns:repeat(2,1fr);grid-auto-rows:150px;gap:14px;flex:none}
+        .cats .ct,.cats .ct.w{grid-column:auto;height:150px;min-height:150px;border-radius:22px;border:2px solid #fff;box-shadow:0 6px 16px rgba(60,20,20,.16),0 0 0 1px rgba(60,20,20,.06);position:relative}
+        .cats .ct:after{background:linear-gradient(to top,rgba(30,6,12,.92) 8%,rgba(30,6,12,.15) 62%,transparent)}
+        .cats .ct:before{content:'';position:absolute;z-index:3;right:0;bottom:0;left:0;height:4px;background:var(--ac,#d4af6a)}
+        .cats .ct .im.np{background:linear-gradient(145deg,var(--ac,#8f2a3d),#4a0f1c)}
+        .cats .ct .tx{right:14px;left:14px;bottom:14px}
+        .cats .ct b,.cats .ct.w b{font-size:1rem}
+        .cats .ct small{display:inline-block;margin-top:3px;background:rgba(255,255,255,.18);backdrop-filter:blur(6px);padding:2px 9px;border-radius:12px;font-size:.66rem}
+        .cbadge{position:absolute;z-index:3;top:10px;right:10px;width:36px;height:36px;border-radius:12px;background:rgba(255,255,255,.92);display:flex;align-items:center;justify-content:center;font-size:1.2rem;box-shadow:0 3px 8px rgba(0,0,0,.2)}
+        .carrow{position:absolute;z-index:3;top:10px;left:10px;width:28px;height:28px;border-radius:50%;background:var(--ac,#d4af6a);color:#fff;display:flex;align-items:center;justify-content:center;font-size:1.1rem;font-weight:900;line-height:1}
     </style>
 </head>
 <body>
@@ -1959,7 +1971,7 @@
         async function confirmCheckoutOrder() {
             let address = document.getElementById('checkoutAddressManual').value.trim();
             if (!customerLocation && !address) return showToast('حدد عنوان التوصيل');
-            if (!currentUser || currentUser.role !== 'customer') return showToast('سجل دخول كعميل');
+            if (!currentUser || (currentUser.role !== 'customer' && currentUser.role !== 'driver')) return showToast('سجل دخول لتأكيد الطلب');
             if (cart.length === 0) return showToast('السلة فارغة');
 
             showLoading('جار إرسال طلبك...', '📤', 'يتم تأكيد الطلب وإرساله الآن');
@@ -2339,7 +2351,7 @@
             }
 
             let activeOrders = allOrders.filter(o => o.driverId === currentUser?.phone && o.status !== 'delivered');
-            let availableOrders = allOrders.filter(o => o.status === 'pending');
+            let availableOrders = allOrders.filter(o => o.status === 'pending' && o.customerPhone !== currentUser?.phone && o.phone !== currentUser?.phone);
             let completedOrders = allOrders.filter(o => o.driverId === currentUser?.phone && o.status === 'delivered');
 
             document.getElementById('activeOrdersCount').innerText = activeOrders.length;
@@ -3952,10 +3964,11 @@
 
         renderCategories = function () {
             const g = $('categoriesGrid'); g.className = 'cats';
-            g.innerHTML = CATS.map((c, k) => {
+            const ACC = { 'قسم الشبس': '#e8a33d', 'قسم الزنجر': '#e0603a', 'قسم الشاورما': '#c98a4b', 'قسم الفلافل': '#7fa84a', 'قسم الفاهيتا': '#d4503f', 'قسم المشروبات': '#3f9bd4' };
+            g.innerHTML = CATS.map(c => {
                 const its = ITEMS.filter(i => i.cat === c), ph = its.find(i => i.photo);
-                const wide = k === 0 || k === CATS.length - 1;
-                return `<div class="ct ${wide ? 'w' : ''}" onclick="openCategoryList('${c}')">${ph ? imgBox(ph) : `<div class="im np"><span class="em">${getCategoryIcon(c)}</span></div>`}<div class="tx"><b>${c}</b><small>${its.length} صنف</small></div></div>`;
+                const ac = ACC[c] || '#d4af6a';
+                return `<div class="ct" style="--ac:${ac}" onclick="openCategoryList('${c}')">${ph ? imgBox(ph) : `<div class="im np"></div>`}<span class="cbadge">${getCategoryIcon(c)}</span><span class="carrow">‹</span><div class="tx"><b>${c}</b><small>${its.length} صنف</small></div></div>`;
             }).join('');
         };
 
